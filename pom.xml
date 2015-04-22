@@ -18,11 +18,11 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
-	<properties>
+<!-- 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<start-class>com.naturalprogrammer.spring.boot.SpringAppBootApplication</start-class>
 		<java.version>1.8</java.version>
-	</properties>
+	</properties> -->
 
 	<dependencies>
 		<dependency>
@@ -47,27 +47,12 @@
 		</dependency>
 		
 		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-		
-		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
 	
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
-		</plugins>
-	</build>
-
 	<repositories>
 		<repository>
 			<id>spring-snapshots</id>
@@ -86,6 +71,17 @@
 			</snapshots>
 		</repository>
 	</repositories>
+	
+	
+<!-- 	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+
 	<pluginRepositories>
 		<pluginRepository>
 			<id>spring-snapshots</id>
@@ -104,6 +100,6 @@
 			</snapshots>
 		</pluginRepository>
 	</pluginRepositories>
-
+-->
 
 </project>
