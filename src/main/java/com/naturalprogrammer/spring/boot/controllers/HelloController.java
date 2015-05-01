@@ -8,7 +8,7 @@ public class HelloController {
 	
 	@RequestMapping("/spring-app-boot")
 	public String home() {
-		return "Hello from Spring App Boot";
+		return "Hello from Spring App Boot 2";
 	}
 
 
