@@ -26,6 +26,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		
 		http
+			.formLogin().loginPage("/login").permitAll().and()
+			.logout().permitAll().and()
 			.csrf().disable()
 			.authorizeRequests()
 			.antMatchers("/j_spring_security_switch_user*").hasRole("ADMIN")
