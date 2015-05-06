@@ -1,7 +1,5 @@
 package com.naturalprogrammer.spring.boot.security;
 
-import org.apache.catalina.connector.Request;
-import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -32,8 +30,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		
 		http
 			.formLogin()
-				.loginPage("/login")
-				.permitAll()
+//				.loginPage("/login")
+//				.permitAll()
 				
 				/******************************************
 				 * Setting a successUrl would redirect the user there. Instead,
@@ -55,12 +53,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	        	.failureHandler(new SimpleUrlAuthenticationFailureHandler())
 	        	
 	        	.and()
-			.logout().permitAll().and()
+//			.logout().permitAll().and()
 			.csrf().disable()
 			.authorizeRequests()
-			.antMatchers("/j_spring_security_switch_user*").hasRole("ADMIN")
-			.antMatchers("/secure").authenticated()
-			.antMatchers("/**").permitAll();                  
+				.antMatchers("/j_spring_security_switch_user*").hasRole("ADMIN")
+				.antMatchers("/secure").authenticated()
+				.antMatchers("/**").permitAll();                  
 	}
 
 }
