@@ -5,7 +5,12 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+
+import com.naturalprogrammer.spring.boot.security.UserDetailsImpl;
+import com.naturalprogrammer.spring.boot.user.BaseUser;
 
 @Component
 public class Sa {
@@ -37,6 +42,25 @@ public class Sa {
 	    }
 
 	    return map;
+	}
+	
+	public static UserDetailsImpl getPrincipal() {
+		
+	    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+	
+	    if (auth != null) {
+	      Object principal = auth.getPrincipal();
+	      if (principal instanceof UserDetailsImpl) {
+	        return (UserDetailsImpl) principal;
+	      }
+	    }
+	    return null;	  
+	}
+	
+	public static BaseUser getSessionUser() {
+		UserDetailsImpl auth = getPrincipal();
+	  return auth == null ? null : auth.getUser();
+	  
 	}
 
 }

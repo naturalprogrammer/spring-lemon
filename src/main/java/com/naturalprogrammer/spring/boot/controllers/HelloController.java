@@ -10,6 +10,12 @@ public class HelloController {
 	public String home() {
 		return "Hello from Spring App Boot 2";
 	}
-
+	
+//	@RequestMapping("/error")
+//	public String error() {
+//		return "Error from Spring App Boot";
+//	}
+//
+//
 
 }
