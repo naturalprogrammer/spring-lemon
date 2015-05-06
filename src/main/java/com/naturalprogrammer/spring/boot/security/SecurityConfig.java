@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 
 @Configuration
 @EnableWebSecurity
@@ -18,6 +19,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	@Autowired
 	private AuthSuccess authSuccess;
+	
+	@Autowired
+	private LogoutSuccessHandler logoutSuccessHandler;
 	
 	@Autowired
     @Override
@@ -51,9 +55,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				 * 2015-05-06 13:56:45.007 DEBUG 10184 --- [nio-8080-exec-3] o.s.b.a.e.mvc.EndpointHandlerMapping     : Looking up handler method for path /error2
 				 *******************************************/
 	        	.failureHandler(new SimpleUrlAuthenticationFailureHandler())
-	        	
 	        	.and()
-//			.logout().permitAll().and()
+			.logout()
+			
+				/************************************************
+				 * To prevent redirection to home page, we need to
+				 * have this custom logoutSuccessHandler
+				 ***********************************************/
+				.logoutSuccessHandler(logoutSuccessHandler)
+				.invalidateHttpSession(true)
+				.deleteCookies("JSESSIONID")
+				.and()
 			.csrf().disable()
 			.authorizeRequests()
 				.antMatchers("/j_spring_security_switch_user*").hasRole("ADMIN")
