@@ -9,6 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
+import com.naturalprogrammer.spring.boot.security.UserData;
 import com.naturalprogrammer.spring.boot.security.UserDetailsImpl;
 import com.naturalprogrammer.spring.boot.user.BaseUser;
 
@@ -58,9 +59,15 @@ public class Sa {
 	}
 	
 	public static BaseUser getSessionUser() {
-		UserDetailsImpl auth = getPrincipal();
-	  return auth == null ? null : auth.getUser();
-	  
+	  UserDetailsImpl auth = getPrincipal();
+	  return auth == null ? null : auth.getUser(); 
+	}
+	
+	public static UserData getUserData() {
+		BaseUser user = Sa.getSessionUser();
+		if (user == null)
+			return null;
+		return user.getUserData();
 	}
 
 }

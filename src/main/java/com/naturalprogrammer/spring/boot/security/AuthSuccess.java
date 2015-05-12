@@ -6,6 +6,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
@@ -16,7 +18,9 @@ import com.naturalprogrammer.spring.boot.Sa;
 
 @Component
 public class AuthSuccess extends SimpleUrlAuthenticationSuccessHandler {
-
+	
+	private Log log = LogFactory.getLog(getClass());
+	
     @Autowired
     private ObjectMapper objectMapper;
     
@@ -27,5 +31,7 @@ public class AuthSuccess extends SimpleUrlAuthenticationSuccessHandler {
     	response.setStatus(HttpServletResponse.SC_OK);
     	response.getOutputStream().print(objectMapper.writeValueAsString(Sa.getSessionUser().getUserData()));
         clearAuthenticationAttributes(request);
+        log.info("userData: " + Sa.getSessionUser().getUserData());
+        
     }
 }
