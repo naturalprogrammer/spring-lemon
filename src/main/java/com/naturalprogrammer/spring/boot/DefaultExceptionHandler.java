@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import com.naturalprogrammer.spring.boot.validation.FieldError;
+
 @ControllerAdvice
 public class DefaultExceptionHandler {
 	
@@ -27,40 +29,10 @@ public class DefaultExceptionHandler {
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public @ResponseBody Map<String, Object> handleConstraintViolationException(ConstraintViolationException ex) {
     	
-    	//TODO: Resume from here
-    	// change the path from signup.signupForm.email to just email
-    	// change the map processing to Java 8 style
-    	// test multiple failures
-    	// see if the response code is going properly
-    	Map<String, Collection<String>> errors = new HashMap<String, Collection<String>>();
-    	
-    	//String[] emailErrors = {"Not valid email", "Error 2 on Email"};
-    	//String[] formErrors = {"A form level error", "Error 2 on Form"};
-    	
-    	//errors.put("email", emailErrors);
-    	//errors.put("", formErrors);
-    	
-    	for (ConstraintViolation<?> cv: ex.getConstraintViolations()) {
-    		
-    		
-    		final StringBuilder fieldNameBuilder = new StringBuilder();
-    		cv.getPropertyPath().forEach((item) -> {
-    			fieldNameBuilder.setLength(0);
-    			fieldNameBuilder.append(item.getName());
-    		});
-    		final String fieldName = fieldNameBuilder.toString();
-    		
-    		Collection<String> errorList = errors.get(fieldName);
-    		if (errorList == null) {
-    			errorList = new HashSet<String>();
-        		errors.put(fieldName, errorList);    			
-    		}
-    		errorList.add(cv.getMessage());
-    	}
-    	
+    	Collection<FieldError> errors = FieldError.getErrors(ex.getConstraintViolations());
+		
     	log.error("ConstraintViolationException: " + errors.toString());
-    	
-    	return Sa.mapOf("exception", "ConstraintViolationException", "errors", errors);
+		return Sa.mapOf("exception", "ConstraintViolationException", "errors", errors);
 
     }
 
