@@ -5,7 +5,7 @@ import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.Email;
 
-public class SignupForm {
+public abstract class SignupForm {
 
 	@Size(min=BaseUser.NAME_MIN, max=BaseUser.NAME_MAX)
 	private String name;
