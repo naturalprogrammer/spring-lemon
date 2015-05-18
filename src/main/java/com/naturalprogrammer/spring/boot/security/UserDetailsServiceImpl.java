@@ -6,7 +6,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.naturalprogrammer.spring.boot.user.BaseUser;
+import com.naturalprogrammer.spring.boot.entities.User;
 import com.naturalprogrammer.spring.boot.user.UserService;
 
 @Service
@@ -19,11 +19,11 @@ class UserDetailsServiceImpl implements UserDetailsService {
 	public UserDetails loadUserByUsername(String email)
 			throws UsernameNotFoundException {
 		
-		BaseUser baseUser = userService.findByEmail(email);
-		if (baseUser == null)
+		User user = userService.findByEmail(email);
+		if (user == null)
 			throw new UsernameNotFoundException(email);
 
-		return new UserDetailsImpl(baseUser);
+		return new UserDetailsImpl(user);
 
 	}
 

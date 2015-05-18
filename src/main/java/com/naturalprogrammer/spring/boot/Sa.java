@@ -11,9 +11,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
+import com.naturalprogrammer.spring.boot.entities.User;
 import com.naturalprogrammer.spring.boot.security.UserData;
 import com.naturalprogrammer.spring.boot.security.UserDetailsImpl;
-import com.naturalprogrammer.spring.boot.user.BaseUser;
 
 @Component
 public class Sa {
@@ -70,13 +70,13 @@ public class Sa {
 	    return null;	  
 	}
 	
-	public static BaseUser getSessionUser() {
+	public static User getSessionUser() {
 	  UserDetailsImpl auth = getPrincipal();
 	  return auth == null ? null : auth.getUser(); 
 	}
 	
 	public static UserData getUserData() {
-		BaseUser user = Sa.getSessionUser();
+		User user = Sa.getSessionUser();
 		if (user == null)
 			return null;
 		return user.getUserData();

@@ -13,12 +13,13 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import com.naturalprogrammer.spring.boot.Sa;
-import com.naturalprogrammer.spring.boot.user.BaseUser.Role;
+import com.naturalprogrammer.spring.boot.entities.User;
+import com.naturalprogrammer.spring.boot.entities.User.Role;
 
 @Service
 @Validated
 @Transactional(propagation=Propagation.SUPPORTS, readOnly=true)
-public class SignupService<U extends BaseUser> {
+public class SignupService<U extends User> {
 
     private final Log log = LogFactory.getLog(getClass());
 
@@ -39,7 +40,7 @@ public class SignupService<U extends BaseUser> {
 	
 	public U createUser(SignupForm signupForm) {
 		
-		final U user = (U) Sa.getBean(BaseUser.class);
+		final U user = (U) Sa.getBean(User.class);
 		
 		user.setEmail(signupForm.getEmail());
 		user.setName(signupForm.getName());

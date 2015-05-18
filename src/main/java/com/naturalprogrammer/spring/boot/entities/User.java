@@ -1,4 +1,4 @@
-package com.naturalprogrammer.spring.boot.user;
+package com.naturalprogrammer.spring.boot.entities;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -23,9 +23,10 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 import com.naturalprogrammer.spring.boot.Sa;
 import com.naturalprogrammer.spring.boot.mail.MailSender;
 import com.naturalprogrammer.spring.boot.security.UserData;
+import com.naturalprogrammer.spring.boot.user.SignupForm;
 
 @MappedSuperclass
-public abstract class BaseUser {
+public abstract class User {
 	
 	public static final int EMAIL_MAX = 250;
 	public static final int NAME_MAX = 50;
@@ -133,9 +134,9 @@ public abstract class BaseUser {
 		return userData;
 	}
 
-	public static BaseUser of(SignupForm signupForm) {
+	public static User of(SignupForm signupForm) {
 		 
-		final BaseUser user = Sa.getBean(BaseUser.class);
+		final User user = Sa.getBean(User.class);
 			
 		user.setEmail(signupForm.getEmail());
 		user.setName(signupForm.getName());
@@ -147,7 +148,7 @@ public abstract class BaseUser {
 	}
 
 //	public boolean isEditable() {
-//		BaseUser loggedIn = MyUtil.getSessionUser();
+//		User loggedIn = MyUtil.getSessionUser();
 //		if (loggedIn == null)
 //			return false;
 //		return loggedIn.isAdmin() ||   // ADMIN or

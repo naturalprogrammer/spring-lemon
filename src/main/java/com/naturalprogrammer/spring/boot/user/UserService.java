@@ -14,11 +14,12 @@ import org.springframework.transaction.support.TransactionSynchronizationAdapter
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import com.naturalprogrammer.spring.boot.Sa;
+import com.naturalprogrammer.spring.boot.entities.User;
 import com.naturalprogrammer.spring.boot.mail.MailSender;
 
 @Service
 @Transactional(propagation=Propagation.SUPPORTS, readOnly=true)
-public class UserService<U extends BaseUser> {
+public class UserService<U extends User> {
 	
 	private final Log log = LogFactory.getLog(getClass());
 
@@ -31,11 +32,11 @@ public class UserService<U extends BaseUser> {
     @Autowired
 	private BaseUserRepository<U> userRepository;
 
-	public BaseUser findByEmail(String email) {
+	public User findByEmail(String email) {
 		return userRepository.findByEmail(email);
 	}
 
-	public BaseUser findByForgotPasswordCode(String forgotPasswordCode) {
+	public User findByForgotPasswordCode(String forgotPasswordCode) {
 		return userRepository.findByForgotPasswordCode(forgotPasswordCode);
 	}
 

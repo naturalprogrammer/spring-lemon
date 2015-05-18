@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-public abstract class SignupController<U extends BaseUser, S extends SignupForm> {
+import com.naturalprogrammer.spring.boot.entities.User;
+
+public abstract class SignupController<U extends User, S extends SignupForm> {
 	
 	private static final Logger logger = LoggerFactory.getLogger(SignupController.class);
 	

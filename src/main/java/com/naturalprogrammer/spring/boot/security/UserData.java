@@ -2,7 +2,7 @@ package com.naturalprogrammer.spring.boot.security;
 
 import java.util.Set;
 
-import com.naturalprogrammer.spring.boot.user.BaseUser.Role;
+import com.naturalprogrammer.spring.boot.entities.User.Role;
 
 public class UserData {
 	
