@@ -5,6 +5,8 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -16,17 +18,27 @@ import com.naturalprogrammer.spring.boot.user.BaseUser;
 @Component
 public class Sa {
 
+	public static final String APPLICATION_URL = "${application.url: http://localhost:9000}";
+	
 	private static ApplicationContext applicationContext;
+	private static MessageSource messageSource;
 	
 	@Autowired
-	public void setApplicationContext(ApplicationContext applicationContext) {
+	public Sa(ApplicationContext applicationContext, MessageSource messageSource) {
 		
 		Sa.applicationContext = applicationContext;
+		Sa.messageSource = messageSource;
 		
 	}
-	
+
 	public static <T> T getBean(Class<T> clazz) {
 		return applicationContext.getBean(clazz);
+	}
+	
+	public static String getMessage(String messageKey, Object... args) {
+		
+		// http://stackoverflow.com/questions/10792551/how-to-obtain-a-current-user-locale-from-spring-without-passing-it-as-a-paramete
+		return messageSource.getMessage(messageKey, args, LocaleContextHolder.getLocale());
 	}
 	
 	@SuppressWarnings("unchecked")

@@ -13,6 +13,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import com.naturalprogrammer.spring.boot.Sa;
+
 /**
  * https://spring.io/guides/gs/rest-service-cors/
  * 
@@ -22,12 +24,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class SimpleCorsFilter implements Filter {
 
-	@Value("${clientUrl: http://localhost:9000}")
-	private String clientUrl;	
+	@Value(Sa.APPLICATION_URL)
+	private String applicationUrl;	
 	
 	public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
 		HttpServletResponse response = (HttpServletResponse) res;
-		response.setHeader("Access-Control-Allow-Origin", clientUrl); // "*" does not work when $httpProvider.defaults.withCredentials = true;
+		response.setHeader("Access-Control-Allow-Origin", applicationUrl); // "*" does not work when $httpProvider.defaults.withCredentials = true;
 		response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
 		response.setHeader("Access-Control-Max-Age", "3600");
 		response.setHeader("Access-Control-Allow-Headers", "x-requested-with,origin,content-type,accept");

@@ -3,6 +3,7 @@ package com.naturalprogrammer.spring.boot.user;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.mail.MessagingException;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.FetchType;
@@ -11,6 +12,16 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.transaction.support.TransactionSynchronizationAdapter;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
+
+import com.naturalprogrammer.spring.boot.Sa;
+import com.naturalprogrammer.spring.boot.mail.MailSender;
 import com.naturalprogrammer.spring.boot.security.UserData;
 
 @MappedSuperclass
@@ -28,7 +39,7 @@ public abstract class BaseUser {
 	public static enum Role {
 		UNVERIFIED, BLOCKED, ADMIN
 	}
-
+	   
 	@Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
 	private long id;
@@ -121,7 +132,20 @@ public abstract class BaseUser {
 		
 		return userData;
 	}
-	
+
+	public static BaseUser of(SignupForm signupForm) {
+		 
+		final BaseUser user = Sa.getBean(BaseUser.class);
+			
+		user.setEmail(signupForm.getEmail());
+		user.setName(signupForm.getName());
+		user.setPassword(signupForm.getPassword());
+		user.getRoles().add(Role.UNVERIFIED);
+		
+		return user;
+			
+	}
+
 //	public boolean isEditable() {
 //		BaseUser loggedIn = MyUtil.getSessionUser();
 //		if (loggedIn == null)
