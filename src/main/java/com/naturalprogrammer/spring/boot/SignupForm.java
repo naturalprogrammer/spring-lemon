@@ -7,7 +7,7 @@ import org.hibernate.validator.constraints.Email;
 
 import com.naturalprogrammer.spring.boot.validation.UniqueEmail;
 
-public abstract class SignupForm {
+public class SignupForm {
 
 	@Size(min=SaUser.NAME_MIN, max=SaUser.NAME_MAX)
 	private String name;
