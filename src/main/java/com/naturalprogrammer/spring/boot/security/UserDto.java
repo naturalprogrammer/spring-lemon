@@ -2,9 +2,9 @@ package com.naturalprogrammer.spring.boot.security;
 
 import java.util.Set;
 
-import com.naturalprogrammer.spring.boot.entities.User.Role;
+import com.naturalprogrammer.spring.boot.SaUser.Role;
 
-public class UserData {
+public class UserDto {
 	
 	private long id;
 	private String name;

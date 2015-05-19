@@ -32,7 +32,7 @@ public class DefaultExceptionHandler {
     	Collection<FieldError> errors = FieldError.getErrors(ex.getConstraintViolations());
 		
     	log.error("ConstraintViolationException: " + errors.toString());
-		return Sa.mapOf("exception", "ConstraintViolationException", "errors", errors);
+		return SaUtil.mapOf("exception", "ConstraintViolationException", "errors", errors);
 
     }
 
@@ -42,9 +42,8 @@ public class DefaultExceptionHandler {
     public @ResponseBody Map<String, Object> handleRequestException(Exception ex) {
     	
         log.error("Request error:", ex);
-		return Sa.mapOf("error", "Request Error", "cause", ex.getMessage());
+		return SaUtil.mapOf("error", "Request Error", "cause", ex.getMessage());
 
     }
-
 
 }

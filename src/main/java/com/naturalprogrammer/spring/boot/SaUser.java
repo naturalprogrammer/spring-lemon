@@ -1,4 +1,4 @@
-package com.naturalprogrammer.spring.boot.entities;
+package com.naturalprogrammer.spring.boot;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -20,13 +20,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.support.TransactionSynchronizationAdapter;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
-import com.naturalprogrammer.spring.boot.Sa;
 import com.naturalprogrammer.spring.boot.mail.MailSender;
-import com.naturalprogrammer.spring.boot.security.UserData;
-import com.naturalprogrammer.spring.boot.user.SignupForm;
+import com.naturalprogrammer.spring.boot.security.UserDto;
 
 @MappedSuperclass
-public abstract class User {
+public abstract class SaUser {
 	
 	public static final int EMAIL_MAX = 250;
 	public static final int NAME_MAX = 50;
@@ -124,31 +122,31 @@ public abstract class User {
 		return roles.contains(Role.ADMIN);
 	}
 
-	public UserData getUserData() {
+	public UserDto getUserDto() {
 		
-		UserData userData = new UserData();
-		userData.setId(id);
-		userData.setName(name);
-		userData.setRoles(roles);
+		UserDto userDto = new UserDto();
+		userDto.setId(id);
+		userDto.setName(name);
+		userDto.setRoles(roles);
 		
-		return userData;
+		return userDto;
 	}
 
-	public static User of(SignupForm signupForm) {
+	public static SaUser of(SignupForm signupForm) {
 		 
-		final User user = Sa.getBean(User.class);
+		final SaUser saUser = SaUtil.getBean(SaUser.class);
 			
-		user.setEmail(signupForm.getEmail());
-		user.setName(signupForm.getName());
-		user.setPassword(signupForm.getPassword());
-		user.getRoles().add(Role.UNVERIFIED);
+		saUser.setEmail(signupForm.getEmail());
+		saUser.setName(signupForm.getName());
+		saUser.setPassword(signupForm.getPassword());
+		saUser.getRoles().add(Role.UNVERIFIED);
 		
-		return user;
+		return saUser;
 			
 	}
 
 //	public boolean isEditable() {
-//		User loggedIn = MyUtil.getSessionUser();
+//		SaUser loggedIn = MyUtil.getSessionUser();
 //		if (loggedIn == null)
 //			return false;
 //		return loggedIn.isAdmin() ||   // ADMIN or

@@ -47,7 +47,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				
 				/******************************************
 				 * Setting a successUrl would redirect the user there. Instead,
-				 * let's send 200 and the userData.
+				 * let's send 200 and the userDto.
 				 *****************************************/
 				.successHandler(authSuccess)
 				

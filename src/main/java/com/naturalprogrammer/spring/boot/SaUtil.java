@@ -11,12 +11,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
-import com.naturalprogrammer.spring.boot.entities.User;
-import com.naturalprogrammer.spring.boot.security.UserData;
+import com.naturalprogrammer.spring.boot.security.UserDto;
 import com.naturalprogrammer.spring.boot.security.UserDetailsImpl;
 
 @Component
-public class Sa {
+public class SaUtil {
 
 	public static final String APPLICATION_URL = "${application.url: http://localhost:9000}";
 	
@@ -24,10 +23,10 @@ public class Sa {
 	private static MessageSource messageSource;
 	
 	@Autowired
-	public Sa(ApplicationContext applicationContext, MessageSource messageSource) {
+	public SaUtil(ApplicationContext applicationContext, MessageSource messageSource) {
 		
-		Sa.applicationContext = applicationContext;
-		Sa.messageSource = messageSource;
+		SaUtil.applicationContext = applicationContext;
+		SaUtil.messageSource = messageSource;
 		
 	}
 
@@ -70,16 +69,16 @@ public class Sa {
 	    return null;	  
 	}
 	
-	public static User getSessionUser() {
+	public static SaUser getSessionUser() {
 	  UserDetailsImpl auth = getPrincipal();
 	  return auth == null ? null : auth.getUser(); 
 	}
 	
-	public static UserData getUserData() {
-		User user = Sa.getSessionUser();
-		if (user == null)
+	public static UserDto getUserDto() {
+		SaUser saUser = SaUtil.getSessionUser();
+		if (saUser == null)
 			return null;
-		return user.getUserData();
+		return saUser.getUserDto();
 	}
 
 }

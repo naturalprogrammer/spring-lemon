@@ -12,7 +12,7 @@ import org.springframework.security.web.authentication.logout.LogoutSuccessHandl
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.naturalprogrammer.spring.boot.Sa;
+import com.naturalprogrammer.spring.boot.SaUtil;
 
 @Component
 public class SaLogoutSuccessHandler implements LogoutSuccessHandler {
@@ -26,7 +26,7 @@ public class SaLogoutSuccessHandler implements LogoutSuccessHandler {
 			throws IOException, ServletException {
 
     	response.setStatus(HttpServletResponse.SC_OK);
-    	response.getOutputStream().print(objectMapper.writeValueAsString(Sa.getSessionUser()));
+    	response.getOutputStream().print(objectMapper.writeValueAsString(SaUtil.getSessionUser()));
 		
 	}
 

@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import com.naturalprogrammer.spring.boot.Sa;
+import com.naturalprogrammer.spring.boot.SaUtil;
 
 /**
  * https://spring.io/guides/gs/rest-service-cors/
@@ -24,7 +24,7 @@ import com.naturalprogrammer.spring.boot.Sa;
 @Component
 public class SimpleCorsFilter implements Filter {
 
-	@Value(Sa.APPLICATION_URL)
+	@Value(SaUtil.APPLICATION_URL)
 	private String applicationUrl;	
 	
 	public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {

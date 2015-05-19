@@ -1,10 +1,13 @@
-package com.naturalprogrammer.spring.boot.user;
+package com.naturalprogrammer.spring.boot.validation;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import com.naturalprogrammer.spring.boot.SaUser;
+import com.naturalprogrammer.spring.boot.SaUserRepository;
 
 /**
  * Reference
@@ -18,7 +21,7 @@ import org.springframework.stereotype.Component;
 public class UniqueEmailValidator implements ConstraintValidator<UniqueEmail, String> {
 
 	@Autowired
-	private UserService userService;
+	private SaUserRepository<? extends SaUser> userRepository;
 	
 	@Override
 	public void initialize(UniqueEmail constraintAnnotation) {
@@ -29,7 +32,7 @@ public class UniqueEmailValidator implements ConstraintValidator<UniqueEmail, St
 	@Override
 	public boolean isValid(String email, ConstraintValidatorContext context) {
 		
-		return userService.findByEmail(email) == null;
+		return userRepository.findByEmail(email) == null;
 
 	}
 

@@ -14,7 +14,7 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.naturalprogrammer.spring.boot.Sa;
+import com.naturalprogrammer.spring.boot.SaUtil;
 
 @Component
 public class AuthSuccess extends SimpleUrlAuthenticationSuccessHandler {
@@ -29,9 +29,9 @@ public class AuthSuccess extends SimpleUrlAuthenticationSuccessHandler {
 
         // instead of this, the statement below is introduced: handle(request, response, authentication);
     	response.setStatus(HttpServletResponse.SC_OK);
-    	response.getOutputStream().print(objectMapper.writeValueAsString(Sa.getSessionUser().getUserData()));
+    	response.getOutputStream().print(objectMapper.writeValueAsString(SaUtil.getSessionUser().getUserDto()));
         clearAuthenticationAttributes(request);
-        log.info("userData: " + Sa.getSessionUser().getUserData());
+        log.info("userDto: " + SaUtil.getSessionUser().getUserDto());
         
     }
 }

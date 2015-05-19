@@ -7,8 +7,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.naturalprogrammer.spring.boot.entities.User;
-import com.naturalprogrammer.spring.boot.entities.User.Role;
+import com.naturalprogrammer.spring.boot.SaUser;
+import com.naturalprogrammer.spring.boot.SaUser.Role;
 
 public class UserDetailsImpl implements UserDetails {
 
@@ -17,27 +17,27 @@ public class UserDetailsImpl implements UserDetails {
 	 */
 	private static final long serialVersionUID = -3862469610636495180L;
 
-	private User user;
+	private SaUser saUser;
 	
-	public User getUser() {
-		return user;
+	public SaUser getUser() {
+		return saUser;
 	}
 
-	public void setUser(User user) {
-		this.user = user;
+	public void setUser(SaUser saUser) {
+		this.saUser = saUser;
 	}
 
-	public UserDetailsImpl(User user) {
-		this.user = user;
+	public UserDetailsImpl(SaUser saUser) {
+		this.saUser = saUser;
 	}
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		
 		Collection<GrantedAuthority> authorities = new HashSet<GrantedAuthority>(
-				user.getRoles().size() + 1);
+				saUser.getRoles().size() + 1);
 
-		for (Role role : user.getRoles())
+		for (Role role : saUser.getRoles())
 			authorities.add(new SimpleGrantedAuthority("ROLE_" + role.name()));
 
 		authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
@@ -48,12 +48,12 @@ public class UserDetailsImpl implements UserDetails {
 
 	@Override
 	public String getPassword() {
-		return user.getPassword();
+		return saUser.getPassword();
 	}
 
 	@Override
 	public String getUsername() {
-		return user.getEmail();
+		return saUser.getEmail();
 	}
 
 	@Override
