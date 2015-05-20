@@ -32,6 +32,9 @@ public abstract class SaService<U extends SaUser, S extends SignupForm> {
 	@Value(SaUtil.APPLICATION_URL)
     private String applicationUrl;
 	
+	@Value(SaUtil.RECAPTCHA_SITE_KEY)
+    private String reCaptchaSiteKey;
+
 	@Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -43,6 +46,7 @@ public abstract class SaService<U extends SaUser, S extends SignupForm> {
     
 	public ContextDto getContext() {
 		ContextDto contextDto = new ContextDto();
+		contextDto.setReCaptchaSiteKey(reCaptchaSiteKey);
 		contextDto.setUserDto(SaUtil.getUserDto());
 		return contextDto;		
 	}

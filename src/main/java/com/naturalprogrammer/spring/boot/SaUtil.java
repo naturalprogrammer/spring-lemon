@@ -18,6 +18,8 @@ import com.naturalprogrammer.spring.boot.security.UserDetailsImpl;
 public class SaUtil {
 
 	public static final String APPLICATION_URL = "${application.url: http://localhost:9000}";
+	public static final String RECAPTCHA_SITE_KEY = "${reCaptcha.siteKey: ReCaptcha Site Key Not Provided}";
+	public static final String RECAPTCHA_SECRET_KEY = "${reCaptcha.secretKey: ReCaptcha Secret Key Not Provided}";
 	
 	private static ApplicationContext applicationContext;
 	private static MessageSource messageSource;

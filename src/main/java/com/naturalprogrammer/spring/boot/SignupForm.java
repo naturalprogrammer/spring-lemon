@@ -5,6 +5,7 @@ import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.Email;
 
+import com.naturalprogrammer.spring.boot.validation.Captcha;
 import com.naturalprogrammer.spring.boot.validation.UniqueEmail;
 
 public class SignupForm {
@@ -20,6 +21,9 @@ public class SignupForm {
 	
 	@Size(min=SaUser.PASSWORD_MIN, max=SaUser.PASSWORD_MAX, message="Inappropriate length")
 	private String password;
+	
+	@Captcha
+	private String captchaResponse;
 		
 	public String getName() {
 		return name;
@@ -48,6 +52,14 @@ public class SignupForm {
 	@Override
 	public String toString() {
 		return "SignupForm [name=" + name + ", email=" + email + "]";
+	}
+
+	public String getCaptchaResponse() {
+		return captchaResponse;
+	}
+
+	public void setCaptchaResponse(String captchaResponse) {
+		this.captchaResponse = captchaResponse;
 	}
 	
 }
