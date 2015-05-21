@@ -9,9 +9,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,7 +18,6 @@ import org.springframework.validation.annotation.Validated;
 
 import com.naturalprogrammer.spring.boot.SaUser.Role;
 import com.naturalprogrammer.spring.boot.mail.MailSender;
-import com.naturalprogrammer.spring.boot.security.UserDetailsImpl;
 
 @Validated
 @Transactional(propagation=Propagation.SUPPORTS, readOnly=true)

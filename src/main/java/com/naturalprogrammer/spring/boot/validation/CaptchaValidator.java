@@ -1,6 +1,8 @@
 package com.naturalprogrammer.spring.boot.validation;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.validation.ConstraintValidator;
@@ -11,9 +13,15 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.naturalprogrammer.spring.boot.SaUser;
 import com.naturalprogrammer.spring.boot.SaUserRepository;
 import com.naturalprogrammer.spring.boot.SaUtil;
@@ -31,29 +39,11 @@ public class CaptchaValidator implements ConstraintValidator<Captcha, String> {
 	
 	private final Log log = LogFactory.getLog(getClass());
 
-	private static class RequestData {
-		
-		private String secret;
-		private String response;
-		
-		public String getSecret() {
-			return secret;
-		}
-		public void setSecret(String secret) {
-			this.secret = secret;
-		}
-		public String getResponse() {
-			return response;
-		}
-		public void setResponse(String response) {
-			this.response = response;
-		}
-
-	}
-	
 	private static class ResponseData {
 		
 		private boolean success;
+		
+		@JsonProperty("error-codes")
 		private Collection<String> errorCodes;
 		
 		public boolean isSuccess() {
@@ -86,13 +76,22 @@ public class CaptchaValidator implements ConstraintValidator<Captcha, String> {
 		if (captchaResponse == null || "".equals(captchaResponse))
 	         return false;
 	        
-		RequestData requestData = new RequestData();
-		requestData.setResponse(captchaResponse);
-		requestData.setSecret(reCaptchaSecretKey);
+		MultiValueMap<String, String> formData = new LinkedMultiValueMap<String, String>(2);
+		formData.add("response", captchaResponse);
+		formData.add("secret", reCaptchaSecretKey);
 		
 		try {
-			ResponseData responseData = restTemplate.postForObject("https://www.google.com/recaptcha/api/siteverify",
-				requestData, ResponseData.class);
+
+
+			// This also works:
+			//	ResponseData responseData = restTemplate.postForObject(
+			//	   "https://www.google.com/recaptcha/api/siteverify?response={0}&secret={1}",
+			//	    null, ResponseData.class, captchaResponse, reCaptchaSecretKey);
+
+			ResponseData responseData = restTemplate.postForObject(
+			   "https://www.google.com/recaptcha/api/siteverify",
+			   formData, ResponseData.class);
+			
 			return responseData.success;			
 		} catch (Throwable t) {
 			log.error(ExceptionUtils.getStackTrace(t));
