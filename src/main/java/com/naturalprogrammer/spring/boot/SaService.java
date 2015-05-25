@@ -9,6 +9,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,6 +48,7 @@ public abstract class SaService<U extends SaUser, S extends SignupForm> {
 		return contextDto;		
 	}
 	
+	@PreAuthorize("isAnonymous()")
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
 	public void signup(@Valid S signupForm) {
 		

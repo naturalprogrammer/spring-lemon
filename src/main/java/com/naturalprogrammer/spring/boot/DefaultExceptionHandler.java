@@ -11,6 +11,7 @@ import javax.validation.ConstraintViolationException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,13 +38,25 @@ public class DefaultExceptionHandler {
     }
 
 	@RequestMapping(produces = "application/json")
-    @ExceptionHandler({Exception.class})
-    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    public @ResponseBody Map<String, Object> handleRequestException(Exception ex) {
+    @ExceptionHandler({AccessDeniedException.class})
+    @ResponseStatus(value = HttpStatus.FORBIDDEN)
+    public @ResponseBody Map<String, Object> handleAuthorizationException(AccessDeniedException ex) {
     	
-        log.error("Request error:", ex);
-		return SaUtil.mapOf("error", "Request Error", "cause", ex.getMessage());
+        log.error("User does not have proper rights:", ex);
+		return SaUtil.mapOf("exception", "AccessDeniedException", "message", ex.getMessage());
 
     }
+
+	@RequestMapping(produces = "application/json")
+    @ExceptionHandler({Exception.class})
+    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
+    public @ResponseBody Map<String, Object> handleRequestException(Exception ex) {
+    	
+        log.error("Internaql server error:", ex);
+		return SaUtil.mapOf("exception", "Exception", "message", ex.getMessage());
+
+    }
+	
+
 
 }
