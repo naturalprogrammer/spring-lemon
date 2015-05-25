@@ -36,7 +36,7 @@ public abstract class SaUser {
 	public static final String ONLY_EMAIL_REGEX = null;
 	
 	public static enum Role {
-		UNVERIFIED, BLOCKED, ADMIN
+		UNVERIFIED, USER, BLOCKED, ADMIN
 	}
 	   
 	@Id
@@ -144,7 +144,7 @@ public abstract class SaUser {
 		return saUser;
 			
 	}
-
+	
 //	public boolean isEditable() {
 //		SaUser loggedIn = MyUtil.getSessionUser();
 //		if (loggedIn == null)

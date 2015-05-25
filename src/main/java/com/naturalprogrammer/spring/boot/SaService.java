@@ -9,6 +9,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Propagation;
@@ -31,6 +33,12 @@ public abstract class SaService<U extends SaUser, S extends SignupForm> {
 	
 	@Value(SaUtil.RECAPTCHA_SITE_KEY)
     private String reCaptchaSiteKey;
+	
+	@Value("${admin.email}")
+	private String adminEmail;
+
+	@Value("${admin.password}")
+	private String adminPassword;
 
 	@Autowired
     private PasswordEncoder passwordEncoder;
@@ -41,6 +49,49 @@ public abstract class SaService<U extends SaUser, S extends SignupForm> {
     @Autowired
 	private SaUserRepository<U> userRepository;
     
+    
+    /**
+     * This method needs to be public; otherwise Spring screams
+     * 
+     * @param event
+     */
+    @EventListener
+	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
+    public void afterContextRefreshed(ContextRefreshedEvent event) {
+    	
+    	onStartup();
+    	
+    }
+    
+	/**
+	 * Override this if needed
+	 */
+    protected void onStartup() {
+		U user = userRepository.findByEmail(adminEmail);
+		if (user == null) {
+	    	user = createAdminUser();
+	    	userRepository.save(user);
+		}
+	}
+
+	
+	/**
+	 * Override this if you have more fields to set
+	 */
+    protected U createAdminUser() {
+		
+		final U user = (U) SaUtil.getBean(SaUser.class);
+		
+		user.setEmail(adminEmail);
+		user.setName("Administrator");
+		user.setPassword(passwordEncoder.encode(adminPassword));
+		user.getRoles().add(Role.ADMIN);
+		
+		return user;
+
+	}
+
+
 	public ContextDto getContext() {
 		ContextDto contextDto = new ContextDto();
 		contextDto.setReCaptchaSiteKey(reCaptchaSiteKey);

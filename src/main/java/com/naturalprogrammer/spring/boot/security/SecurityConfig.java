@@ -12,10 +12,12 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices;
+import org.springframework.security.web.authentication.switchuser.SwitchUserFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -23,8 +25,7 @@ import org.springframework.security.web.authentication.rememberme.TokenBasedReme
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	private static final String REMEMBER_ME_COOKIE = "rememberMe";
-	private static final String REMEMBER_ME_PARAMETER = "rememberMe";
-	
+	private static final String REMEMBER_ME_PARAMETER = "rememberMe";	
 	
 	@Value("${rememberMe.privateKey}")
 	private String rememberMeKey;
@@ -52,6 +53,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return rememberMeServices;
         
     }
+    
+	@Bean
+	public SwitchUserFilter switchUserFilter() {
+		SwitchUserFilter filter = new SwitchUserFilter();
+		filter.setUserDetailsService(userDetailsService);
+		filter.setSwitchUserUrl("/j_spring_security_switch_user");
+		filter.setExitUserUrl("/j_spring_security_exit_user");
+		filter.setTargetUrl("/");
+		return filter;
+	}
 	
     @Autowired
     @Override
@@ -101,6 +112,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.rememberMeServices(rememberMeServices())
 				.and()
 			.csrf().disable()
+			.addFilterAfter(switchUserFilter(), FilterSecurityInterceptor.class)
 			.authorizeRequests()
 				.antMatchers("/j_spring_security_switch_user*").hasRole("ADMIN")
 				//.antMatchers("/secure").authenticated()
