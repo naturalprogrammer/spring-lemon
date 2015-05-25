@@ -1,6 +1,7 @@
 package com.naturalprogrammer.spring.boot.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -11,13 +12,22 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
+import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices;
 
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+	
+	private static final String REMEMBER_ME_COOKIE = "rememberMe";
+	private static final String REMEMBER_ME_PARAMETER = "rememberMe";
+	
+	
+	@Value("${rememberMe.privateKey}")
+	private String rememberMeKey;
 	
 	@Autowired
 	private UserDetailsService userDetailsService;
@@ -31,6 +41,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public PasswordEncoder passwordEncoder() {
       return new BCryptPasswordEncoder();
+    }
+    
+    @Bean
+    public RememberMeServices rememberMeServices() {
+    	
+        TokenBasedRememberMeServices rememberMeServices = new TokenBasedRememberMeServices(rememberMeKey, userDetailsService);
+        rememberMeServices.setParameter(REMEMBER_ME_PARAMETER); // default is "remember-me" (in earlier spring security versions it was "_spring_security_remember_me")
+        rememberMeServices.setCookieName(REMEMBER_ME_COOKIE);
+        return rememberMeServices;
+        
     }
 	
     @Autowired
@@ -74,12 +94,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				 ***********************************************/
 				.logoutSuccessHandler(logoutSuccessHandler)
 				.invalidateHttpSession(true)
-				.deleteCookies("JSESSIONID")
+				.deleteCookies("JSESSIONID", REMEMBER_ME_COOKIE)
+				.and()
+			.rememberMe()
+				.key(rememberMeKey)
+				.rememberMeServices(rememberMeServices())
 				.and()
 			.csrf().disable()
 			.authorizeRequests()
 				.antMatchers("/j_spring_security_switch_user*").hasRole("ADMIN")
-				.antMatchers("/secure").authenticated()
+				//.antMatchers("/secure").authenticated()
 				.antMatchers("/**").permitAll();                  
 	}
 
