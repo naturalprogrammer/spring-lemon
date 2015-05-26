@@ -21,6 +21,7 @@ import org.springframework.validation.annotation.Validated;
 
 import com.naturalprogrammer.spring.boot.SaUser.Role;
 import com.naturalprogrammer.spring.boot.mail.MailSender;
+import com.naturalprogrammer.spring.boot.security.UserDto;
 
 @Validated
 @Transactional(propagation=Propagation.SUPPORTS, readOnly=true)
@@ -101,12 +102,13 @@ public abstract class SaService<U extends SaUser, S extends SignupForm> {
 	
 	@PreAuthorize("isAnonymous()")
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
-	public void signup(@Valid S signupForm) {
+	public UserDto signup(@Valid S signupForm) {
 		
 		U user = createUser(signupForm);
 		userRepository.save(user);
 		sendVerificationMail(user);
-		
+		SaUtil.logInUser(user);
+		return user.getUserDto();
 	}
 	
 	protected U createUser(S signupForm) {
