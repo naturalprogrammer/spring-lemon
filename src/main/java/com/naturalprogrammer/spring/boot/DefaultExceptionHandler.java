@@ -30,7 +30,7 @@ public class DefaultExceptionHandler {
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public @ResponseBody Map<String, Object> handleConstraintViolationException(ConstraintViolationException ex) {
     	
-    	Collection<FieldError> errors = FieldError.getErrors(ex.getConstraintViolations());
+		Collection<FieldError> errors = FieldError.getErrors(ex.getConstraintViolations());
 		
     	log.error("ConstraintViolationException: " + errors.toString());
 		return SaUtil.mapOf("exception", "ConstraintViolationException", "errors", errors);

@@ -1,12 +1,15 @@
 package com.naturalprogrammer.spring.boot;
 
 import javax.mail.MessagingException;
+import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.validator.constraints.Email;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -140,6 +143,24 @@ public abstract class SaService<U extends SaUser, S extends SignupForm> {
 			        }
 			    });
 			
+	}
+
+	public U fetchUser(@Valid @Email @NotNull String email) {
+		
+		SaUser loggedIn = SaUtil.getSessionUser();
+
+		U user = userRepository.findByEmail(email);
+		
+		if (user == null) {
+			////////////////// throw SaFormException
+		}
+
+		user.setPassword(null);
+		
+		if (loggedIn == null ||	loggedIn.getId() != user.getId() && !loggedIn.isAdmin())
+				user.setEmail("Confidential");
+		
+		return user;
 	}
 
 }
