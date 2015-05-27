@@ -25,6 +25,8 @@ import org.springframework.validation.annotation.Validated;
 import com.naturalprogrammer.spring.boot.SaUser.Role;
 import com.naturalprogrammer.spring.boot.mail.MailSender;
 import com.naturalprogrammer.spring.boot.security.UserDto;
+import com.naturalprogrammer.spring.boot.validation.FieldError;
+import com.naturalprogrammer.spring.boot.validation.FormException;
 
 @Validated
 @Transactional(propagation=Propagation.SUPPORTS, readOnly=true)
@@ -64,6 +66,7 @@ public abstract class SaService<U extends SaUser, S extends SignupForm> {
     public void afterContextRefreshed(ContextRefreshedEvent event) {
     	
     	onStartup();
+    	String abc = SaUtil.getMessage("userNotFound");
     	
     }
     
@@ -152,7 +155,7 @@ public abstract class SaService<U extends SaUser, S extends SignupForm> {
 		U user = userRepository.findByEmail(email);
 		
 		if (user == null) {
-			////////////////// throw SaFormException
+			throw new FormException("email", "userNotFound");
 		}
 
 		user.setPassword(null);

@@ -1,6 +1,7 @@
 package com.naturalprogrammer.spring.boot.validation;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -35,14 +36,13 @@ public class FieldError {
 	
 	private static FieldError of(ConstraintViolation<?> constraintViolation) {
 		
-		FieldError fieldError = new FieldError();
-		
-		fieldError.field = computeFieldName(constraintViolation);
-		fieldError.error = constraintViolation.getMessage();
-				
-		return fieldError;
+		return FieldError.of(
+			computeFieldName(constraintViolation),
+			constraintViolation.getMessage());
 		
 	}
+	
+	
 
 	private static String computeFieldName(ConstraintViolation<?> constraintViolation) {
 		
@@ -54,6 +54,15 @@ public class FieldError {
 		
 		return lastNode.value.getName();
 		
+	}
+
+	public static FieldError of(String field, String error) {
+		
+		FieldError fieldError = new FieldError();
+		fieldError.field = field;
+		fieldError.error = error;
+		
+		return fieldError;
 	}
 
 }

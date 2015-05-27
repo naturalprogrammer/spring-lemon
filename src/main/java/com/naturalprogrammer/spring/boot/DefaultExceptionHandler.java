@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.naturalprogrammer.spring.boot.validation.FieldError;
+import com.naturalprogrammer.spring.boot.validation.FormException;
 
 @ControllerAdvice
 public class DefaultExceptionHandler {
@@ -37,6 +38,19 @@ public class DefaultExceptionHandler {
 
     }
 
+	@RequestMapping(produces = "application/json")
+    @ExceptionHandler(FormException.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public @ResponseBody Map<String, Object> handleFormException(FormException ex) {
+    	
+		Collection<FieldError> errors = ex.getFieldErrors();
+		
+    	log.error("FormException: " + errors.toString());
+		return SaUtil.mapOf("exception", "FormException", "errors", errors);
+
+    }
+
+	
 	@RequestMapping(produces = "application/json")
     @ExceptionHandler({AccessDeniedException.class})
     @ResponseStatus(value = HttpStatus.FORBIDDEN)
