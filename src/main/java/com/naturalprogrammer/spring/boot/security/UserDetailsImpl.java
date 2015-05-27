@@ -40,7 +40,7 @@ public class UserDetailsImpl implements UserDetails {
 		for (Role role : saUser.getRoles())
 			authorities.add(new SimpleGrantedAuthority("ROLE_" + role.name()));
 
-		authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+		//authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
 
 		return authorities;
 		

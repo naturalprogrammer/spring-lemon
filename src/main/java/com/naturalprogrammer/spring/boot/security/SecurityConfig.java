@@ -58,8 +58,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	public SwitchUserFilter switchUserFilter() {
 		SwitchUserFilter filter = new SwitchUserFilter();
 		filter.setUserDetailsService(userDetailsService);
-		filter.setSwitchUserUrl("/j_spring_security_switch_user");
-		filter.setExitUserUrl("/j_spring_security_exit_user");
+		//filter.setSwitchUserUrl("/j_spring_security_switch_user");
+		//filter.setExitUserUrl("/j_spring_security_exit_user");
 		filter.setTargetUrl("/");
 		return filter;
 	}
@@ -114,7 +114,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.csrf().disable()
 			.addFilterAfter(switchUserFilter(), FilterSecurityInterceptor.class)
 			.authorizeRequests()
-				.antMatchers("/j_spring_security_switch_user*").hasRole("ADMIN")
+				.antMatchers("/login/impersonate*").hasRole("ADMIN")
+				.antMatchers("/logout/impersonate*").authenticated()
+				.antMatchers("/only-for-admin*").hasRole("ADMIN")
 				//.antMatchers("/secure").authenticated()
 				.antMatchers("/**").permitAll();                  
 	}
