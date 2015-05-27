@@ -66,7 +66,6 @@ public abstract class SaService<U extends SaUser, S extends SignupForm> {
     public void afterContextRefreshed(ContextRefreshedEvent event) {
     	
     	onStartup();
-    	String abc = SaUtil.getMessage("userNotFound");
     	
     }
     
