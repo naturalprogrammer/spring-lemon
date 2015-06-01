@@ -66,7 +66,7 @@ public class DefaultExceptionHandler {
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
     public @ResponseBody Map<String, Object> handleRequestException(Exception ex) {
     	
-        log.error("Internaql server error:", ex);
+        log.error("Internal server error:", ex);        
 		return SaUtil.mapOf("exception", "Exception", "message", ex.getMessage());
 
     }

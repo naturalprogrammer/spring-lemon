@@ -15,9 +15,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices;
 import org.springframework.security.web.authentication.switchuser.SwitchUserFilter;
+import org.springframework.security.web.csrf.CsrfFilter;
+import org.springframework.security.web.csrf.CsrfTokenRepository;
+import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 
 @Configuration
 @EnableWebSecurity
@@ -25,7 +30,8 @@ import org.springframework.security.web.authentication.switchuser.SwitchUserFilt
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	private static final String REMEMBER_ME_COOKIE = "rememberMe";
-	private static final String REMEMBER_ME_PARAMETER = "rememberMe";	
+	private static final String REMEMBER_ME_PARAMETER = "rememberMe";
+	//public static final String CSRF_TOKEN_HEADER = "X-XSRF-TOKEN";
 	
 	@Value("${rememberMe.privateKey}")
 	private String rememberMeKey;
@@ -104,14 +110,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				 * have this custom logoutSuccessHandler
 				 ***********************************************/
 				.logoutSuccessHandler(logoutSuccessHandler)
-				.invalidateHttpSession(true)
+				//.invalidateHttpSession(true)
 				.deleteCookies("JSESSIONID", REMEMBER_ME_COOKIE)
 				.and()
 			.rememberMe()
 				.key(rememberMeKey)
 				.rememberMeServices(rememberMeServices())
 				.and()
-			.csrf().disable()
+			//.csrf().disable()
+			//.csrf()
+				//.csrfTokenRepository(csrfTokenRepository()).and()
+			.addFilterAfter(new CsrfHeaderFilter(), CsrfFilter.class)
 			.addFilterAfter(switchUserFilter(), FilterSecurityInterceptor.class)
 			.authorizeRequests()
 				.antMatchers("/login/impersonate*").hasRole("ADMIN")
@@ -120,5 +129,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				//.antMatchers("/secure").authenticated()
 				.antMatchers("/**").permitAll();                  
 	}
-
+	
+	
+//	public 
+//	
+//	private CsrfTokenRepository csrfTokenRepository() {
+//		
+//		HttpSessionCsrfTokenRepository repository = new HttpSessionCsrfTokenRepository();
+//		repository.setHeaderName(CSRF_TOKEN_HEADER);
+//		return repository;
+//		  
+//	}
+//
 }

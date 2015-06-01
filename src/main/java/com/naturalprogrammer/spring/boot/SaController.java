@@ -19,6 +19,11 @@ public class SaController<U extends SaUser, S extends SignupForm> {
 	@Autowired
 	private SaService<U, S> saService;
 	
+	@RequestMapping("/ping")
+	public void ping() {
+		log.info("Received a ping");
+	}
+	
 	@RequestMapping("/context")
 	public ContextDto contextDto() {
 		log.info("userDto: " + SaUtil.getUserDto());
