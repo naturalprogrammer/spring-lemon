@@ -35,6 +35,7 @@ public class CsrfHeaderFilter extends OncePerRequestFilter {
 			if (cookie==null || token!=null && !token.equals(cookie.getValue())) {
 				cookie = new Cookie(XSRF_TOKEN_COOKIE_NAME, token);
 				cookie.setPath("/");
+				// cookie.setHttpOnly(true); client interceptor can't see the cookie is this is set
 				response.addCookie(cookie);
 			}
 		}

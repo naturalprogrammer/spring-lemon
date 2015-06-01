@@ -1,5 +1,6 @@
 package com.naturalprogrammer.spring.boot;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -24,7 +25,7 @@ import com.naturalprogrammer.spring.boot.mail.MailSender;
 import com.naturalprogrammer.spring.boot.security.UserDto;
 
 @MappedSuperclass
-public abstract class SaUser {
+public abstract class SaUser<ID extends Serializable> {
 	
 	public static final int EMAIL_MAX = 250;
 	public static final int NAME_MAX = 50;
@@ -41,7 +42,7 @@ public abstract class SaUser {
 	   
 	@Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
-	private long id;
+	private ID id;
 	
 	@Column(nullable = false, length = EMAIL_MAX)
 	private String email;
@@ -86,11 +87,11 @@ public abstract class SaUser {
 		this.roles = roles;
 	}
 
-	public long getId() {
+	public ID getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(ID id) {
 		this.id = id;
 	}
 
@@ -122,9 +123,9 @@ public abstract class SaUser {
 		return roles.contains(Role.ADMIN);
 	}
 
-	public UserDto getUserDto() {
+	public UserDto<ID> getUserDto() {
 		
-		UserDto userDto = new UserDto();
+		UserDto<ID> userDto = new UserDto<ID>();
 		userDto.setId(id);
 		userDto.setName(name);
 		userDto.setRoles(roles);
@@ -132,9 +133,9 @@ public abstract class SaUser {
 		return userDto;
 	}
 
-	public static SaUser of(SignupForm signupForm) {
+	public static <ID extends Serializable> SaUser<ID> of(SignupForm signupForm) {
 		 
-		final SaUser saUser = SaUtil.getBean(SaUser.class);
+		final SaUser<ID> saUser = SaUtil.getBean(SaUser.class);
 			
 		saUser.setEmail(signupForm.getEmail());
 		saUser.setName(signupForm.getName());

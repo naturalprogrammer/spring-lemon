@@ -1,5 +1,7 @@
 package com.naturalprogrammer.spring.boot;
 
+import java.io.Serializable;
+
 import javax.mail.MessagingException;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
@@ -30,7 +32,7 @@ import com.naturalprogrammer.spring.boot.validation.FormException;
 
 @Validated
 @Transactional(propagation=Propagation.SUPPORTS, readOnly=true)
-public abstract class SaService<U extends SaUser, S extends SignupForm> {
+public abstract class SaService<U extends SaUser<ID>, ID extends Serializable, S extends SignupForm> {
 
     private final Log log = LogFactory.getLog(getClass());
     
@@ -53,7 +55,7 @@ public abstract class SaService<U extends SaUser, S extends SignupForm> {
     private MailSender mailSender;
 
     @Autowired
-	private SaUserRepository<U> userRepository;
+	private SaUserRepository<U, ID> userRepository;
     
     
     /**
@@ -107,7 +109,7 @@ public abstract class SaService<U extends SaUser, S extends SignupForm> {
 	
 	@PreAuthorize("isAnonymous()")
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
-	public UserDto signup(@Valid S signupForm) {
+	public UserDto<ID> signup(@Valid S signupForm) {
 		
 		U user = createUser(signupForm);
 		userRepository.save(user);
@@ -149,7 +151,7 @@ public abstract class SaService<U extends SaUser, S extends SignupForm> {
 
 	public U fetchUser(@Valid @Email @NotNull String email) {
 		
-		SaUser loggedIn = SaUtil.getSessionUser();
+		SaUser<ID> loggedIn = SaUtil.getSessionUser();
 
 		U user = userRepository.findByEmail(email);
 		

@@ -1,5 +1,6 @@
 package com.naturalprogrammer.spring.boot;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -60,34 +61,34 @@ public class SaUtil {
 	    return map;
 	}
 	
-	public static UserDetailsImpl getPrincipal() {
+	public static <ID extends Serializable> UserDetailsImpl<ID> getPrincipal() {
 		
 	    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 	
 	    if (auth != null) {
 	      Object principal = auth.getPrincipal();
 	      if (principal instanceof UserDetailsImpl) {
-	        return (UserDetailsImpl) principal;
+	        return (UserDetailsImpl<ID>) principal;
 	      }
 	    }
 	    return null;	  
 	}
 	
-	public static SaUser getSessionUser() {
-	  UserDetailsImpl auth = getPrincipal();
+	public static <ID extends Serializable> SaUser<ID> getSessionUser() {
+	  UserDetailsImpl<ID> auth = getPrincipal();
 	  return auth == null ? null : auth.getUser(); 
 	}
 	
-	public static UserDto getUserDto() {
-		SaUser saUser = SaUtil.getSessionUser();
+	public static <ID extends Serializable> UserDto<ID> getUserDto() {
+		SaUser<ID> saUser = SaUtil.getSessionUser();
 		if (saUser == null)
 			return null;
 		return saUser.getUserDto();
 	}
 	
-    public static <U extends SaUser> void logInUser(U user) {
+    public static <ID extends Serializable, U extends SaUser<ID>> void logInUser(U user) {
     	
-        UserDetailsImpl userDetails = new UserDetailsImpl(user);
+        UserDetailsImpl<ID> userDetails = new UserDetailsImpl<ID>(user);
  
         Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);

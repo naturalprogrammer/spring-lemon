@@ -1,5 +1,6 @@
 package com.naturalprogrammer.spring.boot.security;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
 
@@ -10,24 +11,24 @@ import org.springframework.security.core.userdetails.UserDetails;
 import com.naturalprogrammer.spring.boot.SaUser;
 import com.naturalprogrammer.spring.boot.SaUser.Role;
 
-public class UserDetailsImpl implements UserDetails {
+public class UserDetailsImpl<ID extends Serializable> implements UserDetails {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -3862469610636495180L;
 
-	private SaUser saUser;
+	private SaUser<ID> saUser;
 	
-	public SaUser getUser() {
+	public SaUser<ID> getUser() {
 		return saUser;
 	}
 
-	public void setUser(SaUser saUser) {
+	public void setUser(SaUser<ID> saUser) {
 		this.saUser = saUser;
 	}
 
-	public UserDetailsImpl(SaUser saUser) {
+	public UserDetailsImpl(SaUser<ID> saUser) {
 		this.saUser = saUser;
 	}
 

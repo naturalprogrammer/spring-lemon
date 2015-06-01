@@ -1,5 +1,7 @@
 package com.naturalprogrammer.spring.boot.validation;
 
+import java.io.Serializable;
+
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
@@ -21,7 +23,7 @@ import com.naturalprogrammer.spring.boot.SaUserRepository;
 public class UniqueEmailValidator implements ConstraintValidator<UniqueEmail, String> {
 
 	@Autowired
-	private SaUserRepository<? extends SaUser> userRepository;
+	private SaUserRepository<? extends SaUser, ? extends Serializable> userRepository;
 	
 	@Override
 	public void initialize(UniqueEmail constraintAnnotation) {
