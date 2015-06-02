@@ -25,7 +25,9 @@ import com.naturalprogrammer.spring.boot.mail.MailSender;
 import com.naturalprogrammer.spring.boot.security.UserDto;
 
 @MappedSuperclass
-public abstract class SaUser<ID extends Serializable> {
+public abstract class BaseUser<U extends BaseUser<U,ID>, ID extends Serializable> extends VersionedEntity<U, ID> {
+	
+	private static final long serialVersionUID = 655067760361294864L;
 	
 	public static final int EMAIL_MAX = 250;
 	public static final int NAME_MAX = 50;
@@ -40,10 +42,6 @@ public abstract class SaUser<ID extends Serializable> {
 		UNVERIFIED, USER, BLOCKED, ADMIN
 	}
 	   
-	@Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-	private ID id;
-	
 	@Column(nullable = false, length = EMAIL_MAX)
 	private String email;
 	
@@ -87,14 +85,6 @@ public abstract class SaUser<ID extends Serializable> {
 		this.roles = roles;
 	}
 
-	public ID getId() {
-		return id;
-	}
-
-	public void setId(ID id) {
-		this.id = id;
-	}
-
 	public String getEmail() {
 		return email;
 	}
@@ -126,28 +116,28 @@ public abstract class SaUser<ID extends Serializable> {
 	public UserDto<ID> getUserDto() {
 		
 		UserDto<ID> userDto = new UserDto<ID>();
-		userDto.setId(id);
+		userDto.setId(getId());
 		userDto.setName(name);
 		userDto.setRoles(roles);
 		
 		return userDto;
 	}
 
-	public static <ID extends Serializable> SaUser<ID> of(SignupForm signupForm) {
+	public static <U extends BaseUser<U,ID>, ID extends Serializable> BaseUser<U, ID> of(SignupForm signupForm) {
 		 
-		final SaUser<ID> saUser = SaUtil.getBean(SaUser.class);
+		final BaseUser<U,ID> baseUser = SaUtil.getBean(BaseUser.class);
 			
-		saUser.setEmail(signupForm.getEmail());
-		saUser.setName(signupForm.getName());
-		saUser.setPassword(signupForm.getPassword());
-		saUser.getRoles().add(Role.UNVERIFIED);
+		baseUser.setEmail(signupForm.getEmail());
+		baseUser.setName(signupForm.getName());
+		baseUser.setPassword(signupForm.getPassword());
+		baseUser.getRoles().add(Role.UNVERIFIED);
 		
-		return saUser;
+		return baseUser;
 			
 	}
 	
 //	public boolean isEditable() {
-//		SaUser loggedIn = MyUtil.getSessionUser();
+//		BaseUser loggedIn = MyUtil.getSessionUser();
 //		if (loggedIn == null)
 //			return false;
 //		return loggedIn.isAdmin() ||   // ADMIN or

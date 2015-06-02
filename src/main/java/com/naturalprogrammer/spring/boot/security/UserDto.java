@@ -3,7 +3,7 @@ package com.naturalprogrammer.spring.boot.security;
 import java.io.Serializable;
 import java.util.Set;
 
-import com.naturalprogrammer.spring.boot.SaUser.Role;
+import com.naturalprogrammer.spring.boot.BaseUser.Role;
 
 public class UserDto<ID extends Serializable> {
 	

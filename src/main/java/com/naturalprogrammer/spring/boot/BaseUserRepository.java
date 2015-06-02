@@ -12,7 +12,7 @@ import org.springframework.data.repository.NoRepositoryBean;
  * @param <U>
  */
 @NoRepositoryBean
-public abstract interface SaUserRepository<U extends SaUser<ID>, ID extends Serializable> extends JpaRepository<U, ID> {
+public abstract interface BaseUserRepository<U extends BaseUser<U,ID>, ID extends Serializable> extends JpaRepository<U, ID> {
 	
 	U findByEmail(String email);
 

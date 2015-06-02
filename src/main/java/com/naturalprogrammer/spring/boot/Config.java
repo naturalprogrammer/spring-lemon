@@ -2,11 +2,11 @@ package com.naturalprogrammer.spring.boot;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.converter.FormHttpMessageConverter;
-import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.web.client.RestTemplate;
 
 @Configuration
+@EnableJpaAuditing
 public class Config {
 	
 	@Bean
@@ -15,5 +15,5 @@ public class Config {
 		return new RestTemplate();
 		
 	}
-
+	
 }

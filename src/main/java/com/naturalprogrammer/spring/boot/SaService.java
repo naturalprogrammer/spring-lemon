@@ -24,7 +24,7 @@ import org.springframework.transaction.support.TransactionSynchronizationAdapter
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.validation.annotation.Validated;
 
-import com.naturalprogrammer.spring.boot.SaUser.Role;
+import com.naturalprogrammer.spring.boot.BaseUser.Role;
 import com.naturalprogrammer.spring.boot.mail.MailSender;
 import com.naturalprogrammer.spring.boot.security.UserDto;
 import com.naturalprogrammer.spring.boot.validation.FieldError;
@@ -32,7 +32,7 @@ import com.naturalprogrammer.spring.boot.validation.FormException;
 
 @Validated
 @Transactional(propagation=Propagation.SUPPORTS, readOnly=true)
-public abstract class SaService<U extends SaUser<ID>, ID extends Serializable, S extends SignupForm> {
+public abstract class SaService<U extends BaseUser<U,ID>, ID extends Serializable, S extends SignupForm> {
 
     private final Log log = LogFactory.getLog(getClass());
     
@@ -55,7 +55,7 @@ public abstract class SaService<U extends SaUser<ID>, ID extends Serializable, S
     private MailSender mailSender;
 
     @Autowired
-	private SaUserRepository<U, ID> userRepository;
+	private BaseUserRepository<U, ID> userRepository;
     
     
     /**
@@ -88,7 +88,7 @@ public abstract class SaService<U extends SaUser<ID>, ID extends Serializable, S
 	 */
     protected U createAdminUser() {
 		
-		final U user = (U) SaUtil.getBean(SaUser.class);
+		final U user = (U) SaUtil.getBean(BaseUser.class);
 		
 		user.setEmail(adminEmail);
 		user.setName("Administrator");
@@ -107,7 +107,7 @@ public abstract class SaService<U extends SaUser<ID>, ID extends Serializable, S
 		return contextDto;		
 	}
 	
-	@PreAuthorize("isAnonymous()")
+	//@PreAuthorize("isAnonymous()")
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
 	public UserDto<ID> signup(@Valid S signupForm) {
 		
@@ -120,7 +120,7 @@ public abstract class SaService<U extends SaUser<ID>, ID extends Serializable, S
 	
 	protected U createUser(S signupForm) {
 		
-		final U user = (U) SaUtil.getBean(SaUser.class);
+		final U user = (U) SaUtil.getBean(BaseUser.class);
 		
 		user.setEmail(signupForm.getEmail());
 		user.setName(signupForm.getName());
@@ -151,7 +151,7 @@ public abstract class SaService<U extends SaUser<ID>, ID extends Serializable, S
 
 	public U fetchUser(@Valid @Email @NotNull String email) {
 		
-		SaUser<ID> loggedIn = SaUtil.getSessionUser();
+		BaseUser<U,ID> loggedIn = SaUtil.getSessionUser();
 
 		U user = userRepository.findByEmail(email);
 		

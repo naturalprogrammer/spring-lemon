@@ -10,16 +10,16 @@ import com.naturalprogrammer.spring.boot.validation.UniqueEmail;
 
 public class SignupForm {
 
-	@Size(min=SaUser.NAME_MIN, max=SaUser.NAME_MAX)
+	@Size(min=BaseUser.NAME_MIN, max=BaseUser.NAME_MAX)
 	private String name;
 	
 	@NotNull
-	@Size(min=1, max=SaUser.EMAIL_MAX)
+	@Size(min=1, max=BaseUser.EMAIL_MAX)
 	@Email
 	@UniqueEmail
 	private String email;
 	
-	@Size(min=SaUser.PASSWORD_MIN, max=SaUser.PASSWORD_MAX, message="Inappropriate length")
+	@Size(min=BaseUser.PASSWORD_MIN, max=BaseUser.PASSWORD_MAX, message="Inappropriate length")
 	private String password;
 	
 	@Captcha

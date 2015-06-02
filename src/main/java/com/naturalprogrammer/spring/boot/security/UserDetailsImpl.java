@@ -8,37 +8,35 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.naturalprogrammer.spring.boot.SaUser;
-import com.naturalprogrammer.spring.boot.SaUser.Role;
+import com.naturalprogrammer.spring.boot.BaseUser;
+import com.naturalprogrammer.spring.boot.BaseUser.Role;
 
-public class UserDetailsImpl<ID extends Serializable> implements UserDetails {
+public class UserDetailsImpl<U extends BaseUser<U,ID>, ID extends Serializable> implements UserDetails {
 
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = -3862469610636495180L;
 
-	private SaUser<ID> saUser;
+	private U user;
 	
-	public SaUser<ID> getUser() {
-		return saUser;
+	public U getUser() {
+		return user;
 	}
 
-	public void setUser(SaUser<ID> saUser) {
-		this.saUser = saUser;
+	public void setUser(U user) {
+		this.user = user;
 	}
 
-	public UserDetailsImpl(SaUser<ID> saUser) {
-		this.saUser = saUser;
+	public UserDetailsImpl(U user) {
+		this.user = user;
 	}
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		
 		Collection<GrantedAuthority> authorities = new HashSet<GrantedAuthority>(
-				saUser.getRoles().size() + 1);
+				user.getRoles().size() + 1);
 
-		for (Role role : saUser.getRoles())
+		for (Role role : user.getRoles())
 			authorities.add(new SimpleGrantedAuthority("ROLE_" + role.name()));
 
 		//authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
@@ -49,12 +47,12 @@ public class UserDetailsImpl<ID extends Serializable> implements UserDetails {
 
 	@Override
 	public String getPassword() {
-		return saUser.getPassword();
+		return user.getPassword();
 	}
 
 	@Override
 	public String getUsername() {
-		return saUser.getEmail();
+		return user.getEmail();
 	}
 
 	@Override

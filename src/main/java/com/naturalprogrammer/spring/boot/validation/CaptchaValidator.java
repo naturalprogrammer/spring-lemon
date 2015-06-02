@@ -22,8 +22,8 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.naturalprogrammer.spring.boot.SaUser;
-import com.naturalprogrammer.spring.boot.SaUserRepository;
+import com.naturalprogrammer.spring.boot.BaseUser;
+import com.naturalprogrammer.spring.boot.BaseUserRepository;
 import com.naturalprogrammer.spring.boot.SaUtil;
 
 /**

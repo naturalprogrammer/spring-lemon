@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.naturalprogrammer.spring.boot.security.UserDto;
 
-public class SaController<U extends SaUser<ID>, ID extends Serializable, S extends SignupForm> {
+public class SaController<U extends BaseUser<U,ID>, ID extends Serializable, S extends SignupForm> {
 
 	private Log log = LogFactory.getLog(getClass());
 

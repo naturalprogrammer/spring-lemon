@@ -61,34 +61,34 @@ public class SaUtil {
 	    return map;
 	}
 	
-	public static <ID extends Serializable> UserDetailsImpl<ID> getPrincipal() {
+	public static <U extends BaseUser<U,ID>, ID extends Serializable> UserDetailsImpl<U,ID> getPrincipal() {
 		
 	    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 	
 	    if (auth != null) {
 	      Object principal = auth.getPrincipal();
 	      if (principal instanceof UserDetailsImpl) {
-	        return (UserDetailsImpl<ID>) principal;
+	        return (UserDetailsImpl<U,ID>) principal;
 	      }
 	    }
 	    return null;	  
 	}
 	
-	public static <ID extends Serializable> SaUser<ID> getSessionUser() {
-	  UserDetailsImpl<ID> auth = getPrincipal();
+	public static <U extends BaseUser<U,ID>, ID extends Serializable> U getSessionUser() {
+	  UserDetailsImpl<U,ID> auth = getPrincipal();
 	  return auth == null ? null : auth.getUser(); 
 	}
 	
-	public static <ID extends Serializable> UserDto<ID> getUserDto() {
-		SaUser<ID> saUser = SaUtil.getSessionUser();
-		if (saUser == null)
+	public static <U extends BaseUser<U,ID>, ID extends Serializable> UserDto<ID> getUserDto() {
+		BaseUser<U,ID> baseUser = SaUtil.getSessionUser();
+		if (baseUser == null)
 			return null;
-		return saUser.getUserDto();
+		return baseUser.getUserDto();
 	}
 	
-    public static <ID extends Serializable, U extends SaUser<ID>> void logInUser(U user) {
+    public static <U extends BaseUser<U,ID>, ID extends Serializable> void logInUser(U user) {
     	
-        UserDetailsImpl<ID> userDetails = new UserDetailsImpl<ID>(user);
+        UserDetailsImpl<U,ID> userDetails = new UserDetailsImpl<U,ID>(user);
  
         Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
