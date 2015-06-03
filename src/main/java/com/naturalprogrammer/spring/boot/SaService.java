@@ -1,6 +1,7 @@
 package com.naturalprogrammer.spring.boot;
 
 import java.io.Serializable;
+import java.util.UUID;
 
 import javax.mail.MessagingException;
 import javax.validation.ConstraintViolationException;
@@ -107,7 +108,7 @@ public abstract class SaService<U extends BaseUser<U,ID>, ID extends Serializabl
 		return contextDto;		
 	}
 	
-	//@PreAuthorize("isAnonymous()")
+	@PreAuthorize("isAnonymous()")
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
 	public UserDto<ID> signup(@Valid S signupForm) {
 		
@@ -126,7 +127,7 @@ public abstract class SaService<U extends BaseUser<U,ID>, ID extends Serializabl
 		user.setName(signupForm.getName());
 		user.setPassword(passwordEncoder.encode(signupForm.getPassword()));
 		user.getRoles().add(Role.UNVERIFIED);
-		user.setVerificationCode(RandomStringUtils.randomAlphanumeric(16));
+		user.setVerificationCode(UUID.randomUUID().toString());
 		
 		return user;
 		
@@ -165,6 +166,19 @@ public abstract class SaService<U extends BaseUser<U,ID>, ID extends Serializabl
 				user.setEmail("Confidential");
 		
 		return user;
+	}
+
+	
+	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
+	public void verifyUser(String verificationCode) {
+		
+		U user = userRepository.findByVerificationCode(verificationCode);
+		if (user == null)
+			throw new BadRequestException("userNotFound");
+		user.setVerificationCode(null);
+		user.getRoles().remove(Role.UNVERIFIED);
+		userRepository.save(user);
+		
 	}
 
 }

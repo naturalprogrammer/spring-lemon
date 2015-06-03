@@ -1,6 +1,7 @@
 package com.naturalprogrammer.spring.boot;
 
 import java.io.Serializable;
+import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.NoRepositoryBean;
@@ -17,5 +18,7 @@ public abstract interface BaseUserRepository<U extends BaseUser<U,ID>, ID extend
 	U findByEmail(String email);
 
 	U findByForgotPasswordCode(String forgotPasswordCode);
+
+	U findByVerificationCode(String verificationCode);
 
 }

@@ -62,12 +62,22 @@ public class DefaultExceptionHandler {
     }
 
 	@RequestMapping(produces = "application/json")
+    @ExceptionHandler({BadRequestException.class})
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public @ResponseBody Map<String, Object> handleRequestException(BadRequestException ex) {
+    	
+        log.error("BadRequestException:", ex);        
+		return SaUtil.mapOf("exception", "BadRequestException", "message", ex.getMessage());
+
+    }
+
+	@RequestMapping(produces = "application/json")
     @ExceptionHandler({Exception.class})
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
     public @ResponseBody Map<String, Object> handleRequestException(Exception ex) {
     	
         log.error("Internal server error:", ex);        
-		return SaUtil.mapOf("exception", "Exception", "message", ex.getMessage());
+		return SaUtil.mapOf("exception", ex.getClass().getSimpleName(), "message", ex.getMessage());
 
     }
 	
