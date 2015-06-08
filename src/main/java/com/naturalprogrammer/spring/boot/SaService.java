@@ -4,15 +4,13 @@ import java.io.Serializable;
 import java.util.UUID;
 
 import javax.mail.MessagingException;
-import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 
-import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -28,8 +26,8 @@ import org.springframework.validation.annotation.Validated;
 import com.naturalprogrammer.spring.boot.BaseUser.Role;
 import com.naturalprogrammer.spring.boot.mail.MailSender;
 import com.naturalprogrammer.spring.boot.security.UserDto;
-import com.naturalprogrammer.spring.boot.validation.FieldError;
 import com.naturalprogrammer.spring.boot.validation.FormException;
+import com.naturalprogrammer.spring.boot.validation.Password;
 
 @Validated
 @Transactional(propagation=Propagation.SUPPORTS, readOnly=true)
@@ -150,7 +148,7 @@ public abstract class SaService<U extends BaseUser<U,ID>, ID extends Serializabl
 			
 	}
 
-	public U fetchUser(@Valid @Email @NotNull String email) {
+	public U fetchUser(@Valid @Email @NotBlank String email) {
 		
 		U loggedIn = SaUtil.getSessionUser();
 		U user = userRepository.findByEmail(email);
@@ -181,7 +179,7 @@ public abstract class SaService<U extends BaseUser<U,ID>, ID extends Serializabl
 	}
 
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
-	public void forgotPassword(@Valid @Email @NotNull String email) {
+	public void forgotPassword(@Valid @Email @NotBlank String email) {
 		
 		final U user = userRepository.findByEmail(email);
 
@@ -213,6 +211,20 @@ public abstract class SaService<U extends BaseUser<U,ID>, ID extends Serializabl
 				SaUtil.getMessage("forgotPasswordSubject"),
 				SaUtil.getMessage("forgotPasswordEmail", forgotPasswordLink));
 
+	}
+
+	
+	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
+	public void resetPassword(String forgotPasswordCode, @Valid @Password String newPassword) {
+		
+		U user = userRepository.findByForgotPasswordCode(forgotPasswordCode);
+		SaUtil.validate(user != null, "invalidLink");
+		
+		user.setPassword(passwordEncoder.encode(newPassword));
+		user.setForgotPasswordCode(null);
+		
+		userRepository.save(user);
+		
 	}
 
 

@@ -1,25 +1,31 @@
 package com.naturalprogrammer.spring.boot;
 
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotBlank;
 
 import com.naturalprogrammer.spring.boot.validation.Captcha;
+import com.naturalprogrammer.spring.boot.validation.Password;
 import com.naturalprogrammer.spring.boot.validation.UniqueEmail;
 
+/**
+ * See http://docs.jboss.org/hibernate/stable/validator/reference/en-US/html_single/#section-builtin-constraints
+ * 
+ * @author skpat_000
+ *
+ */
 public class SignupForm {
 
 	@Size(min=BaseUser.NAME_MIN, max=BaseUser.NAME_MAX)
 	private String name;
 	
-	@NotNull
-	@Size(min=1, max=BaseUser.EMAIL_MAX)
+	@Size(min=4, max=BaseUser.EMAIL_MAX)
 	@Email
 	@UniqueEmail
 	private String email;
 	
-	@Size(min=BaseUser.PASSWORD_MIN, max=BaseUser.PASSWORD_MAX, message="Inappropriate length")
+	@Password
 	private String password;
 	
 	@Captcha

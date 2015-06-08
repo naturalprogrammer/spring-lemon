@@ -72,6 +72,17 @@ public class SaController<U extends BaseUser<U,ID>, ID extends Serializable, S e
 		return saService.fetchUser(email);
 
 	}
+	
+	/**
+	 * Reset Password
+	 */
+	@RequestMapping(value="/users/{forgotPasswordCode}/reset-password", method=RequestMethod.POST)
+	public void resetPassword(@PathVariable("forgotPasswordCode") String forgotPasswordCode, @RequestParam("newPassword") String newPassword) {
+		
+		saService.resetPassword(forgotPasswordCode, newPassword);
+
+	}
+
 
 
 
