@@ -2,7 +2,6 @@ package com.naturalprogrammer.spring.boot;
 
 import java.io.Serializable;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +13,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
-import com.naturalprogrammer.spring.boot.security.UserDto;
 import com.naturalprogrammer.spring.boot.security.UserDetailsImpl;
+import com.naturalprogrammer.spring.boot.security.UserDto;
 
 @Component
 public class SaUtil {
@@ -80,10 +79,10 @@ public class SaUtil {
 	}
 	
 	public static <U extends BaseUser<U,ID>, ID extends Serializable> UserDto<ID> getUserDto() {
-		BaseUser<U,ID> baseUser = SaUtil.getSessionUser();
-		if (baseUser == null)
+		U user = SaUtil.getSessionUser();
+		if (user == null)
 			return null;
-		return baseUser.getUserDto();
+		return user.getUserDto();
 	}
 	
     public static <U extends BaseUser<U,ID>, ID extends Serializable> void logInUser(U user) {
@@ -93,6 +92,16 @@ public class SaUtil {
         Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
+
+	public static void validate(boolean valid, String messageKey, Object... args) {
+		if (!valid)
+			throw new BadRequestException(messageKey, args);
+	}
+
+	public static String hostUrl() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 
 }

@@ -1,13 +1,13 @@
 package com.naturalprogrammer.spring.boot;
 
 import java.io.Serializable;
-import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -55,10 +55,19 @@ public class SaController<U extends BaseUser<U,ID>, ID extends Serializable, S e
 
 	}
 
+
+	/**
+	 * Forgot Password
+	 */
+	@RequestMapping(value="/forgot-password", method=RequestMethod.POST)
+	public void forgotPassword(@RequestParam("email") String email) {
+		
+		saService.forgotPassword(email);
+
+	}
 	
 	@RequestMapping(value="/users/fetch-by-email")
-	public U fetchByEmail(@RequestParam("email") String email,
-            		   HttpServletRequest request) {
+	public U fetchByEmail(@RequestParam("email") String email) {
 		
 		return saService.fetchUser(email);
 

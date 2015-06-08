@@ -152,8 +152,7 @@ public abstract class SaService<U extends BaseUser<U,ID>, ID extends Serializabl
 
 	public U fetchUser(@Valid @Email @NotNull String email) {
 		
-		BaseUser<U,ID> loggedIn = SaUtil.getSessionUser();
-
+		U loggedIn = SaUtil.getSessionUser();
 		U user = userRepository.findByEmail(email);
 		
 		if (user == null) {
@@ -173,12 +172,48 @@ public abstract class SaService<U extends BaseUser<U,ID>, ID extends Serializabl
 	public void verifyUser(String verificationCode) {
 		
 		U user = userRepository.findByVerificationCode(verificationCode);
-		if (user == null)
-			throw new BadRequestException("userNotFound");
+		SaUtil.validate(user != null, "userNotFound");
+		
 		user.setVerificationCode(null);
 		user.getRoles().remove(Role.UNVERIFIED);
 		userRepository.save(user);
 		
 	}
+
+	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
+	public void forgotPassword(@Valid @Email @NotNull String email) {
+		
+		final U user = userRepository.findByEmail(email);
+
+		SaUtil.validate(user != null, "userNotFound");
+		
+		user.setForgotPasswordCode(UUID.randomUUID().toString());
+		userRepository.save(user);
+
+		TransactionSynchronizationManager.registerSynchronization(
+			    new TransactionSynchronizationAdapter() {
+			        @Override
+			        public void afterCommit() {
+			        	try {
+							mailForgotPasswordLink(user);
+						} catch (MessagingException e) {
+							log.error(ExceptionUtils.getStackTrace(e));
+						}
+			        }
+
+		    });				
+	}
+	
+	private void mailForgotPasswordLink(U user) throws MessagingException {
+		
+		String forgotPasswordLink = 
+				applicationUrl + "/reset-password/" +
+				user.getForgotPasswordCode();
+		mailSender.send(user.getEmail(),
+				SaUtil.getMessage("forgotPasswordSubject"),
+				SaUtil.getMessage("forgotPasswordEmail", forgotPasswordLink));
+
+	}
+
 
 }

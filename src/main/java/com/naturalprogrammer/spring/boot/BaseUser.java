@@ -33,8 +33,7 @@ public abstract class BaseUser<U extends BaseUser<U,ID>, ID extends Serializable
 	public static final int EMAIL_MAX = 250;
 	public static final int NAME_MAX = 50;
 	public static final String EMAIL_PATTERN = "[A-Za-z0-9._%-+]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}";
-	public static final int RANDOM_CODE_LENGTH = 16;
-	public static final int VERIFICATION_CODE_LENGTH = 36;
+	public static final int UUID_LENGTH = 36;
 	public static final int PASSWORD_MAX = 30;
 	public static final int PASSWORD_MIN = 6;
 	public static final int NAME_MIN = 1;
@@ -43,7 +42,7 @@ public abstract class BaseUser<U extends BaseUser<U,ID>, ID extends Serializable
 	public static enum Role {
 		UNVERIFIED, BLOCKED, ADMIN
 	}
-	   
+	
 	@Column(nullable = false, length = EMAIL_MAX)
 	private String email;
 	
@@ -54,10 +53,10 @@ public abstract class BaseUser<U extends BaseUser<U,ID>, ID extends Serializable
 	@Column(nullable = false)
 	private String password;
 	
-	@Column(length = VERIFICATION_CODE_LENGTH)
+	@Column(length = UUID_LENGTH)
 	private String verificationCode;
 	
-	@Column(length = RANDOM_CODE_LENGTH)
+	@Column(length = UUID_LENGTH)
 	private String forgotPasswordCode;
 
 	public String getVerificationCode() {
