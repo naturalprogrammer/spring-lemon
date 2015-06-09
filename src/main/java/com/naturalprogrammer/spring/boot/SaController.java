@@ -73,6 +73,14 @@ public class SaController<U extends BaseUser<U,ID>, ID extends Serializable, S e
 
 	}
 	
+	@RequestMapping(value="/users/{id}/fetch-by-id")
+	public U fetchById(@PathVariable("id") ID id) {
+		
+		return saService.fetchUserById(id);
+
+	}
+
+	
 	/**
 	 * Reset Password
 	 */

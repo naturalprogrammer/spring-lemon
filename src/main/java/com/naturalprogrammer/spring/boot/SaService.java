@@ -150,22 +150,46 @@ public abstract class SaService<U extends BaseUser<U,ID>, ID extends Serializabl
 
 	public U fetchUser(@Valid @Email @NotBlank String email) {
 		
-		U loggedIn = SaUtil.getSessionUser();
 		U user = userRepository.findByEmail(email);
 		
 		if (user == null) {
 			throw new FormException("email", "userNotFound");
 		}
 
-		user.setPassword(null);
-		
-		if (loggedIn == null ||	loggedIn.getId() != user.getId() && !loggedIn.isAdmin())
-				user.setEmail("Confidential");
+		decorateUser(user);
 		
 		return user;
 	}
 
 	
+	public U fetchUserById(ID id) {
+		
+		U user = userRepository.findOne(id);
+		
+		SaUtil.validate(user != null, "userNotFound");
+		
+		decorateUser(user);
+		
+		return user;
+	}
+
+
+	
+	private void decorateUser(U user) {
+		
+		U loggedIn = SaUtil.getSessionUser();
+
+		user.setPassword(null);
+		
+		if (loggedIn == null // nobody is logged in
+		  || !user.equals(loggedIn) // loggedIn user is not this user. We can use "equals" as User inherits from AbstractPersisteable
+		  && !loggedIn.isAdmin()) // not admin
+			user.setEmail("Confidential");
+		
+		////// resume from here. can isAdmin be also brought to decorate?
+		
+	}
+
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
 	public void verifyUser(String verificationCode) {
 		
