@@ -13,6 +13,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.Transient;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.logging.Log;
@@ -44,21 +45,24 @@ public abstract class BaseUser<U extends BaseUser<U,ID>, ID extends Serializable
 	}
 	
 	@Column(nullable = false, length = EMAIL_MAX)
-	private String email;
+	protected String email;
 	
 	@Column(nullable = false, length = NAME_MAX)
-	private String name;
+	protected String name;
 	
 	// no length because it will be encrypted
 	@Column(nullable = false)
-	private String password;
+	protected String password;
 	
 	@Column(length = UUID_LENGTH)
-	private String verificationCode;
+	protected String verificationCode;
 	
 	@Column(length = UUID_LENGTH)
-	private String forgotPasswordCode;
-
+	protected String forgotPasswordCode;
+	
+	@Transient
+	transient protected boolean editable;
+	
 	public String getVerificationCode() {
 		return verificationCode;
 	}
@@ -110,6 +114,14 @@ public abstract class BaseUser<U extends BaseUser<U,ID>, ID extends Serializable
 		this.password = password;
 	}
 
+	public boolean isEditable() {
+		return editable;
+	}
+
+	public void setEditable(boolean editable) {
+		this.editable = editable;
+	}
+	
 	public boolean isAdmin() {
 		return roles.contains(Role.ADMIN);
 	}

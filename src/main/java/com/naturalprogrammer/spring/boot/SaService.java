@@ -180,13 +180,11 @@ public abstract class SaService<U extends BaseUser<U,ID>, ID extends Serializabl
 		U loggedIn = SaUtil.getSessionUser();
 
 		user.setPassword(null);
-		
-		if (loggedIn == null // nobody is logged in
-		  || !user.equals(loggedIn) // loggedIn user is not this user. We can use "equals" as User inherits from AbstractPersisteable
-		  && !loggedIn.isAdmin()) // not admin
+
+		user.setEditable(loggedIn != null && (loggedIn.isAdmin() || loggedIn.equals(user)));
+
+		if (!user.isEditable())
 			user.setEmail("Confidential");
-		
-		////// resume from here. can isAdmin be also brought to decorate?
 		
 	}
 
