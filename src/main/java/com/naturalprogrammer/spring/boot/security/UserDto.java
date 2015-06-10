@@ -34,5 +34,11 @@ public class UserDto<ID extends Serializable> {
 	public void setRoles(Set<Role> roles) {
 		this.roles = roles;
 	}
+	
+	@Override
+	public String toString() {
+		return "UserDto [id=" + id + ", name=" + name + ", roles=" + roles
+				+ "]";
+	}
 
 }

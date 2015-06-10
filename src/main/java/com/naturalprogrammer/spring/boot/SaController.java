@@ -30,7 +30,7 @@ public class SaController<U extends BaseUser<U,ID>, ID extends Serializable, S e
 	
 	@RequestMapping("/context")
 	public ContextDto contextDto() {
-		log.info("userDto: " + SaUtil.getUserDto());
+		log.info("Getting context. Logged in user: " + SaUtil.getUserDto());
 		return saService.getContext();
 	}
 	

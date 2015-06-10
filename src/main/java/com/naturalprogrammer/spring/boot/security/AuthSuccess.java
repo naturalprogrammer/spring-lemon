@@ -31,7 +31,7 @@ public class AuthSuccess extends SimpleUrlAuthenticationSuccessHandler {
     	response.setStatus(HttpServletResponse.SC_OK);
     	response.getOutputStream().print(objectMapper.writeValueAsString(SaUtil.getSessionUser().getUserDto()));
         clearAuthenticationAttributes(request);
-        log.info("userDto: " + SaUtil.getSessionUser().getUserDto());
+        log.info("AuthenticationSuccess: " + SaUtil.getSessionUser().getUserDto());
         
     }
 }

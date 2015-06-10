@@ -13,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -24,6 +25,8 @@ import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 
+import com.naturalprogrammer.spring.boot.SaUtil;
+
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -32,6 +35,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	private static final String REMEMBER_ME_COOKIE = "rememberMe";
 	private static final String REMEMBER_ME_PARAMETER = "rememberMe";
 	//public static final String CSRF_TOKEN_HEADER = "X-XSRF-TOKEN";
+	
+	@Value(SaUtil.APPLICATION_URL)
+	private String applicationUrl;
 	
 	@Value("${rememberMe.privateKey}")
 	private String rememberMeKey;
@@ -46,6 +52,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	private LogoutSuccessHandler logoutSuccessHandler;
 	
     @Bean
+    public AuthenticationFailureHandler authenticationFailureHandler() {
+    	return new SimpleUrlAuthenticationFailureHandler();
+    }
+    
+	@Bean
     public PasswordEncoder passwordEncoder() {
       return new BCryptPasswordEncoder();
     }
@@ -64,9 +75,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	public SwitchUserFilter switchUserFilter() {
 		SwitchUserFilter filter = new SwitchUserFilter();
 		filter.setUserDetailsService(userDetailsService);
+		filter.setSuccessHandler(authSuccess);
+		filter.setFailureHandler(authenticationFailureHandler());
 		//filter.setSwitchUserUrl("/j_spring_security_switch_user");
 		//filter.setExitUserUrl("/j_spring_security_exit_user");
-		filter.setTargetUrl("/");
+		//filter.setTargetUrl(applicationUrl);
 		return filter;
 	}
 	
@@ -101,7 +114,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				 * 2015-05-06 13:56:26.908 DEBUG 10184 --- [nio-8080-exec-1] o.s.b.a.e.mvc.EndpointHandlerMapping     : Did not find handler method for [/error]
 				 * 2015-05-06 13:56:45.007 DEBUG 10184 --- [nio-8080-exec-3] o.s.b.a.e.mvc.EndpointHandlerMapping     : Looking up handler method for path /error2
 				 *******************************************/
-	        	.failureHandler(new SimpleUrlAuthenticationFailureHandler())
+	        	.failureHandler(authenticationFailureHandler())
 	        	.and()
 			.logout()
 			
