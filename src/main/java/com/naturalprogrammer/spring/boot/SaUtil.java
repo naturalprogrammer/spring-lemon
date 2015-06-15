@@ -60,22 +60,21 @@ public class SaUtil {
 	    return map;
 	}
 	
-	public static <U extends BaseUser<U,ID>, ID extends Serializable> UserDetailsImpl<U,ID> getPrincipal() {
+	public static <U extends BaseUser<U,ID>, ID extends Serializable> U getUser(Authentication auth) {
 		
-	    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-	
 	    if (auth != null) {
 	      Object principal = auth.getPrincipal();
 	      if (principal instanceof UserDetailsImpl) {
-	        return (UserDetailsImpl<U,ID>) principal;
+	        return ((UserDetailsImpl<U,ID>) principal).getUser();
 	      }
 	    }
 	    return null;	  
 	}
 	
+
 	public static <U extends BaseUser<U,ID>, ID extends Serializable> U getSessionUser() {
-	  UserDetailsImpl<U,ID> auth = getPrincipal();
-	  return auth == null ? null : auth.getUser(); 
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		return getUser(auth);
 	}
 	
 	public static <U extends BaseUser<U,ID>, ID extends Serializable> UserDto<ID> getUserDto() {

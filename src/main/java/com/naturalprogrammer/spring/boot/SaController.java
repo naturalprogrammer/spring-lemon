@@ -92,6 +92,15 @@ public class SaController<U extends BaseUser<U,ID>, ID extends Serializable, S e
 	}
 
 
+	/**
+	 * Update
+	 */
+	@RequestMapping(value="/users/{id}/update", method=RequestMethod.POST)
+	public UserDto<ID> signup(@PathVariable("id") U user, @RequestBody U updatedUser) {
+		
+		return saService.updateUser(user, updatedUser);
+
+	}
 
 
 }

@@ -108,7 +108,7 @@ public abstract class SaService<U extends BaseUser<U,ID>, ID extends Serializabl
 	
 	@PreAuthorize("isAnonymous()")
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
-	public UserDto<ID> signup(@Valid S signupForm) {
+	public UserDto<ID> signup(@Validated S signupForm) {
 		
 		U user = createUser(signupForm);
 		userRepository.save(user);
@@ -181,7 +181,10 @@ public abstract class SaService<U extends BaseUser<U,ID>, ID extends Serializabl
 
 		user.setPassword(null);
 
-		user.setEditable(loggedIn != null && (loggedIn.isAdmin() || loggedIn.equals(user)));
+		if (loggedIn != null) {
+			user.setEditable(loggedIn.isAdmin() || loggedIn.equals(user)); // admin or self
+			user.setRolesEditable(loggedIn.isAdmin() && !loggedIn.equals(user)); // another admin
+		}
 
 		if (!user.isEditable())
 			user.setEmail("Confidential");
@@ -249,5 +252,16 @@ public abstract class SaService<U extends BaseUser<U,ID>, ID extends Serializabl
 		
 	}
 
+	@PreAuthorize("hasPermission(#user, 'update')")
+	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
+	public UserDto<ID> updateUser(U user, @Validated(BaseUser.UpdateValidation.class) U updatedUser) {
+		
+		SaUtil.validate(user != null, "userNotFound");
+		user.setName(updatedUser.getName());
+		user.setVersion(updatedUser.getVersion());
+		userRepository.save(user);
+		return user.getUserDto();
+		
+	}
 
 }

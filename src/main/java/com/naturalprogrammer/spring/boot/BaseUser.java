@@ -14,10 +14,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
+import javax.validation.constraints.Size;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.support.TransactionSynchronizationAdapter;
@@ -44,9 +47,15 @@ public abstract class BaseUser<U extends BaseUser<U,ID>, ID extends Serializable
 		UNVERIFIED, BLOCKED, ADMIN
 	}
 	
+	public interface SignUpValidation {}
+	public interface UpdateValidation {}
+	
+	@Size(min=4, max=BaseUser.EMAIL_MAX, groups = {SignUpValidation.class})
+	@Email(groups = {SignUpValidation.class})
 	@Column(nullable = false, length = EMAIL_MAX)
 	protected String email;
 	
+	@Size(min=NAME_MIN, max=NAME_MAX, groups = {UpdateValidation.class})
 	@Column(nullable = false, length = NAME_MAX)
 	protected String name;
 	
@@ -61,7 +70,10 @@ public abstract class BaseUser<U extends BaseUser<U,ID>, ID extends Serializable
 	protected String forgotPasswordCode;
 	
 	@Transient
-	transient protected boolean editable;
+	transient protected boolean editable = false;
+	
+	@Transient
+	transient protected boolean rolesEditable = false;	
 	
 	public String getVerificationCode() {
 		return verificationCode;
@@ -122,6 +134,22 @@ public abstract class BaseUser<U extends BaseUser<U,ID>, ID extends Serializable
 		this.editable = editable;
 	}
 	
+	public boolean isRolesEditable() {
+		return rolesEditable;
+	}
+
+	public void setRolesEditable(boolean rolesEditable) {
+		this.rolesEditable = rolesEditable;
+	}
+
+	public boolean isUnverified() {
+		return roles.contains(Role.UNVERIFIED);
+	}
+
+	public boolean isBlocked() {
+		return roles.contains(Role.BLOCKED);
+	}
+
 	public boolean isAdmin() {
 		return roles.contains(Role.ADMIN);
 	}
@@ -148,6 +176,19 @@ public abstract class BaseUser<U extends BaseUser<U,ID>, ID extends Serializable
 		return baseUser;
 			
 	}
+	
+	public boolean hasPermission(U loggedInUser, String permission) {
+		
+		if (permission.equals("update")) {
+			
+			if (loggedInUser == null)
+				return false;
+			
+			return this.equals(loggedInUser) || loggedInUser.isAdmin();
+		}
+		return false;
+	}
+
 	
 //	public boolean isEditable() {
 //		BaseUser loggedIn = MyUtil.getSessionUser();
