@@ -72,13 +72,13 @@ public class SaUtil {
 	}
 	
 
-	public static <U extends BaseUser<U,ID>, ID extends Serializable> U getSessionUser() {
+	public static <U extends BaseUser<U,ID>, ID extends Serializable> U getLoggedInUser() {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		return getUser(auth);
 	}
 	
 	public static <U extends BaseUser<U,ID>, ID extends Serializable> UserDto<ID> getUserDto() {
-		U user = SaUtil.getSessionUser();
+		U user = SaUtil.getLoggedInUser();
 		if (user == null)
 			return null;
 		return user.getUserDto();

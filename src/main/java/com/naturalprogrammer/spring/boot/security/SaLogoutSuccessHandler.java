@@ -26,7 +26,7 @@ public class SaLogoutSuccessHandler implements LogoutSuccessHandler {
 			throws IOException, ServletException {
 
     	response.setStatus(HttpServletResponse.SC_OK);
-    	response.getOutputStream().print(objectMapper.writeValueAsString(SaUtil.getSessionUser()));
+    	response.getOutputStream().print(objectMapper.writeValueAsString(SaUtil.getLoggedInUser()));
 		
 	}
 

@@ -55,7 +55,7 @@ public abstract class BaseUser<U extends BaseUser<U,ID>, ID extends Serializable
 	@Column(nullable = false, length = EMAIL_MAX)
 	protected String email;
 	
-	@Size(min=NAME_MIN, max=NAME_MAX, groups = {UpdateValidation.class})
+	@Size(min=NAME_MIN, max=NAME_MAX, groups = {SignUpValidation.class, UpdateValidation.class})
 	@Column(nullable = false, length = NAME_MAX)
 	protected String name;
 	
@@ -69,6 +69,15 @@ public abstract class BaseUser<U extends BaseUser<U,ID>, ID extends Serializable
 	@Column(length = UUID_LENGTH)
 	protected String forgotPasswordCode;
 	
+	@Transient
+	transient protected boolean unverified = true;
+
+	@Transient
+	transient protected boolean blocked = false;
+
+	@Transient
+	transient protected boolean admin = false;
+
 	@Transient
 	transient protected boolean editable = false;
 	
@@ -126,6 +135,30 @@ public abstract class BaseUser<U extends BaseUser<U,ID>, ID extends Serializable
 		this.password = password;
 	}
 
+	public boolean isUnverified() {
+		return unverified;
+	}
+
+	public void setUnverified(boolean unverified) {
+		this.unverified = unverified;
+	}
+
+	public boolean isBlocked() {
+		return blocked;
+	}
+
+	public void setBlocked(boolean blocked) {
+		this.blocked = blocked;
+	}
+
+	public boolean isAdmin() {
+		return admin;
+	}
+
+	public void setAdmin(boolean admin) {
+		this.admin = admin;
+	}
+
 	public boolean isEditable() {
 		return editable;
 	}
@@ -140,18 +173,6 @@ public abstract class BaseUser<U extends BaseUser<U,ID>, ID extends Serializable
 
 	public void setRolesEditable(boolean rolesEditable) {
 		this.rolesEditable = rolesEditable;
-	}
-
-	public boolean isUnverified() {
-		return roles.contains(Role.UNVERIFIED);
-	}
-
-	public boolean isBlocked() {
-		return roles.contains(Role.BLOCKED);
-	}
-
-	public boolean isAdmin() {
-		return roles.contains(Role.ADMIN);
 	}
 
 	public UserDto<ID> getUserDto() {
@@ -177,25 +198,46 @@ public abstract class BaseUser<U extends BaseUser<U,ID>, ID extends Serializable
 			
 	}
 	
-	public boolean hasPermission(U loggedInUser, String permission) {
+	public U decorate() {
+		return decorate(SaUtil.getLoggedInUser());
+	}
+	
+	public U decorate(U loggedIn) {
 		
-		if (permission.equals("update")) {
+		unverified = roles.contains(Role.UNVERIFIED);
+		blocked = roles.contains(Role.BLOCKED);
+		admin = roles.contains(Role.ADMIN);
+		
+		editable = false;
+		rolesEditable = false;
+		
+		if (loggedIn != null) {
 			
-			if (loggedInUser == null)
-				return false;
+			boolean adminLoggedIn = loggedIn.getRoles().contains(Role.ADMIN);
 			
-			return this.equals(loggedInUser) || loggedInUser.isAdmin();
+			editable = adminLoggedIn || equals(loggedIn); // admin or self
+			rolesEditable = adminLoggedIn && !equals(loggedIn); // another admin
 		}
-		return false;
+		
+		return (U) this;
+		
 	}
 
-	
-//	public boolean isEditable() {
-//		BaseUser loggedIn = MyUtil.getSessionUser();
-//		if (loggedIn == null)
-//			return false;
-//		return loggedIn.isAdmin() ||   // ADMIN or
-//			   loggedIn.getId() == id; // self can edit
-//	}
+	public void hideConfidentialFields() {
+		password = null;
+		if (!editable)
+			email = "Confidential";
+	}
+
+
+	public boolean hasPermission(U loggedInUser, String permission) {
+		
+		decorate(loggedInUser);
+		
+		if (permission.equals("edit"))
+			return editable;
+
+		return false;
+	}
 
 }

@@ -8,6 +8,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -74,9 +75,9 @@ public class SaController<U extends BaseUser<U,ID>, ID extends Serializable, S e
 	}
 	
 	@RequestMapping(value="/users/{id}/fetch-by-id")
-	public U fetchById(@PathVariable("id") ID id) {
+	public U fetchById(@PathVariable("id") U user) {
 		
-		return saService.fetchUserById(id);
+		return saService.fetchUser(user);
 
 	}
 

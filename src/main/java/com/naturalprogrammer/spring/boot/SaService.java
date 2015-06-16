@@ -1,6 +1,7 @@
 package com.naturalprogrammer.spring.boot;
 
 import java.io.Serializable;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.mail.MessagingException;
@@ -152,45 +153,24 @@ public abstract class SaService<U extends BaseUser<U,ID>, ID extends Serializabl
 		
 		U user = userRepository.findByEmail(email);
 		
-		if (user == null) {
+		if (user == null)
 			throw new FormException("email", "userNotFound");
-		}
 
-		decorateUser(user);
-		
+		user.decorate().hideConfidentialFields();
+
 		return user;
 	}
 
 	
-	public U fetchUserById(ID id) {
-		
-		U user = userRepository.findOne(id);
+	public U fetchUser(U user) {
 		
 		SaUtil.validate(user != null, "userNotFound");
-		
-		decorateUser(user);
+
+		user.decorate().hideConfidentialFields();
 		
 		return user;
 	}
-
-
 	
-	private void decorateUser(U user) {
-		
-		U loggedIn = SaUtil.getSessionUser();
-
-		user.setPassword(null);
-
-		if (loggedIn != null) {
-			user.setEditable(loggedIn.isAdmin() || loggedIn.equals(user)); // admin or self
-			user.setRolesEditable(loggedIn.isAdmin() && !loggedIn.equals(user)); // another admin
-		}
-
-		if (!user.isEditable())
-			user.setEmail("Confidential");
-		
-	}
-
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
 	public void verifyUser(String verificationCode) {
 		
@@ -252,12 +232,33 @@ public abstract class SaService<U extends BaseUser<U,ID>, ID extends Serializabl
 		
 	}
 
-	@PreAuthorize("hasPermission(#user, 'update')")
+	@PreAuthorize("hasPermission(#user, 'edit')")
+	@Validated(BaseUser.UpdateValidation.class)
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
-	public UserDto<ID> updateUser(U user, @Validated(BaseUser.UpdateValidation.class) U updatedUser) {
+	public UserDto<ID> updateUser(U user, @Valid U updatedUser) {
 		
 		SaUtil.validate(user != null, "userNotFound");
 		user.setName(updatedUser.getName());
+		
+		if (user.isRolesEditable()) {
+			
+			Set<Role> roles = user.getRoles();
+			
+			if (updatedUser.isUnverified())
+				roles.add(Role.UNVERIFIED);
+			else
+				roles.remove(Role.UNVERIFIED);
+			
+			if (updatedUser.isAdmin())
+				roles.add(Role.ADMIN);
+			else
+				roles.remove(Role.ADMIN);
+			
+			if (updatedUser.isBlocked())
+				roles.add(Role.BLOCKED);
+			else
+				roles.remove(Role.BLOCKED);
+		}
 		user.setVersion(updatedUser.getVersion());
 		userRepository.save(user);
 		return user.getUserDto();

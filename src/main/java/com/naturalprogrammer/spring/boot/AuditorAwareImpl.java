@@ -10,7 +10,7 @@ public class AuditorAwareImpl<U extends BaseUser<U,ID>, ID extends Serializable>
 
 	public U getCurrentAuditor() {
 
-		return SaUtil.getSessionUser();
+		return SaUtil.getLoggedInUser();
 		
 	}
 		
