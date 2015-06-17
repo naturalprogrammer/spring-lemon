@@ -25,7 +25,7 @@ import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 
-import com.naturalprogrammer.spring.boot.SaUtil;
+import com.naturalprogrammer.spring.boot.util.SaUtil;
 
 @Configuration
 @EnableWebSecurity

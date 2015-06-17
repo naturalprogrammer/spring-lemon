@@ -1,9 +1,11 @@
-package com.naturalprogrammer.spring.boot;
+package com.naturalprogrammer.spring.boot.domain;
 
 import java.io.Serializable;
 
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.stereotype.Component;
+
+import com.naturalprogrammer.spring.boot.util.SaUtil;
 
 @Component
 public class AuditorAwareImpl<U extends BaseUser<U,ID>, ID extends Serializable> implements AuditorAware<U> {

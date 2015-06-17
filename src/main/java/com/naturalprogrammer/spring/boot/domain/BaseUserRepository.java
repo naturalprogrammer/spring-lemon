@@ -1,4 +1,4 @@
-package com.naturalprogrammer.spring.boot;
+package com.naturalprogrammer.spring.boot.domain;
 
 import java.io.Serializable;
 import java.util.UUID;

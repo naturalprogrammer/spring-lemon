@@ -1,4 +1,4 @@
-package com.naturalprogrammer.spring.boot;
+package com.naturalprogrammer.spring.boot.util;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -13,8 +13,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
+import com.naturalprogrammer.spring.boot.domain.BaseUser;
+import com.naturalprogrammer.spring.boot.domain.UserDto;
+import com.naturalprogrammer.spring.boot.exceptions.BadRequestException;
 import com.naturalprogrammer.spring.boot.security.UserDetailsImpl;
-import com.naturalprogrammer.spring.boot.security.UserDto;
 
 @Component
 public class SaUtil {

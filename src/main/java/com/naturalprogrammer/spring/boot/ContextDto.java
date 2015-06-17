@@ -1,6 +1,6 @@
 package com.naturalprogrammer.spring.boot;
 
-import com.naturalprogrammer.spring.boot.security.UserDto;
+import com.naturalprogrammer.spring.boot.domain.UserDto;
 
 public class ContextDto {
 

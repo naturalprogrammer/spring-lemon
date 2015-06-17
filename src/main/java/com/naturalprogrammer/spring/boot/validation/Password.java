@@ -15,7 +15,7 @@ import javax.validation.Constraint;
 import javax.validation.Payload;
 import javax.validation.constraints.Size;
 
-import com.naturalprogrammer.spring.boot.BaseUser;
+import com.naturalprogrammer.spring.boot.domain.BaseUser;
 
 /**
  * See http://docs.jboss.org/hibernate/stable/validator/reference/en-US/html_single/#example-composed-constraint

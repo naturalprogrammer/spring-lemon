@@ -17,7 +17,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 import org.springframework.stereotype.Component;
 
-import com.naturalprogrammer.spring.boot.SaUtil;
+import com.naturalprogrammer.spring.boot.util.SaUtil;
 
 /**
  * https://spring.io/guides/gs/rest-service-cors/

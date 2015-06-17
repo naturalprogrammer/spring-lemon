@@ -1,4 +1,6 @@
-package com.naturalprogrammer.spring.boot;
+package com.naturalprogrammer.spring.boot.exceptions;
+
+import com.naturalprogrammer.spring.boot.util.SaUtil;
 
 
 public class BadRequestException extends RuntimeException {

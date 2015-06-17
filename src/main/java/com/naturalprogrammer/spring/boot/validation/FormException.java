@@ -3,7 +3,7 @@ package com.naturalprogrammer.spring.boot.validation;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import com.naturalprogrammer.spring.boot.SaUtil;
+import com.naturalprogrammer.spring.boot.util.SaUtil;
 
 public class FormException extends RuntimeException {
 

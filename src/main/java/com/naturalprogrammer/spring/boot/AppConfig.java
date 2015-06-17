@@ -7,7 +7,7 @@ import org.springframework.web.client.RestTemplate;
 
 @Configuration
 @EnableJpaAuditing
-public class Config {
+public class AppConfig {
 	
 	@Bean
 	public RestTemplate restTemplate() {

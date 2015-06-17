@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 import javax.validation.ConstraintViolation;
 import javax.validation.Path.Node;
 
-import com.naturalprogrammer.spring.boot.Ref;
+import com.naturalprogrammer.spring.boot.util.Ref;
 
 public class FieldError {
 	

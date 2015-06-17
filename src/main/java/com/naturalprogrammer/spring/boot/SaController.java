@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.naturalprogrammer.spring.boot.security.UserDto;
+import com.naturalprogrammer.spring.boot.domain.BaseUser;
+import com.naturalprogrammer.spring.boot.domain.UserDto;
+import com.naturalprogrammer.spring.boot.util.SaUtil;
 
 public class SaController<U extends BaseUser<U,ID>, ID extends Serializable, S extends SignupForm> {
 

@@ -5,6 +5,7 @@ import javax.validation.constraints.Size;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
 
+import com.naturalprogrammer.spring.boot.domain.BaseUser;
 import com.naturalprogrammer.spring.boot.validation.Captcha;
 import com.naturalprogrammer.spring.boot.validation.Password;
 import com.naturalprogrammer.spring.boot.validation.UniqueEmail;

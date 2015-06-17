@@ -8,8 +8,8 @@ import javax.validation.ConstraintValidatorContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.naturalprogrammer.spring.boot.BaseUser;
-import com.naturalprogrammer.spring.boot.BaseUserRepository;
+import com.naturalprogrammer.spring.boot.domain.BaseUser;
+import com.naturalprogrammer.spring.boot.domain.BaseUserRepository;
 
 /**
  * Reference

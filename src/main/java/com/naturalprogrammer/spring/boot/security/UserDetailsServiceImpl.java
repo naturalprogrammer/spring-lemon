@@ -8,8 +8,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.naturalprogrammer.spring.boot.BaseUser;
-import com.naturalprogrammer.spring.boot.BaseUserRepository;
+import com.naturalprogrammer.spring.boot.domain.BaseUser;
+import com.naturalprogrammer.spring.boot.domain.BaseUserRepository;
 
 @Service
 class UserDetailsServiceImpl<U extends BaseUser<U,ID>, ID extends Serializable> implements UserDetailsService {

@@ -1,4 +1,4 @@
-package com.naturalprogrammer.spring.boot;
+package com.naturalprogrammer.spring.boot.domain;
 
 import java.io.Serializable;
 
@@ -10,8 +10,7 @@ import org.springframework.data.jpa.domain.AbstractAuditable;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @MappedSuperclass
-@JsonIgnoreProperties({ "createdBy", "lastModifiedBy" })
-public abstract class VersionedEntity<U extends BaseUser<U,ID>, ID extends Serializable> extends AbstractAuditable<U, ID> {
+public abstract class VersionedEntity<U extends BaseUser<U,ID>, ID extends Serializable> extends SaEntity<U, ID> {
 
 	private static final long serialVersionUID = 4310555782328370192L;
 	
@@ -26,9 +25,4 @@ public abstract class VersionedEntity<U extends BaseUser<U,ID>, ID extends Seria
 		this.version = version;
 	}
 
-	public boolean hasPermission(U loggedInUser, String permission) {
-		// override this in subclasses
-		return false;
-	}
-	
 }

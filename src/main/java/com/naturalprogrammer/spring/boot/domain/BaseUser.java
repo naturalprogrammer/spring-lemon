@@ -1,4 +1,4 @@
-package com.naturalprogrammer.spring.boot;
+package com.naturalprogrammer.spring.boot.domain;
 
 import java.io.Serializable;
 import java.util.HashSet;
@@ -26,8 +26,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.support.TransactionSynchronizationAdapter;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
+import com.naturalprogrammer.spring.boot.SignupForm;
 import com.naturalprogrammer.spring.boot.mail.MailSender;
-import com.naturalprogrammer.spring.boot.security.UserDto;
+import com.naturalprogrammer.spring.boot.util.SaUtil;
 
 @MappedSuperclass
 public abstract class BaseUser<U extends BaseUser<U,ID>, ID extends Serializable> extends VersionedEntity<U, ID> {

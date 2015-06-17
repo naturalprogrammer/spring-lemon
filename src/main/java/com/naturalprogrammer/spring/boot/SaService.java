@@ -24,9 +24,12 @@ import org.springframework.transaction.support.TransactionSynchronizationAdapter
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.validation.annotation.Validated;
 
-import com.naturalprogrammer.spring.boot.BaseUser.Role;
+import com.naturalprogrammer.spring.boot.domain.BaseUser;
+import com.naturalprogrammer.spring.boot.domain.BaseUserRepository;
+import com.naturalprogrammer.spring.boot.domain.UserDto;
+import com.naturalprogrammer.spring.boot.domain.BaseUser.Role;
 import com.naturalprogrammer.spring.boot.mail.MailSender;
-import com.naturalprogrammer.spring.boot.security.UserDto;
+import com.naturalprogrammer.spring.boot.util.SaUtil;
 import com.naturalprogrammer.spring.boot.validation.FormException;
 import com.naturalprogrammer.spring.boot.validation.Password;
 
@@ -238,6 +241,7 @@ public abstract class SaService<U extends BaseUser<U,ID>, ID extends Serializabl
 	public UserDto<ID> updateUser(U user, @Valid U updatedUser) {
 		
 		SaUtil.validate(user != null, "userNotFound");
+		//userRepository
 		user.setName(updatedUser.getName());
 		
 		if (user.isRolesEditable()) {

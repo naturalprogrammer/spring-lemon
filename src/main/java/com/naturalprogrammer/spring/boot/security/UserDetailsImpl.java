@@ -8,8 +8,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.naturalprogrammer.spring.boot.BaseUser;
-import com.naturalprogrammer.spring.boot.BaseUser.Role;
+import com.naturalprogrammer.spring.boot.domain.BaseUser;
+import com.naturalprogrammer.spring.boot.domain.BaseUser.Role;
 
 public class UserDetailsImpl<U extends BaseUser<U,ID>, ID extends Serializable> implements UserDetails {
 

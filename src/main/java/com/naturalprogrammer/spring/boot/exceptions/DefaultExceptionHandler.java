@@ -1,4 +1,4 @@
-package com.naturalprogrammer.spring.boot;
+package com.naturalprogrammer.spring.boot.exceptions;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import com.naturalprogrammer.spring.boot.util.SaUtil;
 import com.naturalprogrammer.spring.boot.validation.FieldError;
 import com.naturalprogrammer.spring.boot.validation.FormException;
 

@@ -14,7 +14,7 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.naturalprogrammer.spring.boot.SaUtil;
+import com.naturalprogrammer.spring.boot.util.SaUtil;
 
 @Component
 public class AuthSuccess extends SimpleUrlAuthenticationSuccessHandler {
