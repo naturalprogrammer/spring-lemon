@@ -73,6 +73,16 @@ public class DefaultExceptionHandler {
     }
 
 	@RequestMapping(produces = "application/json")
+    @ExceptionHandler({VersionException.class})
+    @ResponseStatus(value = HttpStatus.CONFLICT)
+    public @ResponseBody Map<String, Object> handleRequestException(VersionException ex) {
+    	
+        log.error("VersionException:", ex);        
+		return SaUtil.mapOf("exception", "VersionException", "message", ex.getMessage());
+
+    }
+
+	@RequestMapping(produces = "application/json")
     @ExceptionHandler({Exception.class})
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
     public @ResponseBody Map<String, Object> handleRequestException(Exception ex) {

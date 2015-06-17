@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.naturalprogrammer.spring.boot.SaService;
-import com.naturalprogrammer.spring.boot.domain.BaseUser;
 import com.naturalprogrammer.spring.boot.util.SaUtil;
 
 @Component

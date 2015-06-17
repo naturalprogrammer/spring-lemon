@@ -14,7 +14,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import com.naturalprogrammer.spring.boot.domain.BaseUser;
+import com.naturalprogrammer.spring.boot.domain.VersionedEntity;
 import com.naturalprogrammer.spring.boot.exceptions.BadRequestException;
+import com.naturalprogrammer.spring.boot.exceptions.VersionException;
 import com.naturalprogrammer.spring.boot.security.UserDetailsImpl;
 
 @Component
@@ -89,6 +91,13 @@ public class SaUtil {
 	public static void validate(boolean valid, String messageKey, Object... args) {
 		if (!valid)
 			throw new BadRequestException(messageKey, args);
+	}
+	
+	public static <U extends BaseUser<U,ID>, ID extends Serializable>
+	void validateVersion(VersionedEntity<U,ID> original, VersionedEntity<U,ID> updated) {
+		
+		if (original.getVersion() != updated.getVersion())
+			throw new VersionException(original.getClass().getSimpleName());
 	}
 
 	public static String hostUrl() {

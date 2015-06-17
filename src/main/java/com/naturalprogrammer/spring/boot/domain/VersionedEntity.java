@@ -5,6 +5,8 @@ import java.io.Serializable;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Version;
 
+import com.naturalprogrammer.spring.boot.exceptions.VersionException;
+
 @MappedSuperclass
 public abstract class VersionedEntity<U extends BaseUser<U,ID>, ID extends Serializable> extends SaEntity<U, ID> {
 
@@ -20,5 +22,5 @@ public abstract class VersionedEntity<U extends BaseUser<U,ID>, ID extends Seria
 	public void setVersion(long version) {
 		this.version = version;
 	}
-
+	
 }

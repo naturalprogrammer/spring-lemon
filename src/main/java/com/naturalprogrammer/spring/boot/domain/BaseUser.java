@@ -25,12 +25,10 @@ public abstract class BaseUser<U extends BaseUser<U,ID>, ID extends Serializable
 	
 	public static final int EMAIL_MIN = 4;
 	public static final int EMAIL_MAX = 250;
-	public static final int NAME_MAX = 50;
 	//public static final String EMAIL_PATTERN = "[A-Za-z0-9._%-+]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}";
 	public static final int UUID_LENGTH = 36;
 	public static final int PASSWORD_MAX = 30;
 	public static final int PASSWORD_MIN = 6;
-	public static final int NAME_MIN = 1;
 	public static final String ONLY_EMAIL_REGEX = null;
 	
 	public static interface Role {
@@ -49,10 +47,6 @@ public abstract class BaseUser<U extends BaseUser<U,ID>, ID extends Serializable
 	@UniqueEmail(groups = {SignUpValidation.class})
 	@Column(nullable = false, length = EMAIL_MAX)
 	protected String email;
-	
-	@Size(min=NAME_MIN, max=NAME_MAX, groups = {SignUpValidation.class, UpdateValidation.class})
-	@Column(nullable = false, length = NAME_MAX)
-	protected String name;
 	
 	@Password(groups = {SignUpValidation.class})
 	@Column(nullable = false) // no length because it will be encrypted
@@ -124,14 +118,6 @@ public abstract class BaseUser<U extends BaseUser<U,ID>, ID extends Serializable
 
 	public void setEmail(String email) {
 		this.email = email;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
 	}
 
 	public String getPassword() {

@@ -23,6 +23,6 @@ public class SaEntity<U extends BaseUser<U,ID>, ID extends Serializable> extends
 	 */
 	public boolean hasPermission(U loggedInUser, String permission) {
 		return false;
-	}	
+	}
 	
 }

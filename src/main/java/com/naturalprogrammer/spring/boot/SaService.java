@@ -28,6 +28,7 @@ import com.naturalprogrammer.spring.boot.domain.BaseUser;
 import com.naturalprogrammer.spring.boot.domain.BaseUser.Role;
 import com.naturalprogrammer.spring.boot.domain.BaseUser.SignUpValidation;
 import com.naturalprogrammer.spring.boot.domain.BaseUserRepository;
+import com.naturalprogrammer.spring.boot.domain.SaEntity;
 import com.naturalprogrammer.spring.boot.mail.MailSender;
 import com.naturalprogrammer.spring.boot.util.SaUtil;
 import com.naturalprogrammer.spring.boot.validation.FormException;
@@ -94,7 +95,6 @@ public abstract class SaService<U extends BaseUser<U,ID>, ID extends Serializabl
 		U user = newUser();
 		
 		user.setEmail(adminEmail);
-		user.setName("Administrator");
 		user.setPassword(passwordEncoder.encode(adminPassword));
 		user.getRoles().add(Role.ADMIN);
 		
@@ -239,8 +239,26 @@ public abstract class SaService<U extends BaseUser<U,ID>, ID extends Serializabl
 	public U updateUser(U user, @Valid U updatedUser) {
 		
 		SaUtil.validate(user != null, "userNotFound");
-		user.setName(updatedUser.getName());
+		SaUtil.validateVersion(user, updatedUser);
+
+		U loggedIn = SaUtil.getLoggedInUser();
+
+		updateUserFields(user, updatedUser, loggedIn);
 		
+		userRepository.save(user);		
+		return userForClient(loggedIn);
+		
+	}
+
+	/**
+	 * Override this if you have more fields
+	 * 
+	 * @param user
+	 * @param updatedUser
+	 * @param loggedIn
+	 */
+	protected void updateUserFields(U user, U updatedUser, U loggedIn) {
+
 		if (user.isRolesEditable()) {
 			
 			Set<String> roles = user.getRoles();
@@ -260,17 +278,10 @@ public abstract class SaService<U extends BaseUser<U,ID>, ID extends Serializabl
 			else
 				roles.remove(Role.BLOCKED);
 		}
-		//user.setVersion(updatedUser.getVersion());
-		userRepository.save(user);
 		
-		U loggedIn = SaUtil.getLoggedInUser();
-		if (loggedIn.equals(user)) {
-			loggedIn.setName(user.getName());
+		if (loggedIn.equals(user))
 			loggedIn.setRoles(user.getRoles());
-		}
-		
-		return userForClient(loggedIn);
-		
+
 	}
 
 	public U userForClient() {
@@ -279,6 +290,12 @@ public abstract class SaService<U extends BaseUser<U,ID>, ID extends Serializabl
 		
 	}
 
+	
+	/**
+	 * Override this if you have more fields
+	 * 
+	 * @param loggedIn
+	 */
 	public U userForClient(U loggedIn) {
 		
 		if (loggedIn == null)
@@ -287,7 +304,6 @@ public abstract class SaService<U extends BaseUser<U,ID>, ID extends Serializabl
 		U user = newUser();
 		user.setIdForClient(loggedIn.getId());
 		user.setEmail(loggedIn.getEmail());
-		user.setName(loggedIn.getName());
 		user.setRoles(loggedIn.getRoles());
 		return user.decorate();
 	}
