@@ -9,7 +9,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.naturalprogrammer.spring.boot.domain.BaseUser;
-import com.naturalprogrammer.spring.boot.domain.BaseUser.Role;
 
 public class UserDetailsImpl<U extends BaseUser<U,ID>, ID extends Serializable> implements UserDetails {
 
@@ -36,8 +35,8 @@ public class UserDetailsImpl<U extends BaseUser<U,ID>, ID extends Serializable> 
 		Collection<GrantedAuthority> authorities = new HashSet<GrantedAuthority>(
 				user.getRoles().size() + 1);
 
-		for (Role role : user.getRoles())
-			authorities.add(new SimpleGrantedAuthority("ROLE_" + role.name()));
+		for (String role : user.getRoles())
+			authorities.add(new SimpleGrantedAuthority("ROLE_" + role));
 
 		//authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
 

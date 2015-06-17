@@ -14,6 +14,8 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.naturalprogrammer.spring.boot.SaService;
+import com.naturalprogrammer.spring.boot.domain.BaseUser;
 import com.naturalprogrammer.spring.boot.util.SaUtil;
 
 @Component
@@ -24,14 +26,17 @@ public class AuthSuccess extends SimpleUrlAuthenticationSuccessHandler {
     @Autowired
     private ObjectMapper objectMapper;
     
+//	@Autowired does not work
+//	private SaService<U, ID> saService;
+    
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
             Authentication authentication) throws IOException, ServletException {
 
         // instead of this, the statement below is introduced: handle(request, response, authentication);
     	response.setStatus(HttpServletResponse.SC_OK);
-    	response.getOutputStream().print(objectMapper.writeValueAsString(SaUtil.getLoggedInUser().getUserDto()));
+    	response.getOutputStream().print(objectMapper.writeValueAsString(SaUtil.getBean(SaService.class).userForClient()));
         clearAuthenticationAttributes(request);
-        log.info("AuthenticationSuccess: " + SaUtil.getLoggedInUser().getUserDto());
+        //log.info("AuthenticationSuccess: " + SaUtil.getLoggedInUser());
         
     }
 }

@@ -26,10 +26,8 @@ import org.springframework.validation.annotation.Validated;
 
 import com.naturalprogrammer.spring.boot.domain.BaseUser;
 import com.naturalprogrammer.spring.boot.domain.BaseUser.Role;
-import com.naturalprogrammer.spring.boot.domain.BaseUser.SaRole;
 import com.naturalprogrammer.spring.boot.domain.BaseUser.SignUpValidation;
 import com.naturalprogrammer.spring.boot.domain.BaseUserRepository;
-import com.naturalprogrammer.spring.boot.domain.UserDto;
 import com.naturalprogrammer.spring.boot.mail.MailSender;
 import com.naturalprogrammer.spring.boot.util.SaUtil;
 import com.naturalprogrammer.spring.boot.validation.FormException;
@@ -98,7 +96,7 @@ public abstract class SaService<U extends BaseUser<U,ID>, ID extends Serializabl
 		user.setEmail(adminEmail);
 		user.setName("Administrator");
 		user.setPassword(passwordEncoder.encode(adminPassword));
-		user.getRoles().add(SaRole.ADMIN);
+		user.getRoles().add(Role.ADMIN);
 		
 		return user;
 
@@ -109,26 +107,26 @@ public abstract class SaService<U extends BaseUser<U,ID>, ID extends Serializabl
 	public ContextDto getContext() {
 		ContextDto contextDto = new ContextDto();
 		contextDto.setReCaptchaSiteKey(reCaptchaSiteKey);
-		contextDto.setUserDto(SaUtil.getUserDto());
 		return contextDto;		
 	}
 	
 	@PreAuthorize("isAnonymous()")
 	@Validated(SignUpValidation.class)
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
-	public UserDto<ID> signup(@Valid U user) {
+	public U signup(@Valid U user) {
 		
 		initUser(user);
 		userRepository.save(user);
 		sendVerificationMail(user);
 		SaUtil.logInUser(user);
-		return user.getUserDto();
+		return userForClient(user);
+		
 	}
 	
 	protected U initUser(U user) {
 		
 		user.setPassword(passwordEncoder.encode(user.getPassword()));
-		user.getRoles().add(SaRole.UNVERIFIED);
+		user.getRoles().add(Role.UNVERIFIED);
 		user.setVerificationCode(UUID.randomUUID().toString());
 		
 		return user;
@@ -181,7 +179,7 @@ public abstract class SaService<U extends BaseUser<U,ID>, ID extends Serializabl
 		SaUtil.validate(user != null, "userNotFound");
 		
 		user.setVerificationCode(null);
-		user.getRoles().remove(SaRole.UNVERIFIED);
+		user.getRoles().remove(Role.UNVERIFIED);
 		userRepository.save(user);
 		
 	}
@@ -238,35 +236,60 @@ public abstract class SaService<U extends BaseUser<U,ID>, ID extends Serializabl
 	@PreAuthorize("hasPermission(#user, 'edit')")
 	@Validated(BaseUser.UpdateValidation.class)
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
-	public UserDto<ID> updateUser(U user, @Valid U updatedUser) {
+	public U updateUser(U user, @Valid U updatedUser) {
 		
 		SaUtil.validate(user != null, "userNotFound");
-		//userRepository
 		user.setName(updatedUser.getName());
 		
 		if (user.isRolesEditable()) {
 			
-			Set<Role> roles = user.getRoles();
+			Set<String> roles = user.getRoles();
 			
 			if (updatedUser.isUnverified())
-				roles.add(SaRole.UNVERIFIED);
+				roles.add(Role.UNVERIFIED);
 			else
-				roles.remove(SaRole.UNVERIFIED);
+				roles.remove(Role.UNVERIFIED);
 			
 			if (updatedUser.isAdmin())
-				roles.add(SaRole.ADMIN);
+				roles.add(Role.ADMIN);
 			else
-				roles.remove(SaRole.ADMIN);
+				roles.remove(Role.ADMIN);
 			
 			if (updatedUser.isBlocked())
-				roles.add(SaRole.BLOCKED);
+				roles.add(Role.BLOCKED);
 			else
-				roles.remove(SaRole.BLOCKED);
+				roles.remove(Role.BLOCKED);
 		}
-		user.setVersion(updatedUser.getVersion());
+		//user.setVersion(updatedUser.getVersion());
 		userRepository.save(user);
-		return user.getUserDto();
+		
+		U loggedIn = SaUtil.getLoggedInUser();
+		if (loggedIn.equals(user)) {
+			loggedIn.setName(user.getName());
+			loggedIn.setRoles(user.getRoles());
+		}
+		
+		return userForClient(loggedIn);
 		
 	}
 
+	public U userForClient() {
+
+		return userForClient(SaUtil.getLoggedInUser());
+		
+	}
+
+	public U userForClient(U loggedIn) {
+		
+		if (loggedIn == null)
+			return null;
+		
+		U user = newUser();
+		user.setIdForClient(loggedIn.getId());
+		user.setEmail(loggedIn.getEmail());
+		user.setName(loggedIn.getName());
+		user.setRoles(loggedIn.getRoles());
+		return user.decorate();
+	}
+	
 }

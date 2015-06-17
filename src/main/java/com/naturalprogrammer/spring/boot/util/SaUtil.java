@@ -14,7 +14,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import com.naturalprogrammer.spring.boot.domain.BaseUser;
-import com.naturalprogrammer.spring.boot.domain.UserDto;
 import com.naturalprogrammer.spring.boot.exceptions.BadRequestException;
 import com.naturalprogrammer.spring.boot.security.UserDetailsImpl;
 
@@ -77,13 +76,6 @@ public class SaUtil {
 	public static <U extends BaseUser<U,ID>, ID extends Serializable> U getLoggedInUser() {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		return getUser(auth);
-	}
-	
-	public static <U extends BaseUser<U,ID>, ID extends Serializable> UserDto<ID> getUserDto() {
-		U user = SaUtil.getLoggedInUser();
-		if (user == null)
-			return null;
-		return user.getUserDto();
 	}
 	
     public static <U extends BaseUser<U,ID>, ID extends Serializable> void logInUser(U user) {

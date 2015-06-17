@@ -1,11 +1,9 @@
 package com.naturalprogrammer.spring.boot;
 
-import com.naturalprogrammer.spring.boot.domain.UserDto;
-
 public class ContextDto {
 
 	protected String reCaptchaSiteKey;
-	protected UserDto userDto;
+//	protected BaseUser user;
 
 	public String getReCaptchaSiteKey() {
 		return reCaptchaSiteKey;
@@ -15,12 +13,12 @@ public class ContextDto {
 		this.reCaptchaSiteKey = reCaptchaSiteKey;
 	}
 
-	public UserDto getUserDto() {
-		return userDto;
-	}
-
-	public void setUserDto(UserDto userDto) {
-		this.userDto = userDto;
-	}
+//	public UserDto getUserDto() {
+//		return userDto;
+//	}
+//
+//	public void setUserDto(UserDto userDto) {
+//		this.userDto = userDto;
+//	}
 	
 }

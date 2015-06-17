@@ -1,6 +1,7 @@
 package com.naturalprogrammer.spring.boot;
 
 import java.io.Serializable;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -12,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.naturalprogrammer.spring.boot.domain.BaseUser;
-import com.naturalprogrammer.spring.boot.domain.UserDto;
 import com.naturalprogrammer.spring.boot.util.SaUtil;
 
 public class SaController<U extends BaseUser<U,ID>, ID extends Serializable> {
@@ -28,16 +28,16 @@ public class SaController<U extends BaseUser<U,ID>, ID extends Serializable> {
 	}
 	
 	@RequestMapping("/context")
-	public ContextDto contextDto() {
-		log.info("Getting context. Logged in user: " + SaUtil.getUserDto());
-		return saService.getContext();
+	public Map<String, Object> contextDto() {
+		return SaUtil.mapOf("context", saService.getContext(),
+							"loggedIn", saService.userForClient());
 	}
 	
 	/**
 	 * Signup
 	 */
 	@RequestMapping(value="/signup", method=RequestMethod.POST)
-	public UserDto<ID> signup(@RequestBody U user) {
+	public U signup(@RequestBody U user) {
 		
 		return saService.signup(user);
 
@@ -95,7 +95,7 @@ public class SaController<U extends BaseUser<U,ID>, ID extends Serializable> {
 	 * Update
 	 */
 	@RequestMapping(value="/users/{id}/update", method=RequestMethod.POST)
-	public UserDto<ID> signup(@PathVariable("id") U user, @RequestBody U updatedUser) {
+	public U signup(@PathVariable("id") U user, @RequestBody U updatedUser) {
 		
 		return saService.updateUser(user, updatedUser);
 

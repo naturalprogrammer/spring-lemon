@@ -35,12 +35,10 @@ public abstract class BaseUser<U extends BaseUser<U,ID>, ID extends Serializable
 	
 	public static interface Role {
 
-		String name();
+		static final String UNVERIFIED = "UNVERIFIED";
+		static final String BLOCKED = "BLOCKED";
+		static final String ADMIN = "ADMIN";
 	
-	}
-	
-	public static enum SaRole implements Role {
-		UNVERIFIED, BLOCKED, ADMIN
 	}
 	
 	public interface SignUpValidation {}
@@ -67,8 +65,8 @@ public abstract class BaseUser<U extends BaseUser<U,ID>, ID extends Serializable
 	protected String forgotPasswordCode;
 	
 	@ElementCollection(fetch = FetchType.EAGER)
-	private Set<Role> roles = new HashSet<Role>();
-
+	private Set<String> roles = new HashSet<String>();
+	
 	@Transient
 	@Captcha(groups = {SignUpValidation.class})
 	private String captchaResponse;
@@ -112,11 +110,11 @@ public abstract class BaseUser<U extends BaseUser<U,ID>, ID extends Serializable
 		this.captchaResponse = captchaResponse;
 	}
 
-	public Set<Role> getRoles() {
+	public Set<String> getRoles() {
 		return roles;
 	}
 
-	public void setRoles(Set<Role> roles) {
+	public void setRoles(Set<String> roles) {
 		this.roles = roles;
 	}
 
@@ -184,15 +182,15 @@ public abstract class BaseUser<U extends BaseUser<U,ID>, ID extends Serializable
 		this.rolesEditable = rolesEditable;
 	}
 
-	public UserDto<ID> getUserDto() {
-		
-		UserDto<ID> userDto = new UserDto<ID>();
-		userDto.setId(getId());
-		userDto.setName(name);
-		userDto.setRoles(roles);
-		
-		return userDto;
-	}
+//	public UserDto<ID> getUserDto() {
+//		
+//		UserDto<ID> userDto = new UserDto<ID>();
+//		userDto.setId(getId());
+//		userDto.setName(name);
+//		userDto.setRoles(roles);
+//		
+//		return userDto;
+//	}
 
 //	public static <U extends BaseUser<U,ID>, ID extends Serializable> BaseUser<U, ID> of(SignupForm signupForm) {
 //		 
@@ -213,16 +211,16 @@ public abstract class BaseUser<U extends BaseUser<U,ID>, ID extends Serializable
 	
 	public U decorate(U loggedIn) {
 		
-		unverified = roles.contains(SaRole.UNVERIFIED);
-		blocked = roles.contains(SaRole.BLOCKED);
-		admin = roles.contains(SaRole.ADMIN);
+		unverified = roles.contains(Role.UNVERIFIED);
+		blocked = roles.contains(Role.BLOCKED);
+		admin = roles.contains(Role.ADMIN);
 		
 		editable = false;
 		rolesEditable = false;
 		
 		if (loggedIn != null) {
 			
-			boolean adminLoggedIn = loggedIn.getRoles().contains(SaRole.ADMIN);
+			boolean adminLoggedIn = loggedIn.getRoles().contains(Role.ADMIN);
 			
 			editable = adminLoggedIn || equals(loggedIn); // admin or self
 			rolesEditable = adminLoggedIn && !equals(loggedIn); // another admin
@@ -247,6 +245,17 @@ public abstract class BaseUser<U extends BaseUser<U,ID>, ID extends Serializable
 			return editable;
 
 		return false;
+	}
+
+	public void setIdForClient(ID id) {
+		setId(id);
+	}
+	
+	@Override
+	public String toString() {
+		return "BaseUser [email=" + email + ", verificationCode="
+				+ verificationCode + ", forgotPasswordCode="
+				+ forgotPasswordCode + ", roles=" + roles + "]";
 	}
 
 }
