@@ -25,9 +25,10 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 import org.springframework.validation.annotation.Validated;
 
 import com.naturalprogrammer.spring.boot.domain.BaseUser;
+import com.naturalprogrammer.spring.boot.domain.BaseUser.Role;
+import com.naturalprogrammer.spring.boot.domain.BaseUser.SignUpValidation;
 import com.naturalprogrammer.spring.boot.domain.BaseUserRepository;
 import com.naturalprogrammer.spring.boot.domain.UserDto;
-import com.naturalprogrammer.spring.boot.domain.BaseUser.Role;
 import com.naturalprogrammer.spring.boot.mail.MailSender;
 import com.naturalprogrammer.spring.boot.util.SaUtil;
 import com.naturalprogrammer.spring.boot.validation.FormException;
@@ -35,7 +36,7 @@ import com.naturalprogrammer.spring.boot.validation.Password;
 
 @Validated
 @Transactional(propagation=Propagation.SUPPORTS, readOnly=true)
-public abstract class SaService<U extends BaseUser<U,ID>, ID extends Serializable, S extends SignupForm> {
+public abstract class SaService<U extends BaseUser<U,ID>, ID extends Serializable> {
 
     private final Log log = LogFactory.getLog(getClass());
     
@@ -52,7 +53,7 @@ public abstract class SaService<U extends BaseUser<U,ID>, ID extends Serializabl
 	private String adminPassword;
 
 	@Autowired
-    private PasswordEncoder passwordEncoder;
+	private PasswordEncoder passwordEncoder;
 
 	@Autowired
     private MailSender mailSender;
@@ -91,7 +92,7 @@ public abstract class SaService<U extends BaseUser<U,ID>, ID extends Serializabl
 	 */
     protected U createAdminUser() {
 		
-		final U user = (U) SaUtil.getBean(BaseUser.class);
+		U user = newUser();
 		
 		user.setEmail(adminEmail);
 		user.setName("Administrator");
@@ -102,6 +103,7 @@ public abstract class SaService<U extends BaseUser<U,ID>, ID extends Serializabl
 
 	}
 
+	abstract protected U newUser();
 
 	public ContextDto getContext() {
 		ContextDto contextDto = new ContextDto();
@@ -111,23 +113,20 @@ public abstract class SaService<U extends BaseUser<U,ID>, ID extends Serializabl
 	}
 	
 	@PreAuthorize("isAnonymous()")
+	@Validated(SignUpValidation.class)
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
-	public UserDto<ID> signup(@Validated S signupForm) {
+	public UserDto<ID> signup(@Valid U user) {
 		
-		U user = createUser(signupForm);
+		initUser(user);
 		userRepository.save(user);
 		sendVerificationMail(user);
 		SaUtil.logInUser(user);
 		return user.getUserDto();
 	}
 	
-	protected U createUser(S signupForm) {
+	protected U initUser(U user) {
 		
-		final U user = (U) SaUtil.getBean(BaseUser.class);
-		
-		user.setEmail(signupForm.getEmail());
-		user.setName(signupForm.getName());
-		user.setPassword(passwordEncoder.encode(signupForm.getPassword()));
+		user.setPassword(passwordEncoder.encode(user.getPassword()));
 		user.getRoles().add(Role.UNVERIFIED);
 		user.setVerificationCode(UUID.randomUUID().toString());
 		

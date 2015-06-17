@@ -2,13 +2,9 @@ package com.naturalprogrammer.spring.boot;
 
 import java.io.Serializable;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,12 +15,12 @@ import com.naturalprogrammer.spring.boot.domain.BaseUser;
 import com.naturalprogrammer.spring.boot.domain.UserDto;
 import com.naturalprogrammer.spring.boot.util.SaUtil;
 
-public class SaController<U extends BaseUser<U,ID>, ID extends Serializable, S extends SignupForm> {
+public class SaController<U extends BaseUser<U,ID>, ID extends Serializable> {
 
 	private Log log = LogFactory.getLog(getClass());
 
 	@Autowired
-	private SaService<U, ID, S> saService;
+	private SaService<U, ID> saService;
 	
 	@RequestMapping("/ping")
 	public void ping() {
@@ -41,9 +37,9 @@ public class SaController<U extends BaseUser<U,ID>, ID extends Serializable, S e
 	 * Signup
 	 */
 	@RequestMapping(value="/signup", method=RequestMethod.POST)
-	public UserDto<ID> signup(@RequestBody S signupForm) {
+	public UserDto<ID> signup(@RequestBody U user) {
 		
-		return saService.signup(signupForm);
+		return saService.signup(user);
 
 	}
 

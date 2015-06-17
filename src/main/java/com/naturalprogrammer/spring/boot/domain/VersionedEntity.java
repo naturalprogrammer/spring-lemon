@@ -5,10 +5,6 @@ import java.io.Serializable;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Version;
 
-import org.springframework.data.jpa.domain.AbstractAuditable;
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 @MappedSuperclass
 public abstract class VersionedEntity<U extends BaseUser<U,ID>, ID extends Serializable> extends SaEntity<U, ID> {
 

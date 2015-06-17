@@ -3,41 +3,30 @@ package com.naturalprogrammer.spring.boot.domain;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
-import javax.mail.MessagingException;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 import javax.validation.constraints.Size;
 
-import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.hibernate.validator.constraints.Email;
-import org.hibernate.validator.constraints.NotBlank;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.transaction.support.TransactionSynchronizationAdapter;
-import org.springframework.transaction.support.TransactionSynchronizationManager;
 
-import com.naturalprogrammer.spring.boot.SignupForm;
-import com.naturalprogrammer.spring.boot.mail.MailSender;
 import com.naturalprogrammer.spring.boot.util.SaUtil;
+import com.naturalprogrammer.spring.boot.validation.Captcha;
+import com.naturalprogrammer.spring.boot.validation.Password;
+import com.naturalprogrammer.spring.boot.validation.UniqueEmail;
 
 @MappedSuperclass
 public abstract class BaseUser<U extends BaseUser<U,ID>, ID extends Serializable> extends VersionedEntity<U, ID> {
 	
 	private static final long serialVersionUID = 655067760361294864L;
 	
+	public static final int EMAIL_MIN = 4;
 	public static final int EMAIL_MAX = 250;
 	public static final int NAME_MAX = 50;
-	public static final String EMAIL_PATTERN = "[A-Za-z0-9._%-+]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}";
+	//public static final String EMAIL_PATTERN = "[A-Za-z0-9._%-+]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}";
 	public static final int UUID_LENGTH = 36;
 	public static final int PASSWORD_MAX = 30;
 	public static final int PASSWORD_MIN = 6;
@@ -51,8 +40,9 @@ public abstract class BaseUser<U extends BaseUser<U,ID>, ID extends Serializable
 	public interface SignUpValidation {}
 	public interface UpdateValidation {}
 	
-	@Size(min=4, max=BaseUser.EMAIL_MAX, groups = {SignUpValidation.class})
+	@Size(min=EMAIL_MIN, max=EMAIL_MAX, groups = {SignUpValidation.class})
 	@Email(groups = {SignUpValidation.class})
+	@UniqueEmail(groups = {SignUpValidation.class})
 	@Column(nullable = false, length = EMAIL_MAX)
 	protected String email;
 	
@@ -60,8 +50,8 @@ public abstract class BaseUser<U extends BaseUser<U,ID>, ID extends Serializable
 	@Column(nullable = false, length = NAME_MAX)
 	protected String name;
 	
-	// no length because it will be encrypted
-	@Column(nullable = false)
+	@Password(groups = {SignUpValidation.class})
+	@Column(nullable = false) // no length because it will be encrypted
 	protected String password;
 	
 	@Column(length = UUID_LENGTH)
@@ -70,20 +60,27 @@ public abstract class BaseUser<U extends BaseUser<U,ID>, ID extends Serializable
 	@Column(length = UUID_LENGTH)
 	protected String forgotPasswordCode;
 	
-	@Transient
-	transient protected boolean unverified = true;
+	@ElementCollection(fetch = FetchType.EAGER)
+	private Set<Role> roles = new HashSet<Role>();
 
 	@Transient
-	transient protected boolean blocked = false;
-
-	@Transient
-	transient protected boolean admin = false;
-
-	@Transient
-	transient protected boolean editable = false;
+	@Captcha(groups = {SignUpValidation.class})
+	private String captchaResponse;
 	
 	@Transient
-	transient protected boolean rolesEditable = false;	
+	protected boolean unverified = true;
+
+	@Transient
+	protected boolean blocked = false;
+
+	@Transient
+	protected boolean admin = false;
+
+	@Transient
+	protected boolean editable = false;
+	
+	@Transient
+	protected boolean rolesEditable = false;	
 	
 	public String getVerificationCode() {
 		return verificationCode;
@@ -100,9 +97,14 @@ public abstract class BaseUser<U extends BaseUser<U,ID>, ID extends Serializable
 	public void setForgotPasswordCode(String forgotPasswordCode) {
 		this.forgotPasswordCode = forgotPasswordCode;
 	}
+	
+	public String getCaptchaResponse() {
+		return captchaResponse;
+	}
 
-	@ElementCollection(fetch = FetchType.EAGER)
-	private Set<Role> roles = new HashSet<Role>();
+	public void setCaptchaResponse(String captchaResponse) {
+		this.captchaResponse = captchaResponse;
+	}
 
 	public Set<Role> getRoles() {
 		return roles;
@@ -186,18 +188,18 @@ public abstract class BaseUser<U extends BaseUser<U,ID>, ID extends Serializable
 		return userDto;
 	}
 
-	public static <U extends BaseUser<U,ID>, ID extends Serializable> BaseUser<U, ID> of(SignupForm signupForm) {
-		 
-		final BaseUser<U,ID> baseUser = SaUtil.getBean(BaseUser.class);
-			
-		baseUser.setEmail(signupForm.getEmail());
-		baseUser.setName(signupForm.getName());
-		baseUser.setPassword(signupForm.getPassword());
-		baseUser.getRoles().add(Role.UNVERIFIED);
-		
-		return baseUser;
-			
-	}
+//	public static <U extends BaseUser<U,ID>, ID extends Serializable> BaseUser<U, ID> of(SignupForm signupForm) {
+//		 
+//		final BaseUser<U,ID> baseUser = SaUtil.getBean(BaseUser.class);
+//			
+//		baseUser.setEmail(signupForm.getEmail());
+//		baseUser.setName(signupForm.getName());
+//		baseUser.setPassword(signupForm.getPassword());
+//		baseUser.getRoles().add(Role.UNVERIFIED);
+//		
+//		return baseUser;
+//			
+//	}
 	
 	public U decorate() {
 		return decorate(SaUtil.getLoggedInUser());

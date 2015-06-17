@@ -16,14 +16,10 @@ import org.springframework.security.web.access.intercept.FilterSecurityIntercept
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices;
 import org.springframework.security.web.authentication.switchuser.SwitchUserFilter;
 import org.springframework.security.web.csrf.CsrfFilter;
-import org.springframework.security.web.csrf.CsrfTokenRepository;
-import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 
 import com.naturalprogrammer.spring.boot.util.SaUtil;
 
@@ -51,14 +47,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private LogoutSuccessHandler logoutSuccessHandler;
 	
-    @Bean
-    public AuthenticationFailureHandler authenticationFailureHandler() {
-    	return new SimpleUrlAuthenticationFailureHandler();
-    }
-    
 	@Bean
     public PasswordEncoder passwordEncoder() {
       return new BCryptPasswordEncoder();
+    }
+	
+	@Bean
+    public AuthenticationFailureHandler authenticationFailureHandler() {
+    	return new SimpleUrlAuthenticationFailureHandler();
     }
     
     @Bean
