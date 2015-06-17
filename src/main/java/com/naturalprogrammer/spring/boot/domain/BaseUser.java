@@ -33,7 +33,13 @@ public abstract class BaseUser<U extends BaseUser<U,ID>, ID extends Serializable
 	public static final int NAME_MIN = 1;
 	public static final String ONLY_EMAIL_REGEX = null;
 	
-	public static enum Role {
+	public static interface Role {
+
+		String name();
+	
+	}
+	
+	public static enum SaRole implements Role {
 		UNVERIFIED, BLOCKED, ADMIN
 	}
 	
@@ -207,16 +213,16 @@ public abstract class BaseUser<U extends BaseUser<U,ID>, ID extends Serializable
 	
 	public U decorate(U loggedIn) {
 		
-		unverified = roles.contains(Role.UNVERIFIED);
-		blocked = roles.contains(Role.BLOCKED);
-		admin = roles.contains(Role.ADMIN);
+		unverified = roles.contains(SaRole.UNVERIFIED);
+		blocked = roles.contains(SaRole.BLOCKED);
+		admin = roles.contains(SaRole.ADMIN);
 		
 		editable = false;
 		rolesEditable = false;
 		
 		if (loggedIn != null) {
 			
-			boolean adminLoggedIn = loggedIn.getRoles().contains(Role.ADMIN);
+			boolean adminLoggedIn = loggedIn.getRoles().contains(SaRole.ADMIN);
 			
 			editable = adminLoggedIn || equals(loggedIn); // admin or self
 			rolesEditable = adminLoggedIn && !equals(loggedIn); // another admin

@@ -26,6 +26,7 @@ import org.springframework.validation.annotation.Validated;
 
 import com.naturalprogrammer.spring.boot.domain.BaseUser;
 import com.naturalprogrammer.spring.boot.domain.BaseUser.Role;
+import com.naturalprogrammer.spring.boot.domain.BaseUser.SaRole;
 import com.naturalprogrammer.spring.boot.domain.BaseUser.SignUpValidation;
 import com.naturalprogrammer.spring.boot.domain.BaseUserRepository;
 import com.naturalprogrammer.spring.boot.domain.UserDto;
@@ -97,7 +98,7 @@ public abstract class SaService<U extends BaseUser<U,ID>, ID extends Serializabl
 		user.setEmail(adminEmail);
 		user.setName("Administrator");
 		user.setPassword(passwordEncoder.encode(adminPassword));
-		user.getRoles().add(Role.ADMIN);
+		user.getRoles().add(SaRole.ADMIN);
 		
 		return user;
 
@@ -127,7 +128,7 @@ public abstract class SaService<U extends BaseUser<U,ID>, ID extends Serializabl
 	protected U initUser(U user) {
 		
 		user.setPassword(passwordEncoder.encode(user.getPassword()));
-		user.getRoles().add(Role.UNVERIFIED);
+		user.getRoles().add(SaRole.UNVERIFIED);
 		user.setVerificationCode(UUID.randomUUID().toString());
 		
 		return user;
@@ -180,7 +181,7 @@ public abstract class SaService<U extends BaseUser<U,ID>, ID extends Serializabl
 		SaUtil.validate(user != null, "userNotFound");
 		
 		user.setVerificationCode(null);
-		user.getRoles().remove(Role.UNVERIFIED);
+		user.getRoles().remove(SaRole.UNVERIFIED);
 		userRepository.save(user);
 		
 	}
@@ -248,19 +249,19 @@ public abstract class SaService<U extends BaseUser<U,ID>, ID extends Serializabl
 			Set<Role> roles = user.getRoles();
 			
 			if (updatedUser.isUnverified())
-				roles.add(Role.UNVERIFIED);
+				roles.add(SaRole.UNVERIFIED);
 			else
-				roles.remove(Role.UNVERIFIED);
+				roles.remove(SaRole.UNVERIFIED);
 			
 			if (updatedUser.isAdmin())
-				roles.add(Role.ADMIN);
+				roles.add(SaRole.ADMIN);
 			else
-				roles.remove(Role.ADMIN);
+				roles.remove(SaRole.ADMIN);
 			
 			if (updatedUser.isBlocked())
-				roles.add(Role.BLOCKED);
+				roles.add(SaRole.BLOCKED);
 			else
-				roles.remove(Role.BLOCKED);
+				roles.remove(SaRole.BLOCKED);
 		}
 		user.setVersion(updatedUser.getVersion());
 		userRepository.save(user);
