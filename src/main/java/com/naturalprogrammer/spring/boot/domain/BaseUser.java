@@ -12,6 +12,7 @@ import javax.persistence.Transient;
 import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotBlank;
 
 import com.naturalprogrammer.spring.boot.util.SaUtil;
 import com.naturalprogrammer.spring.boot.validation.Captcha;
@@ -42,6 +43,7 @@ public abstract class BaseUser<U extends BaseUser<U,ID>, ID extends Serializable
 	public interface SignUpValidation {}
 	public interface UpdateValidation {}
 	
+	@NotBlank(message = "{com.naturalprogrammer.spring.required.email}")
 	@Size(min=EMAIL_MIN, max=EMAIL_MAX, groups = {SignUpValidation.class})
 	@Email(groups = {SignUpValidation.class})
 	@UniqueEmail(groups = {SignUpValidation.class})

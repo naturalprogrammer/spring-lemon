@@ -1,7 +1,6 @@
 package com.naturalprogrammer.spring.boot;
 
 import java.io.Serializable;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -29,10 +28,9 @@ import com.naturalprogrammer.spring.boot.domain.BaseUser;
 import com.naturalprogrammer.spring.boot.domain.BaseUser.Role;
 import com.naturalprogrammer.spring.boot.domain.BaseUser.SignUpValidation;
 import com.naturalprogrammer.spring.boot.domain.BaseUserRepository;
-import com.naturalprogrammer.spring.boot.domain.SaEntity;
+import com.naturalprogrammer.spring.boot.domain.ChangePasswordForm;
 import com.naturalprogrammer.spring.boot.mail.MailSender;
 import com.naturalprogrammer.spring.boot.util.SaUtil;
-import com.naturalprogrammer.spring.boot.validation.FormException;
 import com.naturalprogrammer.spring.boot.validation.Password;
 
 @Validated
@@ -41,12 +39,6 @@ public abstract class SaService<U extends BaseUser<U,ID>, ID extends Serializabl
 
     private final Log log = LogFactory.getLog(getClass());
     
-//	@Value(SaUtil.APPLICATION_URL)
-//    private String applicationUrl;
-	
-//	@Value(SaUtil.RECAPTCHA_SITE_KEY)
-//    private String reCaptchaSiteKey;
-	
 	@Value("${adminUser.email}")
 	private String adminEmail;
 
@@ -172,9 +164,8 @@ public abstract class SaService<U extends BaseUser<U,ID>, ID extends Serializabl
 		
 		U user = userRepository.findByEmail(email);
 		
-		if (user == null)
-			throw new FormException("email", "userNotFound");
-
+		SaUtil.check("email", user != null, "userNotFound").go();
+		
 		user.decorate().hideConfidentialFields();
 
 		return user;
@@ -183,7 +174,7 @@ public abstract class SaService<U extends BaseUser<U,ID>, ID extends Serializabl
 	
 	public U fetchUser(U user) {
 		
-		SaUtil.validate(user != null, "userNotFound");
+		SaUtil.check(user != null, "userNotFound").go();
 
 		user.decorate().hideConfidentialFields();
 		
@@ -194,7 +185,7 @@ public abstract class SaService<U extends BaseUser<U,ID>, ID extends Serializabl
 	public void verifyUser(String verificationCode) {
 		
 		U user = userRepository.findByVerificationCode(verificationCode);
-		SaUtil.validate(user != null, "userNotFound");
+		SaUtil.check(user != null, "userNotFound");
 		
 		user.setVerificationCode(null);
 		user.getRoles().remove(Role.UNVERIFIED);
@@ -207,7 +198,7 @@ public abstract class SaService<U extends BaseUser<U,ID>, ID extends Serializabl
 		
 		final U user = userRepository.findByEmail(email);
 
-		SaUtil.validate(user != null, "userNotFound");
+		SaUtil.check(user != null, "userNotFound");
 		
 		user.setForgotPasswordCode(UUID.randomUUID().toString());
 		userRepository.save(user);
@@ -242,7 +233,7 @@ public abstract class SaService<U extends BaseUser<U,ID>, ID extends Serializabl
 	public void resetPassword(String forgotPasswordCode, @Valid @Password String newPassword) {
 		
 		U user = userRepository.findByForgotPasswordCode(forgotPasswordCode);
-		SaUtil.validate(user != null, "invalidLink");
+		SaUtil.check(user != null, "invalidLink").go();
 		
 		user.setPassword(passwordEncoder.encode(newPassword));
 		user.setForgotPasswordCode(null);
@@ -256,7 +247,7 @@ public abstract class SaService<U extends BaseUser<U,ID>, ID extends Serializabl
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
 	public U updateUser(U user, @Valid U updatedUser) {
 		
-		SaUtil.validate(user != null, "userNotFound");
+		SaUtil.check(user != null, "userNotFound").go();
 		SaUtil.validateVersion(user, updatedUser);
 
 		U loggedIn = SaUtil.getLoggedInUser();
@@ -267,6 +258,21 @@ public abstract class SaService<U extends BaseUser<U,ID>, ID extends Serializabl
 		return userForClient(loggedIn);
 		
 	}
+	
+	@PreAuthorize("hasPermission(#user, 'edit')")
+	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
+	public void changePassword(U user, @Valid ChangePasswordForm changePasswordForm) {
+		
+		SaUtil.check(user != null, "userNotFound").go();
+		SaUtil.check("oldPassword",
+			passwordEncoder.matches(changePasswordForm.getOldPassword(), user.getPassword()),
+			"wrong.password").go();
+		
+		user.setPassword(passwordEncoder.encode(changePasswordForm.getPassword()));
+		userRepository.save(user);
+		
+	}
+
 
 	/**
 	 * Override this if you have more fields

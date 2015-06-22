@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.naturalprogrammer.spring.boot.util.SaUtil;
 import com.naturalprogrammer.spring.boot.validation.FieldError;
-import com.naturalprogrammer.spring.boot.validation.FormException;
 
 @ControllerAdvice
 public class DefaultExceptionHandler {
@@ -40,14 +39,14 @@ public class DefaultExceptionHandler {
     }
 
 	@RequestMapping(produces = "application/json")
-    @ExceptionHandler(FormException.class)
+    @ExceptionHandler(MultiErrorException.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    public @ResponseBody Map<String, Object> handleFormException(FormException ex) {
+    public @ResponseBody Map<String, Object> handleMultiErrorException(MultiErrorException ex) {
     	
-		Collection<FieldError> errors = ex.getFieldErrors();
+		Collection<FieldError> errors = ex.getErrors();
 		
-    	log.error("FormException: " + errors.toString());
-		return SaUtil.mapOf("exception", "FormException", "errors", errors);
+    	log.error("MultiErrorException: " + errors.toString());
+		return SaUtil.mapOf("exception", "MultiErrorException", "errors", errors);
 
     }
 
@@ -62,15 +61,15 @@ public class DefaultExceptionHandler {
 
     }
 
-	@RequestMapping(produces = "application/json")
-    @ExceptionHandler({BadRequestException.class})
-    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    public @ResponseBody Map<String, Object> handleRequestException(BadRequestException ex) {
-    	
-        log.error("BadRequestException:", ex);        
-		return SaUtil.mapOf("exception", "BadRequestException", "message", ex.getMessage());
-
-    }
+//	@RequestMapping(produces = "application/json")
+//    @ExceptionHandler({BadRequestException.class})
+//    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+//    public @ResponseBody Map<String, Object> handleRequestException(BadRequestException ex) {
+//    	
+//        log.error("BadRequestException:", ex);        
+//		return SaUtil.mapOf("exception", "BadRequestException", "message", ex.getMessage());
+//
+//    }
 
 	@RequestMapping(produces = "application/json")
     @ExceptionHandler({VersionException.class})

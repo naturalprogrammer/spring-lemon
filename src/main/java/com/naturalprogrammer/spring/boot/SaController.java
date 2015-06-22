@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.naturalprogrammer.spring.boot.domain.BaseUser;
+import com.naturalprogrammer.spring.boot.domain.ChangePasswordForm;
 import com.naturalprogrammer.spring.boot.util.SaUtil;
 
 public class SaController<U extends BaseUser<U,ID>, ID extends Serializable> {
@@ -100,6 +101,18 @@ public class SaController<U extends BaseUser<U,ID>, ID extends Serializable> {
 		return saService.updateUser(user, updatedUser);
 
 	}
+	
+	
+	/**
+	 * Change Password
+	 */
+	@RequestMapping(value="/users/{id}/change-password", method=RequestMethod.POST)
+	public void changePassword(@PathVariable("id") U user, @RequestBody ChangePasswordForm changePasswordForm) {
+		
+		saService.changePassword(user, changePasswordForm);
+
+	}
+
 
 
 }

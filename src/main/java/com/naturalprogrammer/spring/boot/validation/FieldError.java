@@ -13,19 +13,19 @@ import com.naturalprogrammer.spring.boot.util.Ref;
 public class FieldError {
 	
 	private String field;
-	private String error;
+	private String message;
 
 	public String getField() {
 		return field;
 	}
 
-	public String getError() {
-		return error;
+	public String getMessage() {
+		return message;
 	}
 
 	@Override
 	public String toString() {
-		return "FieldError [field=" + field + ", error=" + error + "]";
+		return "FieldError [field=" + field + ", message=" + message + "]";
 	}
 
 	public static Collection<FieldError> getErrors(Set<ConstraintViolation<?>> constraintViolations) {
@@ -56,11 +56,11 @@ public class FieldError {
 		
 	}
 
-	public static FieldError of(String field, String error) {
+	public static FieldError of(String field, String message) {
 		
 		FieldError fieldError = new FieldError();
 		fieldError.field = field;
-		fieldError.error = error;
+		fieldError.message = message;
 		
 		return fieldError;
 	}

@@ -15,6 +15,9 @@ import javax.validation.Constraint;
 import javax.validation.Payload;
 import javax.validation.constraints.Size;
 
+import org.hibernate.validator.constraints.NotBlank;
+import org.hibernate.validator.constraints.NotEmpty;
+
 import com.naturalprogrammer.spring.boot.domain.BaseUser;
 
 /**
@@ -22,6 +25,7 @@ import com.naturalprogrammer.spring.boot.domain.BaseUser;
  * @author skpat_000
  *
  */
+@NotBlank(message="{com.naturalprogrammer.spring.required.password}")
 @Size(min=BaseUser.PASSWORD_MIN, max=BaseUser.PASSWORD_MAX, message="{passwordSizeError}")
 @Target({ METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER })
 @Retention(RUNTIME)

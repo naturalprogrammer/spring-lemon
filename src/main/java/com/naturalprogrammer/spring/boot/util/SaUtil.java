@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 
 import com.naturalprogrammer.spring.boot.domain.BaseUser;
 import com.naturalprogrammer.spring.boot.domain.VersionedEntity;
-import com.naturalprogrammer.spring.boot.exceptions.BadRequestException;
+import com.naturalprogrammer.spring.boot.exceptions.MultiErrorException;
 import com.naturalprogrammer.spring.boot.exceptions.VersionException;
 import com.naturalprogrammer.spring.boot.security.UserDetailsImpl;
 
@@ -88,10 +88,10 @@ public class SaUtil {
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
-	public static void validate(boolean valid, String messageKey, Object... args) {
-		if (!valid)
-			throw new BadRequestException(messageKey, args);
-	}
+//	public static void validate(boolean valid, String messageKey, Object... args) {
+//		if (!valid)
+//			throw new BadRequestException(messageKey, args);
+//	}
 	
 	public static <U extends BaseUser<U,ID>, ID extends Serializable>
 	void validateVersion(VersionedEntity<U,ID> original, VersionedEntity<U,ID> updated) {
@@ -104,6 +104,13 @@ public class SaUtil {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	public static MultiErrorException check(boolean valid, String messageKey, Object... args) {
+		return SaUtil.check(null, valid, messageKey, args);
+	}
 
+	public static MultiErrorException check(String fieldName, boolean valid, String messageKey, Object... args) {
+		return new MultiErrorException().check(fieldName, valid, messageKey, args);
+	}
 
 }
