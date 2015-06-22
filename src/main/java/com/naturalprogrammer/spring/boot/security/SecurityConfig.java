@@ -32,10 +32,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	private static final String REMEMBER_ME_PARAMETER = "rememberMe";
 	//public static final String CSRF_TOKEN_HEADER = "X-XSRF-TOKEN";
 	
-	@Value(SaUtil.APPLICATION_URL)
-	private String applicationUrl;
-	
-	@Value("${rememberMe.privateKey}")
+//	@Value(SaUtil.APPLICATION_URL)
+//	private String applicationUrl;
+//	
+	@Value("${rememberMe.secretKey}")
 	private String rememberMeKey;
 	
 	@Autowired

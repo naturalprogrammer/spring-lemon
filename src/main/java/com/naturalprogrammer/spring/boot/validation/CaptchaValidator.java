@@ -60,7 +60,7 @@ public class CaptchaValidator implements ConstraintValidator<Captcha, String> {
 		}
 	}
 	
-	@Value(SaUtil.RECAPTCHA_SECRET_KEY)
+	@Value("${reCaptcha.secretKey:null}")
 	private String reCaptchaSecretKey;
 	
 	@Resource

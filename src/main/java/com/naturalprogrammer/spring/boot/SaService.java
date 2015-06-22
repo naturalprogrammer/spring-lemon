@@ -1,6 +1,7 @@
 package com.naturalprogrammer.spring.boot;
 
 import java.io.Serializable;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -40,17 +41,20 @@ public abstract class SaService<U extends BaseUser<U,ID>, ID extends Serializabl
 
     private final Log log = LogFactory.getLog(getClass());
     
-	@Value(SaUtil.APPLICATION_URL)
-    private String applicationUrl;
+//	@Value(SaUtil.APPLICATION_URL)
+//    private String applicationUrl;
 	
-	@Value(SaUtil.RECAPTCHA_SITE_KEY)
-    private String reCaptchaSiteKey;
+//	@Value(SaUtil.RECAPTCHA_SITE_KEY)
+//    private String reCaptchaSiteKey;
 	
-	@Value("${admin.email}")
+	@Value("${adminUser.email}")
 	private String adminEmail;
 
-	@Value("${admin.password}")
+	@Value("${adminUser.password}")
 	private String adminPassword;
+	
+	@Autowired
+	private PublicProperties properties;
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
@@ -104,10 +108,24 @@ public abstract class SaService<U extends BaseUser<U,ID>, ID extends Serializabl
 
 	abstract protected U newUser();
 
-	public ContextDto getContext() {
-		ContextDto contextDto = new ContextDto();
-		contextDto.setReCaptchaSiteKey(reCaptchaSiteKey);
-		return contextDto;		
+	@Autowired
+	private PublicProperties publicProperties;
+	
+	/**
+	 * To send custom properties, you can 
+	 * use other.foo in application.properties OR
+	 * Override PublicProperties class and this method
+	 * 
+	 * @return
+	 */
+	public PublicProperties getContext() {
+		
+		return publicProperties;
+		
+		
+//		ContextDto contextDto = new ContextDto();
+//		contextDto.setReCaptchaSiteKey(reCaptchaSiteKey);
+//		return contextDto;		
 	}
 	
 	@PreAuthorize("isAnonymous()")
@@ -139,7 +157,7 @@ public abstract class SaService<U extends BaseUser<U,ID>, ID extends Serializabl
 			        @Override
 			        public void afterCommit() {
 			    		try {
-			    			String verifyLink = applicationUrl + "/users/" + user.getVerificationCode() + "/verify";
+			    			String verifyLink = properties.getApplicationUrl() + "/users/" + user.getVerificationCode() + "/verify";
 			    			mailSender.send(user.getEmail(), SaUtil.getMessage("verifySubject"), SaUtil.getMessage("verifyEmail", verifyLink));
 			    			log.info("Verification mail to " + user.getEmail() + " queued.");
 						} catch (MessagingException e) {
@@ -211,7 +229,7 @@ public abstract class SaService<U extends BaseUser<U,ID>, ID extends Serializabl
 	private void mailForgotPasswordLink(U user) throws MessagingException {
 		
 		String forgotPasswordLink = 
-				applicationUrl + "/reset-password/" +
+				properties.getApplicationUrl() + "/reset-password/" +
 				user.getForgotPasswordCode();
 		mailSender.send(user.getEmail(),
 				SaUtil.getMessage("forgotPasswordSubject"),

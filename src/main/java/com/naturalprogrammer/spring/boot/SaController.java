@@ -28,7 +28,7 @@ public class SaController<U extends BaseUser<U,ID>, ID extends Serializable> {
 	}
 	
 	@RequestMapping("/context")
-	public Map<String, Object> contextDto() {
+	public Map<String, Object> context() {
 		return SaUtil.mapOf("context", saService.getContext(),
 							"loggedIn", saService.userForClient());
 	}

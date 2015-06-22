@@ -11,12 +11,14 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 import org.springframework.stereotype.Component;
 
+import com.naturalprogrammer.spring.boot.PublicProperties;
 import com.naturalprogrammer.spring.boot.util.SaUtil;
 
 /**
@@ -29,13 +31,13 @@ import com.naturalprogrammer.spring.boot.util.SaUtil;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class SimpleCorsFilter implements Filter {
 
-	@Value(SaUtil.APPLICATION_URL)
-	private String applicationUrl;	
+	@Autowired
+	PublicProperties properties;
 	
 	public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
 		
 		HttpServletResponse response = (HttpServletResponse) res;
-		response.setHeader("Access-Control-Allow-Origin", applicationUrl); // "*" does not work when $httpProvider.defaults.withCredentials = true;
+		response.setHeader("Access-Control-Allow-Origin", properties.getApplicationUrl()); // "*" does not work when $httpProvider.defaults.withCredentials = true;
 		response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
 		response.setHeader("Access-Control-Max-Age", "3600");
 		response.setHeader("Access-Control-Allow-Headers", "x-requested-with,origin,content-type,accept,X-CSRF-TOKEN");
