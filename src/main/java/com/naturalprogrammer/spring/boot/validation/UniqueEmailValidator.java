@@ -23,7 +23,7 @@ import com.naturalprogrammer.spring.boot.domain.BaseUserRepository;
 public class UniqueEmailValidator implements ConstraintValidator<UniqueEmail, String> {
 
 	@Autowired
-	private BaseUserRepository<? extends BaseUser, ? extends Serializable> userRepository;
+	private BaseUserRepository<? extends BaseUser<?,?>, ? extends Serializable> userRepository;
 	
 	@Override
 	public void initialize(UniqueEmail constraintAnnotation) {

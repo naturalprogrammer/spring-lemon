@@ -16,7 +16,6 @@ import javax.validation.Payload;
 import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.NotBlank;
-import org.hibernate.validator.constraints.NotEmpty;
 
 import com.naturalprogrammer.spring.boot.domain.BaseUser;
 

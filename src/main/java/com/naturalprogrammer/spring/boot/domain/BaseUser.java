@@ -10,10 +10,7 @@ import javax.persistence.ElementCollection;
 import javax.persistence.FetchType;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
-import javax.validation.constraints.Size;
 
-import org.hibernate.validator.constraints.Email;
-import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -47,9 +44,6 @@ public abstract class BaseUser<U extends BaseUser<U,ID>, ID extends Serializable
 	public interface SignUpValidation {}
 	public interface UpdateValidation {}
 	
-	@NotBlank(message = "{com.naturalprogrammer.spring.required.email}")
-	@Size(min=EMAIL_MIN, max=EMAIL_MAX, groups = {SignUpValidation.class})
-	@Email(groups = {SignUpValidation.class})
 	@UniqueEmail(groups = {SignUpValidation.class})
 	@Column(nullable = false, length = EMAIL_MAX)
 	protected String email;
