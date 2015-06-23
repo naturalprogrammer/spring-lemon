@@ -25,7 +25,8 @@ class UserDetailsServiceImpl<U extends BaseUser<U,ID>, ID extends Serializable> 
 		if (user == null)
 			throw new UsernameNotFoundException(email);
 
-		return new UserDetailsImpl<U,ID>(user);
+		return user;
+		//return new UserDetailsImpl<U,ID>(user);
 
 	}
 

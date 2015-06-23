@@ -17,7 +17,6 @@ import com.naturalprogrammer.spring.boot.domain.BaseUser;
 import com.naturalprogrammer.spring.boot.domain.VersionedEntity;
 import com.naturalprogrammer.spring.boot.exceptions.MultiErrorException;
 import com.naturalprogrammer.spring.boot.exceptions.VersionException;
-import com.naturalprogrammer.spring.boot.security.UserDetailsImpl;
 
 @Component
 public class SaUtil {
@@ -67,8 +66,8 @@ public class SaUtil {
 		
 	    if (auth != null) {
 	      Object principal = auth.getPrincipal();
-	      if (principal instanceof UserDetailsImpl) {
-	        return ((UserDetailsImpl<U,ID>) principal).getUser();
+	      if (principal instanceof BaseUser<?,?>) {
+	        return (U) principal;
 	      }
 	    }
 	    return null;	  
@@ -82,9 +81,9 @@ public class SaUtil {
 	
     public static <U extends BaseUser<U,ID>, ID extends Serializable> void logInUser(U user) {
     	
-        UserDetailsImpl<U,ID> userDetails = new UserDetailsImpl<U,ID>(user);
+        //UserDetailsImpl<U,ID> userDetails = new UserDetailsImpl<U,ID>(user);
  
-        Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        Authentication authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 

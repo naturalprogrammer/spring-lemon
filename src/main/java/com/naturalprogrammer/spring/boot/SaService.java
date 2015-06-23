@@ -185,7 +185,7 @@ public abstract class SaService<U extends BaseUser<U,ID>, ID extends Serializabl
 	public void verifyUser(String verificationCode) {
 		
 		U user = userRepository.findByVerificationCode(verificationCode);
-		SaUtil.check(user != null, "userNotFound");
+		SaUtil.check(user != null, "userNotFound").go();
 		
 		user.setVerificationCode(null);
 		user.getRoles().remove(Role.UNVERIFIED);
@@ -198,7 +198,7 @@ public abstract class SaService<U extends BaseUser<U,ID>, ID extends Serializabl
 		
 		final U user = userRepository.findByEmail(email);
 
-		SaUtil.check(user != null, "userNotFound");
+		SaUtil.check(user != null, "userNotFound").go();
 		
 		user.setForgotPasswordCode(UUID.randomUUID().toString());
 		userRepository.save(user);

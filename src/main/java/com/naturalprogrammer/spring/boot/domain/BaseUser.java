@@ -1,6 +1,7 @@
 package com.naturalprogrammer.spring.boot.domain;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -13,6 +14,9 @@ import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import com.naturalprogrammer.spring.boot.util.SaUtil;
 import com.naturalprogrammer.spring.boot.validation.Captcha;
@@ -20,7 +24,7 @@ import com.naturalprogrammer.spring.boot.validation.Password;
 import com.naturalprogrammer.spring.boot.validation.UniqueEmail;
 
 @MappedSuperclass
-public abstract class BaseUser<U extends BaseUser<U,ID>, ID extends Serializable> extends VersionedEntity<U, ID> {
+public abstract class BaseUser<U extends BaseUser<U,ID>, ID extends Serializable> extends VersionedEntity<U, ID> implements UserDetails {
 	
 	private static final long serialVersionUID = 655067760361294864L;
 	
@@ -122,6 +126,7 @@ public abstract class BaseUser<U extends BaseUser<U,ID>, ID extends Serializable
 		this.email = email;
 	}
 
+	@Override
 	public String getPassword() {
 		return password;
 	}
@@ -244,6 +249,46 @@ public abstract class BaseUser<U extends BaseUser<U,ID>, ID extends Serializable
 		return "BaseUser [email=" + email + ", verificationCode="
 				+ verificationCode + ", forgotPasswordCode="
 				+ forgotPasswordCode + ", roles=" + roles + "]";
+	}
+	
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		
+		Collection<GrantedAuthority> authorities = new HashSet<GrantedAuthority>(
+				roles.size() + 1);
+
+		for (String role : roles)
+			authorities.add(new SimpleGrantedAuthority("ROLE_" + role));
+
+		//authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+
+		return authorities;
+		
+	}
+
+	@Override
+	public String getUsername() {
+		return email;
+	}
+
+	@Override
+	public boolean isAccountNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isAccountNonLocked() {
+		return true;
+	}
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isEnabled() {
+		return true;
 	}
 
 }

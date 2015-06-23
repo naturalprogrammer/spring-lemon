@@ -46,7 +46,7 @@ public class DefaultExceptionHandler {
 		Collection<FieldError> errors = ex.getErrors();
 		
     	log.error("MultiErrorException: " + errors.toString());
-		return SaUtil.mapOf("exception", "MultiErrorException", "errors", errors);
+		return SaUtil.mapOf("exception", "MultiErrorException", "message", ex.getMessage(), "errors", errors);
 
     }
 
