@@ -4,6 +4,9 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.mail.MessagingException;
+
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.MessageSource;
@@ -12,6 +15,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.support.TransactionSynchronizationAdapter;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import com.naturalprogrammer.spring.boot.domain.BaseUser;
 import com.naturalprogrammer.spring.boot.domain.VersionedEntity;
@@ -110,6 +115,16 @@ public class SaUtil {
 
 	public static MultiErrorException check(String fieldName, boolean valid, String messageKey, Object... args) {
 		return new MultiErrorException().check(fieldName, valid, messageKey, args);
+	}
+
+	public static void afterCommit(Runnable runnable) {
+		TransactionSynchronizationManager.registerSynchronization(
+		    new TransactionSynchronizationAdapter() {
+		        @Override
+		        public void afterCommit() {
+		        	runnable.run();
+		        }
+		});				
 	}
 
 }

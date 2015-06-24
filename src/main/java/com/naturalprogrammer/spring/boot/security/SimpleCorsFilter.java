@@ -38,7 +38,7 @@ public class SimpleCorsFilter implements Filter {
 		
 		HttpServletResponse response = (HttpServletResponse) res;
 		response.setHeader("Access-Control-Allow-Origin", properties.getApplicationUrl()); // "*" does not work when $httpProvider.defaults.withCredentials = true;
-		response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+		response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS");
 		response.setHeader("Access-Control-Max-Age", "3600");
 		response.setHeader("Access-Control-Allow-Headers", "x-requested-with,origin,content-type,accept,X-CSRF-TOKEN");
 		response.setHeader("Access-Control-Allow-Credentials", "true"); // needed when $httpProvider.defaults.withCredentials = true;

@@ -144,20 +144,15 @@ public abstract class SaService<U extends BaseUser<U,ID>, ID extends Serializabl
 	}
 	
 	protected void sendVerificationMail(final U user) {
-		TransactionSynchronizationManager.registerSynchronization(
-			    new TransactionSynchronizationAdapter() {
-			        @Override
-			        public void afterCommit() {
-			    		try {
-			    			String verifyLink = properties.getApplicationUrl() + "/users/" + user.getVerificationCode() + "/verify";
-			    			mailSender.send(user.getEmail(), SaUtil.getMessage("verifySubject"), SaUtil.getMessage("verifyEmail", verifyLink));
-			    			log.info("Verification mail to " + user.getEmail() + " queued.");
-						} catch (MessagingException e) {
-							log.error(ExceptionUtils.getStackTrace(e));
-						}
-			        }
-			    });
-			
+        SaUtil.afterCommit(() -> {
+    		try {
+    			String verifyLink = properties.getApplicationUrl() + "/users/" + user.getVerificationCode() + "/verify";
+    			mailSender.send(user.getEmail(), SaUtil.getMessage("verifySubject"), SaUtil.getMessage("verifyEmail", verifyLink));
+    			log.info("Verification mail to " + user.getEmail() + " queued.");
+			} catch (MessagingException e) {
+				log.error(ExceptionUtils.getStackTrace(e));
+			}
+        });			
 	}
 
 	public U fetchUser(@Valid @Email @NotBlank String email) {
@@ -203,28 +198,36 @@ public abstract class SaService<U extends BaseUser<U,ID>, ID extends Serializabl
 		user.setForgotPasswordCode(UUID.randomUUID().toString());
 		userRepository.save(user);
 
-		TransactionSynchronizationManager.registerSynchronization(
-			    new TransactionSynchronizationAdapter() {
-			        @Override
-			        public void afterCommit() {
-			        	try {
-							mailForgotPasswordLink(user);
-						} catch (MessagingException e) {
-							log.error(ExceptionUtils.getStackTrace(e));
-						}
-			        }
-
-		    });				
+		SaUtil.afterCommit(() -> {
+		    mailForgotPasswordLink(user);
+		});
+		
+//		TransactionSynchronizationManager.registerSynchronization(
+//			    new TransactionSynchronizationAdapter() {
+//			        @Override
+//			        public void afterCommit() {
+//			        	try {
+//							mailForgotPasswordLink(user);
+//						} catch (MessagingException e) {
+//							log.error(ExceptionUtils.getStackTrace(e));
+//						}
+//			        }
+//
+//		    });				
 	}
 	
-	private void mailForgotPasswordLink(U user) throws MessagingException {
+	private void mailForgotPasswordLink(U user) {
 		
-		String forgotPasswordLink = 
-				properties.getApplicationUrl() + "/reset-password/" +
-				user.getForgotPasswordCode();
-		mailSender.send(user.getEmail(),
-				SaUtil.getMessage("forgotPasswordSubject"),
-				SaUtil.getMessage("forgotPasswordEmail", forgotPasswordLink));
+		try {
+			String forgotPasswordLink = 
+					properties.getApplicationUrl() + "/reset-password/" +
+					user.getForgotPasswordCode();
+			mailSender.send(user.getEmail(),
+					SaUtil.getMessage("forgotPasswordSubject"),
+					SaUtil.getMessage("forgotPasswordEmail", forgotPasswordLink));
+		} catch (MessagingException e) {
+			log.error(ExceptionUtils.getStackTrace(e));
+		}
 
 	}
 
@@ -271,6 +274,12 @@ public abstract class SaService<U extends BaseUser<U,ID>, ID extends Serializabl
 		user.setPassword(passwordEncoder.encode(changePasswordForm.getPassword()));
 		userRepository.save(user);
 		
+		SaUtil.afterCommit(() -> {
+			U loggedIn = SaUtil.getLoggedInUser();
+			if (loggedIn.equals(user))
+				loggedIn.setPassword(user.getPassword());
+		});
+		
 	}
 
 
@@ -303,8 +312,10 @@ public abstract class SaService<U extends BaseUser<U,ID>, ID extends Serializabl
 				roles.remove(Role.BLOCKED);
 		}
 		
-		if (loggedIn.equals(user))
-			loggedIn.setRoles(user.getRoles());
+		SaUtil.afterCommit(() -> {
+			if (loggedIn.equals(user))
+				loggedIn.setRoles(user.getRoles());
+		});
 
 	}
 

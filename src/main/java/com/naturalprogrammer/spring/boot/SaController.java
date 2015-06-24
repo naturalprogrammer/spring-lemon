@@ -23,12 +23,12 @@ public class SaController<U extends BaseUser<U,ID>, ID extends Serializable> {
 	@Autowired
 	private SaService<U, ID> saService;
 	
-	@RequestMapping("/ping")
+	@RequestMapping(value="/ping", method=RequestMethod.GET)
 	public void ping() {
 		log.info("Received a ping");
 	}
 	
-	@RequestMapping("/context")
+	@RequestMapping(value="/context", method=RequestMethod.GET)
 	public Map<String, Object> context() {
 		return SaUtil.mapOf("context", saService.getContext(),
 							"loggedIn", saService.userForClient());
@@ -66,14 +66,14 @@ public class SaController<U extends BaseUser<U,ID>, ID extends Serializable> {
 
 	}
 	
-	@RequestMapping(value="/users/fetch-by-email")
+	@RequestMapping(value="/users/fetch-by-email", method=RequestMethod.GET)
 	public U fetchByEmail(@RequestParam("email") String email) {
 		
 		return saService.fetchUser(email);
 
 	}
 	
-	@RequestMapping(value="/users/{id}/fetch-by-id")
+	@RequestMapping(value="/users/{id}/fetch-by-id", method=RequestMethod.GET)
 	public U fetchById(@PathVariable("id") U user) {
 		
 		return saService.fetchUser(user);
@@ -95,8 +95,8 @@ public class SaController<U extends BaseUser<U,ID>, ID extends Serializable> {
 	/**
 	 * Update
 	 */
-	@RequestMapping(value="/users/{id}/update", method=RequestMethod.POST)
-	public U signup(@PathVariable("id") U user, @RequestBody U updatedUser) {
+	@RequestMapping(value="/users/{id}/update", method=RequestMethod.PATCH)
+	public U updateUser(@PathVariable("id") U user, @RequestBody U updatedUser) {
 		
 		return saService.updateUser(user, updatedUser);
 
@@ -106,7 +106,7 @@ public class SaController<U extends BaseUser<U,ID>, ID extends Serializable> {
 	/**
 	 * Change Password
 	 */
-	@RequestMapping(value="/users/{id}/change-password", method=RequestMethod.POST)
+	@RequestMapping(value="/users/{id}/change-password", method=RequestMethod.PATCH)
 	public void changePassword(@PathVariable("id") U user, @RequestBody ChangePasswordForm changePasswordForm) {
 		
 		saService.changePassword(user, changePasswordForm);
