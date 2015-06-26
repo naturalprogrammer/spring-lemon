@@ -79,7 +79,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		return filter;
 	}
 	
-    @Autowired
+    //@Autowired is this needed?
     @Override
     protected void configure(AuthenticationManagerBuilder authManagerBuilder) throws Exception {
         authManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
@@ -122,6 +122,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				//.invalidateHttpSession(true)
 				.deleteCookies("JSESSIONID", REMEMBER_ME_COOKIE)
 				.and()
+//			.headers() These are defaults
+//				.frameOptions().deny()
+//				.and()
 			.rememberMe()
 				.key(rememberMeKey)
 				.rememberMeServices(rememberMeServices())
