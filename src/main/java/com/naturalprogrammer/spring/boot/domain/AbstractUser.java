@@ -252,20 +252,20 @@ implements UserDetails {
 				+ forgotPasswordCode + ", roles=" + roles + "]";
 	}
 	
-	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
-		
-		Collection<GrantedAuthority> authorities = new HashSet<GrantedAuthority>(
-				roles.size() + 1);
+@Override
+public Collection<? extends GrantedAuthority> getAuthorities() {
+	
+	Collection<GrantedAuthority> authorities = new HashSet<GrantedAuthority>(
+			roles.size());
 
-		for (String role : roles)
-			authorities.add(new SimpleGrantedAuthority("ROLE_" + role));
+	for (String role : roles)
+		authorities.add(new SimpleGrantedAuthority("ROLE_" + role));
 
-		//authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+	//authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
 
-		return authorities;
-		
-	}
+	return authorities;
+	
+}
 
 	@Override
 	public String getUsername() {

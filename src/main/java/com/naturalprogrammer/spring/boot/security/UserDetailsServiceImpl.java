@@ -9,13 +9,15 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.naturalprogrammer.spring.boot.domain.AbstractUser;
-import com.naturalprogrammer.spring.boot.domain.BaseUserRepository;
+import com.naturalprogrammer.spring.boot.domain.AbstractUserRepository;
 
 @Service
-class UserDetailsServiceImpl<U extends AbstractUser<U,ID>, ID extends Serializable> implements UserDetailsService {
+class UserDetailsServiceImpl
+	<U extends AbstractUser<U,ID>, ID extends Serializable>
+implements UserDetailsService {
 
     @Autowired
-	private BaseUserRepository<U,ID> userRepository;
+	private AbstractUserRepository<U,ID> userRepository;
 	
 	@Override
 	public UserDetails loadUserByUsername(String email)

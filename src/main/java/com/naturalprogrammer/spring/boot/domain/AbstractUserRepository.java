@@ -13,12 +13,13 @@ import org.springframework.data.repository.NoRepositoryBean;
  * @param <U>
  */
 @NoRepositoryBean
-public abstract interface BaseUserRepository<U extends AbstractUser<U,ID>, ID extends Serializable> extends JpaRepository<U, ID> {
+public abstract interface AbstractUserRepository
+	<U extends AbstractUser<U,ID>, ID extends Serializable>
+extends JpaRepository<U, ID> {
 	
 	U findByEmail(String email);
 
 	U findByForgotPasswordCode(String forgotPasswordCode);
 
 	U findByVerificationCode(String verificationCode);
-
 }

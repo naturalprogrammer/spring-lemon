@@ -27,7 +27,7 @@ import org.springframework.validation.annotation.Validated;
 import com.naturalprogrammer.spring.boot.domain.AbstractUser;
 import com.naturalprogrammer.spring.boot.domain.AbstractUser.Role;
 import com.naturalprogrammer.spring.boot.domain.AbstractUser.SignUpValidation;
-import com.naturalprogrammer.spring.boot.domain.BaseUserRepository;
+import com.naturalprogrammer.spring.boot.domain.AbstractUserRepository;
 import com.naturalprogrammer.spring.boot.domain.ChangePasswordForm;
 import com.naturalprogrammer.spring.boot.mail.MailSender;
 import com.naturalprogrammer.spring.boot.util.SaUtil;
@@ -55,7 +55,7 @@ public abstract class SaService<U extends AbstractUser<U,ID>, ID extends Seriali
     private MailSender mailSender;
 
     @Autowired
-	private BaseUserRepository<U, ID> userRepository;
+	private AbstractUserRepository<U, ID> userRepository;
     
     
     /**
