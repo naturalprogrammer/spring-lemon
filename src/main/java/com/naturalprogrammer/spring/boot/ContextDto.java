@@ -3,7 +3,7 @@
 //public class ContextDto {
 //
 //	protected String reCaptchaSiteKey;
-////	protected BaseUser user;
+////	protected AbstractUser user;
 //
 //	public String getReCaptchaSiteKey() {
 //		return reCaptchaSiteKey;

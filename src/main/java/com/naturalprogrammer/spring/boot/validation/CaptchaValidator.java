@@ -22,7 +22,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.naturalprogrammer.spring.boot.domain.BaseUser;
+import com.naturalprogrammer.spring.boot.domain.AbstractUser;
 import com.naturalprogrammer.spring.boot.domain.BaseUserRepository;
 import com.naturalprogrammer.spring.boot.util.SaUtil;
 

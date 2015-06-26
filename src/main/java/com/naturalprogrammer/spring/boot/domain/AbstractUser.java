@@ -21,7 +21,10 @@ import com.naturalprogrammer.spring.boot.validation.Password;
 import com.naturalprogrammer.spring.boot.validation.UniqueEmail;
 
 @MappedSuperclass
-public abstract class BaseUser<U extends BaseUser<U,ID>, ID extends Serializable> extends VersionedEntity<U, ID> implements UserDetails {
+public abstract class AbstractUser
+	<U extends AbstractUser<U,ID>, ID extends Serializable>
+extends VersionedEntity<U, ID>
+implements UserDetails {
 	
 	private static final long serialVersionUID = 655067760361294864L;
 	
@@ -168,6 +171,10 @@ public abstract class BaseUser<U extends BaseUser<U,ID>, ID extends Serializable
 	public void setRolesEditable(boolean rolesEditable) {
 		this.rolesEditable = rolesEditable;
 	}
+	
+	public boolean hasRole(String role) {
+		return role.contains(role);
+	}
 
 //	public UserDto<ID> getUserDto() {
 //		
@@ -179,9 +186,9 @@ public abstract class BaseUser<U extends BaseUser<U,ID>, ID extends Serializable
 //		return userDto;
 //	}
 
-//	public static <U extends BaseUser<U,ID>, ID extends Serializable> BaseUser<U, ID> of(SignupForm signupForm) {
+//	public static <U extends AbstractUser<U,ID>, ID extends Serializable> AbstractUser<U, ID> of(SignupForm signupForm) {
 //		 
-//		final BaseUser<U,ID> baseUser = SaUtil.getBean(BaseUser.class);
+//		final AbstractUser<U,ID> baseUser = SaUtil.getBean(AbstractUser.class);
 //			
 //		baseUser.setEmail(signupForm.getEmail());
 //		baseUser.setName(signupForm.getName());
@@ -240,7 +247,7 @@ public abstract class BaseUser<U extends BaseUser<U,ID>, ID extends Serializable
 	
 	@Override
 	public String toString() {
-		return "BaseUser [email=" + email + ", verificationCode="
+		return "AbstractUser [email=" + email + ", verificationCode="
 				+ verificationCode + ", forgotPasswordCode="
 				+ forgotPasswordCode + ", roles=" + roles + "]";
 	}

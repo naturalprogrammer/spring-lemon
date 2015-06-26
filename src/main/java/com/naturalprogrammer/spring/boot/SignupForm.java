@@ -5,7 +5,7 @@
 //import org.hibernate.validator.constraints.Email;
 //import org.hibernate.validator.constraints.NotBlank;
 //
-//import com.naturalprogrammer.spring.boot.domain.BaseUser;
+//import com.naturalprogrammer.spring.boot.domain.AbstractUser;
 //import com.naturalprogrammer.spring.boot.validation.Captcha;
 //import com.naturalprogrammer.spring.boot.validation.Password;
 //import com.naturalprogrammer.spring.boot.validation.UniqueEmail;
@@ -18,10 +18,10 @@
 // */
 //public class SignupForm {
 //
-//	@Size(min=BaseUser.NAME_MIN, max=BaseUser.NAME_MAX)
+//	@Size(min=AbstractUser.NAME_MIN, max=AbstractUser.NAME_MAX)
 //	private String name;
 //	
-//	@Size(min=4, max=BaseUser.EMAIL_MAX)
+//	@Size(min=4, max=AbstractUser.EMAIL_MAX)
 //	@Email
 //	@UniqueEmail
 //	private String email;

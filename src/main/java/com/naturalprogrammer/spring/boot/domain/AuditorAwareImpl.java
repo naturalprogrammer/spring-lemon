@@ -8,12 +8,13 @@ import org.springframework.stereotype.Component;
 import com.naturalprogrammer.spring.boot.util.SaUtil;
 
 @Component
-public class AuditorAwareImpl<U extends BaseUser<U,ID>, ID extends Serializable> implements AuditorAware<U> {
+public class AuditorAwareImpl
+	<U extends AbstractUser<U,ID>,
+	 ID extends Serializable>
+implements AuditorAware<U> {
 
 	public U getCurrentAuditor() {
-
 		return SaUtil.getLoggedInUser();
-		
 	}
-		
+	
 }

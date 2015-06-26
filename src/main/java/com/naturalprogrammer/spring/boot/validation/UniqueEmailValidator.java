@@ -8,7 +8,7 @@ import javax.validation.ConstraintValidatorContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.naturalprogrammer.spring.boot.domain.BaseUser;
+import com.naturalprogrammer.spring.boot.domain.AbstractUser;
 import com.naturalprogrammer.spring.boot.domain.BaseUserRepository;
 
 /**
@@ -23,7 +23,7 @@ import com.naturalprogrammer.spring.boot.domain.BaseUserRepository;
 public class UniqueEmailValidator implements ConstraintValidator<UniqueEmail, String> {
 
 	@Autowired
-	private BaseUserRepository<? extends BaseUser<?,?>, ? extends Serializable> userRepository;
+	private BaseUserRepository<? extends AbstractUser<?,?>, ? extends Serializable> userRepository;
 	
 	@Override
 	public void initialize(UniqueEmail constraintAnnotation) {

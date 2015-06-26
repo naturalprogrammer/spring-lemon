@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.naturalprogrammer.spring.boot.domain.BaseUser;
+import com.naturalprogrammer.spring.boot.domain.AbstractUser;
 import com.naturalprogrammer.spring.boot.domain.ChangePasswordForm;
 import com.naturalprogrammer.spring.boot.util.SaUtil;
 
-public class SaController<U extends BaseUser<U,ID>, ID extends Serializable> {
+public class SaController<U extends AbstractUser<U,ID>, ID extends Serializable> {
 
 	private Log log = LogFactory.getLog(getClass());
 

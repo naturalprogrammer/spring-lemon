@@ -8,9 +8,9 @@
 //import org.springframework.security.core.authority.SimpleGrantedAuthority;
 //import org.springframework.security.core.userdetails.UserDetails;
 //
-//import com.naturalprogrammer.spring.boot.domain.BaseUser;
+//import com.naturalprogrammer.spring.boot.domain.AbstractUser;
 //
-//public class UserDetailsImpl<U extends BaseUser<U,ID>, ID extends Serializable> implements UserDetails {
+//public class UserDetailsImpl<U extends AbstractUser<U,ID>, ID extends Serializable> implements UserDetails {
 //
 //
 //	private static final long serialVersionUID = -3862469610636495180L;

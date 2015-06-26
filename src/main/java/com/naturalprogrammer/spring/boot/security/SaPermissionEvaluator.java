@@ -6,12 +6,12 @@ import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
-import com.naturalprogrammer.spring.boot.domain.BaseUser;
+import com.naturalprogrammer.spring.boot.domain.AbstractUser;
 import com.naturalprogrammer.spring.boot.domain.VersionedEntity;
 import com.naturalprogrammer.spring.boot.util.SaUtil;
 
 @Component
-public class SaPermissionEvaluator<U extends BaseUser<U,ID>, ID extends Serializable> implements PermissionEvaluator {
+public class SaPermissionEvaluator<U extends AbstractUser<U,ID>, ID extends Serializable> implements PermissionEvaluator {
 
 	@Override
 	public boolean hasPermission(Authentication auth,

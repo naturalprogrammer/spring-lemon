@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.support.TransactionSynchronizationAdapter;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
-import com.naturalprogrammer.spring.boot.domain.BaseUser;
+import com.naturalprogrammer.spring.boot.domain.AbstractUser;
 import com.naturalprogrammer.spring.boot.domain.VersionedEntity;
 import com.naturalprogrammer.spring.boot.exceptions.MultiErrorException;
 import com.naturalprogrammer.spring.boot.exceptions.VersionException;
@@ -67,11 +67,11 @@ public class SaUtil {
 	    return map;
 	}
 	
-	public static <U extends BaseUser<U,ID>, ID extends Serializable> U getUser(Authentication auth) {
+	public static <U extends AbstractUser<U,ID>, ID extends Serializable> U getUser(Authentication auth) {
 		
 	    if (auth != null) {
 	      Object principal = auth.getPrincipal();
-	      if (principal instanceof BaseUser<?,?>) {
+	      if (principal instanceof AbstractUser<?,?>) {
 	        return (U) principal;
 	      }
 	    }
@@ -79,12 +79,12 @@ public class SaUtil {
 	}
 	
 
-	public static <U extends BaseUser<U,ID>, ID extends Serializable> U getLoggedInUser() {
+	public static <U extends AbstractUser<U,ID>, ID extends Serializable> U getLoggedInUser() {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		return getUser(auth);
 	}
 	
-    public static <U extends BaseUser<U,ID>, ID extends Serializable> void logInUser(U user) {
+    public static <U extends AbstractUser<U,ID>, ID extends Serializable> void logInUser(U user) {
     	
         //UserDetailsImpl<U,ID> userDetails = new UserDetailsImpl<U,ID>(user);
  
@@ -97,7 +97,7 @@ public class SaUtil {
 //			throw new BadRequestException(messageKey, args);
 //	}
 	
-	public static <U extends BaseUser<U,ID>, ID extends Serializable>
+	public static <U extends AbstractUser<U,ID>, ID extends Serializable>
 	void validateVersion(VersionedEntity<U,ID> original, VersionedEntity<U,ID> updated) {
 		
 		if (original.getVersion() != updated.getVersion())

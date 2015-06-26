@@ -12,7 +12,7 @@ import javax.validation.constraints.Size;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
 
-import com.naturalprogrammer.spring.boot.domain.BaseUser;
+import com.naturalprogrammer.spring.boot.domain.AbstractUser;
 
 /**
  * Reference
@@ -23,7 +23,7 @@ import com.naturalprogrammer.spring.boot.domain.BaseUser;
  *
  */
 @NotBlank(message = "{com.naturalprogrammer.spring.required.email}")
-@Size(min=BaseUser.EMAIL_MIN, max=BaseUser.EMAIL_MAX)
+@Size(min=AbstractUser.EMAIL_MIN, max=AbstractUser.EMAIL_MAX)
 @Email
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

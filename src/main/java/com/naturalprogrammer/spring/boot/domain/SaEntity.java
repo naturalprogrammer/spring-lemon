@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @MappedSuperclass
 @JsonIgnoreProperties({ "createdBy", "lastModifiedBy" })
-public class SaEntity<U extends BaseUser<U,ID>, ID extends Serializable> extends AbstractAuditable<U, ID> {
+public class SaEntity<U extends AbstractUser<U,ID>, ID extends Serializable> extends AbstractAuditable<U, ID> {
 
 	private static final long serialVersionUID = -8151190931948396443L;
 	
@@ -21,7 +21,7 @@ public class SaEntity<U extends BaseUser<U,ID>, ID extends Serializable> extends
 	 * @param permission
 	 * @return
 	 */
-	public boolean hasPermission(U loggedInUser, String permission) {
+	public boolean hasPermission(U user, String permission) {
 		return false;
 	}
 	

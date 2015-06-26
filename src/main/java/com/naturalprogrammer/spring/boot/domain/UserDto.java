@@ -3,7 +3,7 @@
 //import java.io.Serializable;
 //import java.util.Set;
 //
-//import com.naturalprogrammer.spring.boot.domain.BaseUser.Role;
+//import com.naturalprogrammer.spring.boot.domain.AbstractUser.Role;
 //
 //public class UserDto<ID extends Serializable> {
 //	

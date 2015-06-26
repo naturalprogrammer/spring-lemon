@@ -24,9 +24,9 @@ import org.springframework.transaction.support.TransactionSynchronizationAdapter
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.validation.annotation.Validated;
 
-import com.naturalprogrammer.spring.boot.domain.BaseUser;
-import com.naturalprogrammer.spring.boot.domain.BaseUser.Role;
-import com.naturalprogrammer.spring.boot.domain.BaseUser.SignUpValidation;
+import com.naturalprogrammer.spring.boot.domain.AbstractUser;
+import com.naturalprogrammer.spring.boot.domain.AbstractUser.Role;
+import com.naturalprogrammer.spring.boot.domain.AbstractUser.SignUpValidation;
 import com.naturalprogrammer.spring.boot.domain.BaseUserRepository;
 import com.naturalprogrammer.spring.boot.domain.ChangePasswordForm;
 import com.naturalprogrammer.spring.boot.mail.MailSender;
@@ -35,7 +35,7 @@ import com.naturalprogrammer.spring.boot.validation.Password;
 
 @Validated
 @Transactional(propagation=Propagation.SUPPORTS, readOnly=true)
-public abstract class SaService<U extends BaseUser<U,ID>, ID extends Serializable> {
+public abstract class SaService<U extends AbstractUser<U,ID>, ID extends Serializable> {
 
     private final Log log = LogFactory.getLog(getClass());
     
@@ -246,7 +246,7 @@ public abstract class SaService<U extends BaseUser<U,ID>, ID extends Serializabl
 	}
 
 	@PreAuthorize("hasPermission(#user, 'edit')")
-	@Validated(BaseUser.UpdateValidation.class)
+	@Validated(AbstractUser.UpdateValidation.class)
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
 	public U updateUser(U user, @Valid U updatedUser) {
 		
