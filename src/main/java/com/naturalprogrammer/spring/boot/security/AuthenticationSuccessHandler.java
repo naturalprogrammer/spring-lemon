@@ -18,17 +18,15 @@ import com.naturalprogrammer.spring.boot.SaService;
 import com.naturalprogrammer.spring.boot.util.SaUtil;
 
 @Component
-public class AuthSuccess extends SimpleUrlAuthenticationSuccessHandler {
+public class AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 	
-	private Log log = LogFactory.getLog(getClass());
+	// private Log log = LogFactory.getLog(getClass());
 	
     @Autowired
     private ObjectMapper objectMapper;
     
-//	@Autowired does not work
-//	private SaService<U, ID> saService;
-    
-	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
+	@Override
+    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
             Authentication authentication) throws IOException, ServletException {
 
         // instead of this, the statement below is introduced: handle(request, response, authentication);

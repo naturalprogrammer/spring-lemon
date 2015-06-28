@@ -3,7 +3,6 @@ package com.naturalprogrammer.spring.boot.security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -21,12 +20,9 @@ import org.springframework.security.web.authentication.rememberme.TokenBasedReme
 import org.springframework.security.web.authentication.switchuser.SwitchUserFilter;
 import org.springframework.security.web.csrf.CsrfFilter;
 
-import com.naturalprogrammer.spring.boot.util.SaUtil;
-
-@Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	private static final String REMEMBER_ME_COOKIE = "rememberMe";
 	private static final String REMEMBER_ME_PARAMETER = "rememberMe";
@@ -42,7 +38,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	private UserDetailsService userDetailsService;
 	
 	@Autowired
-	private AuthSuccess authSuccess;
+	private AuthenticationSuccessHandler authenticationSuccessHandler;
 	
 	@Autowired
 	private LogoutSuccessHandler logoutSuccessHandler;
@@ -71,7 +67,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	public SwitchUserFilter switchUserFilter() {
 		SwitchUserFilter filter = new SwitchUserFilter();
 		filter.setUserDetailsService(userDetailsService);
-		filter.setSuccessHandler(authSuccess);
+		filter.setSuccessHandler(authenticationSuccessHandler);
 		filter.setFailureHandler(authenticationFailureHandler());
 		//filter.setSwitchUserUrl("/j_spring_security_switch_user");
 		//filter.setExitUserUrl("/j_spring_security_exit_user");
@@ -81,8 +77,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
     //@Autowired is this needed?
     @Override
-    protected void configure(AuthenticationManagerBuilder authManagerBuilder) throws Exception {
-        authManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+    protected void configure(AuthenticationManagerBuilder builder) throws Exception {
+        builder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
     }
 	
 	@Override
@@ -97,7 +93,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				 * Setting a successUrl would redirect the user there. Instead,
 				 * let's send 200 and the userDto.
 				 *****************************************/
-				.successHandler(authSuccess)
+				.successHandler(authenticationSuccessHandler)
 				
 				/*******************************************
 				 * Setting the failureUrl will redirect the user to
@@ -133,13 +129,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			//.csrf()
 				//.csrfTokenRepository(csrfTokenRepository()).and()
 			.addFilterAfter(new CsrfHeaderFilter(), CsrfFilter.class)
-			.addFilterAfter(switchUserFilter(), FilterSecurityInterceptor.class)
-			.authorizeRequests()
-				.antMatchers("/login/impersonate*").hasRole("ADMIN")
-				.antMatchers("/logout/impersonate*").authenticated()
-				.antMatchers("/only-for-admin*").hasRole("ADMIN")
-				//.antMatchers("/secure").authenticated()
-				.antMatchers("/**").permitAll();                  
+			.addFilterAfter(switchUserFilter(), FilterSecurityInterceptor.class);
+		
+		authorizeRequests(http);
+	}
+
+	protected void authorizeRequests(HttpSecurity http) throws Exception {
+		http.authorizeRequests()
+			.antMatchers("/login/impersonate*").hasRole("ADMIN")
+			.antMatchers("/logout/impersonate*").authenticated()
+			.antMatchers("/only-for-admin*").hasRole("ADMIN")
+			//.antMatchers("/secure").authenticated()
+			.antMatchers("/**").permitAll();                  
 	}
 	
 	

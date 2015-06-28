@@ -15,7 +15,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.naturalprogrammer.spring.boot.util.SaUtil;
 
 @Component
-public class SaLogoutSuccessHandler implements LogoutSuccessHandler {
+public class LemonLogoutSuccessHandler implements LogoutSuccessHandler {
 
     @Autowired
     private ObjectMapper objectMapper;
