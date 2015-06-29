@@ -12,14 +12,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
-import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 import org.springframework.stereotype.Component;
 
 import com.naturalprogrammer.spring.boot.PublicProperties;
-import com.naturalprogrammer.spring.boot.util.SaUtil;
 
 /**
  * https://spring.io/guides/gs/rest-service-cors/

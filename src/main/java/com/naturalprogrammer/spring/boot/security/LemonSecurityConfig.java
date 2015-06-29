@@ -13,6 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
@@ -119,9 +120,15 @@ public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 				//.invalidateHttpSession(true)
 				.deleteCookies("JSESSIONID", REMEMBER_ME_COOKIE)
 				.and()
-//			.headers() These are defaults
-//				.frameOptions().deny()
-//				.and()
+				
+			.exceptionHandling()
+			
+				/***********************************************
+				 * To prevent redirection to the login page
+				 * when someone tries to access a restricted page
+				 **********************************************/
+				.authenticationEntryPoint(new Http403ForbiddenEntryPoint())
+				.and()
 			.rememberMe()
 				.key(rememberMeKey)
 				.rememberMeServices(rememberMeServices())
