@@ -12,6 +12,7 @@ import org.springframework.security.web.authentication.logout.LogoutSuccessHandl
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.naturalprogrammer.spring.boot.SaService;
 import com.naturalprogrammer.spring.boot.util.SaUtil;
 
 @Component
@@ -26,7 +27,7 @@ public class LemonLogoutSuccessHandler implements LogoutSuccessHandler {
 			throws IOException, ServletException {
 
     	response.setStatus(HttpServletResponse.SC_OK);
-    	response.getOutputStream().print(objectMapper.writeValueAsString(SaUtil.getLoggedInUser()));
+    	response.getOutputStream().print(objectMapper.writeValueAsString(SaUtil.getBean(SaService.class).userForClient()));
 		
 	}
 
