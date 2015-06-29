@@ -19,6 +19,8 @@ import org.springframework.security.web.authentication.logout.LogoutSuccessHandl
 import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices;
 import org.springframework.security.web.authentication.switchuser.SwitchUserFilter;
 import org.springframework.security.web.csrf.CsrfFilter;
+import org.springframework.security.web.csrf.CsrfTokenRepository;
+import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -26,7 +28,6 @@ public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	private static final String REMEMBER_ME_COOKIE = "rememberMe";
 	private static final String REMEMBER_ME_PARAMETER = "rememberMe";
-	//public static final String CSRF_TOKEN_HEADER = "X-XSRF-TOKEN";
 	
 //	@Value(SaUtil.APPLICATION_URL)
 //	private String applicationUrl;
@@ -126,8 +127,8 @@ public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 				.rememberMeServices(rememberMeServices())
 				.and()
 			//.csrf().disable()
-			//.csrf()
-				//.csrfTokenRepository(csrfTokenRepository()).and()
+			.csrf()
+				.csrfTokenRepository(csrfTokenRepository()).and()
 			.addFilterAfter(new CsrfHeaderFilter(), CsrfFilter.class)
 			.addFilterAfter(switchUserFilter(), FilterSecurityInterceptor.class);
 		
@@ -144,14 +145,17 @@ public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 	}
 	
 	
-//	public 
-//	
-//	private CsrfTokenRepository csrfTokenRepository() {
-//		
-//		HttpSessionCsrfTokenRepository repository = new HttpSessionCsrfTokenRepository();
-//		repository.setHeaderName(CSRF_TOKEN_HEADER);
-//		return repository;
-//		  
-//	}
-//
+	/**
+	 * Makes it compatible to AngularJS CSRF token header name
+	 *  
+	 * @return
+	 */
+	private CsrfTokenRepository csrfTokenRepository() {
+		
+		HttpSessionCsrfTokenRepository repository = new HttpSessionCsrfTokenRepository();
+		repository.setHeaderName("X-XSRF-TOKEN");
+		return repository;
+		  
+	}
+
 }
