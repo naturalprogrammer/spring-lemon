@@ -123,13 +123,12 @@ public abstract class SaService<U extends AbstractUser<U,ID>, ID extends Seriali
 	@PreAuthorize("isAnonymous()")
 	@Validated(SignUpValidation.class)
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
-	public U signup(@Valid U user) {
+	public void signup(@Valid U user) {
 		
 		initUser(user);
 		userRepository.save(user);
 		sendVerificationMail(user);
 		SaUtil.logInUser(user);
-		return userForClient(user);
 		
 	}
 	
@@ -248,7 +247,7 @@ public abstract class SaService<U extends AbstractUser<U,ID>, ID extends Seriali
 	@PreAuthorize("hasPermission(#user, 'edit')")
 	@Validated(AbstractUser.UpdateValidation.class)
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
-	public U updateUser(U user, @Valid U updatedUser) {
+	public void updateUser(U user, @Valid U updatedUser) {
 		
 		SaUtil.check(user != null, "userNotFound").go();
 		SaUtil.validateVersion(user, updatedUser);
@@ -258,7 +257,6 @@ public abstract class SaService<U extends AbstractUser<U,ID>, ID extends Seriali
 		updateUserFields(user, updatedUser, loggedIn);
 		
 		userRepository.save(user);		
-		return userForClient(loggedIn);
 		
 	}
 	
@@ -331,7 +329,7 @@ public abstract class SaService<U extends AbstractUser<U,ID>, ID extends Seriali
 	 * 
 	 * @param loggedIn
 	 */
-	public U userForClient(U loggedIn) {
+	protected U userForClient(U loggedIn) {
 		
 		if (loggedIn == null)
 			return null;

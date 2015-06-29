@@ -40,7 +40,8 @@ public class SaController<U extends AbstractUser<U,ID>, ID extends Serializable>
 	@RequestMapping(value="/signup", method=RequestMethod.POST)
 	public U signup(@RequestBody U user) {
 		
-		return saService.signup(user);
+		saService.signup(user);
+		return saService.userForClient();
 
 	}
 
@@ -98,8 +99,9 @@ public class SaController<U extends AbstractUser<U,ID>, ID extends Serializable>
 	@RequestMapping(value="/users/{id}/update", method=RequestMethod.PATCH)
 	public U updateUser(@PathVariable("id") U user, @RequestBody U updatedUser) {
 		
-		return saService.updateUser(user, updatedUser);
-
+		saService.updateUser(user, updatedUser);
+		return saService.userForClient();
+		
 	}
 	
 	
