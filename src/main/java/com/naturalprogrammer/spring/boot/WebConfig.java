@@ -19,10 +19,12 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 @EnableSpringDataWebSupport
 public class WebConfig extends WebMvcConfigurerAdapter {
 	
+	public final static String JSON_PREFIX = ")]}',\n";
+	
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
         MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
-        converter.setJsonPrefix(")]}',\n");
+        converter.setJsonPrefix(JSON_PREFIX);
         converters.add(converter);
     }
     
