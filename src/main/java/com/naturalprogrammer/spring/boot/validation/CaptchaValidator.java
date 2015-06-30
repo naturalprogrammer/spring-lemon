@@ -38,6 +38,9 @@ import com.naturalprogrammer.spring.boot.util.SaUtil;
 public class CaptchaValidator implements ConstraintValidator<Captcha, String> {
 	
 	private final Log log = LogFactory.getLog(getClass());
+	
+	@Value("${reCaptcha.enable:true}")
+	private boolean reCaptchaEnabled;
 
 	private static class ResponseData {
 		
@@ -69,9 +72,13 @@ public class CaptchaValidator implements ConstraintValidator<Captcha, String> {
 	@Override
 	public boolean isValid(String captchaResponse, ConstraintValidatorContext context) {
 		
-	    /**
+	    
+		/**
 	     * Refer http://www.journaldev.com/7133/how-to-integrate-google-recaptcha-in-java-web-application  
 	     */
+		
+		if (!reCaptchaEnabled) // e.g. while testing
+			return true;
 		
 		if (captchaResponse == null || "".equals(captchaResponse))
 	         return false;
