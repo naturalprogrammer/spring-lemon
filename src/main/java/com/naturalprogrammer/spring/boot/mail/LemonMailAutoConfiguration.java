@@ -1,21 +1,23 @@
 package com.naturalprogrammer.spring.boot.mail;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.mail.javamail.JavaMailSender;
 
 @Configuration
-public class MailConfig {
+@ConditionalOnMissingBean(MailSender.class)
+public class LemonMailAutoConfiguration {
 	
 	@Bean
-	@Profile("dev")
+	@ConditionalOnProperty(name="spring.mail.host", matchIfMissing=true)
 	public MailSender mockMailSender() {
 		return new MockMailSender();
 	}
 
 	@Bean
-	@Profile("!dev")
+	@ConditionalOnProperty("spring.mail.host")
 	public MailSender smtpMailSender(JavaMailSender javaMailSender) {
 		SmtpMailSender mailSender = new SmtpMailSender();
 		mailSender.setJavaMailSender(javaMailSender);
