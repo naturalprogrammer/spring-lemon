@@ -18,7 +18,7 @@ import org.springframework.web.util.WebUtils;
  * @author skpat_000
  *
  */
-public class CsrfHeaderFilter extends OncePerRequestFilter {
+public class CsrfCookieFilter extends OncePerRequestFilter {
 	
 	public static final String XSRF_TOKEN_COOKIE_NAME = "XSRF-TOKEN";
 	
@@ -27,21 +27,21 @@ public class CsrfHeaderFilter extends OncePerRequestFilter {
 			HttpServletResponse response, FilterChain filterChain)
 					throws ServletException, IOException {		
 
-		CsrfToken csrf = (CsrfToken) request.getAttribute(CsrfToken.class.getName()); // Or "_csrf" (See CSRFFilter.doFilterInternal).
+		CsrfToken csrf = (CsrfToken)
+			request.getAttribute(CsrfToken.class.getName()); // Or "_csrf" (See CSRFFilter.doFilterInternal).
 		
 		if (csrf != null) {
-			Cookie cookie = WebUtils.getCookie(request, XSRF_TOKEN_COOKIE_NAME);
+			Cookie cookie = WebUtils.getCookie(
+				request, XSRF_TOKEN_COOKIE_NAME);
 			String token = csrf.getToken();
-			if (cookie==null || token!=null && !token.equals(cookie.getValue())) {
+			if (cookie==null ||
+				token!=null && !token.equals(cookie.getValue())) {
 				cookie = new Cookie(XSRF_TOKEN_COOKIE_NAME, token);
 				cookie.setPath("/");
 				// cookie.setHttpOnly(true); client interceptor can't see the cookie is this is set
 				response.addCookie(cookie);
 			}
-		}
-		
+		}		
 		filterChain.doFilter(request, response);
-
 	}
-	
 }

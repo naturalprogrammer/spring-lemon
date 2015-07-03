@@ -136,8 +136,9 @@ public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 				.and()
 			//.csrf().disable()
 			.csrf()
-				.csrfTokenRepository(csrfTokenRepository()).and()
-			.addFilterAfter(new CsrfHeaderFilter(), CsrfFilter.class)
+				.csrfTokenRepository(csrfTokenRepository())
+				.and()
+			.addFilterAfter(new CsrfCookieFilter(), CsrfFilter.class)
 			.addFilterAfter(switchUserFilter(), FilterSecurityInterceptor.class);
 		
 		authorizeRequests(http);
@@ -160,10 +161,10 @@ public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 	 */
 	private CsrfTokenRepository csrfTokenRepository() {
 		
-		HttpSessionCsrfTokenRepository repository = new HttpSessionCsrfTokenRepository();
+		HttpSessionCsrfTokenRepository repository =
+				new HttpSessionCsrfTokenRepository();
 		repository.setHeaderName("X-XSRF-TOKEN");
 		return repository;
-		  
 	}
 
 }
