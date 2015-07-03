@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.naturalprogrammer.spring.boot.domain.AbstractUser;
 import com.naturalprogrammer.spring.boot.domain.ChangePasswordForm;
-import com.naturalprogrammer.spring.boot.util.SaUtil;
+import com.naturalprogrammer.spring.boot.util.LemonUtil;
 
 public class SaController<U extends AbstractUser<U,ID>, ID extends Serializable> {
 
@@ -30,7 +30,7 @@ public class SaController<U extends AbstractUser<U,ID>, ID extends Serializable>
 	
 	@RequestMapping(value="/context", method=RequestMethod.GET)
 	public Map<String, Object> context() {
-		return SaUtil.mapOf("context", saService.getContext(),
+		return LemonUtil.mapOf("context", saService.getContext(),
 							"loggedIn", saService.userForClient());
 	}
 	

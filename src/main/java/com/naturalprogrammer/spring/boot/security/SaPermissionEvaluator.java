@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 import com.naturalprogrammer.spring.boot.domain.AbstractUser;
 import com.naturalprogrammer.spring.boot.domain.VersionedEntity;
-import com.naturalprogrammer.spring.boot.util.SaUtil;
+import com.naturalprogrammer.spring.boot.util.LemonUtil;
 
 @Component
 public class SaPermissionEvaluator<U extends AbstractUser<U,ID>, ID extends Serializable> implements PermissionEvaluator {
@@ -21,7 +21,7 @@ public class SaPermissionEvaluator<U extends AbstractUser<U,ID>, ID extends Seri
 			return true;
 		
 		VersionedEntity<U, ID> entity = (VersionedEntity<U, ID>) targetDomainObject;
-		return entity.hasPermission(SaUtil.getUser(auth), (String) permission);
+		return entity.hasPermission(LemonUtil.getUser(auth), (String) permission);
 	}
 
 	@Override

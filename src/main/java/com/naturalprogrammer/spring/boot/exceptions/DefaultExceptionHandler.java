@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import com.naturalprogrammer.spring.boot.util.SaUtil;
+import com.naturalprogrammer.spring.boot.util.LemonUtil;
 import com.naturalprogrammer.spring.boot.validation.FieldError;
 
 @ControllerAdvice
@@ -34,7 +34,7 @@ public class DefaultExceptionHandler {
 		Collection<FieldError> errors = FieldError.getErrors(ex.getConstraintViolations());
 		
     	log.error("ConstraintViolationException: " + errors.toString());
-		return SaUtil.mapOf("exception", "ConstraintViolationException", "errors", errors);
+		return LemonUtil.mapOf("exception", "ConstraintViolationException", "errors", errors);
 
     }
 
@@ -46,7 +46,7 @@ public class DefaultExceptionHandler {
 		Collection<FieldError> errors = ex.getErrors();
 		
     	log.error("MultiErrorException: " + errors.toString());
-		return SaUtil.mapOf("exception", "MultiErrorException", "message", ex.getMessage(), "errors", errors);
+		return LemonUtil.mapOf("exception", "MultiErrorException", "message", ex.getMessage(), "errors", errors);
 
     }
 
@@ -57,7 +57,7 @@ public class DefaultExceptionHandler {
     public @ResponseBody Map<String, Object> handleAuthorizationException(AccessDeniedException ex) {
     	
         log.error("User does not have proper rights:", ex);
-		return SaUtil.mapOf("exception", "AccessDeniedException", "message", ex.getMessage());
+		return LemonUtil.mapOf("exception", "AccessDeniedException", "message", ex.getMessage());
 
     }
 
@@ -67,7 +67,7 @@ public class DefaultExceptionHandler {
 //    public @ResponseBody Map<String, Object> handleRequestException(BadRequestException ex) {
 //    	
 //        log.error("BadRequestException:", ex);        
-//		return SaUtil.mapOf("exception", "BadRequestException", "message", ex.getMessage());
+//		return LemonUtil.mapOf("exception", "BadRequestException", "message", ex.getMessage());
 //
 //    }
 
@@ -77,7 +77,7 @@ public class DefaultExceptionHandler {
     public @ResponseBody Map<String, Object> handleRequestException(VersionException ex) {
     	
         log.error("VersionException:", ex);        
-		return SaUtil.mapOf("exception", "VersionException", "message", ex.getMessage());
+		return LemonUtil.mapOf("exception", "VersionException", "message", ex.getMessage());
 
     }
 
@@ -87,7 +87,7 @@ public class DefaultExceptionHandler {
     public @ResponseBody Map<String, Object> handleRequestException(Exception ex) {
     	
         log.error("Internal server error:", ex);        
-		return SaUtil.mapOf("exception", ex.getClass().getSimpleName(), "message", ex.getMessage());
+		return LemonUtil.mapOf("exception", ex.getClass().getSimpleName(), "message", ex.getMessage());
 
     }
 	

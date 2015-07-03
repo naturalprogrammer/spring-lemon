@@ -30,7 +30,7 @@ public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 	private static final String REMEMBER_ME_COOKIE = "rememberMe";
 	private static final String REMEMBER_ME_PARAMETER = "rememberMe";
 	
-//	@Value(SaUtil.APPLICATION_URL)
+//	@Value(LemonUtil.APPLICATION_URL)
 //	private String applicationUrl;
 //	
 	@Value("${rememberMe.secretKey}")
@@ -58,7 +58,8 @@ public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public RememberMeServices rememberMeServices() {
     	
-        TokenBasedRememberMeServices rememberMeServices = new TokenBasedRememberMeServices(rememberMeKey, userDetailsService);
+        TokenBasedRememberMeServices rememberMeServices =
+        	new TokenBasedRememberMeServices(rememberMeKey, userDetailsService);
         rememberMeServices.setParameter(REMEMBER_ME_PARAMETER); // default is "remember-me" (in earlier spring security versions it was "_spring_security_remember_me")
         rememberMeServices.setCookieName(REMEMBER_ME_COOKIE);
         return rememberMeServices;

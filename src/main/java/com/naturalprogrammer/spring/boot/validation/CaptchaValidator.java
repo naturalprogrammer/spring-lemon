@@ -24,7 +24,7 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.naturalprogrammer.spring.boot.domain.AbstractUser;
 import com.naturalprogrammer.spring.boot.domain.AbstractUserRepository;
-import com.naturalprogrammer.spring.boot.util.SaUtil;
+import com.naturalprogrammer.spring.boot.util.LemonUtil;
 
 /**
  * Reference

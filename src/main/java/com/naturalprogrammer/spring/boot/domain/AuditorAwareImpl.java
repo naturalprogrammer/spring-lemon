@@ -5,7 +5,7 @@ import java.io.Serializable;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.stereotype.Component;
 
-import com.naturalprogrammer.spring.boot.util.SaUtil;
+import com.naturalprogrammer.spring.boot.util.LemonUtil;
 
 @Component
 public class AuditorAwareImpl
@@ -14,7 +14,7 @@ public class AuditorAwareImpl
 implements AuditorAware<U> {
 
 	public U getCurrentAuditor() {
-		return SaUtil.getLoggedInUser();
+		return LemonUtil.getLoggedInUser();
 	}
 	
 }

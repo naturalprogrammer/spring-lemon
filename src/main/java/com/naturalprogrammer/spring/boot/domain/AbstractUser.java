@@ -15,7 +15,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.naturalprogrammer.spring.boot.util.SaUtil;
+import com.naturalprogrammer.spring.boot.util.LemonUtil;
 import com.naturalprogrammer.spring.boot.validation.Captcha;
 import com.naturalprogrammer.spring.boot.validation.Password;
 import com.naturalprogrammer.spring.boot.validation.UniqueEmail;
@@ -188,7 +188,7 @@ implements UserDetails {
 
 //	public static <U extends AbstractUser<U,ID>, ID extends Serializable> AbstractUser<U, ID> of(SignupForm signupForm) {
 //		 
-//		final AbstractUser<U,ID> baseUser = SaUtil.getBean(AbstractUser.class);
+//		final AbstractUser<U,ID> baseUser = LemonUtil.getBean(AbstractUser.class);
 //			
 //		baseUser.setEmail(signupForm.getEmail());
 //		baseUser.setName(signupForm.getName());
@@ -200,7 +200,7 @@ implements UserDetails {
 //	}
 	
 	public U decorate() {
-		return decorate(SaUtil.getLoggedInUser());
+		return decorate(LemonUtil.getLoggedInUser());
 	}
 	
 	public U decorate(U loggedIn) {

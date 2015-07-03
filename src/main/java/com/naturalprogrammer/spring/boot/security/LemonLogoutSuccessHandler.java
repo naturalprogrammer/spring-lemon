@@ -13,10 +13,11 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.naturalprogrammer.spring.boot.SaService;
-import com.naturalprogrammer.spring.boot.util.SaUtil;
+import com.naturalprogrammer.spring.boot.util.LemonUtil;
 
 @Component
-public class LemonLogoutSuccessHandler implements LogoutSuccessHandler {
+public class LemonLogoutSuccessHandler
+	implements LogoutSuccessHandler {
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -27,7 +28,9 @@ public class LemonLogoutSuccessHandler implements LogoutSuccessHandler {
 			throws IOException, ServletException {
 
     	response.setStatus(HttpServletResponse.SC_OK);
-    	response.getOutputStream().print(objectMapper.writeValueAsString(SaUtil.getBean(SaService.class).userForClient()));
+    	response.getOutputStream().print(
+    			objectMapper.writeValueAsString(
+    			LemonUtil.getBean(SaService.class).userForClient()));
 		
 	}
 

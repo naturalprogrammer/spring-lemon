@@ -24,7 +24,7 @@ import com.naturalprogrammer.spring.boot.exceptions.MultiErrorException;
 import com.naturalprogrammer.spring.boot.exceptions.VersionException;
 
 @Component
-public class SaUtil {
+public class LemonUtil {
 
 //	public static final String APPLICATION_URL = "${application.url:http://localhost:9000}";
 //	public static final String RECAPTCHA_SITE_KEY = "${common.reCaptcha.siteKey:ReCaptcha Site Key Not Provided}";
@@ -34,10 +34,10 @@ public class SaUtil {
 	private static MessageSource messageSource;
 	
 	@Autowired
-	public SaUtil(ApplicationContext applicationContext, MessageSource messageSource) {
+	public LemonUtil(ApplicationContext applicationContext, MessageSource messageSource) {
 		
-		SaUtil.applicationContext = applicationContext;
-		SaUtil.messageSource = messageSource;
+		LemonUtil.applicationContext = applicationContext;
+		LemonUtil.messageSource = messageSource;
 		
 	}
 
@@ -110,7 +110,7 @@ public class SaUtil {
 	}
 	
 	public static MultiErrorException check(boolean valid, String messageKey, Object... args) {
-		return SaUtil.check(null, valid, messageKey, args);
+		return LemonUtil.check(null, valid, messageKey, args);
 	}
 
 	public static MultiErrorException check(String fieldName, boolean valid, String messageKey, Object... args) {

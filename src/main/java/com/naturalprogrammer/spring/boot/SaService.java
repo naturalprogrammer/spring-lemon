@@ -30,7 +30,7 @@ import com.naturalprogrammer.spring.boot.domain.AbstractUser.SignUpValidation;
 import com.naturalprogrammer.spring.boot.domain.AbstractUserRepository;
 import com.naturalprogrammer.spring.boot.domain.ChangePasswordForm;
 import com.naturalprogrammer.spring.boot.mail.MailSender;
-import com.naturalprogrammer.spring.boot.util.SaUtil;
+import com.naturalprogrammer.spring.boot.util.LemonUtil;
 import com.naturalprogrammer.spring.boot.validation.Password;
 
 @Validated
@@ -128,7 +128,7 @@ public abstract class SaService<U extends AbstractUser<U,ID>, ID extends Seriali
 		initUser(user);
 		userRepository.save(user);
 		sendVerificationMail(user);
-		SaUtil.logInUser(user);
+		LemonUtil.logInUser(user);
 		
 	}
 	
@@ -143,10 +143,10 @@ public abstract class SaService<U extends AbstractUser<U,ID>, ID extends Seriali
 	}
 	
 	protected void sendVerificationMail(final U user) {
-        SaUtil.afterCommit(() -> {
+        LemonUtil.afterCommit(() -> {
     		try {
     			String verifyLink = properties.getApplicationUrl() + "/users/" + user.getVerificationCode() + "/verify";
-    			mailSender.send(user.getEmail(), SaUtil.getMessage("verifySubject"), SaUtil.getMessage("verifyEmail", verifyLink));
+    			mailSender.send(user.getEmail(), LemonUtil.getMessage("verifySubject"), LemonUtil.getMessage("verifyEmail", verifyLink));
     			log.info("Verification mail to " + user.getEmail() + " queued.");
 			} catch (MessagingException e) {
 				log.error(ExceptionUtils.getStackTrace(e));
@@ -158,7 +158,7 @@ public abstract class SaService<U extends AbstractUser<U,ID>, ID extends Seriali
 		
 		U user = userRepository.findByEmail(email);
 		
-		SaUtil.check("email", user != null, "userNotFound").go();
+		LemonUtil.check("email", user != null, "userNotFound").go();
 		
 		user.decorate().hideConfidentialFields();
 
@@ -168,7 +168,7 @@ public abstract class SaService<U extends AbstractUser<U,ID>, ID extends Seriali
 	
 	public U fetchUser(U user) {
 		
-		SaUtil.check(user != null, "userNotFound").go();
+		LemonUtil.check(user != null, "userNotFound").go();
 
 		user.decorate().hideConfidentialFields();
 		
@@ -179,7 +179,7 @@ public abstract class SaService<U extends AbstractUser<U,ID>, ID extends Seriali
 	public void verifyUser(String verificationCode) {
 		
 		U user = userRepository.findByVerificationCode(verificationCode);
-		SaUtil.check(user != null, "userNotFound").go();
+		LemonUtil.check(user != null, "userNotFound").go();
 		
 		user.setVerificationCode(null);
 		user.getRoles().remove(Role.UNVERIFIED);
@@ -192,12 +192,12 @@ public abstract class SaService<U extends AbstractUser<U,ID>, ID extends Seriali
 		
 		final U user = userRepository.findByEmail(email);
 
-		SaUtil.check(user != null, "userNotFound").go();
+		LemonUtil.check(user != null, "userNotFound").go();
 		
 		user.setForgotPasswordCode(UUID.randomUUID().toString());
 		userRepository.save(user);
 
-		SaUtil.afterCommit(() -> {
+		LemonUtil.afterCommit(() -> {
 		    mailForgotPasswordLink(user);
 		});
 		
@@ -222,8 +222,8 @@ public abstract class SaService<U extends AbstractUser<U,ID>, ID extends Seriali
 					properties.getApplicationUrl() + "/reset-password/" +
 					user.getForgotPasswordCode();
 			mailSender.send(user.getEmail(),
-					SaUtil.getMessage("forgotPasswordSubject"),
-					SaUtil.getMessage("forgotPasswordEmail", forgotPasswordLink));
+					LemonUtil.getMessage("forgotPasswordSubject"),
+					LemonUtil.getMessage("forgotPasswordEmail", forgotPasswordLink));
 		} catch (MessagingException e) {
 			log.error(ExceptionUtils.getStackTrace(e));
 		}
@@ -235,7 +235,7 @@ public abstract class SaService<U extends AbstractUser<U,ID>, ID extends Seriali
 	public void resetPassword(String forgotPasswordCode, @Valid @Password String newPassword) {
 		
 		U user = userRepository.findByForgotPasswordCode(forgotPasswordCode);
-		SaUtil.check(user != null, "invalidLink").go();
+		LemonUtil.check(user != null, "invalidLink").go();
 		
 		user.setPassword(passwordEncoder.encode(newPassword));
 		user.setForgotPasswordCode(null);
@@ -249,10 +249,10 @@ public abstract class SaService<U extends AbstractUser<U,ID>, ID extends Seriali
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
 	public void updateUser(U user, @Valid U updatedUser) {
 		
-		SaUtil.check(user != null, "userNotFound").go();
-		SaUtil.validateVersion(user, updatedUser);
+		LemonUtil.check(user != null, "userNotFound").go();
+		LemonUtil.validateVersion(user, updatedUser);
 
-		U loggedIn = SaUtil.getLoggedInUser();
+		U loggedIn = LemonUtil.getLoggedInUser();
 
 		updateUserFields(user, updatedUser, loggedIn);
 		
@@ -264,16 +264,16 @@ public abstract class SaService<U extends AbstractUser<U,ID>, ID extends Seriali
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
 	public void changePassword(U user, @Valid ChangePasswordForm changePasswordForm) {
 		
-		SaUtil.check(user != null, "userNotFound").go();
-		SaUtil.check("oldPassword",
+		LemonUtil.check(user != null, "userNotFound").go();
+		LemonUtil.check("oldPassword",
 			passwordEncoder.matches(changePasswordForm.getOldPassword(), user.getPassword()),
 			"wrong.password").go();
 		
 		user.setPassword(passwordEncoder.encode(changePasswordForm.getPassword()));
 		userRepository.save(user);
 		
-		SaUtil.afterCommit(() -> {
-			U loggedIn = SaUtil.getLoggedInUser();
+		LemonUtil.afterCommit(() -> {
+			U loggedIn = LemonUtil.getLoggedInUser();
 			if (loggedIn.equals(user))
 				loggedIn.setPassword(user.getPassword());
 		});
@@ -310,7 +310,7 @@ public abstract class SaService<U extends AbstractUser<U,ID>, ID extends Seriali
 				roles.remove(Role.BLOCKED);
 		}
 		
-		SaUtil.afterCommit(() -> {
+		LemonUtil.afterCommit(() -> {
 			if (loggedIn.equals(user))
 				loggedIn.setRoles(user.getRoles());
 		});
@@ -319,7 +319,7 @@ public abstract class SaService<U extends AbstractUser<U,ID>, ID extends Seriali
 
 	public U userForClient() {
 
-		return userForClient(SaUtil.getLoggedInUser());
+		return userForClient(LemonUtil.getLoggedInUser());
 		
 	}
 

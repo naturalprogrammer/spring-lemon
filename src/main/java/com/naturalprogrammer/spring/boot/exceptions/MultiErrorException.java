@@ -3,7 +3,7 @@ package com.naturalprogrammer.spring.boot.exceptions;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.naturalprogrammer.spring.boot.util.SaUtil;
+import com.naturalprogrammer.spring.boot.util.LemonUtil;
 import com.naturalprogrammer.spring.boot.validation.FieldError;
 
 public class MultiErrorException extends RuntimeException {
@@ -20,7 +20,7 @@ public class MultiErrorException extends RuntimeException {
 	 * @param args
 	 */
 	private MultiErrorException addError(String field, String error, Object... args) {
-		errors.add(FieldError.of(field, SaUtil.getMessage(error, args)));
+		errors.add(FieldError.of(field, LemonUtil.getMessage(error, args)));
 		return this;
 	}
 
