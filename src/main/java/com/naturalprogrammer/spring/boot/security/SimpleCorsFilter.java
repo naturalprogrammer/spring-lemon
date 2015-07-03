@@ -31,13 +31,20 @@ public class SimpleCorsFilter implements Filter {
 	@Autowired
 	PublicProperties properties;
 	
-	public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
+	public void doFilter(ServletRequest req,
+			ServletResponse res,
+			FilterChain chain)
+	throws IOException, ServletException {
 		
 		HttpServletResponse response = (HttpServletResponse) res;
-		response.setHeader("Access-Control-Allow-Origin", properties.getApplicationUrl()); // "*" does not work when $httpProvider.defaults.withCredentials = true;
-		response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS");
-		response.setHeader("Access-Control-Max-Age", "3600");
-		response.setHeader("Access-Control-Allow-Headers", "x-requested-with,origin,content-type,accept,X-XSRF-TOKEN");
+		response.setHeader("Access-Control-Allow-Origin",
+			properties.getApplicationUrl()); // "*" does not work when $httpProvider.defaults.withCredentials = true;
+		response.setHeader("Access-Control-Allow-Methods",
+			"GET, POST, PUT, PATCH, DELETE, OPTIONS");
+		response.setHeader("Access-Control-Max-Age",
+			"3600");
+		response.setHeader("Access-Control-Allow-Headers",
+			"x-requested-with,origin,content-type,accept,X-XSRF-TOKEN");
 		response.setHeader("Access-Control-Allow-Credentials", "true"); // needed when $httpProvider.defaults.withCredentials = true;
 		
 		HttpServletRequest request =  (HttpServletRequest) req;
