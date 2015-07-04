@@ -21,7 +21,7 @@ public class SaController<U extends AbstractUser<U,ID>, ID extends Serializable>
 	private Log log = LogFactory.getLog(getClass());
 
 	@Autowired
-	private SaService<U, ID> saService;
+	private LemonService<U, ID> lemonService;
 	
 	@RequestMapping(value="/ping", method=RequestMethod.GET)
 	public void ping() {
@@ -30,8 +30,8 @@ public class SaController<U extends AbstractUser<U,ID>, ID extends Serializable>
 	
 	@RequestMapping(value="/context", method=RequestMethod.GET)
 	public Map<String, Object> context() {
-		return LemonUtil.mapOf("context", saService.getContext(),
-							"loggedIn", saService.userForClient());
+		return LemonUtil.mapOf("context", lemonService.getContext(),
+							"loggedIn", lemonService.userForClient());
 	}
 	
 	/**
@@ -40,8 +40,8 @@ public class SaController<U extends AbstractUser<U,ID>, ID extends Serializable>
 	@RequestMapping(value="/signup", method=RequestMethod.POST)
 	public U signup(@RequestBody U user) {
 		
-		saService.signup(user);
-		return saService.userForClient();
+		lemonService.signup(user);
+		return lemonService.userForClient();
 
 	}
 
@@ -52,7 +52,7 @@ public class SaController<U extends AbstractUser<U,ID>, ID extends Serializable>
 	@RequestMapping(value="/users/{verificationCode}/verify", method=RequestMethod.POST)
 	public void verifyUser(@PathVariable("verificationCode") String verificationCode) {
 		
-		saService.verifyUser(verificationCode);
+		lemonService.verifyUser(verificationCode);
 
 	}
 
@@ -63,21 +63,21 @@ public class SaController<U extends AbstractUser<U,ID>, ID extends Serializable>
 	@RequestMapping(value="/forgot-password", method=RequestMethod.POST)
 	public void forgotPassword(@RequestParam("email") String email) {
 		
-		saService.forgotPassword(email);
+		lemonService.forgotPassword(email);
 
 	}
 	
 	@RequestMapping(value="/users/fetch-by-email", method=RequestMethod.GET)
 	public U fetchByEmail(@RequestParam("email") String email) {
 		
-		return saService.fetchUser(email);
+		return lemonService.fetchUser(email);
 
 	}
 	
 	@RequestMapping(value="/users/{id}/fetch-by-id", method=RequestMethod.GET)
 	public U fetchById(@PathVariable("id") U user) {
 		
-		return saService.fetchUser(user);
+		return lemonService.fetchUser(user);
 
 	}
 
@@ -88,7 +88,7 @@ public class SaController<U extends AbstractUser<U,ID>, ID extends Serializable>
 	@RequestMapping(value="/users/{forgotPasswordCode}/reset-password", method=RequestMethod.POST)
 	public void resetPassword(@PathVariable("forgotPasswordCode") String forgotPasswordCode, @RequestParam("newPassword") String newPassword) {
 		
-		saService.resetPassword(forgotPasswordCode, newPassword);
+		lemonService.resetPassword(forgotPasswordCode, newPassword);
 
 	}
 
@@ -99,8 +99,8 @@ public class SaController<U extends AbstractUser<U,ID>, ID extends Serializable>
 	@RequestMapping(value="/users/{id}/update", method=RequestMethod.PATCH)
 	public U updateUser(@PathVariable("id") U user, @RequestBody U updatedUser) {
 		
-		saService.updateUser(user, updatedUser);
-		return saService.userForClient();
+		lemonService.updateUser(user, updatedUser);
+		return lemonService.userForClient();
 		
 	}
 	
@@ -111,7 +111,7 @@ public class SaController<U extends AbstractUser<U,ID>, ID extends Serializable>
 	@RequestMapping(value="/users/{id}/change-password", method=RequestMethod.PATCH)
 	public void changePassword(@PathVariable("id") U user, @RequestBody ChangePasswordForm changePasswordForm) {
 		
-		saService.changePassword(user, changePasswordForm);
+		lemonService.changePassword(user, changePasswordForm);
 
 	}
 

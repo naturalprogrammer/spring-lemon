@@ -12,7 +12,7 @@ import org.springframework.security.web.authentication.logout.LogoutSuccessHandl
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.naturalprogrammer.spring.boot.SaService;
+import com.naturalprogrammer.spring.boot.LemonService;
 import com.naturalprogrammer.spring.boot.util.LemonUtil;
 
 @Component
@@ -30,7 +30,7 @@ public class LemonLogoutSuccessHandler
     	response.setStatus(HttpServletResponse.SC_OK);
     	response.getOutputStream().print(
     			objectMapper.writeValueAsString(
-    			LemonUtil.getBean(SaService.class).userForClient()));
+    			LemonUtil.getBean(LemonService.class).userForClient()));
 		
 	}
 

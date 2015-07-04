@@ -35,7 +35,7 @@ import com.naturalprogrammer.spring.boot.validation.Password;
 
 @Validated
 @Transactional(propagation=Propagation.SUPPORTS, readOnly=true)
-public abstract class SaService<U extends AbstractUser<U,ID>, ID extends Serializable> {
+public abstract class LemonService<U extends AbstractUser<U,ID>, ID extends Serializable> {
 
     private final Log log = LogFactory.getLog(getClass());
     
