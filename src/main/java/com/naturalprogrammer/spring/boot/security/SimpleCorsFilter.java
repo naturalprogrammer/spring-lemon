@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -19,6 +20,11 @@ import org.springframework.stereotype.Component;
 import com.naturalprogrammer.spring.boot.PublicProperties;
 
 /**
+ * If you want to disable this, e.g. while testing or in pure REST APIs,
+ * in your application.properties, use
+ * 
+ * lemon.cors.enabled: false
+ * 
  * https://spring.io/guides/gs/rest-service-cors/
  * 
  * @author skpat_000
@@ -26,6 +32,7 @@ import com.naturalprogrammer.spring.boot.PublicProperties;
  */
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
+@ConditionalOnProperty(name="lemon.cors.enabled", matchIfMissing=true)
 public class SimpleCorsFilter implements Filter {
 
 	@Autowired

@@ -1,5 +1,7 @@
 package com.naturalprogrammer.spring.boot.security;
 
+import javax.servlet.Filter;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -30,9 +32,6 @@ public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 	private static final String REMEMBER_ME_COOKIE = "rememberMe";
 	private static final String REMEMBER_ME_PARAMETER = "rememberMe";
 	
-//	@Value(LemonUtil.APPLICATION_URL)
-//	private String applicationUrl;
-//	
 	@Value("${rememberMe.secretKey}")
 	private String rememberMeKey;
 	
@@ -46,40 +45,21 @@ public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 	private LogoutSuccessHandler logoutSuccessHandler;
 	
 	@Bean
+    public AuthenticationFailureHandler authenticationFailureHandler() {
+    	return new SimpleUrlAuthenticationFailureHandler();
+    }	
+	
+	@Bean
     public PasswordEncoder passwordEncoder() {
       return new BCryptPasswordEncoder();
     }
 	
-	@Bean
-    public AuthenticationFailureHandler authenticationFailureHandler() {
-    	return new SimpleUrlAuthenticationFailureHandler();
-    }
-    
-    @Bean
-    public RememberMeServices rememberMeServices() {
-    	
-        TokenBasedRememberMeServices rememberMeServices =
-        	new TokenBasedRememberMeServices(rememberMeKey, userDetailsService);
-        rememberMeServices.setParameter(REMEMBER_ME_PARAMETER); // default is "remember-me" (in earlier spring security versions it was "_spring_security_remember_me")
-        rememberMeServices.setCookieName(REMEMBER_ME_COOKIE);
-        return rememberMeServices;
-        
-    }
-    
-	@Bean
-	public SwitchUserFilter switchUserFilter() {
-		SwitchUserFilter filter = new SwitchUserFilter();
-		filter.setUserDetailsService(userDetailsService);
-		filter.setSuccessHandler(authenticationSuccessHandler);
-		filter.setFailureHandler(authenticationFailureHandler());
-		//filter.setSwitchUserUrl("/j_spring_security_switch_user");
-		//filter.setExitUserUrl("/j_spring_security_exit_user");
-		//filter.setTargetUrl(applicationUrl);
-		return filter;
-	}
-	
-    //@Autowired is this needed?
-    @Override
+    /**
+     * In case you don't want use the email field as the login id,
+     * you may want to have a different userDetailsServices, and
+     * override this method for injecting that here.
+     */
+	@Override
     protected void configure(AuthenticationManagerBuilder builder) throws Exception {
         builder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
     }
@@ -138,7 +118,7 @@ public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 			.csrf()
 				.csrfTokenRepository(csrfTokenRepository())
 				.and()
-			.addFilterAfter(new CsrfCookieFilter(), CsrfFilter.class)
+			.addFilterAfter(csrfCookieFilter(), CsrfFilter.class)
 			.addFilterAfter(switchUserFilter(), FilterSecurityInterceptor.class);
 		
 		authorizeRequests(http);
@@ -153,18 +133,48 @@ public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 			.antMatchers("/**").permitAll();                  
 	}
 	
-	
 	/**
-	 * Makes it compatible to AngularJS CSRF token header name
+	 * Override this method if you want to 
+	 * setup a different RememberMeServices
+	 * 
+	 * @return
+	 */
+    protected RememberMeServices rememberMeServices() {
+    	
+        TokenBasedRememberMeServices rememberMeServices =
+        	new TokenBasedRememberMeServices(rememberMeKey, userDetailsService);
+        rememberMeServices.setParameter(REMEMBER_ME_PARAMETER); // default is "remember-me" (in earlier spring security versions it was "_spring_security_remember_me")
+        rememberMeServices.setCookieName(REMEMBER_ME_COOKIE);
+        return rememberMeServices;
+        
+    }
+    
+	/**
+	 * Makes it compatible to AngularJS CSRF token header name.
+	 * Override this if you want to change the 
+	 * header name.
 	 *  
 	 * @return
 	 */
-	private CsrfTokenRepository csrfTokenRepository() {
+	protected CsrfTokenRepository csrfTokenRepository() {
 		
 		HttpSessionCsrfTokenRepository repository =
 				new HttpSessionCsrfTokenRepository();
 		repository.setHeaderName("X-XSRF-TOKEN");
 		return repository;
+	}
+
+	
+	protected SwitchUserFilter switchUserFilter() {
+		SwitchUserFilter filter = new SwitchUserFilter();
+		filter.setUserDetailsService(userDetailsService);
+		filter.setSuccessHandler(authenticationSuccessHandler);
+		filter.setFailureHandler(authenticationFailureHandler());
+		return filter;
+	}
+	
+	protected Filter csrfCookieFilter() {
+		return new CsrfCookieFilter();
 	}
 
 }

@@ -3,6 +3,7 @@ package com.naturalprogrammer.spring.boot.security;
 import java.io.Serializable;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -12,6 +13,7 @@ import com.naturalprogrammer.spring.boot.domain.AbstractUser;
 import com.naturalprogrammer.spring.boot.domain.AbstractUserRepository;
 
 @Service
+@ConditionalOnProperty(name="lemon.userdetailsservice.enabled", matchIfMissing=true)
 class UserDetailsServiceImpl
 	<U extends AbstractUser<U,ID>, ID extends Serializable>
 implements UserDetailsService {
@@ -28,7 +30,6 @@ implements UserDetailsService {
 			throw new UsernameNotFoundException(email);
 
 		return user;
-		//return new UserDetailsImpl<U,ID>(user);
 
 	}
 
