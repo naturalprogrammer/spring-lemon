@@ -69,6 +69,15 @@
 	        <groupId>org.springframework.boot</groupId>
 	        <artifactId>spring-boot-devtools</artifactId>
 	    </dependency>
+	    
+	    <!-- For generating Auto Completion of lemon.* in application.properties
+	    See: http://docs.spring.io/spring-boot/docs/current-SNAPSHOT/reference/htmlsingle/#configuration-metadata-annotation-processor
+	     -->
+	    <dependency>
+		    <groupId>org.springframework.boot</groupId>
+		    <artifactId>spring-boot-configuration-processor</artifactId>
+		    <optional>true</optional>
+		</dependency>
 		
 		
 	</dependencies>

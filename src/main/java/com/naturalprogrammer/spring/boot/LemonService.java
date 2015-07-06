@@ -39,10 +39,10 @@ public abstract class LemonService<U extends AbstractUser<U,ID>, ID extends Seri
 
     private final Log log = LogFactory.getLog(getClass());
     
-	@Value("${adminUser.email}")
+	@Value("${lemon.adminUser.email}")
 	private String adminEmail;
 
-	@Value("${adminUser.password}")
+	@Value("${lemon.adminUser.password}")
 	private String adminPassword;
 	
 	@Autowired

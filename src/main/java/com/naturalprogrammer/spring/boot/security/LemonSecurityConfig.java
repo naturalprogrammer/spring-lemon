@@ -32,7 +32,7 @@ public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 	private static final String REMEMBER_ME_COOKIE = "rememberMe";
 	private static final String REMEMBER_ME_PARAMETER = "rememberMe";
 	
-	@Value("${rememberMe.secretKey}")
+	@Value("${lemon.rememberMe.secretKey}")
 	private String rememberMeKey;
 	
 	@Autowired

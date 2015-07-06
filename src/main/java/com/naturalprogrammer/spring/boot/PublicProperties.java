@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
  *
  */
 @Component
-@ConfigurationProperties
+@ConfigurationProperties(prefix="lemon")
 public class PublicProperties {
 	
     private String applicationUrl;
@@ -26,7 +26,7 @@ public class PublicProperties {
 		return applicationUrl;
 	}
 
-	@Value("${application.url:http://localhost:9000}")
+	@Value("${lemon.application.url:http://localhost:9000}")
 	public void setApplicationUrl(String applicationUrl) {
 		this.applicationUrl = applicationUrl;
 	}
@@ -35,7 +35,7 @@ public class PublicProperties {
 		return reCaptchaSiteKey;
 	}
 
-	@Value("${reCaptcha.siteKey:no key found}")
+	@Value("${lemon.reCaptcha.siteKey:no key found}")
 	public void setReCaptchaSiteKey(String reCaptchaSiteKey) {
 		this.reCaptchaSiteKey = reCaptchaSiteKey;
 	}

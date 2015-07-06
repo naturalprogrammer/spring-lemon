@@ -63,7 +63,7 @@ public class CaptchaValidator implements ConstraintValidator<Captcha, String> {
 		}
 	}
 	
-	@Value("${reCaptcha.secretKey:null}")
+	@Value("${lemon.reCaptcha.secretKey:null}")
 	private String reCaptchaSecretKey;
 	
 	@Resource
