@@ -1,6 +1,6 @@
 package com.naturalprogrammer.spring.boot.validation;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -26,7 +26,7 @@ public class FieldError {
 		return "FieldError [field=" + field + ", message=" + message + "]";
 	}
 
-	public static Collection<FieldError> getErrors(Set<ConstraintViolation<?>> constraintViolations) {
+	public static List<FieldError> getErrors(Set<ConstraintViolation<?>> constraintViolations) {
 		
 		return constraintViolations.stream().map(FieldError::of).collect(Collectors.toList());
 		

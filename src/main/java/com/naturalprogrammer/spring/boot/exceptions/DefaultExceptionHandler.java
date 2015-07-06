@@ -1,6 +1,7 @@
 package com.naturalprogrammer.spring.boot.exceptions;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 import javax.validation.ConstraintViolationException;
@@ -40,7 +41,7 @@ public class DefaultExceptionHandler {
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public @ResponseBody Map<String, Object> handleMultiErrorException(MultiErrorException ex) {
     	
-		Collection<FieldError> errors = ex.getErrors();
+		List<FieldError> errors = ex.getErrors();
 		
     	log.error("MultiErrorException: " + errors.toString());
 		return LemonUtil.mapOf("exception", "MultiErrorException", "message", ex.getMessage(), "errors", errors);
