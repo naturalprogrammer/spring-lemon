@@ -1,11 +1,8 @@
 package com.naturalprogrammer.spring.boot.exceptions;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 
-import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 
 import org.apache.commons.logging.Log;

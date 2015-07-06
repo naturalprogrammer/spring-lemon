@@ -1,14 +1,12 @@
 package com.naturalprogrammer.spring.boot.validation;
 
 import java.util.Collection;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.validation.ConstraintViolation;
-import javax.validation.Path.Node;
 
-import com.naturalprogrammer.spring.boot.util.Ref;
+import org.apache.commons.lang3.StringUtils;
 
 public class FieldError {
 	
@@ -46,13 +44,9 @@ public class FieldError {
 
 	private static String computeFieldName(ConstraintViolation<?> constraintViolation) {
 		
-		final Ref<Node> lastNode = new Ref<Node>();
-		
-		constraintViolation.getPropertyPath().forEach((node) -> {
-			lastNode.value = node;
-		});
-		
-		return lastNode.value.getName();
+		// remove the method name from the path 
+		return StringUtils.substringAfter(
+			constraintViolation.getPropertyPath().toString(), ".");
 		
 	}
 
