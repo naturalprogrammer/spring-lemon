@@ -11,7 +11,7 @@ import com.naturalprogrammer.spring.lemon.domain.VersionedEntity;
 import com.naturalprogrammer.spring.lemon.util.LemonUtil;
 
 @Component
-public class SaPermissionEvaluator<U extends AbstractUser<U,ID>, ID extends Serializable> implements PermissionEvaluator {
+public class LemonPermissionEvaluator<U extends AbstractUser<U,ID>, ID extends Serializable> implements PermissionEvaluator {
 
 	@Override
 	public boolean hasPermission(Authentication auth,

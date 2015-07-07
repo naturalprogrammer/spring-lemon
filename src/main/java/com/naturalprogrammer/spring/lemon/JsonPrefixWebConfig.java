@@ -2,9 +2,10 @@ package com.naturalprogrammer.spring.lemon;
 
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
@@ -25,13 +26,18 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 @ConditionalOnProperty(name="lemon.enabled.jsonprefix", matchIfMissing=true)
 public class JsonPrefixWebConfig extends WebMvcConfigurerAdapter {
 	
+	private Log log = LogFactory.getLog(getClass());
+	
 	public final static String JSON_PREFIX = ")]}',\n";
 	
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+    	
         MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
         converter.setJsonPrefix(JSON_PREFIX);
         converters.add(converter);
+        
+        log.info("Configured prefixing JSON with )]}... for JSON vulnerability");
     }
     
 }
