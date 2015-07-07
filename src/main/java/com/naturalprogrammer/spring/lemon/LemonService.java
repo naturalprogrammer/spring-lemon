@@ -348,7 +348,7 @@ public abstract class LemonService<U extends AbstractUser<U,ID>, ID extends Seri
 		user.setIdForClient(loggedIn.getId());
 		user.setEmail(loggedIn.getEmail());
 		user.setRoles(loggedIn.getRoles());
-		return user.decorate();
+		return user.decorate(loggedIn);
 	}
 	
 }

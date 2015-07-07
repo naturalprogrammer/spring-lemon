@@ -35,7 +35,10 @@ public class LemonController<U extends AbstractUser<U,ID>, ID extends Serializab
 	}
 	
 	/**
-	 * Signup
+	 * Signs up a user, and logs him in. See here for details.
+	 *  
+	 * @param user
+	 * @return data about the logged in user
 	 */
 	@RequestMapping(value="/signup", method=RequestMethod.POST)
 	public U signup(@RequestBody U user) {

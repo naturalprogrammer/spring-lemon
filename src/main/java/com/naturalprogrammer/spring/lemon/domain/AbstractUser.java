@@ -230,7 +230,7 @@ implements UserDetails {
 			email = "Confidential";
 	}
 
-
+	@Override
 	public boolean hasPermission(U loggedInUser, String permission) {
 		
 		decorate(loggedInUser);
