@@ -1,4 +1,4 @@
-//package com.naturalprogrammer.spring.boot;
+//package com.naturalprogrammer.spring.lemon;
 //
 //import org.junit.Test;
 //import org.junit.runner.RunWith;

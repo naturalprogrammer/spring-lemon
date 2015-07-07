@@ -4,11 +4,11 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.naturalprogrammer.spring</groupId>
-	<artifactId>spring-app-boot</artifactId>
-	<version>0.0.5-SNAPSHOT</version>
+	<artifactId>spring-lemon</artifactId>
+	<version>0.0.6-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>spring-app-boot</name>
+	<name>spring-lemon</name>
 	<description>Helper library for Spring Boot Web Applications</description>
 
 	<parent>
@@ -20,7 +20,6 @@
 
  	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<!--<start-class>com.naturalprogrammer.spring.boot.SpringAppBootApplication</start-class> -->
 		<java.version>1.8</java.version>
 	</properties>
 
