@@ -8,7 +8,7 @@ import javax.persistence.Version;
 import com.naturalprogrammer.spring.lemon.exceptions.VersionException;
 
 @MappedSuperclass
-public abstract class VersionedEntity<U extends AbstractUser<U,ID>, ID extends Serializable> extends SaEntity<U, ID> {
+public abstract class VersionedEntity<U extends AbstractUser<U,ID>, ID extends Serializable> extends LemonEntity<U, ID> {
 
 	private static final long serialVersionUID = 4310555782328370192L;
 	

@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @MappedSuperclass
 @JsonIgnoreProperties({ "createdBy", "lastModifiedBy" })
-public class SaEntity<U extends AbstractUser<U,ID>, ID extends Serializable> extends AbstractAuditable<U, ID> {
+public class LemonEntity<U extends AbstractUser<U,ID>, ID extends Serializable> extends AbstractAuditable<U, ID> {
 
 	private static final long serialVersionUID = -8151190931948396443L;
 	
