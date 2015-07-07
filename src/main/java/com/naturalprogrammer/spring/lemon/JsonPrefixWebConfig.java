@@ -22,7 +22,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
  *
  */
 @Configuration
-@ConditionalOnProperty(name="lemon.jsonprefix.enabled", matchIfMissing=true)
+@ConditionalOnProperty(name="lemon.enabled.jsonprefix", matchIfMissing=true)
 public class JsonPrefixWebConfig extends WebMvcConfigurerAdapter {
 	
 	public final static String JSON_PREFIX = ")]}',\n";

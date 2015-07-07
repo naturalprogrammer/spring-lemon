@@ -1,6 +1,8 @@
 package com.naturalprogrammer.spring.lemon;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -17,6 +19,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,14 +44,8 @@ public abstract class LemonService<U extends AbstractUser<U,ID>, ID extends Seri
 
     private final Log log = LogFactory.getLog(getClass());
     
-	@Value("${lemon.adminUser.email}")
-	private String adminEmail;
-
-	@Value("${lemon.adminUser.password}")
-	private String adminPassword;
-	
 	@Autowired
-	private PublicProperties properties;
+	private LemonProperties properties;
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
@@ -57,6 +56,8 @@ public abstract class LemonService<U extends AbstractUser<U,ID>, ID extends Seri
     @Autowired
 	private AbstractUserRepository<U, ID> userRepository;
     
+    @Autowired
+	private UserDetailsService userDetailsService;   
     
     /**
      * This method needs to be public; otherwise Spring screams
@@ -72,26 +73,32 @@ public abstract class LemonService<U extends AbstractUser<U,ID>, ID extends Seri
     }
     
 	/**
-	 * Override this if needed
+	 * Creates a new ADMIN user, if not found.
+	 * Override if needed.
 	 */
     protected void onStartup() {
-		U user = userRepository.findByEmail(adminEmail);
-		if (user == null) {
-	    	user = createAdminUser();
-	    	userRepository.save(user);
+    	
+		try {
+			userDetailsService
+				.loadUserByUsername(properties.getAdmin().getLogin());
+		} catch (UsernameNotFoundException e) {
+	    	U user = createAdminUser();
+	    	userRepository.save(user);			
 		}
 	}
 
 	
 	/**
-	 * Override this if you have more fields to set
+	 * Override this if you have more fields to set,
+	 * or if the email field if not your loginId
 	 */
     protected U createAdminUser() {
 		
 		U user = newUser();
 		
-		user.setEmail(adminEmail);
-		user.setPassword(passwordEncoder.encode(adminPassword));
+		user.setEmail(properties.getAdmin().getLogin());
+		user.setPassword(passwordEncoder.encode(
+			properties.getAdmin().getPassword()));
 		user.getRoles().add(Role.ADMIN);
 		
 		return user;
@@ -101,18 +108,21 @@ public abstract class LemonService<U extends AbstractUser<U,ID>, ID extends Seri
 	abstract protected U newUser();
 
 	@Autowired
-	private PublicProperties publicProperties;
+	private LemonProperties lemonProperties;
 	
 	/**
 	 * To send custom properties, you can 
 	 * use other.foo in application.properties OR
-	 * Override PublicProperties class and this method
+	 * Override LemonProperties class and this method
 	 * 
 	 * @return
 	 */
-	public PublicProperties getContext() {
+	public Map<String, Object> getContext() {
 		
-		return publicProperties;
+		Map<String, Object> context = new HashMap<String, Object>(2);
+		context.put("reCaptchaSiteKey", properties.getRecaptcha().getSitekey());
+		context.put("shared", properties.getShared());
+		return context;
 		
 		
 //		ContextDto contextDto = new ContextDto();

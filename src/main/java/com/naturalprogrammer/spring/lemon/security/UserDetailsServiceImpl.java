@@ -13,7 +13,7 @@ import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUserRepository;
 
 @Service
-@ConditionalOnProperty(name="lemon.userdetailsservice.enabled", matchIfMissing=true)
+@ConditionalOnProperty(name="lemon.enabled.userdetailsservice", matchIfMissing=true)
 class UserDetailsServiceImpl
 	<U extends AbstractUser<U,ID>, ID extends Serializable>
 implements UserDetailsService {

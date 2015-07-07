@@ -22,6 +22,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.naturalprogrammer.spring.lemon.LemonProperties;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUserRepository;
 import com.naturalprogrammer.spring.lemon.util.LemonUtil;
@@ -39,9 +40,6 @@ public class CaptchaValidator implements ConstraintValidator<Captcha, String> {
 	
 	private final Log log = LogFactory.getLog(getClass());
 	
-	@Value("${reCaptcha.enable:true}")
-	private boolean reCaptchaEnabled;
-
 	private static class ResponseData {
 		
 		private boolean success;
@@ -63,9 +61,9 @@ public class CaptchaValidator implements ConstraintValidator<Captcha, String> {
 		}
 	}
 	
-	@Value("${lemon.reCaptcha.secretKey:null}")
-	private String reCaptchaSecretKey;
-	
+	@Autowired
+	private LemonProperties properties;
+
 	@Resource
 	private RestTemplate restTemplate;
 	
@@ -77,7 +75,7 @@ public class CaptchaValidator implements ConstraintValidator<Captcha, String> {
 	     * Refer http://www.journaldev.com/7133/how-to-integrate-google-recaptcha-in-java-web-application  
 	     */
 		
-		if (!reCaptchaEnabled) // e.g. while testing
+		if (!properties.getRecaptcha().isEnabled()) // e.g. while testing
 			return true;
 		
 		if (captchaResponse == null || "".equals(captchaResponse))
@@ -85,7 +83,7 @@ public class CaptchaValidator implements ConstraintValidator<Captcha, String> {
 	        
 		MultiValueMap<String, String> formData = new LinkedMultiValueMap<String, String>(2);
 		formData.add("response", captchaResponse);
-		formData.add("secret", reCaptchaSecretKey);
+		formData.add("secret", properties.getRecaptcha().getSecretkey());
 		
 		try {
 

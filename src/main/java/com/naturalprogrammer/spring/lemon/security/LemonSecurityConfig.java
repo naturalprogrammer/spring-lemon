@@ -25,15 +25,17 @@ import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 
+import com.naturalprogrammer.spring.lemon.LemonProperties;
+
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 	
+	@Autowired
+	private LemonProperties properties;
+	
 	private static final String REMEMBER_ME_COOKIE = "rememberMe";
 	private static final String REMEMBER_ME_PARAMETER = "rememberMe";
-	
-	@Value("${lemon.rememberMe.secretKey}")
-	private String rememberMeKey;
 	
 	@Autowired
 	private UserDetailsService userDetailsService;
@@ -111,7 +113,7 @@ public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 				.authenticationEntryPoint(new Http403ForbiddenEntryPoint())
 				.and()
 			.rememberMe()
-				.key(rememberMeKey)
+				.key(properties.getRememberMeKey())
 				.rememberMeServices(rememberMeServices())
 				.and()
 			//.csrf().disable()
@@ -142,7 +144,8 @@ public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
     protected RememberMeServices rememberMeServices() {
     	
         TokenBasedRememberMeServices rememberMeServices =
-        	new TokenBasedRememberMeServices(rememberMeKey, userDetailsService);
+        	new TokenBasedRememberMeServices
+        		(properties.getRememberMeKey(), userDetailsService);
         rememberMeServices.setParameter(REMEMBER_ME_PARAMETER); // default is "remember-me" (in earlier spring security versions it was "_spring_security_remember_me")
         rememberMeServices.setCookieName(REMEMBER_ME_COOKIE);
         return rememberMeServices;

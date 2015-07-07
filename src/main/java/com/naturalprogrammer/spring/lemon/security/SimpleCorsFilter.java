@@ -17,7 +17,7 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
-import com.naturalprogrammer.spring.lemon.PublicProperties;
+import com.naturalprogrammer.spring.lemon.LemonProperties;
 
 /**
  * If you want to disable this, e.g. while testing or in pure REST APIs,
@@ -32,11 +32,11 @@ import com.naturalprogrammer.spring.lemon.PublicProperties;
  */
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
-@ConditionalOnProperty(name="lemon.cors.enabled", matchIfMissing=true)
+@ConditionalOnProperty(name="lemon.enabled.cors", matchIfMissing=true)
 public class SimpleCorsFilter implements Filter {
 
 	@Autowired
-	PublicProperties properties;
+	LemonProperties properties;
 	
 	public void doFilter(ServletRequest req,
 			ServletResponse res,
