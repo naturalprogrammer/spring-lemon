@@ -11,6 +11,8 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.Ordered;
@@ -35,6 +37,8 @@ import com.naturalprogrammer.spring.lemon.LemonProperties;
 @ConditionalOnProperty(name="lemon.enabled.cors", matchIfMissing=true)
 public class SimpleCorsFilter implements Filter {
 
+	private final Log log = LogFactory.getLog(getClass());
+
 	@Autowired
 	LemonProperties properties;
 	
@@ -42,6 +46,8 @@ public class SimpleCorsFilter implements Filter {
 			ServletResponse res,
 			FilterChain chain)
 	throws IOException, ServletException {
+		
+		log.debug("Inside SimpleCorsFilter");
 		
 		HttpServletResponse response = (HttpServletResponse) res;
 		response.setHeader("Access-Control-Allow-Origin",

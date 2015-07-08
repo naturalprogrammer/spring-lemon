@@ -75,8 +75,10 @@ public class CaptchaValidator implements ConstraintValidator<Captcha, String> {
 	     * Refer http://www.journaldev.com/7133/how-to-integrate-google-recaptcha-in-java-web-application  
 	     */
 		
-		if (!properties.getRecaptcha().isEnabled()) // e.g. while testing
+		if (!properties.getRecaptcha().isEnabled()) { // e.g. while testing
+			log.debug("Captcha validation not done, as it is disabled in application properties.");
 			return true;
+		}
 		
 		if (captchaResponse == null || "".equals(captchaResponse))
 	         return false;
@@ -87,7 +89,6 @@ public class CaptchaValidator implements ConstraintValidator<Captcha, String> {
 		
 		try {
 
-
 			// This also works:
 			//	ResponseData responseData = restTemplate.postForObject(
 			//	   "https://www.google.com/recaptcha/api/siteverify?response={0}&secret={1}",
@@ -97,7 +98,14 @@ public class CaptchaValidator implements ConstraintValidator<Captcha, String> {
 			   "https://www.google.com/recaptcha/api/siteverify",
 			   formData, ResponseData.class);
 			
-			return responseData.success;			
+			if (responseData.success) {
+				log.debug("Captcha validation succeeded.");
+				return true;
+			}
+			
+			log.info("Captcha validation failed.");
+			return false;
+			
 		} catch (Throwable t) {
 			log.error(ExceptionUtils.getStackTrace(t));
 			return false;
@@ -107,8 +115,7 @@ public class CaptchaValidator implements ConstraintValidator<Captcha, String> {
 
 	@Override
 	public void initialize(Captcha constraintAnnotation) {
-		// TODO Auto-generated method stub
-		
+		log.debug("Captcha validator initialized.");
 	}
 
 }

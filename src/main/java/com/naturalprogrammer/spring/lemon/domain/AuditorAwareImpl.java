@@ -14,7 +14,7 @@ public class AuditorAwareImpl
 implements AuditorAware<U> {
 
 	public U getCurrentAuditor() {
-		return LemonUtil.getLoggedInUser();
+		return LemonUtil.getUser();
 	}
 	
 }

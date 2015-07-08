@@ -15,13 +15,14 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.naturalprogrammer.spring.lemon.LemonService;
+import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
 import com.naturalprogrammer.spring.lemon.util.LemonUtil;
 
 @Component
 public class AuthenticationSuccessHandler
 	extends SimpleUrlAuthenticationSuccessHandler {
 	
-	// private Log log = LogFactory.getLog(getClass());
+	private final Log log = LogFactory.getLog(getClass());
 	
     @Autowired
     private ObjectMapper objectMapper;
@@ -32,13 +33,16 @@ public class AuthenticationSuccessHandler
             Authentication authentication)
     throws IOException, ServletException {
 
+		AbstractUser<?,?> loggedIn =
+			LemonUtil.getBean(LemonService.class)
+				.userForClient();
+		
         // instead of this, the statement below is introduced: handle(request, response, authentication);
     	response.setStatus(HttpServletResponse.SC_OK);
     	response.getOutputStream().print(
-    			objectMapper.writeValueAsString(
-    			LemonUtil.getBean(LemonService.class).userForClient()));
+    			objectMapper.writeValueAsString(loggedIn));
         clearAuthenticationAttributes(request);
-        //log.info("AuthenticationSuccess: " + LemonUtil.getLoggedInUser());
         
+        log.debug("Authentication succeeded for user: " + loggedIn);        
     }
 }

@@ -44,7 +44,8 @@ public class FieldError {
 
 	private static String computeFieldName(ConstraintViolation<?> constraintViolation) {
 		
-		// remove the method name from the path 
+		// The first component of the path is 
+		// the method name. Remove it. 
 		return StringUtils.substringAfter(
 			constraintViolation.getPropertyPath().toString(), ".");
 		

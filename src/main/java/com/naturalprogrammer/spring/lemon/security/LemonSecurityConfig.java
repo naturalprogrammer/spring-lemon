@@ -166,7 +166,6 @@ public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 		repository.setHeaderName("X-XSRF-TOKEN");
 		return repository;
 	}
-
 	
 	protected SwitchUserFilter switchUserFilter() {
 		SwitchUserFilter filter = new SwitchUserFilter();

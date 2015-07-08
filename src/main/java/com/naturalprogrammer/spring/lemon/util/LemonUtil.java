@@ -75,24 +75,17 @@ public class LemonUtil {
 	}
 	
 
-	public static <U extends AbstractUser<U,ID>, ID extends Serializable> U getLoggedInUser() {
+	public static <U extends AbstractUser<U,ID>, ID extends Serializable> U getUser() {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		return getUser(auth);
 	}
 	
     public static <U extends AbstractUser<U,ID>, ID extends Serializable> void logInUser(U user) {
     	
-        //UserDetailsImpl<U,ID> userDetails = new UserDetailsImpl<U,ID>(user);
- 
         Authentication authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
-//	public static void validate(boolean valid, String messageKey, Object... args) {
-//		if (!valid)
-//			throw new BadRequestException(messageKey, args);
-//	}
-	
 	public static <U extends AbstractUser<U,ID>, ID extends Serializable>
 	void validateVersion(VersionedEntity<U,ID> original, VersionedEntity<U,ID> updated) {
 		
@@ -100,11 +93,6 @@ public class LemonUtil {
 			throw new VersionException(original.getClass().getSimpleName());
 	}
 
-	public static String hostUrl() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
 	public static MultiErrorException check(boolean valid, String messageKey, Object... args) {
 		return LemonUtil.check(null, valid, messageKey, args);
 	}

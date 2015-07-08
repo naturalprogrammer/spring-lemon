@@ -11,6 +11,8 @@ import javax.persistence.FetchType;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,6 +28,8 @@ public abstract class AbstractUser
 extends VersionedEntity<U, ID>
 implements UserDetails {
 	
+	private static final Log log = LogFactory.getLog(AbstractUser.class); 
+			
 	private static final long serialVersionUID = 655067760361294864L;
 	
 	public static final int EMAIL_MIN = 4;
@@ -200,11 +204,11 @@ implements UserDetails {
 //	}
 	
 	public U decorate() {
-		return decorate(LemonUtil.getLoggedInUser());
+		return decorate(LemonUtil.getUser());
 	}
 	
 	public U decorate(U loggedIn) {
-		
+				
 		unverified = roles.contains(Role.UNVERIFIED);
 		blocked = roles.contains(Role.BLOCKED);
 		admin = roles.contains(Role.ADMIN);
@@ -220,19 +224,28 @@ implements UserDetails {
 			rolesEditable = adminLoggedIn && !equals(loggedIn); // another admin
 		}
 		
+		log.debug("Decorated user: " + this);
+
 		return (U) this;
 		
 	}
 
 	public void hideConfidentialFields() {
+		
 		password = null;
 		if (!editable)
 			email = "Confidential";
+		
+		log.debug("Hid confidential fields for user: " + this);
+		
 	}
 
 	@Override
 	public boolean hasPermission(U loggedInUser, String permission) {
 		
+		log.debug("Computing " + permission	+ " permission for : " + this
+			+ "\n  Logged in user: " + loggedInUser);
+
 		decorate(loggedInUser);
 		
 		if (permission.equals("edit"))
@@ -247,25 +260,23 @@ implements UserDetails {
 	
 	@Override
 	public String toString() {
-		return "AbstractUser [email=" + email + ", verificationCode="
-				+ verificationCode + ", forgotPasswordCode="
-				+ forgotPasswordCode + ", roles=" + roles + "]";
+		return "AbstractUser [email=" + email + ", roles=" + roles + "]";
 	}
 	
-@Override
-public Collection<? extends GrantedAuthority> getAuthorities() {
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		
+		Collection<GrantedAuthority> authorities = new HashSet<GrantedAuthority>(
+				roles.size());
 	
-	Collection<GrantedAuthority> authorities = new HashSet<GrantedAuthority>(
-			roles.size());
-
-	for (String role : roles)
-		authorities.add(new SimpleGrantedAuthority("ROLE_" + role));
-
-	//authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
-
-	return authorities;
+		for (String role : roles)
+			authorities.add(new SimpleGrantedAuthority("ROLE_" + role));
 	
-}
+		log.debug("Authorities of " + this + ": " + authorities);
+
+		return authorities;
+		
+	}
 
 	@Override
 	public String getUsername() {

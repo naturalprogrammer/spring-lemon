@@ -22,7 +22,7 @@ import com.naturalprogrammer.spring.lemon.validation.FieldError;
 @ControllerAdvice
 public class DefaultExceptionHandler {
 	
-    private Log log = LogFactory.getLog(getClass());
+    private final Log log = LogFactory.getLog(getClass());
 	
 	@RequestMapping(produces = "application/json")
     @ExceptionHandler(ConstraintViolationException.class)
@@ -31,9 +31,8 @@ public class DefaultExceptionHandler {
     	
 		Collection<FieldError> errors = FieldError.getErrors(ex.getConstraintViolations());
 		
-    	log.error("ConstraintViolationException: " + errors.toString());
+    	log.warn("ConstraintViolationException: " + errors.toString());
 		return LemonUtil.mapOf("exception", "ConstraintViolationException", "errors", errors);
-
     }
 
 	@RequestMapping(produces = "application/json")
@@ -43,40 +42,26 @@ public class DefaultExceptionHandler {
     	
 		List<FieldError> errors = ex.getErrors();
 		
-    	log.error("MultiErrorException: " + errors.toString());
+    	log.warn("MultiErrorException: " + errors.toString());
 		return LemonUtil.mapOf("exception", "MultiErrorException", "message", ex.getMessage(), "errors", errors);
-
     }
-
 	
 	@RequestMapping(produces = "application/json")
     @ExceptionHandler({AccessDeniedException.class})
     @ResponseStatus(value = HttpStatus.FORBIDDEN)
     public @ResponseBody Map<String, Object> handleAuthorizationException(AccessDeniedException ex) {
     	
-        log.error("User does not have proper rights:", ex);
+        log.warn("User does not have proper rights:", ex);
 		return LemonUtil.mapOf("exception", "AccessDeniedException", "message", ex.getMessage());
-
     }
-
-//	@RequestMapping(produces = "application/json")
-//    @ExceptionHandler({BadRequestException.class})
-//    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-//    public @ResponseBody Map<String, Object> handleRequestException(BadRequestException ex) {
-//    	
-//        log.error("BadRequestException:", ex);        
-//		return LemonUtil.mapOf("exception", "BadRequestException", "message", ex.getMessage());
-//
-//    }
 
 	@RequestMapping(produces = "application/json")
     @ExceptionHandler({VersionException.class})
     @ResponseStatus(value = HttpStatus.CONFLICT)
     public @ResponseBody Map<String, Object> handleRequestException(VersionException ex) {
     	
-        log.error("VersionException:", ex);        
+        log.warn("VersionException:", ex);        
 		return LemonUtil.mapOf("exception", "VersionException", "message", ex.getMessage());
-
     }
 
 	@RequestMapping(produces = "application/json")
@@ -86,9 +71,6 @@ public class DefaultExceptionHandler {
     	
         log.error("Internal server error:", ex);        
 		return LemonUtil.mapOf("exception", ex.getClass().getSimpleName(), "message", ex.getMessage());
-
     }
-	
-
 
 }

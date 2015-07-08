@@ -2,6 +2,8 @@ package com.naturalprogrammer.spring.lemon.security;
 
 import java.io.Serializable;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,17 +20,23 @@ class UserDetailsServiceImpl
 	<U extends AbstractUser<U,ID>, ID extends Serializable>
 implements UserDetailsService {
 
-    @Autowired
+	private final Log log = LogFactory.getLog(getClass());
+
+	@Autowired
 	private AbstractUserRepository<U,ID> userRepository;
 	
 	@Override
 	public UserDetails loadUserByUsername(String email)
 			throws UsernameNotFoundException {
 		
+		log.debug("Loading user having email: " + email);
+		
 		U user = userRepository.findByEmail(email);
 		if (user == null)
 			throw new UsernameNotFoundException(email);
 
+		log.debug("Loaded user having email: " + email);
+		
 		return user;
 
 	}

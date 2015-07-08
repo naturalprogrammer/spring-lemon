@@ -68,7 +68,9 @@ public abstract class LemonService<U extends AbstractUser<U,ID>, ID extends Seri
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
     public void afterContextRefreshed(ContextRefreshedEvent event) {
     	
+    	log.info("Starting up Spring Lemon ...");
     	onStartup();
+    	log.info("Spring Lemon started");
     	
     }
     
@@ -94,9 +96,12 @@ public abstract class LemonService<U extends AbstractUser<U,ID>, ID extends Seri
 	 */
     protected U createAdminUser() {
 		
-		U user = newUser();
-		
-		user.setEmail(properties.getAdmin().getLogin());
+    	String adminEmail = properties.getAdmin().getLogin();
+    	
+    	log.info("Creating the first admin user: " + adminEmail);
+
+    	U user = newUser();
+		user.setEmail(adminEmail);
 		user.setPassword(passwordEncoder.encode(
 			properties.getAdmin().getPassword()));
 		user.getRoles().add(Role.ADMIN);
@@ -122,12 +127,10 @@ public abstract class LemonService<U extends AbstractUser<U,ID>, ID extends Seri
 		Map<String, Object> context = new HashMap<String, Object>(2);
 		context.put("reCaptchaSiteKey", properties.getRecaptcha().getSitekey());
 		context.put("shared", properties.getShared());
-		return context;
 		
-		
-//		ContextDto contextDto = new ContextDto();
-//		contextDto.setReCaptchaSiteKey(reCaptchaSiteKey);
-//		return contextDto;		
+		log.debug("Returning context: " + context);
+
+		return context;		
 	}
 	
 	@PreAuthorize("isAnonymous()")
@@ -135,15 +138,22 @@ public abstract class LemonService<U extends AbstractUser<U,ID>, ID extends Seri
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
 	public void signup(@Valid U user) {
 		
+		log.debug("Signing up user: " + user);
+
 		initUser(user);
 		userRepository.save(user);
 		sendVerificationMail(user);
 		LemonUtil.logInUser(user);
 		
+		log.debug("Signed up user: " + user);
+		
+		
 	}
 	
 	protected U initUser(U user) {
 		
+		log.debug("Initializing user: " + user);
+
 		user.setPassword(passwordEncoder.encode(user.getPassword()));
 		user.getRoles().add(Role.UNVERIFIED);
 		user.setVerificationCode(UUID.randomUUID().toString());
@@ -155,11 +165,16 @@ public abstract class LemonService<U extends AbstractUser<U,ID>, ID extends Seri
 	protected void sendVerificationMail(final U user) {
         LemonUtil.afterCommit(() -> {
     		try {
+    			
+    			log.debug("Sending verification mail to: " + user);
+
     			String verifyLink = properties.getApplicationUrl() + "/users/" + user.getVerificationCode() + "/verify";
     			mailSender.send(user.getEmail(),
     					LemonUtil.getMessage("com.naturalprogrammer.spring.verifySubject"),
     					LemonUtil.getMessage("com.naturalprogrammer.spring.verifyEmail", verifyLink));
-    			log.info("Verification mail to " + user.getEmail() + " queued.");
+    			
+    			log.debug("Verification mail to " + user.getEmail() + " queued.");
+    			
 			} catch (MessagingException e) {
 				log.error(ExceptionUtils.getStackTrace(e));
 			}
@@ -168,11 +183,14 @@ public abstract class LemonService<U extends AbstractUser<U,ID>, ID extends Seri
 
 	public U fetchUser(@Valid @Email @NotBlank String email) {
 		
+		log.debug("Fetching user by email: " + email);
+
 		U user = userRepository.findByEmail(email);
-		
-		LemonUtil.check("email", user != null, "com.naturalprogrammer.spring.userNotFound").go();
-		
+		LemonUtil.check("email", user != null,
+			"com.naturalprogrammer.spring.userNotFound").go();
 		user.decorate().hideConfidentialFields();
+		
+		log.debug("Returning user: " + user);		
 
 		return user;
 	}
@@ -180,8 +198,9 @@ public abstract class LemonService<U extends AbstractUser<U,ID>, ID extends Seri
 	
 	public U fetchUser(U user) {
 		
-		LemonUtil.check(user != null, "com.naturalprogrammer.spring.userNotFound").go();
+		log.debug("Fetching user: " + user);
 
+		LemonUtil.check(user != null, "com.naturalprogrammer.spring.userNotFound").go();
 		user.decorate().hideConfidentialFields();
 		
 		return user;
@@ -190,6 +209,8 @@ public abstract class LemonService<U extends AbstractUser<U,ID>, ID extends Seri
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
 	public void verifyUser(String verificationCode) {
 		
+		log.debug("Verifying user ...");
+
 		U user = userRepository.findByVerificationCode(verificationCode);
 		LemonUtil.check(user != null, "com.naturalprogrammer.spring.userNotFound").go();
 		
@@ -197,11 +218,13 @@ public abstract class LemonService<U extends AbstractUser<U,ID>, ID extends Seri
 		user.getRoles().remove(Role.UNVERIFIED);
 		userRepository.save(user);
 		
+		log.debug("Verified user: " + user);		
 	}
 
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
 	public void forgotPassword(@Valid @Email @NotBlank String email) {
 		
+		log.debug("Processing forgot password for email: " + email);
 		final U user = userRepository.findByEmail(email);
 
 		LemonUtil.check(user != null, "com.naturalprogrammer.spring.userNotFound").go();
@@ -213,29 +236,23 @@ public abstract class LemonService<U extends AbstractUser<U,ID>, ID extends Seri
 		    mailForgotPasswordLink(user);
 		});
 		
-//		TransactionSynchronizationManager.registerSynchronization(
-//			    new TransactionSynchronizationAdapter() {
-//			        @Override
-//			        public void afterCommit() {
-//			        	try {
-//							mailForgotPasswordLink(user);
-//						} catch (MessagingException e) {
-//							log.error(ExceptionUtils.getStackTrace(e));
-//						}
-//			        }
-//
-//		    });				
 	}
 	
 	private void mailForgotPasswordLink(U user) {
 		
 		try {
+			
+			log.debug("Mailing forgot password link to user: " + user);
+
 			String forgotPasswordLink = 
 					properties.getApplicationUrl() + "/reset-password/" +
 					user.getForgotPasswordCode();
 			mailSender.send(user.getEmail(),
 					LemonUtil.getMessage("com.naturalprogrammer.spring.forgotPasswordSubject"),
 					LemonUtil.getMessage("com.naturalprogrammer.spring.forgotPasswordEmail", forgotPasswordLink));
+			
+			log.debug("Forgot password link mail queued.");
+			
 		} catch (MessagingException e) {
 			log.error(ExceptionUtils.getStackTrace(e));
 		}
@@ -246,6 +263,8 @@ public abstract class LemonService<U extends AbstractUser<U,ID>, ID extends Seri
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
 	public void resetPassword(String forgotPasswordCode, @Valid @Password String newPassword) {
 		
+		log.debug("Resetting password ...");
+
 		U user = userRepository.findByForgotPasswordCode(forgotPasswordCode);
 		LemonUtil.check(user != null, "com.naturalprogrammer.spring.invalidLink").go();
 		
@@ -254,6 +273,8 @@ public abstract class LemonService<U extends AbstractUser<U,ID>, ID extends Seri
 		
 		userRepository.save(user);
 		
+		log.debug("Password reset.");	
+		
 	}
 
 	@PreAuthorize("hasPermission(#user, 'edit')")
@@ -261,21 +282,26 @@ public abstract class LemonService<U extends AbstractUser<U,ID>, ID extends Seri
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
 	public void updateUser(U user, @Valid U updatedUser) {
 		
+		log.debug("Updating user: " + user);
+
 		LemonUtil.check(user != null, "com.naturalprogrammer.spring.userNotFound").go();
 		LemonUtil.validateVersion(user, updatedUser);
 
-		U loggedIn = LemonUtil.getLoggedInUser();
+		U loggedIn = LemonUtil.getUser();
 
 		updateUserFields(user, updatedUser, loggedIn);
 		
-		userRepository.save(user);		
+		userRepository.save(user);
 		
+		log.debug("Updated user: " + user);		
 	}
 	
 	@PreAuthorize("hasPermission(#user, 'edit')")
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
 	public void changePassword(U user, @Valid ChangePasswordForm changePasswordForm) {
 		
+		log.debug("Changing password for user: " + user);
+
 		LemonUtil.check(user != null, "com.naturalprogrammer.spring.userNotFound").go();
 		LemonUtil.check("oldPassword",
 			passwordEncoder.matches(changePasswordForm.getOldPassword(), user.getPassword()),
@@ -285,10 +311,17 @@ public abstract class LemonService<U extends AbstractUser<U,ID>, ID extends Seri
 		userRepository.save(user);
 		
 		LemonUtil.afterCommit(() -> {
-			U loggedIn = LemonUtil.getLoggedInUser();
-			if (loggedIn.equals(user))
-				loggedIn.setPassword(user.getPassword());
+
+			U loggedIn = LemonUtil.getUser();
+			
+			if (loggedIn.equals(user)) {
+				
+				log.debug("Setting password for logged in user.");
+				loggedIn.setPassword(user.getPassword());				
+			}
 		});
+		
+		log.debug("Changed password for user: " + user);
 		
 	}
 
@@ -302,8 +335,12 @@ public abstract class LemonService<U extends AbstractUser<U,ID>, ID extends Seri
 	 */
 	protected void updateUserFields(U user, U updatedUser, U loggedIn) {
 
+		log.debug("Updating user fields for user: " + user);
+
 		if (user.isRolesEditable()) {
 			
+			log.debug("Updating roles for user: " + user);
+
 			Set<String> roles = user.getRoles();
 			
 			if (updatedUser.isUnverified())
@@ -323,15 +360,18 @@ public abstract class LemonService<U extends AbstractUser<U,ID>, ID extends Seri
 		}
 		
 		LemonUtil.afterCommit(() -> {
-			if (loggedIn.equals(user))
+			if (loggedIn.equals(user)) {
+				
+				log.debug("Setting roles for logged in user.");
 				loggedIn.setRoles(user.getRoles());
+			}
 		});
 
 	}
 
 	public U userForClient() {
 
-		return userForClient(LemonUtil.getLoggedInUser());
+		return userForClient(LemonUtil.getUser());
 		
 	}
 
@@ -350,7 +390,12 @@ public abstract class LemonService<U extends AbstractUser<U,ID>, ID extends Seri
 		user.setIdForClient(loggedIn.getId());
 		user.setEmail(loggedIn.getEmail());
 		user.setRoles(loggedIn.getRoles());
-		return user.decorate(loggedIn);
+		user.decorate(loggedIn);
+		
+		log.debug("Returning user for client: " + user);
+		
+		return user;
+
 	}
 	
 }

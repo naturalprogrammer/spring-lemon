@@ -2,6 +2,8 @@ package com.naturalprogrammer.spring.lemon.validation;
 
 import javax.validation.Validator;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
@@ -10,10 +12,14 @@ import org.springframework.validation.beanvalidation.MethodValidationPostProcess
 @Configuration
 public class ValidationConfig {
 
-    @Bean
+	private final Log log = LogFactory.getLog(getClass());
+
+	@Bean
     public MethodValidationPostProcessor methodValidationPostProcessor() {
     	
-        MethodValidationPostProcessor processor =
+        log.info("Configuring MethodValidationPostProcessor.");
+
+		MethodValidationPostProcessor processor =
         		new MethodValidationPostProcessor();
         processor.setValidator(validator());
         return processor;

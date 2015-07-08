@@ -26,7 +26,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 @ConditionalOnProperty(name="lemon.enabled.jsonprefix", matchIfMissing=true)
 public class JsonPrefixWebConfig extends WebMvcConfigurerAdapter {
 	
-	private Log log = LogFactory.getLog(getClass());
+	private final Log log = LogFactory.getLog(getClass());
 	
 	public final static String JSON_PREFIX = ")]}',\n";
 	
