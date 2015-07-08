@@ -156,7 +156,9 @@ public abstract class LemonService<U extends AbstractUser<U,ID>, ID extends Seri
         LemonUtil.afterCommit(() -> {
     		try {
     			String verifyLink = properties.getApplicationUrl() + "/users/" + user.getVerificationCode() + "/verify";
-    			mailSender.send(user.getEmail(), LemonUtil.getMessage("verifySubject"), LemonUtil.getMessage("verifyEmail", verifyLink));
+    			mailSender.send(user.getEmail(),
+    					LemonUtil.getMessage("com.naturalprogrammer.spring.verifySubject"),
+    					LemonUtil.getMessage("com.naturalprogrammer.spring.verifyEmail", verifyLink));
     			log.info("Verification mail to " + user.getEmail() + " queued.");
 			} catch (MessagingException e) {
 				log.error(ExceptionUtils.getStackTrace(e));
@@ -168,7 +170,7 @@ public abstract class LemonService<U extends AbstractUser<U,ID>, ID extends Seri
 		
 		U user = userRepository.findByEmail(email);
 		
-		LemonUtil.check("email", user != null, "userNotFound").go();
+		LemonUtil.check("email", user != null, "com.naturalprogrammer.spring.userNotFound").go();
 		
 		user.decorate().hideConfidentialFields();
 
@@ -178,7 +180,7 @@ public abstract class LemonService<U extends AbstractUser<U,ID>, ID extends Seri
 	
 	public U fetchUser(U user) {
 		
-		LemonUtil.check(user != null, "userNotFound").go();
+		LemonUtil.check(user != null, "com.naturalprogrammer.spring.userNotFound").go();
 
 		user.decorate().hideConfidentialFields();
 		
@@ -189,7 +191,7 @@ public abstract class LemonService<U extends AbstractUser<U,ID>, ID extends Seri
 	public void verifyUser(String verificationCode) {
 		
 		U user = userRepository.findByVerificationCode(verificationCode);
-		LemonUtil.check(user != null, "userNotFound").go();
+		LemonUtil.check(user != null, "com.naturalprogrammer.spring.userNotFound").go();
 		
 		user.setVerificationCode(null);
 		user.getRoles().remove(Role.UNVERIFIED);
@@ -202,7 +204,7 @@ public abstract class LemonService<U extends AbstractUser<U,ID>, ID extends Seri
 		
 		final U user = userRepository.findByEmail(email);
 
-		LemonUtil.check(user != null, "userNotFound").go();
+		LemonUtil.check(user != null, "com.naturalprogrammer.spring.userNotFound").go();
 		
 		user.setForgotPasswordCode(UUID.randomUUID().toString());
 		userRepository.save(user);
@@ -232,8 +234,8 @@ public abstract class LemonService<U extends AbstractUser<U,ID>, ID extends Seri
 					properties.getApplicationUrl() + "/reset-password/" +
 					user.getForgotPasswordCode();
 			mailSender.send(user.getEmail(),
-					LemonUtil.getMessage("forgotPasswordSubject"),
-					LemonUtil.getMessage("forgotPasswordEmail", forgotPasswordLink));
+					LemonUtil.getMessage("com.naturalprogrammer.spring.forgotPasswordSubject"),
+					LemonUtil.getMessage("com.naturalprogrammer.spring.forgotPasswordEmail", forgotPasswordLink));
 		} catch (MessagingException e) {
 			log.error(ExceptionUtils.getStackTrace(e));
 		}
@@ -245,7 +247,7 @@ public abstract class LemonService<U extends AbstractUser<U,ID>, ID extends Seri
 	public void resetPassword(String forgotPasswordCode, @Valid @Password String newPassword) {
 		
 		U user = userRepository.findByForgotPasswordCode(forgotPasswordCode);
-		LemonUtil.check(user != null, "invalidLink").go();
+		LemonUtil.check(user != null, "com.naturalprogrammer.spring.invalidLink").go();
 		
 		user.setPassword(passwordEncoder.encode(newPassword));
 		user.setForgotPasswordCode(null);
@@ -259,7 +261,7 @@ public abstract class LemonService<U extends AbstractUser<U,ID>, ID extends Seri
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
 	public void updateUser(U user, @Valid U updatedUser) {
 		
-		LemonUtil.check(user != null, "userNotFound").go();
+		LemonUtil.check(user != null, "com.naturalprogrammer.spring.userNotFound").go();
 		LemonUtil.validateVersion(user, updatedUser);
 
 		U loggedIn = LemonUtil.getLoggedInUser();
@@ -274,10 +276,10 @@ public abstract class LemonService<U extends AbstractUser<U,ID>, ID extends Seri
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
 	public void changePassword(U user, @Valid ChangePasswordForm changePasswordForm) {
 		
-		LemonUtil.check(user != null, "userNotFound").go();
+		LemonUtil.check(user != null, "com.naturalprogrammer.spring.userNotFound").go();
 		LemonUtil.check("oldPassword",
 			passwordEncoder.matches(changePasswordForm.getOldPassword(), user.getPassword()),
-			"wrong.password").go();
+			"com.naturalprogrammer.spring.wrong.password").go();
 		
 		user.setPassword(passwordEncoder.encode(changePasswordForm.getPassword()));
 		userRepository.save(user);

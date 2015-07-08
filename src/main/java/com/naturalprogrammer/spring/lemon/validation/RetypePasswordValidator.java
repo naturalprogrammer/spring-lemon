@@ -25,7 +25,7 @@ public class RetypePasswordValidator implements ConstraintValidator<RetypePasswo
 		if (!Objects.equals(retypePasswordForm.getPassword(), retypePasswordForm.getRetypePassword())) {
 			
 			context.disableDefaultConstraintViolation();
-			context.buildConstraintViolationWithTemplate("{com.naturalprogrammer.spring.same.passwords}")
+			context.buildConstraintViolationWithTemplate("{com.naturalprogrammer.spring.different.passwords}")
 				.addPropertyNode("retypePassword").addConstraintViolation();
 			
 			return false;

@@ -42,9 +42,9 @@ You need to scan the components not only in your application, but also in Spring
 
 Spring Lemon uses some properties which you need to supply. So, copy these three files to your `src/main/resources` folder:
 
-application.properties
-messages.properties
-ValidationMessages.properties
+1. application.properties
+1. messages.properties
+1. ValidationMessages.properties
 
 ### Configuring security
 

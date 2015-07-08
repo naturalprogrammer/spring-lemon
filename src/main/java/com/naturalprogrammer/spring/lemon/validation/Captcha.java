@@ -23,7 +23,7 @@ import javax.validation.Payload;
 @Constraint(validatedBy=CaptchaValidator.class)
 public @interface Captcha {
  
-    String message() default "{invalid.captcha}";
+    String message() default "{com.naturalprogrammer.spring.wrong.captcha}";
 
     Class[] groups() default {};
     

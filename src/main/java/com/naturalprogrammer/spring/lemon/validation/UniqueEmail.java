@@ -22,7 +22,7 @@ import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
  * @author skpat_000
  *
  */
-@NotBlank(message = "{com.naturalprogrammer.spring.required.email}")
+@NotBlank(message = "{com.naturalprogrammer.spring.blank.email}")
 @Size(min=AbstractUser.EMAIL_MIN, max=AbstractUser.EMAIL_MAX)
 @Email
 @Documented
@@ -31,7 +31,7 @@ import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
 @Constraint(validatedBy=UniqueEmailValidator.class)
 public @interface UniqueEmail {
  
-    String message() default "{unique.email}";
+    String message() default "{com.naturalprogrammer.spring.duplicate.email}";
 
     Class[] groups() default {};
     

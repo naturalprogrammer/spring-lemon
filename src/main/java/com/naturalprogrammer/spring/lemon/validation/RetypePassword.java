@@ -23,7 +23,7 @@ import javax.validation.Payload;
 @Constraint(validatedBy=RetypePasswordValidator.class)
 public @interface RetypePassword {
  
-    String message() default "{com.naturalprogrammer.spring.same.passwords}";
+    String message() default "{com.naturalprogrammer.spring.different.passwords}";
 
     Class[] groups() default {};
     

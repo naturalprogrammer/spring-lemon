@@ -24,15 +24,16 @@ import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
  * @author skpat_000
  *
  */
-@NotBlank(message="{com.naturalprogrammer.spring.required.password}")
-@Size(min=AbstractUser.PASSWORD_MIN, max=AbstractUser.PASSWORD_MAX, message="{passwordSizeError}")
+@NotBlank(message="{com.naturalprogrammer.spring.blank.password}")
+@Size(min=AbstractUser.PASSWORD_MIN, max=AbstractUser.PASSWORD_MAX,
+	message="{com.naturalprogrammer.spring.invalid.passwordSize}")
 @Target({ METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER })
 @Retention(RUNTIME)
 @Documented
 @Constraint(validatedBy = { })
 public @interface Password {
 	
-	String message() default "{javax.validation.constraints.Size.message}";
+	String message() default "{com.naturalprogrammer.spring.invalid.passwordSize}";
 
 	Class<?>[] groups() default { };
 
