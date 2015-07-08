@@ -13,7 +13,7 @@ import org.springframework.web.client.RestTemplate;
 @EnableTransactionManagement
 @EnableJpaAuditing
 @EnableAsync
-public class AppConfig {
+public class LemonConfig {
 	
 	@Bean
 	public RestTemplate restTemplate() {
