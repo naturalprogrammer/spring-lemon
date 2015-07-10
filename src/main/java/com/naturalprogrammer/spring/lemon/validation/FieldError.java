@@ -12,6 +12,11 @@ public class FieldError {
 	
 	private String field;
 	private String message;
+	
+	public FieldError(String field, String message) {
+		this.field = field;
+		this.message = message;
+	}
 
 	public String getField() {
 		return field;
@@ -26,38 +31,37 @@ public class FieldError {
 		return "FieldError [field=" + field + ", message=" + message + "]";
 	}
 
-	public static List<FieldError> getErrors(Set<ConstraintViolation<?>> constraintViolations) {
+	public static List<FieldError> getErrors(
+			Set<ConstraintViolation<?>> constraintViolations) {
 		
-		return constraintViolations.stream().map(FieldError::of).collect(Collectors.toList());
-		
+		return constraintViolations.stream()
+				.map(FieldError::of).collect(Collectors.toList());	
 	}
 	
 	private static FieldError of(ConstraintViolation<?> constraintViolation) {
 		
-		return FieldError.of(
-			computeFieldName(constraintViolation),
-			constraintViolation.getMessage());
+		String field = StringUtils.substringAfter(
+				constraintViolation.getPropertyPath().toString(), ".");
 		
-	}
-	
-	
-
-	private static String computeFieldName(ConstraintViolation<?> constraintViolation) {
-		
-		// The first component of the path is 
-		// the method name. Remove it. 
-		return StringUtils.substringAfter(
-			constraintViolation.getPropertyPath().toString(), ".");
-		
+		return new FieldError(field, constraintViolation.getMessage());		
 	}
 
-	public static FieldError of(String field, String message) {
-		
-		FieldError fieldError = new FieldError();
-		fieldError.field = field;
-		fieldError.message = message;
-		
-		return fieldError;
-	}
+//	private static String computeFieldName(ConstraintViolation<?> constraintViolation) {
+//		
+//		// The first component of the path is 
+//		// the method name. Remove it. 
+//		return StringUtils.substringAfter(
+//			constraintViolation.getPropertyPath().toString(), ".");
+//		
+//	}
+//
+//	public static FieldError of(String field, String message) {
+//		
+//		FieldError fieldError = new FieldError();
+//		fieldError.field = field;
+//		fieldError.message = message;
+//		
+//		return fieldError;
+//	}
 
 }

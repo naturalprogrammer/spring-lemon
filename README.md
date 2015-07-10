@@ -4,10 +4,10 @@ When developing a *Single Page Application* or a *REST API* using Spring Framewo
 
 These configurations and patterns could be reused in most of the applications, maybe with minor tweaks. How about someone writing this common code as a configurable and extensible library, which you can include in your *pom* and start coding your business logic rightaway? Or, you can at least learn the best practices from the library, and use those in your code?
 
-Welcome to *Spring Lemon*. It has all the essential configurations and patterns for developing single page application (SPA) backends and REST APIs using Spring Boot. It also has a production-ready user module with features like sign up, sign in, validate email, change password, etc., which you can use in your applications. For most of the applications, Spring Lemon can be used without or with some customization. But, if you don't find it suitable for your application, feel free to fork it, or just roll out your own library by learning its patterns and practices. Better yet, be a contributor to this library!
+Welcome to *Spring Lemon*. It has all the essential configurations and patterns for developing single page application (SPA) backends and REST APIs using Spring Boot. It also has a production-ready user module with features like sign up, sign in, validate email, change password, etc., which you can use in your applications. For most of the applications, Spring Lemon can be used without or with a little customization. But, if you don't find it suitable for your application, feel free to fork it, or just roll out your own library by learning its patterns and practices. Better yet, be a contributor to this library!
 
 ## Limitations
-Currently Spring Lemon supports only Spring Data JPA.
+Currently Spring Lemon supports only Spring Data JPA, so you will be limited to RDBMS.
 
 ## Getting Started
 Below are the steps to quickly develop a REST API using Spring Lemon. If you like videos, here is it.
@@ -18,7 +18,7 @@ Create a new Spring Boot application. Your application *must use the same versio
 
 ### Add Spring Lemon
 
-Add `spring-lemon` to the dependencies section in `pom.xml` (or your gradle configuration file):
+Add `spring-lemon` to the dependencies section in `pom.xml` (or your Gradle configuration file):
 
 ``` xml
 <dependency>
@@ -29,7 +29,7 @@ Add `spring-lemon` to the dependencies section in `pom.xml` (or your gradle conf
 ```
 Spring Lemon already includes many dependencies you might just be repeating. Remove those from your pom by looking at its pom.
 
-### Scan Spring Lemon Components
+### Scan Spring Lemon components
 
 You need to scan the components not only in your application, but also in Spring Lemon, To do so, in your main class, replace the `@SpringBootApplication` annotation with
 
@@ -48,9 +48,9 @@ Spring Lemon uses some properties which you need to supply. So, copy these three
 
 ### Configuring security
 
-Spring Lemon has all the essential configurations and classes for using Spring Security. It currently supports username/password authentication, and has customized handlers ideal for SPAs and REST APIs. It also has built-in support for password encryption, CSRF, CORS remember-me, and switch-user.
+Spring Lemon currently supports username/password authentication, and has customized handlers ideal for SPAs and REST APIs. It also has built-in support for password encryption, CSRF, CORS remember-me, and switch-user.
 
-To enable security with all the above features, just create a class like this in your application:
+To enable security with all the above features, create a configuration class inheriting `LemonSecurityConfig`:
 
 ``` java
 @Configuration
@@ -58,7 +58,7 @@ public class MySecurityConfig extends LemonSecurityConfig {
     
 }
 ```
-You can customize it by overriding its methods, but we won't need that for this application. For more details, refer this book *Developing Elegant Single Page Applications and REST APIs using Spring Framework*. 
+It can be customized by overriding the methods, but you won't need that most of the application. For more details on how to customize, refer this book *Developing Elegant Single Page Applications and REST APIs using Spring Framework*. 
 
 ### Customizing the user module
 
@@ -114,5 +114,5 @@ public class User extends AbstractUser<User,Long> {
 }
 ```
 
-We are going to include this property in *Sign Up* and *Update Profile* forms. Hence, we have coded `groups = {SignUpValidation.class, UpdateValidation.class}` above, which tells spring Lemon to validate the property at *Sign Up* and *Update*.
+*Sign Up* and *Update Profile* forms should include this `name` property. Hence the `groups = {SignUpValidation.class, UpdateValidation.class}` above, which tells spring Lemon to validate the property at *Sign Up* and *Update*.
 

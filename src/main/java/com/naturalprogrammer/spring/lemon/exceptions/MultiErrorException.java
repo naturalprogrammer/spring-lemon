@@ -20,7 +20,7 @@ public class MultiErrorException extends RuntimeException {
 	 * @param args
 	 */
 	private MultiErrorException addError(String field, String error, Object... args) {
-		errors.add(FieldError.of(field, LemonUtil.getMessage(error, args)));
+		errors.add(new FieldError(field, LemonUtil.getMessage(error, args)));
 		return this;
 	}
 
