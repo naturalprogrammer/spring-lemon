@@ -1,7 +1,5 @@
 package com.naturalprogrammer.spring.lemon.validation;
 
-import java.io.Serializable;
-
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
@@ -10,7 +8,6 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUserRepository;
 
 /**
@@ -22,12 +19,13 @@ import com.naturalprogrammer.spring.lemon.domain.AbstractUserRepository;
  *
  */
 @Component
-public class UniqueEmailValidator implements ConstraintValidator<UniqueEmail, String> {
+public class UniqueEmailValidator
+implements ConstraintValidator<UniqueEmail, String> {
 
 	private final Log log = LogFactory.getLog(getClass());
 
 	@Autowired
-	private AbstractUserRepository<? extends AbstractUser<?,?>, ? extends Serializable> userRepository;
+	private AbstractUserRepository<?,?> userRepository;
 	
 	@Override
 	public void initialize(UniqueEmail constraintAnnotation) {
