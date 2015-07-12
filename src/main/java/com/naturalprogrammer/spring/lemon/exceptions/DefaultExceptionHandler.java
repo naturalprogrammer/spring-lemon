@@ -38,12 +38,14 @@ public class DefaultExceptionHandler {
 	@RequestMapping(produces = "application/json")
     @ExceptionHandler(MultiErrorException.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    public @ResponseBody Map<String, Object> handleMultiErrorException(MultiErrorException ex) {
+    public @ResponseBody Map<String, Object>
+		handleMultiErrorException(MultiErrorException ex) {
     	
 		List<FieldError> errors = ex.getErrors();
 		
     	log.warn("MultiErrorException: " + errors.toString());
-		return LemonUtil.mapOf("exception", "MultiErrorException", "message", ex.getMessage(), "errors", errors);
+		return LemonUtil.mapOf("exception", "MultiErrorException",
+				"message", ex.getMessage(), "errors", errors);
     }
 	
 	@RequestMapping(produces = "application/json")

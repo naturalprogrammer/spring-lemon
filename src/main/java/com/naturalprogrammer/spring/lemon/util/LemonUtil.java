@@ -93,11 +93,13 @@ public class LemonUtil {
 			throw new VersionException(original.getClass().getSimpleName());
 	}
 
-	public static MultiErrorException check(boolean valid, String messageKey, Object... args) {
+	public static MultiErrorException check(
+			boolean valid, String messageKey, Object... args) {
 		return LemonUtil.check(null, valid, messageKey, args);
 	}
 
-	public static MultiErrorException check(String fieldName, boolean valid, String messageKey, Object... args) {
+	public static MultiErrorException check(
+			String fieldName, boolean valid, String messageKey, Object... args) {
 		return new MultiErrorException().check(fieldName, valid, messageKey, args);
 	}
 
