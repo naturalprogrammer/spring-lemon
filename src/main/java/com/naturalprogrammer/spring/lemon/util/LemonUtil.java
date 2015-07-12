@@ -30,7 +30,8 @@ public class LemonUtil {
 	private static MessageSource messageSource;
 	
 	@Autowired
-	public LemonUtil(ApplicationContext applicationContext, MessageSource messageSource) {
+	public LemonUtil(ApplicationContext applicationContext,
+		MessageSource messageSource) {
 		
 		LemonUtil.applicationContext = applicationContext;
 		LemonUtil.messageSource = messageSource;
@@ -44,7 +45,8 @@ public class LemonUtil {
 	public static String getMessage(String messageKey, Object... args) {
 		
 		// http://stackoverflow.com/questions/10792551/how-to-obtain-a-current-user-locale-from-spring-without-passing-it-as-a-paramete
-		return messageSource.getMessage(messageKey, args, LocaleContextHolder.getLocale());
+		return messageSource.getMessage(messageKey, args,
+				LocaleContextHolder.getLocale());
 	}
 	
 	@SuppressWarnings("unchecked")
