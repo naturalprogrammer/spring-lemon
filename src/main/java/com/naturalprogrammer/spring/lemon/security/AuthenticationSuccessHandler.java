@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -39,6 +40,7 @@ public class AuthenticationSuccessHandler
 		
         // instead of this, the statement below is introduced: handle(request, response, authentication);
     	response.setStatus(HttpServletResponse.SC_OK);
+    	response.setContentType(MediaType.APPLICATION_JSON_VALUE);
     	response.getOutputStream().print(
     			objectMapper.writeValueAsString(loggedIn));
         clearAuthenticationAttributes(request);

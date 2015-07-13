@@ -19,6 +19,7 @@ import org.springframework.security.web.authentication.Http403ForbiddenEntryPoin
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
+import org.springframework.security.web.authentication.rememberme.AbstractRememberMeServices;
 import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices;
 import org.springframework.security.web.authentication.switchuser.SwitchUserFilter;
 import org.springframework.security.web.csrf.CsrfFilter;
@@ -34,8 +35,8 @@ public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private LemonProperties properties;
 	
-	private static final String REMEMBER_ME_COOKIE = "rememberMe";
-	private static final String REMEMBER_ME_PARAMETER = "rememberMe";
+	public static final String REMEMBER_ME_COOKIE = "rememberMe";
+	public static final String REMEMBER_ME_PARAMETER = "rememberMe";
 	
 	@Autowired
 	private UserDetailsService userDetailsService;
@@ -69,6 +70,8 @@ public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		
+		///AbstractRememberMeServices rememberMe = rememberMeServices(); 
+		
 		http
 			.formLogin()
 //				.loginPage("/login")
@@ -94,14 +97,14 @@ public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 	        	.failureHandler(authenticationFailureHandler())
 	        	.and()
 			.logout()
-			
+				
 				/************************************************
 				 * To prevent redirection to home page, we need to
 				 * have this custom logoutSuccessHandler
 				 ***********************************************/
 				.logoutSuccessHandler(logoutSuccessHandler)
-				//.invalidateHttpSession(true)
-				.deleteCookies("JSESSIONID", REMEMBER_ME_COOKIE)
+				.invalidateHttpSession(true)
+				.deleteCookies("JSESSIONID")
 				.and()
 				
 			.exceptionHandling()
@@ -141,7 +144,7 @@ public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 	 * 
 	 * @return
 	 */
-    protected RememberMeServices rememberMeServices() {
+	protected AbstractRememberMeServices rememberMeServices() {
     	
         TokenBasedRememberMeServices rememberMeServices =
         	new TokenBasedRememberMeServices

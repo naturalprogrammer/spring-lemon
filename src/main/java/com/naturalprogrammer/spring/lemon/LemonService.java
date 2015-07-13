@@ -117,11 +117,14 @@ public abstract class LemonService<U extends AbstractUser<U,ID>, ID extends Seri
 	private LemonProperties lemonProperties;
 	
 	/**
-	 * To send custom properties, you can 
-	 * use other.foo in application.properties OR
-	 * Override LemonProperties class and this method
+	 * Returns the context data to be sent to the client,
+	 * i.e. <em>reCaptchaSiteKey</em> and all the properties
+	 * prefixed with <em>lemon.shared</em>.
 	 * 
-	 * @return
+	 * To send custom properties, put those in your application
+	 * properties in the format <em>lemon.shared.fooBar</em>.
+	 * 
+	 * You can also override this method.
 	 */
 	public Map<String, Object> getContext() {
 		
