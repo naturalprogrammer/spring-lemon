@@ -66,7 +66,6 @@ public abstract class LemonService<U extends AbstractUser<U,ID>, ID extends Seri
      * @param event
      */
     @EventListener
-	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
     public void afterContextRefreshed(ContextRefreshedEvent event) {
     	
     	log.info("Starting up Spring Lemon ...");
@@ -79,7 +78,8 @@ public abstract class LemonService<U extends AbstractUser<U,ID>, ID extends Seri
 	 * Creates a new ADMIN user, if not found.
 	 * Override if needed.
 	 */
-    protected void onStartup() {
+	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
+    public void onStartup() {
     	
 		try {
 			userDetailsService
