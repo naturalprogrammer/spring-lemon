@@ -36,7 +36,7 @@ public class LemonLogoutSuccessHandler
     	response.setStatus(HttpServletResponse.SC_OK);
     	response.setContentType(MediaType.APPLICATION_JSON_VALUE);
     	response.getOutputStream().print(
-    			objectMapper.writeValueAsString(LemonUtil.mapOf("loggedIn",
+    			objectMapper.writeValueAsString(LemonUtil.mapOf("user",
     			LemonUtil.getBean(LemonService.class).userForClient())));
     	
         log.debug("Logout succeeded.");        

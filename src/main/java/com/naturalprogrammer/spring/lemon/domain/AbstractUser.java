@@ -207,7 +207,7 @@ implements UserDetails {
 		return decorate(LemonUtil.getUser());
 	}
 	
-	public U decorate(U loggedIn) {
+	public U decorate(U currentUser) {
 				
 		unverified = roles.contains(Role.UNVERIFIED);
 		blocked = roles.contains(Role.BLOCKED);
@@ -216,12 +216,12 @@ implements UserDetails {
 		editable = false;
 		rolesEditable = false;
 		
-		if (loggedIn != null) {
+		if (currentUser != null) {
 			
-			boolean adminLoggedIn = loggedIn.getRoles().contains(Role.ADMIN);
+			boolean adminLoggedIn = currentUser.getRoles().contains(Role.ADMIN);
 			
-			editable = adminLoggedIn || equals(loggedIn); // admin or self
-			rolesEditable = adminLoggedIn && !equals(loggedIn); // another admin
+			editable = adminLoggedIn || equals(currentUser); // admin or self
+			rolesEditable = adminLoggedIn && !equals(currentUser); // another admin
 		}
 		
 		log.debug("Decorated user: " + this);
@@ -241,12 +241,12 @@ implements UserDetails {
 	}
 
 	@Override
-	public boolean hasPermission(U loggedInUser, String permission) {
+	public boolean hasPermission(U currentUser, String permission) {
 		
 		log.debug("Computing " + permission	+ " permission for : " + this
-			+ "\n  Logged in user: " + loggedInUser);
+			+ "\n  Logged in user: " + currentUser);
 
-		decorate(loggedInUser);
+		decorate(currentUser);
 		
 		if (permission.equals("edit"))
 			return editable;

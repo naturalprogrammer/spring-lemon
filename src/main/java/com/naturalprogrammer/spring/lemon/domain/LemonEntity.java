@@ -15,9 +15,10 @@ public class LemonEntity<U extends AbstractUser<U,ID>, ID extends Serializable> 
 	private static final long serialVersionUID = -8151190931948396443L;
 	
 	/**
-	 * Override this in the subclass
+	 * Whether the given user has the given permission for
+	 * this entity. Override this method where you need.
 	 * 
-	 * @param loggedInUser
+	 * @param user
 	 * @param permission
 	 * @return
 	 */

@@ -291,9 +291,9 @@ public abstract class LemonService<U extends AbstractUser<U,ID>, ID extends Seri
 		LemonUtil.check(user != null, "com.naturalprogrammer.spring.userNotFound").go();
 		LemonUtil.validateVersion(user, updatedUser);
 
-		U loggedIn = LemonUtil.getUser();
+		U currentUser = LemonUtil.getUser();
 
-		updateUserFields(user, updatedUser, loggedIn);
+		updateUserFields(user, updatedUser, currentUser);
 		
 		userRepository.save(user);
 		
@@ -316,12 +316,12 @@ public abstract class LemonService<U extends AbstractUser<U,ID>, ID extends Seri
 		
 		LemonUtil.afterCommit(() -> {
 
-			U loggedIn = LemonUtil.getUser();
+			U currentUser = LemonUtil.getUser();
 			
-			if (loggedIn.equals(user)) {
+			if (currentUser.equals(user)) {
 				
 				log.debug("Setting password for logged in user.");
-				loggedIn.setPassword(user.getPassword());				
+				currentUser.setPassword(user.getPassword());				
 			}
 		});
 		
@@ -335,9 +335,9 @@ public abstract class LemonService<U extends AbstractUser<U,ID>, ID extends Seri
 	 * 
 	 * @param user
 	 * @param updatedUser
-	 * @param loggedIn
+	 * @param currentUser
 	 */
-	protected void updateUserFields(U user, U updatedUser, U loggedIn) {
+	protected void updateUserFields(U user, U updatedUser, U currentUser) {
 
 		log.debug("Updating user fields for user: " + user);
 
@@ -364,10 +364,10 @@ public abstract class LemonService<U extends AbstractUser<U,ID>, ID extends Seri
 		}
 		
 		LemonUtil.afterCommit(() -> {
-			if (loggedIn.equals(user)) {
+			if (currentUser.equals(user)) {
 				
 				log.debug("Setting roles for logged in user.");
-				loggedIn.setRoles(user.getRoles());
+				currentUser.setRoles(user.getRoles());
 			}
 		});
 
@@ -383,18 +383,18 @@ public abstract class LemonService<U extends AbstractUser<U,ID>, ID extends Seri
 	/**
 	 * Override this if you have more fields
 	 * 
-	 * @param loggedIn
+	 * @param currentUser
 	 */
-	protected U userForClient(U loggedIn) {
+	protected U userForClient(U currentUser) {
 		
-		if (loggedIn == null)
+		if (currentUser == null)
 			return null;
 		
 		U user = newUser();
-		user.setIdForClient(loggedIn.getId());
-		user.setEmail(loggedIn.getEmail());
-		user.setRoles(loggedIn.getRoles());
-		user.decorate(loggedIn);
+		user.setIdForClient(currentUser.getId());
+		user.setEmail(currentUser.getEmail());
+		user.setRoles(currentUser.getRoles());
+		user.decorate(currentUser);
 		
 		log.debug("Returning user for client: " + user);
 		

@@ -34,7 +34,7 @@ public class AuthenticationSuccessHandler
             Authentication authentication)
     throws IOException, ServletException {
 
-		AbstractUser<?,?> loggedIn =
+		AbstractUser<?,?> currentUser =
 			LemonUtil.getBean(LemonService.class)
 				.userForClient();
 		
@@ -42,9 +42,9 @@ public class AuthenticationSuccessHandler
     	response.setStatus(HttpServletResponse.SC_OK);
     	response.setContentType(MediaType.APPLICATION_JSON_VALUE);
     	response.getOutputStream().print(
-    			objectMapper.writeValueAsString(loggedIn));
+    			objectMapper.writeValueAsString(currentUser));
         clearAuthenticationAttributes(request);
         
-        log.debug("Authentication succeeded for user: " + loggedIn);        
+        log.debug("Authentication succeeded for user: " + currentUser);        
     }
 }

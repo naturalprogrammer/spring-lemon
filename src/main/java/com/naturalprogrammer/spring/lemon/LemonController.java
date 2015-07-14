@@ -33,7 +33,7 @@ public class LemonController<U extends AbstractUser<U,ID>, ID extends Serializab
 		
 		Map<String, Object> context =
 			LemonUtil.mapOf("context", lemonService.getContext(),
-							"loggedIn", lemonService.userForClient());
+							"user", lemonService.userForClient());
 		
 		log.debug("Returning context: " + context);
 
