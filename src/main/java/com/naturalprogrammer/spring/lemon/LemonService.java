@@ -150,8 +150,6 @@ public abstract class LemonService<U extends AbstractUser<U,ID>, ID extends Seri
 		LemonUtil.logInUser(user);
 		
 		log.debug("Signed up user: " + user);
-		
-		
 	}
 	
 	protected U initUser(U user) {
