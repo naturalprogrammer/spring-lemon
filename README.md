@@ -1,5 +1,7 @@
 # Spring Lemon (under construction)
 
+[![Join the chat at https://gitter.im/naturalprogrammer/spring-lemon](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/naturalprogrammer/spring-lemon?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 When developing a *Single Page Application* or a *REST API* using Spring Framework and Spring Boot, we need several subtle configurations. We also need laying out some good patterns to handle validation, security etc. in an elegant manner.
 
 These configurations and patterns could be reused in most of the applications, maybe with minor tweaks. How about someone writing this common code as a configurable and extensible library, which you can include in your *pom* and start coding your business logic rightaway? Or, you can at least learn the best practices from the library, and use those in your code?
