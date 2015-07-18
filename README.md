@@ -6,7 +6,7 @@ All these configurations and code would be common to all your applications. Not 
 
 How about someone writing this code as a configurable and extensible library, which you can include in your project and start coding your business logic straightaway? This way, you not only get rid of coding this techie stuff, but also get rid of keeping it updated along with the new releases of Spring.
 
-Welcome to *Spring Lemon*. It has all the essential configurations, patterns, base classes and utilities for developing a REST API using Spring Boot. It also has a production-ready extensible user module with features like sign up, sign in, validate email, change password, etc.
+Welcome to *Spring Lemon*. It has all the essential configurations, patterns, base classes and utilities for developing REST APIs using Spring Boot. It also has a production-grade extensible user module with features like sign up, sign in, verify email, forgot password, change password and update email.
 
 Most applications can use Spring Lemon straightaway, with some simple configurations. But, if you don't find it suitable for your application, feel free to fork it, or just roll out your own library by learning its patterns and practices. Better yet, be a contributor to this library!
 
