@@ -190,6 +190,7 @@ public abstract class LemonService<U extends AbstractUser<U,ID>, ID extends Seri
 		U user = userRepository.findByEmail(email);
 		LemonUtil.check("email", user != null,
 			"com.naturalprogrammer.spring.userNotFound").go();
+		
 		user.decorate().hideConfidentialFields();
 		
 		log.debug("Returning user: " + user);		
@@ -202,7 +203,9 @@ public abstract class LemonService<U extends AbstractUser<U,ID>, ID extends Seri
 		
 		log.debug("Fetching user: " + user);
 
-		LemonUtil.check(user != null, "com.naturalprogrammer.spring.userNotFound").go();
+		LemonUtil.check("id", user != null,
+			"com.naturalprogrammer.spring.userNotFound").go();
+		
 		user.decorate().hideConfidentialFields();
 		
 		return user;

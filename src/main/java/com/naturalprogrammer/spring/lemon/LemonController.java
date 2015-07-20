@@ -67,7 +67,7 @@ public class LemonController<U extends AbstractUser<U,ID>, ID extends Serializab
 		lemonService.verifyUser(verificationCode);
 
 	}
-
+	
 
 	/**
 	 * Forgot Password
@@ -80,23 +80,7 @@ public class LemonController<U extends AbstractUser<U,ID>, ID extends Serializab
 
 	}
 	
-	@RequestMapping(value="/users/fetch-by-email", method=RequestMethod.GET)
-	public U fetchByEmail(@RequestParam("email") String email) {
-		
-		log.debug("Fetching user by email: " + email);						
-		return lemonService.fetchUser(email);
 
-	}
-	
-	@RequestMapping(value="/users/{id}/fetch-by-id", method=RequestMethod.GET)
-	public U fetchById(@PathVariable("id") U user) {
-		
-		log.debug("Fetching user: " + user);				
-		return lemonService.fetchUser(user);
-
-	}
-
-	
 	/**
 	 * Reset Password
 	 */
@@ -109,6 +93,24 @@ public class LemonController<U extends AbstractUser<U,ID>, ID extends Serializab
 	}
 
 
+	@RequestMapping(value="/users/fetch-by-email", method=RequestMethod.GET)
+	public U fetchByEmail(@RequestParam("email") String email) {
+		
+		log.debug("Fetching user by email: " + email);						
+		return lemonService.fetchUser(email);
+
+	}
+	
+	
+	@RequestMapping(value="/users/{id}/fetch-by-id", method=RequestMethod.GET)
+	public U fetchById(@PathVariable("id") U user) {
+		
+		log.debug("Fetching user: " + user);				
+		return lemonService.fetchUser(user);
+
+	}
+
+	
 	/**
 	 * Update
 	 */

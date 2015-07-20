@@ -234,7 +234,7 @@ implements UserDetails {
 		
 		password = null;
 		if (!editable)
-			email = "Confidential";
+			email = null;
 		
 		log.debug("Hid confidential fields for user: " + this);
 		
