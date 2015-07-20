@@ -35,7 +35,7 @@ public class MultiErrorException extends RuntimeException {
 			String messageKey, Object... args) {
 		
 		if (!valid)
-			errors.add(new FieldError(fieldName,
+			errors.add(new FieldError(fieldName, messageKey,
 				LemonUtil.getMessage(messageKey, args)));
 			
 		return this;

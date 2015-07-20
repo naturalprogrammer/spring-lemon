@@ -11,15 +11,21 @@ import org.apache.commons.lang3.StringUtils;
 public class FieldError {
 	
 	private String field;
+	private String code;
 	private String message;
 	
-	public FieldError(String field, String message) {
+	public FieldError(String field, String code, String message) {
 		this.field = field;
+		this.code = code;
 		this.message = message;
 	}
 
 	public String getField() {
 		return field;
+	}
+
+	public String getCode() {
+		return code;
 	}
 
 	public String getMessage() {
@@ -28,7 +34,7 @@ public class FieldError {
 
 	@Override
 	public String toString() {
-		return "FieldError [field=" + field + ", message=" + message + "]";
+		return "FieldError {field=" + field + ", code=" + code + ", message=" + message + "}";
 	}
 
 	public static List<FieldError> getErrors(
@@ -43,7 +49,7 @@ public class FieldError {
 		String field = StringUtils.substringAfter(
 				constraintViolation.getPropertyPath().toString(), ".");
 		
-		return new FieldError(field, constraintViolation.getMessage());		
+		return new FieldError(field, constraintViolation.getMessageTemplate(), constraintViolation.getMessage());		
 	}
 
 //	private static String computeFieldName(ConstraintViolation<?> constraintViolation) {

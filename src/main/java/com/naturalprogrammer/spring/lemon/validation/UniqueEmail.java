@@ -23,8 +23,9 @@ import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
  *
  */
 @NotBlank(message = "{com.naturalprogrammer.spring.blank.email}")
-@Size(min=AbstractUser.EMAIL_MIN, max=AbstractUser.EMAIL_MAX)
-@Email
+@Size(min=AbstractUser.EMAIL_MIN, max=AbstractUser.EMAIL_MAX,
+	message = "{com.naturalprogrammer.spring.invalid.email.size}")
+@Email(message = "{com.naturalprogrammer.spring.invalid.email}")
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD,ElementType.FIELD,ElementType.CONSTRUCTOR,ElementType.PARAMETER,ElementType.ANNOTATION_TYPE})
