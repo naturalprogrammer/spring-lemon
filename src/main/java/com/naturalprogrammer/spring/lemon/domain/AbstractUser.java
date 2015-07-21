@@ -34,10 +34,15 @@ implements UserDetails {
 	
 	public static final int EMAIL_MIN = 4;
 	public static final int EMAIL_MAX = 250;
+	
 	//public static final String EMAIL_PATTERN = "[A-Za-z0-9._%-+]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}";
 	public static final int UUID_LENGTH = 36;
+	
 	public static final int PASSWORD_MAX = 30;
 	public static final int PASSWORD_MIN = 6;
+	
+	public static final int ROLES_MAX = 100;
+	
 	public static final String ONLY_EMAIL_REGEX = null;
 	
 	public static interface Role {
@@ -73,13 +78,19 @@ implements UserDetails {
 	private String captchaResponse;
 	
 	@Transient
-	protected boolean unverified = true;
+	protected boolean unverified = false;
 
 	@Transient
 	protected boolean blocked = false;
 
 	@Transient
 	protected boolean admin = false;
+
+	@Transient
+	protected boolean goodUser = false;
+
+	@Transient
+	protected boolean goodAdmin = false;
 
 	@Transient
 	protected boolean editable = false;
@@ -172,9 +183,9 @@ implements UserDetails {
 		return rolesEditable;
 	}
 
-	public void setRolesEditable(boolean rolesEditable) {
-		this.rolesEditable = rolesEditable;
-	}
+//	public void setRolesEditable(boolean rolesEditable) {
+//		this.rolesEditable = rolesEditable;
+//	}
 	
 	public boolean hasRole(String role) {
 		return role.contains(role);
@@ -203,33 +214,49 @@ implements UserDetails {
 //			
 //	}
 	
+	public boolean isGoodUser() {
+		return goodUser;
+	}
+	
+	public boolean isGoodAdmin() {
+		return goodUser && admin;
+	}
+	
+//	public boolean decorated() {
+//		return unverified || blocked || goodUser;
+//	}
+//	
 	public U decorate() {
 		return decorate(LemonUtil.getUser());
 	}
 	
 	public U decorate(U currentUser) {
 				
-		unverified = roles.contains(Role.UNVERIFIED);
-		blocked = roles.contains(Role.BLOCKED);
-		admin = roles.contains(Role.ADMIN);
-		
-		editable = false;
-		rolesEditable = false;
-		
-		if (currentUser != null) {
+//		if (!decorated()) {
 			
-			boolean adminLoggedIn = currentUser.getRoles().contains(Role.ADMIN);
+			unverified = roles.contains(Role.UNVERIFIED);
+			blocked = roles.contains(Role.BLOCKED);
+			admin = roles.contains(Role.ADMIN);
+			goodUser = !(unverified || blocked);
+			goodAdmin = goodUser && admin;
 			
-			editable = adminLoggedIn || equals(currentUser); // admin or self
-			rolesEditable = adminLoggedIn && !equals(currentUser); // another admin
-		}
-		
-		log.debug("Decorated user: " + this);
+			editable = false;
+			rolesEditable = false;
+			
+			if (currentUser != null) {
+				
+				editable = currentUser.isGoodAdmin() || equals(currentUser); // admin or self
+				rolesEditable = currentUser.isGoodAdmin() && !equals(currentUser) // another admin
+							 && roles.size() <= ROLES_MAX; // number of roles should be less than 100
+			}
+			
+			log.debug("Decorated user: " + this);
+//		}
 
 		return (U) this;
-		
-	}
 
+	}
+	
 	public void hideConfidentialFields() {
 		
 		password = null;

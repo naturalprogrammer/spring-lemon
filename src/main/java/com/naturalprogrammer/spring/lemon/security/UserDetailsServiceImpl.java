@@ -37,7 +37,7 @@ implements UserDetailsService {
 
 		log.debug("Loaded user having email: " + email);
 		
-		return user;
+		return user.decorate(user);
 
 	}
 

@@ -364,13 +364,14 @@ public abstract class LemonService<U extends AbstractUser<U,ID>, ID extends Seri
 				roles.remove(Role.BLOCKED);
 		}
 		
-		LemonUtil.afterCommit(() -> {
-			if (currentUser.equals(user)) {
-				
-				log.debug("Setting roles for logged in user.");
-				currentUser.setRoles(user.getRoles());
-			}
-		});
+// This is not needed, because the logged in user can't update his own role
+//		LemonUtil.afterCommit(() -> {
+//			if (currentUser.equals(user)) {
+//				
+//				log.debug("Setting roles for logged in user.");
+//				currentUser.setRoles(user.getRoles());
+//			}
+//		});
 
 	}
 
