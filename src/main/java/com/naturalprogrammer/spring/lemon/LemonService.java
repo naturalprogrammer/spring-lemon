@@ -289,7 +289,7 @@ public abstract class LemonService<U extends AbstractUser<U,ID>, ID extends Seri
 		
 		log.debug("Updating user: " + user);
 
-		LemonUtil.check(user != null, "com.naturalprogrammer.spring.userNotFound").go();
+		LemonUtil.check("id", user != null, "com.naturalprogrammer.spring.userNotFound").go();
 		LemonUtil.validateVersion(user, updatedUser);
 
 		U currentUser = LemonUtil.getUser();
@@ -307,7 +307,7 @@ public abstract class LemonService<U extends AbstractUser<U,ID>, ID extends Seri
 		
 		log.debug("Changing password for user: " + user);
 
-		LemonUtil.check(user != null, "com.naturalprogrammer.spring.userNotFound").go();
+		LemonUtil.check("id", user != null, "com.naturalprogrammer.spring.userNotFound").go();
 		LemonUtil.check("oldPassword",
 			passwordEncoder.matches(changePasswordForm.getOldPassword(), user.getPassword()),
 			"com.naturalprogrammer.spring.wrong.password").go();

@@ -41,8 +41,6 @@ implements UserDetails {
 	public static final int PASSWORD_MAX = 30;
 	public static final int PASSWORD_MIN = 6;
 	
-	public static final int ROLES_MAX = 100;
-	
 	public static final String ONLY_EMAIL_REGEX = null;
 	
 	public static interface Role {
@@ -232,8 +230,6 @@ implements UserDetails {
 	
 	public U decorate(U currentUser) {
 				
-//		if (!decorated()) {
-			
 			unverified = roles.contains(Role.UNVERIFIED);
 			blocked = roles.contains(Role.BLOCKED);
 			admin = roles.contains(Role.ADMIN);
@@ -244,14 +240,11 @@ implements UserDetails {
 			rolesEditable = false;
 			
 			if (currentUser != null) {
-				
 				editable = currentUser.isGoodAdmin() || equals(currentUser); // admin or self
-				rolesEditable = currentUser.isGoodAdmin() && !equals(currentUser) // another admin
-							 && roles.size() <= ROLES_MAX; // number of roles should be less than 100
+				rolesEditable = currentUser.isGoodAdmin() && !equals(currentUser); // another admin
 			}
 			
 			log.debug("Decorated user: " + this);
-//		}
 
 		return (U) this;
 
