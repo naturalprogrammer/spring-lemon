@@ -127,7 +127,7 @@ public class LemonController<U extends AbstractUser<U,ID>, ID extends Serializab
 	/**
 	 * Change Password
 	 */
-	@RequestMapping(value="/users/{id}/change-password", method=RequestMethod.PATCH)
+	@RequestMapping(value="/users/{id}/change-password", method=RequestMethod.POST)
 	public void changePassword(@PathVariable("id") U user, @RequestBody ChangePasswordForm changePasswordForm) {
 		
 		log.debug("Changing password ... ");				

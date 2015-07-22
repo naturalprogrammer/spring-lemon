@@ -327,7 +327,6 @@ public abstract class LemonService<U extends AbstractUser<U,ID>, ID extends Seri
 		});
 		
 		log.debug("Changed password for user: " + user);
-		
 	}
 
 
