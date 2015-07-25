@@ -15,26 +15,21 @@ import org.apache.commons.logging.LogFactory;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionSynchronizationAdapter;
-import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.validation.annotation.Validated;
 
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
-import com.naturalprogrammer.spring.lemon.domain.AbstractUserRepository;
-import com.naturalprogrammer.spring.lemon.domain.ChangePasswordForm;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser.Role;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser.SignUpValidation;
-import com.naturalprogrammer.spring.lemon.exceptions.MultiErrorException;
+import com.naturalprogrammer.spring.lemon.domain.AbstractUserRepository;
+import com.naturalprogrammer.spring.lemon.domain.ChangePasswordForm;
 import com.naturalprogrammer.spring.lemon.mail.MailSender;
 import com.naturalprogrammer.spring.lemon.util.LemonUtil;
 import com.naturalprogrammer.spring.lemon.validation.Password;
@@ -146,10 +141,13 @@ public abstract class LemonService<U extends AbstractUser<U,ID>, ID extends Seri
 
 		initUser(user);
 		userRepository.save(user);
-		sendVerificationMail(user);
-		LemonUtil.logInUser(user);
 		
-		log.debug("Signed up user: " + user);
+        LemonUtil.afterCommit(() -> {
+
+			LemonUtil.logInUser(user);
+			sendVerificationMail(user);
+			log.debug("Signed up user: " + user);
+		});
 	}
 	
 	protected U initUser(U user) {
@@ -161,26 +159,23 @@ public abstract class LemonService<U extends AbstractUser<U,ID>, ID extends Seri
 		user.setVerificationCode(UUID.randomUUID().toString());
 		
 		return user;
-		
 	}
 	
 	protected void sendVerificationMail(final U user) {
-        LemonUtil.afterCommit(() -> {
-    		try {
-    			
-    			log.debug("Sending verification mail to: " + user);
+		try {
+			
+			log.debug("Sending verification mail to: " + user);
 
-    			String verifyLink = properties.getApplicationUrl() + "/users/" + user.getVerificationCode() + "/verify";
-    			mailSender.send(user.getEmail(),
-    					LemonUtil.getMessage("com.naturalprogrammer.spring.verifySubject"),
-    					LemonUtil.getMessage("com.naturalprogrammer.spring.verifyEmail", verifyLink));
-    			
-    			log.debug("Verification mail to " + user.getEmail() + " queued.");
-    			
-			} catch (MessagingException e) {
-				log.error(ExceptionUtils.getStackTrace(e));
-			}
-        });			
+			String verifyLink = properties.getApplicationUrl() + "/users/" + user.getVerificationCode() + "/verify";
+			mailSender.send(user.getEmail(),
+					LemonUtil.getMessage("com.naturalprogrammer.spring.verifySubject"),
+					LemonUtil.getMessage("com.naturalprogrammer.spring.verifyEmail", verifyLink));
+			
+			log.debug("Verification mail to " + user.getEmail() + " queued.");
+			
+		} catch (MessagingException e) {
+			log.error(ExceptionUtils.getStackTrace(e));
+		}
 	}
 
 	public U fetchUser(@Valid @Email @NotBlank String email) {

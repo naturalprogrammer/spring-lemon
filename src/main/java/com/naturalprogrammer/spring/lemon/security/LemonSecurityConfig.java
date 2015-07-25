@@ -32,6 +32,9 @@ import com.naturalprogrammer.spring.lemon.LemonProperties;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 	
+	public static final String GOOD_ADMIN = "GOOD_ADMIN";
+	public static final String GOOD_USER = "GOOD_USER";
+	
 	@Autowired
 	private LemonProperties properties;
 	
@@ -131,9 +134,9 @@ public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	protected void authorizeRequests(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
-			.antMatchers("/login/impersonate*").hasRole("ADMIN")
+			.antMatchers("/login/impersonate*").hasRole(GOOD_ADMIN)
 			.antMatchers("/logout/impersonate*").authenticated()
-			.antMatchers("/only-for-admin*").hasRole("ADMIN")
+			//.antMatchers("/only-for-admin*").hasRole("ADMIN")
 			//.antMatchers("/secure").authenticated()
 			.antMatchers("/**").permitAll();                  
 	}

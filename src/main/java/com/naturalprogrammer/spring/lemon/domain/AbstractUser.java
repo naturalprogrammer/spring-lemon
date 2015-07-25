@@ -1,7 +1,9 @@
 package com.naturalprogrammer.spring.lemon.domain;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -17,6 +19,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.naturalprogrammer.spring.lemon.security.LemonSecurityConfig;
 import com.naturalprogrammer.spring.lemon.util.LemonUtil;
 import com.naturalprogrammer.spring.lemon.validation.Captcha;
 import com.naturalprogrammer.spring.lemon.validation.Password;
@@ -51,6 +54,10 @@ implements UserDetails {
 	
 	}
 	
+//	public static final Set<String> BAD_ROLES = new HashSet<String>(Arrays.asList(
+//		new String[] {Role.UNVERIFIED, Role.BLOCKED}
+//	));
+//	
 	public interface SignUpValidation {}
 	public interface UpdateValidation {}
 	
@@ -252,7 +259,12 @@ implements UserDetails {
 	
 	public void hideConfidentialFields() {
 		
+		setCreatedDate(null);
+		setLastModifiedDate(null);
 		password = null;
+		verificationCode = null;
+		forgotPasswordCode = null;
+		
 		if (!editable)
 			email = null;
 		
@@ -287,11 +299,19 @@ implements UserDetails {
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		
 		Collection<GrantedAuthority> authorities = new HashSet<GrantedAuthority>(
-				roles.size());
+				roles.size() + 2);
 	
 		for (String role : roles)
 			authorities.add(new SimpleGrantedAuthority("ROLE_" + role));
 	
+		if (goodUser) {
+			
+			authorities.add(new SimpleGrantedAuthority("ROLE_" + LemonSecurityConfig.GOOD_USER));
+			
+			if (goodAdmin)
+				authorities.add(new SimpleGrantedAuthority("ROLE_" + LemonSecurityConfig.GOOD_ADMIN));			
+		}
+
 		log.debug("Authorities of " + this + ": " + authorities);
 
 		return authorities;

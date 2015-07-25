@@ -50,8 +50,9 @@ public class LemonController<U extends AbstractUser<U,ID>, ID extends Serializab
 	public U signup(@RequestBody U user) {
 		
 		log.debug("Signing up: " + user);
-		
 		lemonService.signup(user);
+		log.debug("Signed up: " + user);
+		
 		return lemonService.userForClient();
 
 	}
