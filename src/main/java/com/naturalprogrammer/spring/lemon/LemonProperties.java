@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 /**
  * Properties those are passed to client
  * 
- * @author skpat_000
+ * @author Sanjay Patel
  *
  */
 @Component
@@ -18,8 +18,6 @@ public class LemonProperties {
     /**
      * Properties which are passed to client.
      * Do not put secret properties inside this.
-     * 
-     * @author skpat_000
      */
 	public static class Recaptcha {
     	

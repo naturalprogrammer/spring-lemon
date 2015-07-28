@@ -19,7 +19,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
  * https://docs.angularjs.org/api/ng/service/$http
  * http://stackoverflow.com/questions/26384930/how-to-add-n-before-each-spring-json-response-to-prevent-common-vulnerab
  * http://docs.spring.io/spring-data/jpa/docs/current/reference/html/#core.web
- * @author skpat_000
+ * @author Sanjay Patel
  *
  */
 @Configuration

@@ -8,7 +8,7 @@ import org.springframework.data.repository.NoRepositoryBean;
 
 /**
  * See http://stackoverflow.com/questions/27545276/how-to-implement-a-spring-data-repository-for-a-mappedsuperclass
- * @author skpat_000
+ * @author Sanjay Patel
  *
  * @param <U>
  */

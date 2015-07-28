@@ -17,7 +17,7 @@ import org.springframework.web.util.WebUtils;
 /**
  * See https://spring.io/guides/tutorials/spring-security-and-angular-js/
  * 
- * @author skpat_000
+ * @author Sanjay Patel
  *
  */
 public class CsrfCookieFilter extends OncePerRequestFilter {

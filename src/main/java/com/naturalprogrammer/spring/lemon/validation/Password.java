@@ -21,7 +21,7 @@ import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
 
 /**
  * See http://docs.jboss.org/hibernate/stable/validator/reference/en-US/html_single/#example-composed-constraint
- * @author skpat_000
+ * @author Sanjay Patel
  *
  */
 @NotBlank(message="{com.naturalprogrammer.spring.blank.password}")

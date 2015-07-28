@@ -29,7 +29,7 @@ import com.naturalprogrammer.spring.lemon.LemonProperties;
  * 
  * https://spring.io/guides/gs/rest-service-cors/
  * 
- * @author skpat_000
+ * @author Sanjay Patel
  *
  */
 @Component
