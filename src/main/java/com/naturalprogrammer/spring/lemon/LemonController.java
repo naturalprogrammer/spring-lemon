@@ -18,7 +18,7 @@ import com.naturalprogrammer.spring.lemon.util.LemonUtil;
 
 public class LemonController<U extends AbstractUser<U,ID>, ID extends Serializable> {
 
-	private final Log log = LogFactory.getLog(getClass());
+	private static final Log log = LogFactory.getLog(LemonController.class);
 
 	@Autowired
 	private LemonService<U, ID> lemonService;
@@ -62,10 +62,12 @@ public class LemonController<U extends AbstractUser<U,ID>, ID extends Serializab
 	 * Verify
 	 */
 	@RequestMapping(value="/users/{verificationCode}/verify", method=RequestMethod.POST)
-	public void verifyUser(@PathVariable("verificationCode") String verificationCode) {
+	public U verifyUser(@PathVariable("verificationCode") String verificationCode) {
 		
 		log.debug("Verifying user ...");		
 		lemonService.verifyUser(verificationCode);
+		
+		return lemonService.userForClient();
 
 	}
 	

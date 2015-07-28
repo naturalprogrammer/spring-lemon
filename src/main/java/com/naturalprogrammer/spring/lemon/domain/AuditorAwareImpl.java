@@ -13,8 +13,8 @@ public class AuditorAwareImpl
 	 ID extends Serializable>
 implements AuditorAware<U> {
 
+	@Override
 	public U getCurrentAuditor() {
 		return LemonUtil.getUser();
-	}
-	
+	}	
 }

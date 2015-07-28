@@ -38,7 +38,7 @@ import com.naturalprogrammer.spring.lemon.validation.Password;
 @Transactional(propagation=Propagation.SUPPORTS, readOnly=true)
 public abstract class LemonService<U extends AbstractUser<U,ID>, ID extends Serializable> {
 
-    private final Log log = LogFactory.getLog(getClass());
+    private static final Log log = LogFactory.getLog(LemonService.class);
     
 	@Autowired
 	private LemonProperties properties;
@@ -206,17 +206,32 @@ public abstract class LemonService<U extends AbstractUser<U,ID>, ID extends Seri
 		return user;
 	}
 	
+	@PreAuthorize("isAuthenticated()")
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
-	public void verifyUser(String verificationCode) {
+	public void verifyUser(@Valid @NotBlank String verificationCode) {
 		
 		log.debug("Verifying user ...");
 
-		U user = userRepository.findByVerificationCode(verificationCode);
-		LemonUtil.check(user != null, "com.naturalprogrammer.spring.userNotFound").go();
+		U currentUser = LemonUtil.getUser();
+		
+		U user = userRepository.findOne(currentUser.getId());
+		
+		LemonUtil.check(user.getRoles().contains(Role.UNVERIFIED),
+				"com.naturalprogrammer.spring.alreadyVerified").go();	
+		
+		LemonUtil.check(verificationCode.equals(user.getVerificationCode()),
+				"com.naturalprogrammer.spring.wrong.verificationCode").go();
 		
 		user.setVerificationCode(null);
 		user.getRoles().remove(Role.UNVERIFIED);
 		userRepository.save(user);
+		
+		LemonUtil.afterCommit(() -> {
+			
+			currentUser.getRoles().remove(Role.UNVERIFIED);
+			currentUser.decorate(currentUser);
+			log.debug("Removed UNVERIFIED role from current user.");		
+		});
 		
 		log.debug("Verified user: " + user);		
 	}
