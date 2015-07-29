@@ -16,7 +16,7 @@ import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
 import com.naturalprogrammer.spring.lemon.domain.ChangePasswordForm;
 import com.naturalprogrammer.spring.lemon.util.LemonUtil;
 
-public class LemonController<U extends AbstractUser<U,ID>, ID extends Serializable> {
+public abstract class LemonController<U extends AbstractUser<U,ID>, ID extends Serializable> {
 
 	private static final Log log = LogFactory.getLog(LemonController.class);
 
