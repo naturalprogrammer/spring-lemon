@@ -6,7 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 /**
- * Properties those are passed to client
+ * Lemon Properties
  * 
  * @author Sanjay Patel
  *

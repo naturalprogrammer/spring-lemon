@@ -36,7 +36,8 @@ import com.naturalprogrammer.spring.lemon.validation.Password;
 
 @Validated
 @Transactional(propagation=Propagation.SUPPORTS, readOnly=true)
-public abstract class LemonService<U extends AbstractUser<U,ID>, ID extends Serializable> {
+public abstract class LemonService
+	<U extends AbstractUser<U,ID>, ID extends Serializable> {
 
     private static final Log log = LogFactory.getLog(LemonService.class);
     
