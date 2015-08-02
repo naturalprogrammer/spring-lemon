@@ -51,10 +51,12 @@ public class DefaultExceptionHandler {
 	@RequestMapping(produces = "application/json")
     @ExceptionHandler({AccessDeniedException.class})
     @ResponseStatus(value = HttpStatus.FORBIDDEN)
-    public @ResponseBody Map<String, Object> handleAuthorizationException(AccessDeniedException ex) {
+    public @ResponseBody Map<String, Object>
+	handleAuthorizationException(AccessDeniedException ex) {
     	
         log.warn("User does not have proper rights:", ex);
-		return LemonUtil.mapOf("exception", "AccessDeniedException", "message", ex.getMessage());
+		return LemonUtil.mapOf("exception", "AccessDeniedException",
+							   "message", ex.getMessage());
     }
 
 	@RequestMapping(produces = "application/json")

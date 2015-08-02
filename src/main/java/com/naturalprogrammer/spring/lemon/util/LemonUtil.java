@@ -52,20 +52,29 @@ public class LemonUtil {
 	@SuppressWarnings("unchecked")
 	public static <K,V> Map<K,V> mapOf(Object... keyValPair) {
 		
+	    if(keyValPair.length % 2 != 0)
+	        throw new IllegalArgumentException("Keys and values must be in pairs");
+	
 	    Map<K,V> map = new HashMap<K,V>();
-
-	    if(keyValPair.length % 2 != 0){
-	        throw new IllegalArgumentException("Keys and values must be pairs.");
-	    }
-
+	
 	    for(int i = 0; i < keyValPair.length; i += 2){
 	        map.put((K) keyValPair[i], (V) keyValPair[i+1]);
 	    }
-
+	
 	    return map;
+	}	
+
+	public static <U extends AbstractUser<U,ID>, ID extends Serializable>
+	U getUser() {
+		
+		Authentication auth = SecurityContextHolder
+			.getContext().getAuthentication();
+		
+		return getUser(auth);
 	}
 	
-	public static <U extends AbstractUser<U,ID>, ID extends Serializable> U getUser(Authentication auth) {
+	public static <U extends AbstractUser<U,ID>, ID extends Serializable>
+	U getUser(Authentication auth) {
 		
 	    if (auth != null) {
 	      Object principal = auth.getPrincipal();
@@ -76,17 +85,13 @@ public class LemonUtil {
 	    return null;	  
 	}
 	
-
-	public static <U extends AbstractUser<U,ID>, ID extends Serializable> U getUser() {
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		return getUser(auth);
+	public static <U extends AbstractUser<U,ID>, ID extends Serializable>
+	void logInUser(U user) {
+		
+	    Authentication authentication =
+	    	new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+	    SecurityContextHolder.getContext().setAuthentication(authentication);
 	}
-	
-    public static <U extends AbstractUser<U,ID>, ID extends Serializable> void logInUser(U user) {
-    	
-        Authentication authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-    }
 
 	public static <U extends AbstractUser<U,ID>, ID extends Serializable>
 	void validateVersion(VersionedEntity<U,ID> original, VersionedEntity<U,ID> updated) {

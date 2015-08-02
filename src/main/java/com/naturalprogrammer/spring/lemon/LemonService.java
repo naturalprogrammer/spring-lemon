@@ -143,8 +143,8 @@ public abstract class LemonService
 		initUser(user);
 		userRepository.save(user);
 		
-        LemonUtil.afterCommit(() -> {
-
+		LemonUtil.afterCommit(() -> {
+		
 			LemonUtil.logInUser(user);
 			sendVerificationMail(user);
 			log.debug("Signed up user: " + user);
@@ -386,9 +386,7 @@ public abstract class LemonService
 	}
 
 	public U userForClient() {
-
 		return userForClient(LemonUtil.getUser());
-		
 	}
 
 	
@@ -411,7 +409,6 @@ public abstract class LemonService
 		log.debug("Returning user for client: " + user);
 		
 		return user;
-
 	}
 	
 }
