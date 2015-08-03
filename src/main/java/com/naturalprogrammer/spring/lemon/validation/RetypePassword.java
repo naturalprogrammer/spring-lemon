@@ -19,7 +19,12 @@ import javax.validation.Payload;
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE, ElementType.METHOD,ElementType.FIELD,ElementType.CONSTRUCTOR,ElementType.PARAMETER,ElementType.ANNOTATION_TYPE})
+@Target({ElementType.TYPE,
+		 ElementType.METHOD,
+		 ElementType.FIELD,
+		 ElementType.CONSTRUCTOR,
+		 ElementType.PARAMETER,
+		 ElementType.ANNOTATION_TYPE})
 @Constraint(validatedBy=RetypePasswordValidator.class)
 public @interface RetypePassword {
  

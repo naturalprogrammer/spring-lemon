@@ -237,21 +237,21 @@ implements UserDetails {
 	
 	public U decorate(U currentUser) {
 				
-			unverified = roles.contains(Role.UNVERIFIED);
-			blocked = roles.contains(Role.BLOCKED);
-			admin = roles.contains(Role.ADMIN);
-			goodUser = !(unverified || blocked);
-			goodAdmin = goodUser && admin;
-			
-			editable = false;
-			rolesEditable = false;
-			
-			if (currentUser != null) {
-				editable = currentUser.isGoodAdmin() || equals(currentUser); // admin or self
-				rolesEditable = currentUser.isGoodAdmin() && !equals(currentUser); // another admin
-			}
-			
-			log.debug("Decorated user: " + this);
+		unverified = roles.contains(Role.UNVERIFIED);
+		blocked = roles.contains(Role.BLOCKED);
+		admin = roles.contains(Role.ADMIN);
+		goodUser = !(unverified || blocked);
+		goodAdmin = goodUser && admin;
+		
+		editable = false;
+		rolesEditable = false;
+		
+		if (currentUser != null) {
+			editable = currentUser.isGoodAdmin() || equals(currentUser); // admin or self
+			rolesEditable = currentUser.isGoodAdmin() && !equals(currentUser); // another admin
+		}
+		
+		log.debug("Decorated user: " + this);
 
 		return (U) this;
 

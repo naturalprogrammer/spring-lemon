@@ -19,19 +19,23 @@ import org.springframework.stereotype.Component;
  *
  */
 @Component
-public class RetypePasswordValidator implements ConstraintValidator<RetypePassword, RetypePasswordForm> {
+public class RetypePasswordValidator
+implements ConstraintValidator<RetypePassword, RetypePasswordForm> {
 	
 	private final Log log = LogFactory.getLog(getClass());
 
 	@Override
-	public boolean isValid(RetypePasswordForm retypePasswordForm, ConstraintValidatorContext context) {
+	public boolean isValid(RetypePasswordForm retypePasswordForm,
+		ConstraintValidatorContext context) {
 		
-		if (!Objects.equals(retypePasswordForm.getPassword(), retypePasswordForm.getRetypePassword())) {
+		if (!Objects.equals(retypePasswordForm.getPassword(),
+				            retypePasswordForm.getRetypePassword())) {
 			
 			log.debug("Retype password validation failed.");
 			
 			context.disableDefaultConstraintViolation();
-			context.buildConstraintViolationWithTemplate("{com.naturalprogrammer.spring.different.passwords}")
+			context.buildConstraintViolationWithTemplate(
+				"{com.naturalprogrammer.spring.different.passwords}")
 				.addPropertyNode("retypePassword").addConstraintViolation();
 			
 			return false;
