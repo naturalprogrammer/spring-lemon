@@ -319,7 +319,7 @@ public abstract class LemonService
 		log.debug("Changing password for user: " + user);
 
 		LemonUtil.check("id", user != null, "com.naturalprogrammer.spring.userNotFound").go();
-		LemonUtil.check("oldPassword",
+		LemonUtil.check("changePasswordForm.oldPassword",
 			passwordEncoder.matches(changePasswordForm.getOldPassword(), user.getPassword()),
 			"com.naturalprogrammer.spring.wrong.password").go();
 		
