@@ -62,7 +62,7 @@ public abstract class LemonController
 	/**
 	 * Verify
 	 */
-	@RequestMapping(value="/users/{verificationCode}/verify", method=RequestMethod.POST)
+	@RequestMapping(value="/users/{verificationCode}/verify", method=RequestMethod.PATCH)
 	public U verifyUser(@PathVariable("verificationCode") String verificationCode) {
 		
 		log.debug("Verifying user ...");		
@@ -76,7 +76,7 @@ public abstract class LemonController
 	/**
 	 * Forgot Password
 	 */
-	@RequestMapping(value="/forgot-password", method=RequestMethod.POST)
+	@RequestMapping(value="/forgot-password", method=RequestMethod.PATCH)
 	public void forgotPassword(@RequestParam("email") String email) {
 		
 		log.debug("Received forgot password request for: " + email);				
@@ -88,7 +88,7 @@ public abstract class LemonController
 	/**
 	 * Reset Password
 	 */
-	@RequestMapping(value="/users/{forgotPasswordCode}/reset-password", method=RequestMethod.POST)
+	@RequestMapping(value="/users/{forgotPasswordCode}/reset-password", method=RequestMethod.PATCH)
 	public void resetPassword(@PathVariable("forgotPasswordCode") String forgotPasswordCode, @RequestParam("newPassword") String newPassword) {
 		
 		log.debug("Resetting password ... ");				
@@ -131,7 +131,7 @@ public abstract class LemonController
 	/**
 	 * Change Password
 	 */
-	@RequestMapping(value="/users/{id}/change-password", method=RequestMethod.POST)
+	@RequestMapping(value="/users/{id}/change-password", method=RequestMethod.PATCH)
 	public void changePassword(@PathVariable("id") U user, @RequestBody ChangePasswordForm changePasswordForm) {
 		
 		log.debug("Changing password ... ");				
