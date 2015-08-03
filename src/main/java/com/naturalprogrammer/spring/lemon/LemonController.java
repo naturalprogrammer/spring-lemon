@@ -57,6 +57,18 @@ public abstract class LemonController
 		return lemonService.userForClient();
 
 	}
+	
+	
+	/**
+	 * Resends verification mail. See here for details.
+	 */
+	@RequestMapping(value="/users/{id}/resend-verification-mail", method=RequestMethod.PATCH)
+	public void resendVerificationMail(@PathVariable("id") U user) {
+		
+		log.debug("Resending verification mail for: " + user);
+		lemonService.resendVerificationMail(user);
+		log.debug("Resent verification mail for: " + user);
+	}	
 
 	
 	/**

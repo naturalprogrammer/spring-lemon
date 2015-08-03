@@ -177,6 +177,23 @@ public abstract class LemonService
 		} catch (MessagingException e) {
 			log.error(ExceptionUtils.getStackTrace(e));
 		}
+	}	
+	
+	/**
+	 * Resends verification mail to user
+	 * See here for details
+	 * @param user
+	 */
+	@PreAuthorize("hasPermission(#user, 'edit')")
+	public void resendVerificationMail(U user) {
+
+		LemonUtil.check("id", user != null,
+				"com.naturalprogrammer.spring.userNotFound").go();
+		
+		LemonUtil.check(user.getRoles().contains(Role.UNVERIFIED),
+				"com.naturalprogrammer.spring.alreadyVerified").go();	
+
+		sendVerificationMail(user);
 	}
 
 	public U fetchUser(@Valid @Email @NotBlank String email) {
