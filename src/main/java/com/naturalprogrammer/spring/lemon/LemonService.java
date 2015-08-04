@@ -156,10 +156,19 @@ public abstract class LemonService
 		log.debug("Initializing user: " + user);
 
 		user.setPassword(passwordEncoder.encode(user.getPassword()));
-		user.getRoles().add(Role.UNVERIFIED);
-		user.setVerificationCode(UUID.randomUUID().toString());
+		makeUnverified(user);
 		
 		return user;
+	}
+	
+	protected void makeUnverified(U user) {
+		user.getRoles().add(Role.UNVERIFIED);
+		user.setVerificationCode(UUID.randomUUID().toString());
+	}
+	
+	protected void makeVerified(U user) {
+		user.getRoles().remove(Role.UNVERIFIED);
+		user.setVerificationCode(null);
 	}
 	
 	protected void sendVerificationMail(final U user) {
@@ -240,8 +249,7 @@ public abstract class LemonService
 		LemonUtil.check(verificationCode.equals(user.getVerificationCode()),
 				"com.naturalprogrammer.spring.wrong.verificationCode").go();
 		
-		user.setVerificationCode(null);
-		user.getRoles().remove(Role.UNVERIFIED);
+		makeVerified(user);
 		userRepository.save(user);
 		
 		LemonUtil.afterCommit(() -> {
@@ -375,10 +383,17 @@ public abstract class LemonService
 
 			Set<String> roles = user.getRoles();
 			
-			if (updatedUser.isUnverified())
-				roles.add(Role.UNVERIFIED);
-			else
-				roles.remove(Role.UNVERIFIED);
+			if (updatedUser.isUnverified()) {
+				
+				if (!user.hasRole(Role.UNVERIFIED)) {
+					makeUnverified(user); // make user unverified
+					sendVerificationMail(user); // send a verification mail to the user
+				}
+			} else {
+				
+				if (user.hasRole(Role.UNVERIFIED))
+					makeVerified(user); // make user verified
+			}
 			
 			if (updatedUser.isAdmin())
 				roles.add(Role.ADMIN);

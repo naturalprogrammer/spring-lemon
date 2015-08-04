@@ -2,15 +2,20 @@ package com.naturalprogrammer.spring.lemon;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.client.RestTemplate;
+
+import com.naturalprogrammer.spring.lemon.mail.MailSender;
 
 @Configuration
 @EnableSpringDataWebSupport
@@ -45,7 +50,17 @@ public class LemonConfig {
         return converter;
 	}
 	
+	/**
+	 * Needed in CaptchaValidator.
+	 * 
+	 * ConditionalOnMissingBean will ensure that this bean will be processed
+	 * in the REGISTER_BEAN ConfigurationPhase. For more details see:
+	 * ConditionEvaluator.shouldSkip, ConfigurationPhase.REGISTER_BEAN
+	 *  
+	 * @return
+	 */
 	@Bean
+	@ConditionalOnMissingBean(RestTemplate.class)
 	public RestTemplate restTemplate() {
 		
 		log.info("Configuring RestTemplate ...");

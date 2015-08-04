@@ -83,7 +83,8 @@ public class CaptchaValidator implements ConstraintValidator<Captcha, String> {
 		if (captchaResponse == null || "".equals(captchaResponse))
 	         return false;
 	        
-		MultiValueMap<String, String> formData = new LinkedMultiValueMap<String, String>(2);
+		MultiValueMap<String, String> formData =
+			new LinkedMultiValueMap<String, String>(2);
 		formData.add("response", captchaResponse);
 		formData.add("secret", properties.getRecaptcha().getSecretkey());
 		
