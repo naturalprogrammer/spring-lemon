@@ -51,7 +51,6 @@ implements UserDetails {
 		static final String UNVERIFIED = "UNVERIFIED";
 		static final String BLOCKED = "BLOCKED";
 		static final String ADMIN = "ADMIN";
-	
 	}
 	
 //	public static final Set<String> BAD_ROLES = new HashSet<String>(Arrays.asList(
@@ -69,14 +68,14 @@ implements UserDetails {
 	@Column(nullable = false) // no length because it will be encrypted
 	protected String password;
 	
+	@ElementCollection(fetch = FetchType.EAGER)
+	private Set<String> roles = new HashSet<String>();
+	
 	@Column(length = UUID_LENGTH)
 	protected String verificationCode;
 	
 	@Column(length = UUID_LENGTH)
 	protected String forgotPasswordCode;
-	
-	@ElementCollection(fetch = FetchType.EAGER)
-	private Set<String> roles = new HashSet<String>();
 	
 	@Transient
 	@Captcha(groups = {SignUpValidation.class})
@@ -192,8 +191,8 @@ implements UserDetails {
 //		this.rolesEditable = rolesEditable;
 //	}
 	
-	public boolean hasRole(String role) {
-		return role.contains(role);
+	public final boolean hasRole(String role) {
+		return roles.contains(role);
 	}
 
 //	public UserDto<ID> getUserDto() {
@@ -224,7 +223,7 @@ implements UserDetails {
 	}
 	
 	public boolean isGoodAdmin() {
-		return goodUser && admin;
+		return goodAdmin;
 	}
 	
 //	public boolean decorated() {
@@ -237,9 +236,9 @@ implements UserDetails {
 	
 	public U decorate(U currentUser) {
 				
-		unverified = roles.contains(Role.UNVERIFIED);
-		blocked = roles.contains(Role.BLOCKED);
-		admin = roles.contains(Role.ADMIN);
+		unverified = hasRole(Role.UNVERIFIED);
+		blocked = hasRole(Role.BLOCKED);
+		admin = hasRole(Role.ADMIN);
 		goodUser = !(unverified || blocked);
 		goodAdmin = goodUser && admin;
 		
@@ -254,7 +253,6 @@ implements UserDetails {
 		log.debug("Decorated user: " + this);
 
 		return (U) this;
-
 	}
 	
 	public void hideConfidentialFields() {
@@ -269,7 +267,6 @@ implements UserDetails {
 			email = null;
 		
 		log.debug("Hid confidential fields for user: " + this);
-		
 	}
 
 	@Override
