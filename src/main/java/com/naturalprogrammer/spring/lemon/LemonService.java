@@ -387,7 +387,9 @@ public abstract class LemonService
 				
 				if (!user.hasRole(Role.UNVERIFIED)) {
 					makeUnverified(user); // make user unverified
-					sendVerificationMail(user); // send a verification mail to the user
+					LemonUtil.afterCommit(() -> {
+						sendVerificationMail(user); // send a verification mail to the user
+					});
 				}
 			} else {
 				
