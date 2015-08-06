@@ -55,7 +55,6 @@ public abstract class LemonController
 		log.debug("Signed up: " + user);
 		
 		return lemonService.userForClient();
-
 	}
 	
 	
@@ -82,7 +81,6 @@ public abstract class LemonController
 		lemonService.verifyUser(verificationCode);
 		
 		return lemonService.userForClient();
-
 	}
 	
 
@@ -94,7 +92,6 @@ public abstract class LemonController
 		
 		log.debug("Received forgot password request for: " + email);				
 		lemonService.forgotPassword(email);
-
 	}
 	
 
@@ -106,7 +103,6 @@ public abstract class LemonController
 		
 		log.debug("Resetting password ... ");				
 		lemonService.resetPassword(forgotPasswordCode, newPassword);
-
 	}
 
 
@@ -115,7 +111,6 @@ public abstract class LemonController
 		
 		log.debug("Fetching user by email: " + email);						
 		return lemonService.fetchUser(email);
-
 	}
 	
 	
@@ -124,7 +119,6 @@ public abstract class LemonController
 		
 		log.debug("Fetching user: " + user);				
 		return lemonService.fetchUser(user);
-
 	}
 
 	
@@ -136,8 +130,7 @@ public abstract class LemonController
 		
 		log.debug("Resetting password ... ");				
 		lemonService.updateUser(user, updatedUser);
-		return lemonService.userForClient();
-		
+		return lemonService.userForClient();		
 	}
 	
 	
@@ -149,7 +142,6 @@ public abstract class LemonController
 		
 		log.debug("Changing password ... ");				
 		lemonService.changePassword(user, changePasswordForm);
-
 	}
 
 }

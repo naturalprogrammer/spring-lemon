@@ -13,7 +13,9 @@ import com.naturalprogrammer.spring.lemon.domain.VersionedEntity;
 import com.naturalprogrammer.spring.lemon.util.LemonUtil;
 
 @Component
-public class LemonPermissionEvaluator<U extends AbstractUser<U,ID>, ID extends Serializable> implements PermissionEvaluator {
+public class LemonPermissionEvaluator
+<U extends AbstractUser<U,ID>, ID extends Serializable>
+implements PermissionEvaluator {
 
 	private final Log log = LogFactory.getLog(getClass());
 
@@ -36,8 +38,7 @@ public class LemonPermissionEvaluator<U extends AbstractUser<U,ID>, ID extends S
 	public boolean hasPermission(Authentication authentication,
 			Serializable targetId, String targetType, Object permission) {
 		
-		throw new UnsupportedOperationException("hasPermission() by ID is not supported");
-		
+		throw new UnsupportedOperationException("hasPermission() by ID is not supported");		
 	}
 
 }

@@ -100,17 +100,29 @@
 		</repository>
 	</repositories>
 	
-	
-<!-- 	<build>
+
+ 	<build>
 		<plugins>
-			<plugin>
+		
+		    <plugin>
+	            <groupId>org.apache.maven.plugins</groupId>
+	            <artifactId>maven-compiler-plugin</artifactId>
+	            <configuration>
+	                <compilerArgs>
+	                    <arg>-parameters</arg>
+	                </compilerArgs>
+	            </configuration>
+	        </plugin>
+		
+			<!-- <plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
+			</plugin> -->
+			
 		</plugins>
 	</build>
 
-	<pluginRepositories>
+<!--	<pluginRepositories>
 		<pluginRepository>
 			<id>spring-snapshots</id>
 			<name>Spring Snapshots</name>
