@@ -28,15 +28,20 @@ public class AuthenticationSuccessHandler
     @Autowired
     private ObjectMapper objectMapper;
     
+    @Autowired
+    private LemonService<?,?> lemonService;
+    
 	@Override
     public void onAuthenticationSuccess(HttpServletRequest request,
     		HttpServletResponse response,
             Authentication authentication)
     throws IOException, ServletException {
 
-		AbstractUser<?,?> currentUser =
-			LemonUtil.getBean(LemonService.class)
-				.userForClient();
+//		AbstractUser<?,?> currentUser =
+//			LemonUtil.getBean(LemonService.class)
+//				.userForClient();
+		
+		AbstractUser<?,?> currentUser = lemonService.userForClient();
 		
         // instead of this, the statement below is introduced: handle(request, response, authentication);
     	response.setStatus(HttpServletResponse.SC_OK);

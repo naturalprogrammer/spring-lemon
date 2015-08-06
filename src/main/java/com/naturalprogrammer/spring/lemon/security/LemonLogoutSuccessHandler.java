@@ -28,6 +28,9 @@ public class LemonLogoutSuccessHandler
 	@Autowired
     private ObjectMapper objectMapper;
 	
+    @Autowired
+    private LemonService<?,?> lemonService;
+	
     @Override
 	public void onLogoutSuccess(HttpServletRequest request,
 			HttpServletResponse response, Authentication authentication)
@@ -37,7 +40,7 @@ public class LemonLogoutSuccessHandler
     	response.setContentType(MediaType.APPLICATION_JSON_VALUE);
     	response.getOutputStream().print(
     			objectMapper.writeValueAsString(LemonUtil.mapOf("user",
-    			LemonUtil.getBean(LemonService.class).userForClient())));
+    					lemonService.userForClient())));
     	
         log.debug("Logout succeeded.");        
 		
