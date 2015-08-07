@@ -1,21 +1,17 @@
 package com.naturalprogrammer.spring.lemon.mail;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 public class MockMailSender implements MailSender {
 	
-	private static final Logger logger = LoggerFactory.getLogger(MockMailSender.class);
+	private static final Log log = LogFactory.getLog(MockMailSender.class);
 
-	/* (non-Javadoc)
-	 * @see com.goodvideotutorials.spring.mail.MailSender#send(java.lang.String, java.lang.String, java.lang.String)
-	 */
 	@Override
 	public void send(String to, String subject, String body) {
-		logger.info("Sending mail to " + to);
-		logger.info("Subject: " + subject);
-		logger.info("Body: " + body);
+		log.info("Sending mail to " + to);
+		log.info("Subject: " + subject);
+		log.info("Body: " + body);
 	}
 
 }
