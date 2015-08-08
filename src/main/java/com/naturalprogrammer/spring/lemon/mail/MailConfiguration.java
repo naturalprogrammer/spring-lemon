@@ -8,7 +8,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 
 @Configuration
 @ConditionalOnMissingBean(MailSender.class)
-public class LemonMailAutoConfiguration {
+public class MailConfiguration {
 	
 	@Bean
 	@ConditionalOnProperty(name="spring.mail.host", matchIfMissing=true)
