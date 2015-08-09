@@ -62,7 +62,7 @@ public class DefaultExceptionHandler {
 	@RequestMapping(produces = "application/json")
     @ExceptionHandler({VersionException.class})
     @ResponseStatus(value = HttpStatus.CONFLICT)
-    public @ResponseBody Map<String, Object> handleRequestException(VersionException ex) {
+    public @ResponseBody Map<String, Object> handleVersionException(VersionException ex) {
     	
         log.warn("VersionException:", ex);        
 		return LemonUtil.mapOf("exception", "VersionException", "message", ex.getMessage());
@@ -71,7 +71,7 @@ public class DefaultExceptionHandler {
 	@RequestMapping(produces = "application/json")
     @ExceptionHandler({Exception.class})
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
-    public @ResponseBody Map<String, Object> handleRequestException(Exception ex) {
+    public @ResponseBody Map<String, Object> handleOtherException(Exception ex) {
     	
         log.error("Internal server error:", ex);        
 		return LemonUtil.mapOf("exception", ex.getClass().getSimpleName(), "message", ex.getMessage());
