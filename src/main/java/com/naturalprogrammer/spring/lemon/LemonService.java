@@ -176,10 +176,13 @@ public abstract class LemonService
 			
 			log.debug("Sending verification mail to: " + user);
 
-			String verifyLink = properties.getApplicationUrl() + "/users/" + user.getVerificationCode() + "/verify";
+			String verifyLink = properties.getApplicationUrl()
+				+ "/users/" + user.getVerificationCode() + "/verify";
+			
 			mailSender.send(user.getEmail(),
-					LemonUtil.getMessage("com.naturalprogrammer.spring.verifySubject"),
-					LemonUtil.getMessage("com.naturalprogrammer.spring.verifyEmail", verifyLink));
+				LemonUtil.getMessage("com.naturalprogrammer.spring.verifySubject"),
+				LemonUtil.getMessage(
+					"com.naturalprogrammer.spring.verifyEmail",	verifyLink));
 			
 			log.debug("Verification mail to " + user.getEmail() + " queued.");
 			
