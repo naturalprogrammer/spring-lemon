@@ -75,7 +75,7 @@ public abstract class LemonController
 	 * Verify
 	 */
 	@RequestMapping(value="/users/{verificationCode}/verify", method=RequestMethod.PATCH)
-	public U verifyUser(@PathVariable("verificationCode") String verificationCode) {
+	public U verifyUser(@PathVariable String verificationCode) {
 		
 		log.debug("Verifying user ...");		
 		lemonService.verifyUser(verificationCode);
@@ -88,7 +88,7 @@ public abstract class LemonController
 	 * Forgot Password
 	 */
 	@RequestMapping(value="/forgot-password", method=RequestMethod.PATCH)
-	public void forgotPassword(@RequestParam("email") String email) {
+	public void forgotPassword(@RequestParam String email) {
 		
 		log.debug("Received forgot password request for: " + email);				
 		lemonService.forgotPassword(email);
@@ -99,7 +99,7 @@ public abstract class LemonController
 	 * Reset Password
 	 */
 	@RequestMapping(value="/users/{forgotPasswordCode}/reset-password", method=RequestMethod.PATCH)
-	public void resetPassword(@PathVariable("forgotPasswordCode") String forgotPasswordCode, @RequestParam("newPassword") String newPassword) {
+	public void resetPassword(@PathVariable String forgotPasswordCode, @RequestParam String newPassword) {
 		
 		log.debug("Resetting password ... ");				
 		lemonService.resetPassword(forgotPasswordCode, newPassword);
@@ -107,7 +107,7 @@ public abstract class LemonController
 
 
 	@RequestMapping(value="/users/fetch-by-email", method=RequestMethod.GET)
-	public U fetchByEmail(@RequestParam("email") String email) {
+	public U fetchByEmail(@RequestParam String email) {
 		
 		log.debug("Fetching user by email: " + email);						
 		return lemonService.fetchUser(email);
