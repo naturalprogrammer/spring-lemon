@@ -1,6 +1,7 @@
 package com.naturalprogrammer.spring.lemon.security;
 
 import java.io.Serializable;
+import java.util.Optional;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -31,9 +32,9 @@ implements UserDetailsService {
 		
 		log.debug("Loading user having email: " + email);
 		
-		U user = userRepository.findByEmail(email);
-		if (user == null)
-			throw new UsernameNotFoundException(email);
+		Optional<U> optional = userRepository.findByEmail(email);
+		
+		U user = optional.orElseThrow(() -> new UsernameNotFoundException(email));
 
 		log.debug("Loaded user having email: " + email);
 		

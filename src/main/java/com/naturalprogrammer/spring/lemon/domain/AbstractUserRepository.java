@@ -1,6 +1,7 @@
 package com.naturalprogrammer.spring.lemon.domain;
 
 import java.io.Serializable;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,9 +18,7 @@ public abstract interface AbstractUserRepository
 	<U extends AbstractUser<U,ID>, ID extends Serializable>
 extends JpaRepository<U, ID> {
 	
-	U findByEmail(String email);
-
-	U findByForgotPasswordCode(String forgotPasswordCode);
-
-	U findByVerificationCode(String verificationCode);
+	Optional<U> findByEmail(String email);
+	
+	Optional<U> findByForgotPasswordCode(String forgotPasswordCode);
 }

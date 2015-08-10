@@ -3,11 +3,14 @@ package com.naturalprogrammer.spring.lemon;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
+
 import javax.mail.MessagingException;
 import javax.validation.Valid;
+
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.logging.Log;
@@ -25,11 +28,13 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
+
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser.Role;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser.SignUpValidation;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUserRepository;
 import com.naturalprogrammer.spring.lemon.domain.ChangePasswordForm;
+import com.naturalprogrammer.spring.lemon.exceptions.MultiErrorException;
 import com.naturalprogrammer.spring.lemon.mail.MailSender;
 import com.naturalprogrammer.spring.lemon.util.LemonUtil;
 import com.naturalprogrammer.spring.lemon.validation.Password;
@@ -212,10 +217,10 @@ public abstract class LemonService
 		
 		log.debug("Fetching user by email: " + email);
 
-		U user = userRepository.findByEmail(email);
-		LemonUtil.check("email", user != null,
-			"com.naturalprogrammer.spring.userNotFound").go();
-		
+		U user = userRepository.findByEmail(email)
+			.orElseThrow(() -> MultiErrorException.of("email",
+				"com.naturalprogrammer.spring.userNotFound"));
+
 		user.decorate().hideConfidentialFields();
 		
 		log.debug("Returning user: " + user);		
@@ -269,10 +274,11 @@ public abstract class LemonService
 	public void forgotPassword(@Valid @Email @NotBlank String email) {
 		
 		log.debug("Processing forgot password for email: " + email);
-		final U user = userRepository.findByEmail(email);
-
-		LemonUtil.check(user != null, "com.naturalprogrammer.spring.userNotFound").go();
 		
+		U user = userRepository.findByEmail(email)
+				.orElseThrow(() -> MultiErrorException.of(
+					"com.naturalprogrammer.spring.userNotFound"));
+
 		user.setForgotPasswordCode(UUID.randomUUID().toString());
 		userRepository.save(user);
 
@@ -309,8 +315,10 @@ public abstract class LemonService
 		
 		log.debug("Resetting password ...");
 
-		U user = userRepository.findByForgotPasswordCode(forgotPasswordCode);
-		LemonUtil.check(user != null, "com.naturalprogrammer.spring.invalidLink").go();
+		U user = userRepository
+			.findByForgotPasswordCode(forgotPasswordCode)
+			.orElseThrow(() -> MultiErrorException.of(
+				"com.naturalprogrammer.spring.invalidLink"));
 		
 		user.setPassword(passwordEncoder.encode(newPassword));
 		user.setForgotPasswordCode(null);

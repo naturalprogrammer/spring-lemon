@@ -41,6 +41,20 @@ public class MultiErrorException extends RuntimeException {
 		return this;
 	}
 	
+	public static MultiErrorException of(String fieldName, 
+			String messageKey, Object... args) {
+		
+		MultiErrorException exception = new MultiErrorException();
+		exception.errors.add(new FieldError(fieldName, messageKey,
+				LemonUtil.getMessage(messageKey, args)));
+		return exception;
+	}
+	
+	public static MultiErrorException of(String messageKey, Object... args) {
+		
+		return MultiErrorException.of(null, messageKey, args);
+	}
+	
 	public void go() {
 		if (errors.size() > 0)
 			throw this;

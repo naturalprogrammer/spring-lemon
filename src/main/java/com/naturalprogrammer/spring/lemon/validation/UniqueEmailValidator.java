@@ -36,7 +36,7 @@ implements ConstraintValidator<UniqueEmail, String> {
 	public boolean isValid(String email, ConstraintValidatorContext context) {
 		
 		log.debug("Validating whether email is unique: " + email);
-		return userRepository.findByEmail(email) == null;
+		return !userRepository.findByEmail(email).isPresent();
 
 	}
 
