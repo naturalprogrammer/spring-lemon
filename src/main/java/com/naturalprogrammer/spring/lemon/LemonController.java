@@ -62,7 +62,8 @@ public abstract class LemonController
 	 * Resends verification mail. See here for details.
 	 * 
 	 */
-	@RequestMapping(value="/users/{id}/resend-verification-mail", method=RequestMethod.GET)
+	@RequestMapping(value="/users/{id}/resend-verification-mail",
+			        method=RequestMethod.GET)
 	public void resendVerificationMail(@PathVariable("id") U user) {
 		
 		log.debug("Resending verification mail for: " + user);
@@ -74,7 +75,8 @@ public abstract class LemonController
 	/**
 	 * Verify
 	 */
-	@RequestMapping(value="/users/{verificationCode}/verify", method=RequestMethod.PATCH)
+	@RequestMapping(value="/users/{verificationCode}/verify",
+					method=RequestMethod.PATCH)
 	public U verifyUser(@PathVariable String verificationCode) {
 		
 		log.debug("Verifying user ...");		

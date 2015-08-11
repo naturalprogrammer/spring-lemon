@@ -262,7 +262,7 @@ public abstract class LemonService
 		
 		LemonUtil.afterCommit(() -> {
 			
-			currentUser.getRoles().remove(Role.UNVERIFIED);
+			makeVerified(currentUser);
 			currentUser.decorate(currentUser);
 			log.debug("Removed UNVERIFIED role from current user.");		
 		});
