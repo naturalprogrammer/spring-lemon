@@ -130,7 +130,7 @@ public abstract class LemonController
 	@RequestMapping(value="/users/{id}/update", method=RequestMethod.PATCH)
 	public U updateUser(@PathVariable("id") U user, @RequestBody U updatedUser) {
 		
-		log.debug("Resetting password ... ");				
+		log.debug("Updating user ... ");				
 		lemonService.updateUser(user, updatedUser);
 		return lemonService.userForClient();		
 	}
@@ -146,4 +146,15 @@ public abstract class LemonController
 		lemonService.changePassword(user, changePasswordForm);
 	}
 
+
+	/**
+	 * Change email request
+	 */
+	@RequestMapping(value="/users/{id}/change-email-request", method=RequestMethod.PATCH)
+	public U requestEmailChange(@PathVariable("id") U user, @RequestBody U updatedUser) {
+		
+		log.debug("Requesting password change ... ");				
+		lemonService.requestEmailChange(user, updatedUser);
+		return lemonService.userForClient();		
+	}
 }

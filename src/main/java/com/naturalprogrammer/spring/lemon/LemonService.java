@@ -288,7 +288,7 @@ public abstract class LemonService
 		
 	}
 	
-	private void mailForgotPasswordLink(U user) {
+	protected void mailForgotPasswordLink(U user) {
 		
 		try {
 			
@@ -418,18 +418,9 @@ public abstract class LemonService
 			else
 				roles.remove(Role.BLOCKED);
 		}
-		
-// This is not needed, because the logged in user can't update his own role
-//		LemonUtil.afterCommit(() -> {
-//			if (currentUser.equals(user)) {
-//				
-//				log.debug("Setting roles for logged in user.");
-//				currentUser.setRoles(user.getRoles());
-//			}
-//		});
-
 	}
 
+	
 	public U userForClient() {
 		return userForClient(LemonUtil.getUser());
 	}
@@ -454,6 +445,47 @@ public abstract class LemonService
 		log.debug("Returning user for client: " + user);
 		
 		return user;
+	}
+	
+	@PreAuthorize("hasPermission(#user, 'edit')")
+	@Validated(AbstractUser.ChangeEmailValidation.class)
+	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
+	public void requestEmailChange(U user, @Valid U updatedUser) {
+		
+		log.debug("Requesting email change: " + user);
+
+		LemonUtil.check("id", user != null, "com.naturalprogrammer.spring.userNotFound").go();
+		
+		user.setNewEmail(updatedUser.getNewEmail());
+		user.setChangeEmailCode(UUID.randomUUID().toString());
+		userRepository.save(user);
+		
+		LemonUtil.afterCommit(() -> {
+		    mailChangeEmailLink(user);
+		});
+		
+		log.debug("Requested email change: " + user);		
+	}
+
+	protected void mailChangeEmailLink(U user) {
+		
+		try {
+			
+			log.debug("Mailing change email link to user: " + user);
+
+			String changeEmailLink = 
+					properties.getApplicationUrl() + "/change-email/" +
+					user.getChangeEmailCode();
+			
+			mailSender.send(user.getEmail(),
+					LemonUtil.getMessage("com.naturalprogrammer.spring.changeEmailSubject"),
+					LemonUtil.getMessage("com.naturalprogrammer.spring.changeEmailEmail", changeEmailLink));
+			
+			log.debug("Change email link mail queued.");
+			
+		} catch (MessagingException e) {
+			log.error(ExceptionUtils.getStackTrace(e));
+		}
 	}
 	
 }

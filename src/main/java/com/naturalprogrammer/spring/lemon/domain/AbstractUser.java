@@ -59,24 +59,32 @@ implements UserDetails {
 //	
 	public interface SignUpValidation {}
 	public interface UpdateValidation {}
+	public interface ChangeEmailValidation {}
 	
 	@UniqueEmail(groups = {SignUpValidation.class})
-	@Column(nullable = false, length = EMAIL_MAX)
+	@Column(nullable = false, unique=true, length = EMAIL_MAX)
 	protected String email;
 	
-	@Password(groups = {SignUpValidation.class})
+	@Password(groups = {SignUpValidation.class, ChangeEmailValidation.class})
 	@Column(nullable = false) // no length because it will be encrypted
 	protected String password;
 	
 	@ElementCollection(fetch = FetchType.EAGER)
 	private Set<String> roles = new HashSet<String>();
 	
-	@Column(length = UUID_LENGTH)
+	@Column(length = UUID_LENGTH, unique=true)
 	protected String verificationCode;
 	
-	@Column(length = UUID_LENGTH)
+	@Column(length = UUID_LENGTH, unique=true)
 	protected String forgotPasswordCode;
 	
+	@UniqueEmail(groups = {ChangeEmailValidation.class})
+	@Column(length = EMAIL_MAX)
+	protected String newEmail;
+
+	@Column(length = UUID_LENGTH, unique=true)
+	protected String changeEmailCode;
+
 	@Transient
 	@Captcha(groups = {SignUpValidation.class})
 	private String captchaResponse;
@@ -118,6 +126,22 @@ implements UserDetails {
 		this.forgotPasswordCode = forgotPasswordCode;
 	}
 	
+	public String getNewEmail() {
+		return newEmail;
+	}
+
+	public void setNewEmail(String newEmail) {
+		this.newEmail = newEmail;
+	}
+
+	public String getChangeEmailCode() {
+		return changeEmailCode;
+	}
+
+	public void setChangeEmailCode(String changeEmailCode) {
+		this.changeEmailCode = changeEmailCode;
+	}
+
 	public String getCaptchaResponse() {
 		return captchaResponse;
 	}
