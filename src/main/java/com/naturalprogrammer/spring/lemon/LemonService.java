@@ -8,8 +8,12 @@ import java.util.Set;
 import java.util.UUID;
 
 
+
+
 import javax.mail.MessagingException;
 import javax.validation.Valid;
+
+
 
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -21,12 +25,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
+
+
 
 
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
@@ -150,7 +157,7 @@ public abstract class LemonService
 		
 		LemonUtil.afterCommit(() -> {
 		
-			LemonUtil.logInUser(user);
+			LemonUtil.logIn(user);
 			sendVerificationMail(user);
 			log.debug("Signed up user: " + user);
 		});
@@ -291,22 +298,23 @@ public abstract class LemonService
 	protected void mailForgotPasswordLink(U user) {
 		
 		try {
-			
+
 			log.debug("Mailing forgot password link to user: " + user);
 
-			String forgotPasswordLink = 
-					properties.getApplicationUrl() + "/reset-password/" +
-					user.getForgotPasswordCode();
+			String forgotPasswordLink =	properties.getApplicationUrl()
+				    + "/users/" + user.getForgotPasswordCode()
+					+ "/reset-password";
+			
 			mailSender.send(user.getEmail(),
 					LemonUtil.getMessage("com.naturalprogrammer.spring.forgotPasswordSubject"),
-					LemonUtil.getMessage("com.naturalprogrammer.spring.forgotPasswordEmail", forgotPasswordLink));
+					LemonUtil.getMessage("com.naturalprogrammer.spring.forgotPasswordEmail",
+						forgotPasswordLink));
 			
 			log.debug("Forgot password link mail queued.");
 			
 		} catch (MessagingException e) {
 			log.error(ExceptionUtils.getStackTrace(e));
 		}
-
 	}
 
 	
@@ -455,7 +463,10 @@ public abstract class LemonService
 		log.debug("Requesting email change: " + user);
 
 		LemonUtil.check("id", user != null, "com.naturalprogrammer.spring.userNotFound").go();
-		
+		LemonUtil.check("updatedUser.password",
+			passwordEncoder.matches(updatedUser.getPassword(), user.getPassword()),
+			"com.naturalprogrammer.spring.wrong.password").go();
+
 		user.setNewEmail(updatedUser.getNewEmail());
 		user.setChangeEmailCode(UUID.randomUUID().toString());
 		userRepository.save(user);
@@ -473,9 +484,9 @@ public abstract class LemonService
 			
 			log.debug("Mailing change email link to user: " + user);
 
-			String changeEmailLink = 
-					properties.getApplicationUrl() + "/change-email/" +
-					user.getChangeEmailCode();
+			String changeEmailLink = properties.getApplicationUrl()
+				    + "/users/" + user.getChangeEmailCode()
+					+ "/change-email";
 			
 			mailSender.send(user.getEmail(),
 					LemonUtil.getMessage("com.naturalprogrammer.spring.changeEmailSubject"),
@@ -486,6 +497,45 @@ public abstract class LemonService
 		} catch (MessagingException e) {
 			log.error(ExceptionUtils.getStackTrace(e));
 		}
+	}
+
+
+	@PreAuthorize("isAuthenticated()")
+	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
+	public void changeEmail(@Valid @NotBlank String changeEmailCode) {
+		
+		log.debug("Changing email of current user ...");
+
+		U currentUser = LemonUtil.getUser();
+		
+		U user = userRepository.findOne(currentUser.getId());
+		
+		LemonUtil.check(changeEmailCode.equals(user.getChangeEmailCode()),
+				"com.naturalprogrammer.spring.wrong.changeEmailCode").go();
+		
+		// Ensure that the email would be unique 
+		LemonUtil.check(
+				!userRepository.findByEmail(user.getNewEmail()).isPresent(),
+				"com.naturalprogrammer.spring.duplicate.email").go();	
+		
+		// update the fields
+		user.setEmail(user.getNewEmail());
+		user.setNewEmail(null);
+		user.setChangeEmailCode(null);
+		
+		// make the user verified if he is not
+		if (user.hasRole(Role.UNVERIFIED))
+			makeVerified(user);
+		
+		userRepository.save(user);
+		
+		LemonUtil.afterCommit(() -> {
+			
+			LemonUtil.logOut();
+			log.debug("Logged user out.");		
+		});
+		
+		log.debug("Changed email of user: " + user);		
 	}
 	
 }

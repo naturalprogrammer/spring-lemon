@@ -148,13 +148,27 @@ public abstract class LemonController
 
 
 	/**
-	 * Change email request
+	 * Request for changing email
 	 */
-	@RequestMapping(value="/users/{id}/change-email-request", method=RequestMethod.PATCH)
+	@RequestMapping(value="/users/{id}/request-email-change", method=RequestMethod.PATCH)
 	public U requestEmailChange(@PathVariable("id") U user, @RequestBody U updatedUser) {
 		
 		log.debug("Requesting password change ... ");				
 		lemonService.requestEmailChange(user, updatedUser);
 		return lemonService.userForClient();		
 	}
+	
+	/**
+	 * Change email
+	 */
+	@RequestMapping(value="/users/{changeEmailCode}/change-email",
+					method=RequestMethod.PATCH)
+	public U changeEmail(@PathVariable String changeEmailCode) {
+		
+		log.debug("Changing email of user ...");		
+		lemonService.changeEmail(changeEmailCode);
+		
+		return lemonService.userForClient();
+	}
+
 }
