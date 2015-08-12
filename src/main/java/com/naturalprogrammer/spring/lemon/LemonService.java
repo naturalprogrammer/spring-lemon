@@ -460,7 +460,7 @@ public abstract class LemonService
 
 		LemonUtil.check("id", user != null, "com.naturalprogrammer.spring.userNotFound").go();
 		LemonUtil.check("updatedUser.password",
-			passwordEncoder.matches(updatedUser.getPassword(), user.getPassword()),
+			passwordEncoder.matches(updatedUser.getPassword(), LemonUtil.getUser().getPassword()),
 			"com.naturalprogrammer.spring.wrong.password").go();
 
 		user.setNewEmail(updatedUser.getNewEmail());

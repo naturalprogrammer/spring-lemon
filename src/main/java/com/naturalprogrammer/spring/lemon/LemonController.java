@@ -71,7 +71,7 @@ public abstract class LemonController
 		log.debug("Resent verification mail for: " + user);
 	}	
 
-	
+
 	/**
 	 * Verify
 	 */
@@ -151,11 +151,10 @@ public abstract class LemonController
 	 * Request for changing email
 	 */
 	@RequestMapping(value="/users/{id}/request-email-change", method=RequestMethod.PATCH)
-	public U requestEmailChange(@PathVariable("id") U user, @RequestBody U updatedUser) {
+	public void requestEmailChange(@PathVariable("id") U user, @RequestBody U updatedUser) {
 		
 		log.debug("Requesting password change ... ");				
 		lemonService.requestEmailChange(user, updatedUser);
-		return lemonService.userForClient();		
 	}
 	
 	/**
