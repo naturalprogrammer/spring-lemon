@@ -289,10 +289,7 @@ public abstract class LemonService
 		user.setForgotPasswordCode(UUID.randomUUID().toString());
 		userRepository.save(user);
 
-		LemonUtil.afterCommit(() -> {
-		    mailForgotPasswordLink(user);
-		});
-		
+		LemonUtil.afterCommit(() -> mailForgotPasswordLink(user));
 	}
 	
 	protected void mailForgotPasswordLink(U user) {
@@ -405,10 +402,9 @@ public abstract class LemonService
 			if (updatedUser.isUnverified()) {
 				
 				if (!user.hasRole(Role.UNVERIFIED)) {
+
 					makeUnverified(user); // make user unverified
-					LemonUtil.afterCommit(() -> {
-						sendVerificationMail(user); // send a verification mail to the user
-					});
+					LemonUtil.afterCommit(() -> sendVerificationMail(user)); // send a verification mail to the user
 				}
 			} else {
 				
@@ -471,9 +467,7 @@ public abstract class LemonService
 		user.setChangeEmailCode(UUID.randomUUID().toString());
 		userRepository.save(user);
 		
-		LemonUtil.afterCommit(() -> {
-		    mailChangeEmailLink(user);
-		});
+		LemonUtil.afterCommit(() -> mailChangeEmailLink(user));
 		
 		log.debug("Requested email change: " + user);		
 	}
@@ -529,11 +523,7 @@ public abstract class LemonService
 		
 		userRepository.save(user);
 		
-		LemonUtil.afterCommit(() -> {
-			
-			LemonUtil.logOut();
-			log.debug("Logged user out.");		
-		});
+		LemonUtil.afterCommit(LemonUtil::logOut);
 		
 		log.debug("Changed email of user: " + user);		
 	}
