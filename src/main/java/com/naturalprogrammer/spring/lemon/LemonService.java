@@ -316,7 +316,8 @@ public abstract class LemonService
 
 	
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
-	public void resetPassword(String forgotPasswordCode, @Valid @Password String newPassword) {
+	public void resetPassword(@Valid @NotBlank String forgotPasswordCode,
+							  @Valid @Password String newPassword) {
 		
 		log.debug("Resetting password ...");
 

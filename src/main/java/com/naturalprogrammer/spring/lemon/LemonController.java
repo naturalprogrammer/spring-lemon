@@ -100,14 +100,19 @@ public abstract class LemonController
 	/**
 	 * Reset Password
 	 */
-	@RequestMapping(value="/users/{forgotPasswordCode}/reset-password", method=RequestMethod.PATCH)
-	public void resetPassword(@PathVariable String forgotPasswordCode, @RequestParam String newPassword) {
+	@RequestMapping(value="/users/{forgotPasswordCode}/reset-password",
+					method=RequestMethod.PATCH)
+	public void resetPassword(@PathVariable String forgotPasswordCode,
+							  @RequestParam String newPassword) {
 		
 		log.debug("Resetting password ... ");				
 		lemonService.resetPassword(forgotPasswordCode, newPassword);
 	}
 
 
+	/**
+	 * Fetch a user by email
+	 */
 	@RequestMapping(value="/users/fetch-by-email", method=RequestMethod.GET)
 	public U fetchByEmail(@RequestParam String email) {
 		
