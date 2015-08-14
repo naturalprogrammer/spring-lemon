@@ -342,13 +342,11 @@ public abstract class LemonService
 		
 		log.debug("Updating user: " + user);
 
-		LemonUtil.check("id", user != null, "com.naturalprogrammer.spring.userNotFound").go();
+		LemonUtil.check("id", user != null,
+			"com.naturalprogrammer.spring.userNotFound").go();
 		LemonUtil.validateVersion(user, updatedUser);
 
-		U currentUser = LemonUtil.getUser();
-
-		updateUserFields(user, updatedUser, currentUser);
-		
+		updateUserFields(user, updatedUser, LemonUtil.getUser());
 		userRepository.save(user);
 		
 		log.debug("Updated user: " + user);		

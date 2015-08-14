@@ -145,7 +145,8 @@ public abstract class LemonController
 	 * Change Password
 	 */
 	@RequestMapping(value="/users/{id}/change-password", method=RequestMethod.PATCH)
-	public void changePassword(@PathVariable("id") U user, @RequestBody ChangePasswordForm changePasswordForm) {
+	public void changePassword(@PathVariable("id") U user,
+			@RequestBody ChangePasswordForm changePasswordForm) {
 		
 		log.debug("Changing password ... ");				
 		lemonService.changePassword(user, changePasswordForm);
