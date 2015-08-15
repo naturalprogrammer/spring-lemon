@@ -144,7 +144,8 @@ public abstract class LemonController
 	/**
 	 * Change Password
 	 */
-	@RequestMapping(value="/users/{id}/change-password", method=RequestMethod.PATCH)
+	@RequestMapping(value="/users/{id}/change-password",
+					method=RequestMethod.PATCH)
 	public void changePassword(@PathVariable("id") U user,
 			@RequestBody ChangePasswordForm changePasswordForm) {
 		
@@ -156,10 +157,12 @@ public abstract class LemonController
 	/**
 	 * Request for changing email
 	 */
-	@RequestMapping(value="/users/{id}/request-email-change", method=RequestMethod.PATCH)
-	public void requestEmailChange(@PathVariable("id") U user, @RequestBody U updatedUser) {
+	@RequestMapping(value="/users/{id}/request-email-change",
+					method=RequestMethod.PATCH)
+	public void requestEmailChange(@PathVariable("id") U user,
+								   @RequestBody U updatedUser) {
 		
-		log.debug("Requesting password change ... ");				
+		log.debug("Requesting enail change ... ");				
 		lemonService.requestEmailChange(user, updatedUser);
 	}
 	

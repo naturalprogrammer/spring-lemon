@@ -358,9 +358,11 @@ public abstract class LemonService
 		
 		log.debug("Changing password for user: " + user);
 
-		LemonUtil.check("id", user != null, "com.naturalprogrammer.spring.userNotFound").go();
+		LemonUtil.check("id", user != null,
+			"com.naturalprogrammer.spring.userNotFound").go();
 		LemonUtil.check("changePasswordForm.oldPassword",
-			passwordEncoder.matches(changePasswordForm.getOldPassword(), user.getPassword()),
+			passwordEncoder.matches(changePasswordForm.getOldPassword(),
+									user.getPassword()),
 			"com.naturalprogrammer.spring.wrong.password").go();
 		
 		user.setPassword(passwordEncoder.encode(changePasswordForm.getPassword()));
@@ -457,9 +459,11 @@ public abstract class LemonService
 		
 		log.debug("Requesting email change: " + user);
 
-		LemonUtil.check("id", user != null, "com.naturalprogrammer.spring.userNotFound").go();
+		LemonUtil.check("id", user != null,
+				"com.naturalprogrammer.spring.userNotFound").go();
 		LemonUtil.check("updatedUser.password",
-			passwordEncoder.matches(updatedUser.getPassword(), LemonUtil.getUser().getPassword()),
+			passwordEncoder.matches(updatedUser.getPassword(),
+									LemonUtil.getUser().getPassword()),
 			"com.naturalprogrammer.spring.wrong.password").go();
 
 		user.setNewEmail(updatedUser.getNewEmail());
@@ -482,8 +486,11 @@ public abstract class LemonService
 					+ "/change-email";
 			
 			mailSender.send(user.getEmail(),
-					LemonUtil.getMessage("com.naturalprogrammer.spring.changeEmailSubject"),
-					LemonUtil.getMessage("com.naturalprogrammer.spring.changeEmailEmail", changeEmailLink));
+				LemonUtil.getMessage(
+					"com.naturalprogrammer.spring.changeEmailSubject"),
+				LemonUtil.getMessage(
+					"com.naturalprogrammer.spring.changeEmailEmail",
+					 changeEmailLink));
 			
 			log.debug("Change email link mail queued.");
 			
