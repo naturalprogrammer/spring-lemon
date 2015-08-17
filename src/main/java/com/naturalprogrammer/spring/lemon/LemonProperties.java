@@ -16,14 +16,14 @@ import org.springframework.stereotype.Component;
 public class LemonProperties {
 	
     /**
-     * Properties which are passed to client.
+     * Properties that are passed to client.
      * Do not put secret properties inside this.
      */
 	public static class Recaptcha {
     	
         /**
          * Set this false if you don't want to
-         * enable ReCaptcha. Useful for
+         * enable ReCaptcha. E.g. while
          * automated testing.
          */
 		private boolean enabled = true;
