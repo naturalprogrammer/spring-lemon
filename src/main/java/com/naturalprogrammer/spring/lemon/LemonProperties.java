@@ -156,5 +156,19 @@ public class LemonProperties {
 	public void setApplicationUrl(String applicationUrl) {
 		this.applicationUrl = applicationUrl;
 	}
+	
+
+	/**
+	 * Comma separated whitelisted URLs for CORS
+	 */
+	private String[] allowedOrigins;
+
+	public String[] getAllowedOrigins() {
+		return allowedOrigins;
+	}
+
+	public void setAllowedOrigins(String[] allowedOrigins) {
+		this.allowedOrigins = allowedOrigins;
+	}
 
 }

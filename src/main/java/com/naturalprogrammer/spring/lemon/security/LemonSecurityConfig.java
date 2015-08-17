@@ -167,7 +167,7 @@ public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 		
 		HttpSessionCsrfTokenRepository repository =
 				new HttpSessionCsrfTokenRepository();
-		repository.setHeaderName("X-XSRF-TOKEN");
+		repository.setHeaderName(CsrfCookieFilter.XSRF_TOKEN_HEADER_NAME);
 		return repository;
 	}
 	

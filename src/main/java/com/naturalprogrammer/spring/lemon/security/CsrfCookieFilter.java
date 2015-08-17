@@ -25,6 +25,8 @@ public class CsrfCookieFilter extends OncePerRequestFilter {
 	private final Log log = LogFactory.getLog(getClass());
 
 	public static final String XSRF_TOKEN_COOKIE_NAME = "XSRF-TOKEN";
+	public static final String XSRF_TOKEN_HEADER_NAME = "X-XSRF-TOKEN";
+	
 	
 	@Override
 	protected void doFilterInternal(HttpServletRequest request,
