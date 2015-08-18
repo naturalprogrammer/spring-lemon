@@ -4,14 +4,20 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import com.naturalprogrammer.spring.lemon.LemonProperties;
+import com.naturalprogrammer.spring.lemon.LemonProperties.Cors;
 
 @Configuration
-@ConditionalOnProperty(name="lemon.allowedOrigins")
+@ConditionalOnProperty(name="lemon.cors.allowedOrigins")
 public class CorsConfig extends WebMvcConfigurerAdapter {
 	
 	private final Log log = LogFactory.getLog(getClass());
@@ -24,11 +30,23 @@ public class CorsConfig extends WebMvcConfigurerAdapter {
 		
 		log.debug("Configuring CORS");
 		
+		Cors cors = properties.getCors();
+		
 		registry.addMapping("/**")
-			.allowedOrigins(properties.getAllowedOrigins())
-			.allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
-			.allowedHeaders("x-requested-with", "origin", "content-type", "accept", CsrfCookieFilter.XSRF_TOKEN_HEADER_NAME)
-			.exposedHeaders("x-requested-with", "origin", "content-type", "accept", CsrfCookieFilter.XSRF_TOKEN_HEADER_NAME)
-			.allowCredentials(true).maxAge(3600);
+			.allowedOrigins(cors.getAllowedOrigins())
+			.allowedMethods(cors.getAllowedMethods())
+			.allowedHeaders(cors.getAllowedHeaders())
+			.exposedHeaders(cors.getExposedHeaders())
+			.maxAge(cors.getMaxAge())
+			.allowCredentials(true);
 	}
+	
+	@Bean
+	@Order(Ordered.HIGHEST_PRECEDENCE)
+	public CorsFilter corsFilter(CorsConfigurationSource corsConfigurationSource) {
+		
+		return new CorsFilter(corsConfigurationSource);
+		
+	}
+
 }
