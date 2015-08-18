@@ -14,8 +14,11 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 import com.naturalprogrammer.spring.lemon.mail.MailSender;
+import com.naturalprogrammer.spring.lemon.security.SimpleCorsFilter;
 
 @Configuration
 @EnableSpringDataWebSupport
@@ -67,5 +70,5 @@ public class LemonConfig {
 		
 		return new RestTemplate();
 	}
-	
+
 }
