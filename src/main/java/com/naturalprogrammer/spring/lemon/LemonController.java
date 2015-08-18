@@ -146,11 +146,13 @@ public abstract class LemonController
 	 */
 	@RequestMapping(value="/users/{id}/change-password",
 					method=RequestMethod.PATCH)
-	public void changePassword(@PathVariable("id") U user,
+	public U changePassword(@PathVariable("id") U user,
 			@RequestBody ChangePasswordForm changePasswordForm) {
 		
 		log.debug("Changing password ... ");				
 		lemonService.changePassword(user, changePasswordForm);
+		
+		return lemonService.userForClient();
 	}
 
 

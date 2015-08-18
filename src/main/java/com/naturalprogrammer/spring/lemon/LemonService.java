@@ -374,8 +374,9 @@ public abstract class LemonService
 			
 			if (currentUser.equals(user)) {
 				
-				log.debug("Setting password for logged in user.");
-				currentUser.setPassword(user.getPassword());				
+				log.debug("Logging out ...");
+				LemonUtil.logOut();
+				//currentUser.setPassword(user.getPassword());				
 			}
 		});
 		
