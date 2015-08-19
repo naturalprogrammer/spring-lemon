@@ -16,6 +16,14 @@ import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
 import com.naturalprogrammer.spring.lemon.domain.ChangePasswordForm;
 import com.naturalprogrammer.spring.lemon.util.LemonUtil;
 
+/**
+ * The Lemon API
+ * 
+ * @author Sanjay Patel
+ *
+ * @param <U>	The User class
+ * @param <ID>	The Primary key type of User class 
+ */
 public abstract class LemonController
 	<U extends AbstractUser<U,ID>, ID extends Serializable> {
 
@@ -24,11 +32,18 @@ public abstract class LemonController
 	@Autowired
 	private LemonService<U, ID> lemonService;
 	
+	/**
+	 * A simple function for pinging this server
+	 */
 	@RequestMapping(value="/ping", method=RequestMethod.GET)
 	public void ping() {
 		log.debug("Received a ping");
 	}
 	
+	/**
+	 * Returns context properties needed at the client side, and
+	 * the current-user data
+	 */
 	@RequestMapping(value="/context", method=RequestMethod.GET)
 	public Map<String, Object> getContext() {
 		

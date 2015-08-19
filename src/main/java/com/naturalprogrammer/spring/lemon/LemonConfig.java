@@ -13,6 +13,13 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.client.RestTemplate;
 
+/**
+ * Although most of the configurations are
+ * inside various sub-packages, some didn't fit
+ * anywhere, which are in this root package. 
+ * 
+ * @author Sanjay Patel
+ */
 @Configuration
 @EnableSpringDataWebSupport
 @EnableTransactionManagement
@@ -20,9 +27,14 @@ import org.springframework.web.client.RestTemplate;
 @EnableAsync
 public class LemonConfig {
 	
+	/**
+	 * For handling JSON vulnerability,
+	 * JSON response bodies would be prefixed with
+	 * this String.
+	 */
 	public final static String JSON_PREFIX = ")]}',\n";
 
-	private final Log log = LogFactory.getLog(getClass());
+	private static final Log log = LogFactory.getLog(LemonConfig.class);
 
 	/**
 	 * Prefixes JSON responses for JSON vulnerability.

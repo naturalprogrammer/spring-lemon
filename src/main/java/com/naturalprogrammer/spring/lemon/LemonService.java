@@ -395,7 +395,9 @@ public abstract class LemonService
 
 		log.debug("Updating user fields for user: " + user);
 
-		if (user.isRolesEditable()) {
+		// User is already decorated while checking the 'edit' permission
+		// So, user.isRolesEditable() below would work
+		if (user.isRolesEditable()) { 
 			
 			log.debug("Updating roles for user: " + user);
 
