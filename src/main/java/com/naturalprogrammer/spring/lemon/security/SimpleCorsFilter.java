@@ -22,15 +22,13 @@ import com.naturalprogrammer.spring.lemon.LemonProperties;
 import com.naturalprogrammer.spring.lemon.LemonProperties.Cors;
 
 /**
- * If you want to disable this, e.g. while testing or in pure REST APIs,
- * in your application.properties, use
- * 
- * lemon.cors.enabled: false
+ * To disable this, e.g. while testing or in pure REST APIs,
+ * in your application.properties, don't provide
+ * the lemon.cors.allowedOrigins property
  * 
  * https://spring.io/guides/gs/rest-service-cors/
  * 
  * @author Sanjay Patel
- *
  */
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
@@ -82,6 +80,11 @@ public class SimpleCorsFilter extends OncePerRequestFilter {
 		// needed when $httpProvider.defaults.withCredentials = true;
 		response.setHeader("Access-Control-Allow-Credentials", "true"); 
 
-		filterChain.doFilter(request, response);
+		// Don't let OPTIONs pass.
+		// Otherwise certain things like Spring Security
+		// don't behave properly sometimes.
+		// E.g. the SwitchUserFilter doesn't work. 
+		if (!request.getMethod().equals("OPTIONS"))
+			filterChain.doFilter(request, response);
 	}
 }
