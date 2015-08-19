@@ -75,7 +75,7 @@ public class CaptchaValidator implements ConstraintValidator<Captcha, String> {
 	     * Refer http://www.journaldev.com/7133/how-to-integrate-google-recaptcha-in-java-web-application  
 	     */
 		
-		if (properties.getRecaptcha().getSitekey() != null) { // e.g. while testing or getting started
+		if (properties.getRecaptcha().getSitekey() == null) { // e.g. while testing or getting started
 			log.debug("Captcha validation not done, as it is disabled in application properties.");
 			return true;
 		}
