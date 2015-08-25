@@ -29,9 +29,13 @@ public abstract class LemonController
 
 	private static final Log log = LogFactory.getLog(LemonController.class);
 
-	@Autowired
 	private LemonService<U, ID> lemonService;
 	
+	@Autowired
+	public void setLemonService(LemonService<U, ID> lemonService) {
+		this.lemonService = lemonService;
+	}
+
 	/**
 	 * A simple function for pinging this server
 	 */

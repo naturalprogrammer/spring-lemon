@@ -16,7 +16,7 @@ import org.springframework.web.client.RestTemplate;
 /**
  * Although most of the configurations are
  * inside various sub-packages, some didn't fit
- * anywhere, which are in this root package. 
+ * anywhere, which are here, inside the root package. 
  * 
  * @author Sanjay Patel
  */
@@ -30,24 +30,23 @@ public class LemonConfig {
 	/**
 	 * For handling JSON vulnerability,
 	 * JSON response bodies would be prefixed with
-	 * this String.
+	 * this string.
 	 */
 	public final static String JSON_PREFIX = ")]}',\n";
 
 	private static final Log log = LogFactory.getLog(LemonConfig.class);
 
 	/**
-	 * Prefixes JSON responses for JSON vulnerability.
+	 * Prefixes JSON responses for JSON vulnerability. See for more details:
 	 * 
-	 * To disable this, in your application.properties, use
-	 * 
-	 * lemon.jsonprefix.enabled: false
-	 *
 	 * https://docs.angularjs.org/api/ng/service/$http
 	 * http://stackoverflow.com/questions/26384930/how-to-add-n-before-each-spring-json-response-to-prevent-common-vulnerab
+	 * 
+	 * To disable this, in your application.properties, use
+	 * lemon.enabled.json-prefix: false
 	 */
 	@Bean
-	@ConditionalOnProperty(name="lemon.enabled.jsonprefix", matchIfMissing=true)
+	@ConditionalOnProperty(name="lemon.enabled.json-prefix", matchIfMissing=true)
 	public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter() {
 		
         MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
