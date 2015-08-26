@@ -344,54 +344,76 @@ public abstract class LemonService
 		
 		log.debug("Verifying user ...");
 
+		// get the current-user from the session
 		U currentUser = LemonUtil.getUser();
 		
+		// fetch a fresh copy from the database
 		U user = userRepository.findOne(currentUser.getId());
 		
+		// ensure that he is unverified
 		LemonUtil.check(user.getRoles().contains(Role.UNVERIFIED),
 				"com.naturalprogrammer.spring.alreadyVerified").go();	
 		
+		// ensure that the verification code of the user matches with the given one
 		LemonUtil.check(verificationCode.equals(user.getVerificationCode()),
 				"com.naturalprogrammer.spring.wrong.verificationCode").go();
 		
-		makeVerified(user);
+		makeVerified(user); // make him verified
 		userRepository.save(user);
 		
+		// after successful commit,
 		LemonUtil.afterCommit(() -> {
 			
-			makeVerified(currentUser);
-			currentUser.decorate(currentUser);
+			makeVerified(currentUser); // make the current-user verified
+			currentUser.decorate(currentUser); // need to decorate it again
 			log.debug("Removed UNVERIFIED role from current user.");		
 		});
 		
 		log.debug("Verified user: " + user);		
 	}
 
+	
+	/**
+	 * Forgot password.
+	 * 
+	 * @param email	the email of the user who forgot his password
+	 */
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
 	public void forgotPassword(@Valid @Email @NotBlank String email) {
 		
 		log.debug("Processing forgot password for email: " + email);
 		
+		// fetch the user record from database
 		U user = userRepository.findByEmail(email)
 				.orElseThrow(() -> MultiErrorException.of(
 					"com.naturalprogrammer.spring.userNotFound"));
 
+		// set a forgot password code
 		user.setForgotPasswordCode(UUID.randomUUID().toString());
 		userRepository.save(user);
 
+		// after successful commit, mail him a link to reset his password
 		LemonUtil.afterCommit(() -> mailForgotPasswordLink(user));
 	}
 	
+	
+	/**
+	 * Mails the forgot password link.
+	 * 
+	 * @param user
+	 */
 	protected void mailForgotPasswordLink(U user) {
 		
 		try {
 
 			log.debug("Mailing forgot password link to user: " + user);
 
+			// make the link
 			String forgotPasswordLink =	properties.getApplicationUrl()
 				    + "/users/" + user.getForgotPasswordCode()
 					+ "/reset-password";
 			
+			// send the mail
 			mailSender.send(user.getEmail(),
 					LemonUtil.getMessage("com.naturalprogrammer.spring.forgotPasswordSubject"),
 					LemonUtil.getMessage("com.naturalprogrammer.spring.forgotPasswordEmail",
@@ -400,11 +422,18 @@ public abstract class LemonService
 			log.debug("Forgot password link mail queued.");
 			
 		} catch (MessagingException e) {
+			// In case of exception, just log the error and keep silent			
 			log.error(ExceptionUtils.getStackTrace(e));
 		}
 	}
 
 	
+	/**
+	 * Resets the password.
+	 * 
+	 * @param forgotPasswordCode
+	 * @param newPassword
+	 */
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
 	public void resetPassword(@Valid @NotBlank String forgotPasswordCode,
 							  @Valid @Password String newPassword) {
