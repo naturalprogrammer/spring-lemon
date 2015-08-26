@@ -1,6 +1,7 @@
 package com.naturalprogrammer.spring.lemon.security;
 
 import java.io.IOException;
+import java.util.Objects;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -15,16 +16,20 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.WebUtils;
 
 /**
- * See https://spring.io/guides/tutorials/spring-security-and-angular-js/
+ * Filter for attaching the CSRF token as a cookie.
+ * 
+ * @see <a href="https://spring.io/guides/tutorials/spring-security-and-angular-js/#_csrf_protection">CSRF protection</a>
  * 
  * @author Sanjay Patel
- *
  */
 public class CsrfCookieFilter extends OncePerRequestFilter {
 	
 	private final Log log = LogFactory.getLog(getClass());
 
+	// name of the cookie
 	public static final String XSRF_TOKEN_COOKIE_NAME = "XSRF-TOKEN";
+	
+	// name of the header to be receiving from the client
 	public static final String XSRF_TOKEN_HEADER_NAME = "X-XSRF-TOKEN";
 	
 	
@@ -35,18 +40,24 @@ public class CsrfCookieFilter extends OncePerRequestFilter {
 
 		log.debug("Inside CsrfCookieFilter ...");
 
+		// get the token
 		CsrfToken csrf = (CsrfToken)
 			request.getAttribute(CsrfToken.class.getName()); // Or "_csrf" (See CSRFFilter.doFilterInternal).
 		
-		if (csrf != null) {
+		if (csrf != null) { // if there is a token found
 			Cookie cookie = WebUtils.getCookie(
-				request, XSRF_TOKEN_COOKIE_NAME);
+				request, XSRF_TOKEN_COOKIE_NAME); // get the cookie
+			
 			String token = csrf.getToken();
-			if (cookie==null ||
-				token!=null && !token.equals(cookie.getValue())) {
+			
+			if (token != null &&					 // there is a token, AND
+			    (cookie == null || 					 // the cookie is either not there
+				!cookie.getValue().equals(token))) { // or not equal to the token
+				
+				// set the cookie
 				cookie = new Cookie(XSRF_TOKEN_COOKIE_NAME, token);
 				cookie.setPath("/");
-				// cookie.setHttpOnly(true); client interceptor can't see the cookie if this is set
+				// cookie.setHttpOnly(true); client JavaScriot interceptor can't see the cookie if this is set
 				response.addCookie(cookie);
 				
 				log.debug("Added cookie " + XSRF_TOKEN_COOKIE_NAME + ": " + token);
