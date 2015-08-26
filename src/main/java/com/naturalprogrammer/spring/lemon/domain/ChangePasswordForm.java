@@ -4,6 +4,11 @@ import com.naturalprogrammer.spring.lemon.validation.Password;
 import com.naturalprogrammer.spring.lemon.validation.RetypePassword;
 import com.naturalprogrammer.spring.lemon.validation.RetypePasswordForm;
 
+/**
+ * Change password form.
+ * 
+ * @author Sanjay Patel
+ */
 @RetypePassword
 public class ChangePasswordForm implements RetypePasswordForm {
 	

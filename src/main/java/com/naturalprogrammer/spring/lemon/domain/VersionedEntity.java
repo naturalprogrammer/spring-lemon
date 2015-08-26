@@ -7,6 +7,15 @@ import javax.persistence.Version;
 
 import com.naturalprogrammer.spring.lemon.exceptions.VersionException;
 
+
+/**
+ * Base class for all entities with optimistic locking.
+ * 
+ * @author Sanjay Patel
+ *
+ * @param <U>	The User class
+ * @param <ID>	The Primary key type of User class 
+ */
 @MappedSuperclass
 public abstract class VersionedEntity<U extends AbstractUser<U,ID>, ID extends Serializable> extends LemonEntity<U, ID> {
 
@@ -22,5 +31,5 @@ public abstract class VersionedEntity<U extends AbstractUser<U,ID>, ID extends S
 	public void setVersion(long version) {
 		this.version = version;
 	}
-	
+
 }

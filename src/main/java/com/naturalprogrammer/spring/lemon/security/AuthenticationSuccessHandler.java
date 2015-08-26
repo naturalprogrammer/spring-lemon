@@ -17,38 +17,53 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.naturalprogrammer.spring.lemon.LemonService;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
-import com.naturalprogrammer.spring.lemon.util.LemonUtil;
 
+/**
+ * Authentication success handler for sending the response
+ * to the client after successful authentication. This would replace
+ * the default handler of Spring Security
+ * 
+ * @author Sanjay Patel
+ */
 @Component
 public class AuthenticationSuccessHandler
 	extends SimpleUrlAuthenticationSuccessHandler {
 	
 	private final Log log = LogFactory.getLog(getClass());
 	
-    @Autowired
     private ObjectMapper objectMapper;
-    
-    @Autowired
     private LemonService<?,?> lemonService;
     
+	@Autowired    
+	public void setObjectMapper(ObjectMapper objectMapper) {
+		this.objectMapper = objectMapper;
+	}
+
+	@Autowired
+	public void setLemonService(LemonService<?, ?> lemonService) {
+		this.lemonService = lemonService;
+	}
+
 	@Override
     public void onAuthenticationSuccess(HttpServletRequest request,
     		HttpServletResponse response,
             Authentication authentication)
     throws IOException, ServletException {
 
-//		AbstractUser<?,?> currentUser =
-//			LemonUtil.getBean(LemonService.class)
-//				.userForClient();
-		
-		AbstractUser<?,?> currentUser = lemonService.userForClient();
-		
-        // instead of this, the statement below is introduced: handle(request, response, authentication);
+        // Instead of handle(request, response, authentication),
+		// the statements below are introduced
     	response.setStatus(HttpServletResponse.SC_OK);
     	response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+
+		// get the current-user
+    	AbstractUser<?,?> currentUser = lemonService.userForClient();
+
+    	// write current-user data to the response  
     	response.getOutputStream().print(
     			objectMapper.writeValueAsString(currentUser));
-        clearAuthenticationAttributes(request);
+
+    	// as done in the base class
+    	clearAuthenticationAttributes(request);
         
         log.debug("Authentication succeeded for user: " + currentUser);        
     }

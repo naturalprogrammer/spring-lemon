@@ -440,11 +440,13 @@ public abstract class LemonService
 		
 		log.debug("Resetting password ...");
 
+		// fetch the user
 		U user = userRepository
 			.findByForgotPasswordCode(forgotPasswordCode)
 			.orElseThrow(() -> MultiErrorException.of(
 				"com.naturalprogrammer.spring.invalidLink"));
 		
+		// sets the password
 		user.setPassword(passwordEncoder.encode(newPassword));
 		user.setForgotPasswordCode(null);
 		
@@ -454,6 +456,13 @@ public abstract class LemonService
 		
 	}
 
+	
+	/**
+	 * Updates a user with the given data.
+	 * 
+	 * @param user
+	 * @param updatedUser
+	 */
 	@PreAuthorize("hasPermission(#user, 'edit')")
 	@Validated(AbstractUser.UpdateValidation.class)
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
@@ -461,22 +470,32 @@ public abstract class LemonService
 		
 		log.debug("Updating user: " + user);
 
+		// checks
 		LemonUtil.check("id", user != null,
 			"com.naturalprogrammer.spring.userNotFound").go();
 		LemonUtil.validateVersion(user, updatedUser);
 
+		// delegates to updateUserFields
 		updateUserFields(user, updatedUser, LemonUtil.getUser());
 		userRepository.save(user);
 		
 		log.debug("Updated user: " + user);		
 	}
 	
+	
+	/**
+	 * Changes the password.
+	 * 
+	 * @param user
+	 * @param changePasswordForm
+	 */
 	@PreAuthorize("hasPermission(#user, 'edit')")
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
 	public void changePassword(U user, @Valid ChangePasswordForm changePasswordForm) {
 		
 		log.debug("Changing password for user: " + user);
 
+		// checks
 		LemonUtil.check("id", user != null,
 			"com.naturalprogrammer.spring.userNotFound").go();
 		LemonUtil.check("changePasswordForm.oldPassword",
@@ -484,18 +503,19 @@ public abstract class LemonService
 									user.getPassword()),
 			"com.naturalprogrammer.spring.wrong.password").go();
 		
+		// sets the password
 		user.setPassword(passwordEncoder.encode(changePasswordForm.getPassword()));
 		userRepository.save(user);
 		
+		// after successful commit
 		LemonUtil.afterCommit(() -> {
 
 			U currentUser = LemonUtil.getUser();
 			
-			if (currentUser.equals(user)) {
+			if (currentUser.equals(user)) { // if current-user's password changed,
 				
 				log.debug("Logging out ...");
-				LemonUtil.logOut();
-				//currentUser.setPassword(user.getPassword());				
+				LemonUtil.logOut(); // log him out
 			}
 		});
 		
@@ -504,7 +524,7 @@ public abstract class LemonService
 
 
 	/**
-	 * Override this if you have more fields
+	 * Updates the fields of the users. Override this if you have more fields.
 	 * 
 	 * @param user
 	 * @param updatedUser
@@ -520,6 +540,8 @@ public abstract class LemonService
 			
 			log.debug("Updating roles for user: " + user);
 
+			// update the roles
+			
 			Set<String> roles = user.getRoles();
 			
 			if (updatedUser.isUnverified()) {
@@ -548,13 +570,21 @@ public abstract class LemonService
 	}
 
 	
+	/**
+	 * Gets the current-user to be sent to a client.
+	 * 
+	 * @return
+	 */
 	public U userForClient() {
+		
+		// delegates
 		return userForClient(LemonUtil.getUser());
 	}
 
 	
 	/**
-	 * Override this if you have more fields
+	 * Gets the current-user to be sent to a client.
+	 * Override this if you have more fields.
 	 * 
 	 * @param currentUser
 	 */
@@ -574,6 +604,13 @@ public abstract class LemonService
 		return user;
 	}
 	
+
+	/**
+	 * Requests for email change.
+	 * 
+	 * @param user
+	 * @param updatedUser
+	 */
 	@PreAuthorize("hasPermission(#user, 'edit')")
 	@Validated(AbstractUser.ChangeEmailValidation.class)
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
@@ -581,6 +618,7 @@ public abstract class LemonService
 		
 		log.debug("Requesting email change: " + user);
 
+		// checks
 		LemonUtil.check("id", user != null,
 				"com.naturalprogrammer.spring.userNotFound").go();
 		LemonUtil.check("updatedUser.password",
@@ -588,25 +626,35 @@ public abstract class LemonService
 									LemonUtil.getUser().getPassword()),
 			"com.naturalprogrammer.spring.wrong.password").go();
 
+		// preserves the new email id
 		user.setNewEmail(updatedUser.getNewEmail());
 		user.setChangeEmailCode(UUID.randomUUID().toString());
 		userRepository.save(user);
 		
+		// after successful commit, mails a link to the user
 		LemonUtil.afterCommit(() -> mailChangeEmailLink(user));
 		
 		log.debug("Requested email change: " + user);		
 	}
 
+	
+	/**
+	 * Mails the change-email verification link to the user.
+	 * 
+	 * @param user
+	 */
 	protected void mailChangeEmailLink(U user) {
 		
 		try {
 			
 			log.debug("Mailing change email link to user: " + user);
 
+			// make the link
 			String changeEmailLink = properties.getApplicationUrl()
 				    + "/users/" + user.getChangeEmailCode()
 					+ "/change-email";
 			
+			// mail it
 			mailSender.send(user.getEmail(),
 				LemonUtil.getMessage(
 					"com.naturalprogrammer.spring.changeEmailSubject"),
@@ -617,20 +665,28 @@ public abstract class LemonService
 			log.debug("Change email link mail queued.");
 			
 		} catch (MessagingException e) {
+			// In case of exception, just log the error and keep silent			
 			log.error(ExceptionUtils.getStackTrace(e));
 		}
 	}
 
 
+	/**
+	 * Change the email.
+	 * 
+	 * @param changeEmailCode
+	 */
 	@PreAuthorize("isAuthenticated()")
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
 	public void changeEmail(@Valid @NotBlank String changeEmailCode) {
 		
 		log.debug("Changing email of current user ...");
 
+		// fetch the current-user
 		U currentUser = LemonUtil.getUser();
-		
 		U user = userRepository.findOne(currentUser.getId());
+		
+		// checks
 		
 		LemonUtil.check(changeEmailCode.equals(user.getChangeEmailCode()),
 				"com.naturalprogrammer.spring.wrong.changeEmailCode").go();
@@ -651,6 +707,7 @@ public abstract class LemonService
 		
 		userRepository.save(user);
 		
+		// logout after successful commit
 		LemonUtil.afterCommit(LemonUtil::logOut);
 		
 		log.debug("Changed email of user: " + user);		

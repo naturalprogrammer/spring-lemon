@@ -23,6 +23,15 @@ import com.naturalprogrammer.spring.lemon.validation.Captcha;
 import com.naturalprogrammer.spring.lemon.validation.Password;
 import com.naturalprogrammer.spring.lemon.validation.UniqueEmail;
 
+
+/**
+ * Base class for User entity
+ * 
+ * @author Sanjay Patel
+ *
+ * @param <U>	The User class
+ * @param <ID>	The Primary key type of User class 
+ */
 @MappedSuperclass
 public abstract class AbstractUser
 	<U extends AbstractUser<U,ID>, ID extends Serializable>
@@ -41,8 +50,10 @@ implements UserDetails {
 	public static final int PASSWORD_MAX = 30;
 	public static final int PASSWORD_MIN = 6;
 	
-	public static final String ONLY_EMAIL_REGEX = null;
-	
+	/**
+	 * Role constants. To allow extensibility, this couldn't
+	 * be made an enum
+	 */
 	public static interface Role {
 
 		static final String UNVERIFIED = "UNVERIFIED";
@@ -50,37 +61,48 @@ implements UserDetails {
 		static final String ADMIN = "ADMIN";
 	}
 	
+	// validation groups
 	public interface SignUpValidation {}
 	public interface UpdateValidation {}
 	public interface ChangeEmailValidation {}
 	
+	// email
 	@UniqueEmail(groups = {SignUpValidation.class})
 	@Column(nullable = false, unique=true, length = EMAIL_MAX)
 	protected String email;
 	
+	// password
 	@Password(groups = {SignUpValidation.class, ChangeEmailValidation.class})
 	@Column(nullable = false) // no length because it will be encrypted
 	protected String password;
 	
+	// roles collection
 	@ElementCollection(fetch = FetchType.EAGER)
 	private Set<String> roles = new HashSet<String>();
 	
+	// verification code
 	@Column(length = UUID_LENGTH, unique=true)
 	protected String verificationCode;
 	
+	// forgot password code
 	@Column(length = UUID_LENGTH, unique=true)
 	protected String forgotPasswordCode;
 	
+	// in the email-change process, temporarily stores the new email
 	@UniqueEmail(groups = {ChangeEmailValidation.class})
 	@Column(length = EMAIL_MAX)
 	protected String newEmail;
 
+	// change email code
 	@Column(length = UUID_LENGTH, unique=true)
 	protected String changeEmailCode;
 
+	// holds reCAPTCHA response while signing up
 	@Transient
 	@Captcha(groups = {SignUpValidation.class})
 	private String captchaResponse;
+	
+	// redundant transient fields
 	
 	@Transient
 	protected boolean unverified = false;
@@ -102,6 +124,8 @@ implements UserDetails {
 	
 	@Transient
 	protected boolean rolesEditable = false;	
+	
+	// getters and setters
 	
 	public String getVerificationCode() {
 		return verificationCode;
@@ -168,6 +192,19 @@ implements UserDetails {
 		this.password = password;
 	}
 
+	// override this method
+	// if email isn't your username
+	@Override
+	public String getUsername() {
+		return email;
+	}
+	
+	// override this method
+	// if email isn't your username
+	public void setUsername(String username) {
+		email = username;
+	}	
+	
 	public boolean isUnverified() {
 		return unverified;
 	}
@@ -204,36 +241,9 @@ implements UserDetails {
 		return rolesEditable;
 	}
 
-//	public void setRolesEditable(boolean rolesEditable) {
-//		this.rolesEditable = rolesEditable;
-//	}
-	
 	public final boolean hasRole(String role) {
 		return roles.contains(role);
 	}
-
-//	public UserDto<ID> getUserDto() {
-//		
-//		UserDto<ID> userDto = new UserDto<ID>();
-//		userDto.setId(getId());
-//		userDto.setName(name);
-//		userDto.setRoles(roles);
-//		
-//		return userDto;
-//	}
-
-//	public static <U extends AbstractUser<U,ID>, ID extends Serializable> AbstractUser<U, ID> of(SignupForm signupForm) {
-//		 
-//		final AbstractUser<U,ID> baseUser = LemonUtil.getBean(AbstractUser.class);
-//			
-//		baseUser.setEmail(signupForm.getEmail());
-//		baseUser.setName(signupForm.getName());
-//		baseUser.setPassword(signupForm.getPassword());
-//		baseUser.getRoles().add(Role.UNVERIFIED);
-//		
-//		return baseUser;
-//			
-//	}
 	
 	public boolean isGoodUser() {
 		return goodUser;
@@ -242,15 +252,26 @@ implements UserDetails {
 	public boolean isGoodAdmin() {
 		return goodAdmin;
 	}
+
 	
-//	public boolean decorated() {
-//		return unverified || blocked || goodUser;
-//	}
-//	
+	/**
+	 * Sets the transient fields of this user
+	 * 
+	 * @return	this user
+	 */
 	public U decorate() {
+		// delegates
 		return decorate(LemonUtil.getUser());
 	}
 	
+	
+	/**
+	 * Sets the transient fields of this user,
+	 * given the current-user
+	 * 
+	 * @param currentUser	the current-user
+	 * @return	this user
+	 */
 	public U decorate(U currentUser) {
 				
 		unverified = hasRole(Role.UNVERIFIED);
@@ -272,6 +293,10 @@ implements UserDetails {
 		return (U) this;
 	}
 	
+	
+	/**
+	 * Hides the confidential fields before sending to client
+	 */
 	public void hideConfidentialFields() {
 		
 		setCreatedDate(null);
@@ -286,12 +311,19 @@ implements UserDetails {
 		log.debug("Hid confidential fields for user: " + this);
 	}
 
+	
+	/**
+	 * Called by spring security permission evaluator
+	 * to check whether the current-user has the given permission
+	 * on this entity. 
+	 */
 	@Override
 	public boolean hasPermission(U currentUser, String permission) {
 		
 		log.debug("Computing " + permission	+ " permission for : " + this
 			+ "\n  Logged in user: " + currentUser);
 
+		// decorate this entity
 		decorate(currentUser);
 		
 		if (permission.equals("edit"))
@@ -300,15 +332,30 @@ implements UserDetails {
 		return false;
 	}
 
+	
+	/**
+	 * Sets the Id of the user. setId is protected,
+	 * hence this had to be coded
+	 * 
+	 * @param id
+	 */
 	public void setIdForClient(ID id) {
 		setId(id);
 	}
 	
+	
+	/**
+	 * A convenient toString method
+	 */
 	@Override
 	public String toString() {
 		return "AbstractUser [username=" + getUsername() + ", roles=" + roles + "]";
 	}
 	
+	
+	/**
+	 * Returns the authorities, for Spring Security
+	 */
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		
@@ -332,15 +379,12 @@ implements UserDetails {
 		
 	}
 
-	@Override
-	public String getUsername() {
-		return email;
-	}
 	
-	public void setUsername(String username) {
-		email = username;
-	}
-
+	/**
+	 * The following are needed
+	 * because we have implemented UserDetails. 
+	 */
+	
 	@Override
 	public boolean isAccountNonExpired() {
 		return true;

@@ -88,7 +88,8 @@ public class LemonUtil {
 	public static <U extends AbstractUser<U,ID>, ID extends Serializable>
 	void logIn(U user) {
 		
-	    Authentication authentication =
+	    user.decorate(user); // decorate self
+		Authentication authentication =
 	    	new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
 	    SecurityContextHolder.getContext().setAuthentication(authentication);
 	}

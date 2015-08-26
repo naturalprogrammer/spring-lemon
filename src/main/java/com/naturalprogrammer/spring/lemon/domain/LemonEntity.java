@@ -8,6 +8,14 @@ import org.springframework.data.jpa.domain.AbstractAuditable;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+/**
+ * Base class for all entities.
+ * 
+ * @author Sanjay Patel
+ *
+ * @param <U>
+ * @param <ID>
+ */
 @MappedSuperclass
 @JsonIgnoreProperties({ "createdBy", "lastModifiedBy" })
 public class LemonEntity<U extends AbstractUser<U,ID>, ID extends Serializable> extends AbstractAuditable<U, ID> {
