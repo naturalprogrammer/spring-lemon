@@ -127,10 +127,12 @@ public abstract class LemonService
 	 */
     protected U createAdminUser() {
 		
+    	// fetch data about the user to be created
     	Admin initialAdmin = properties.getAdmin();
     	
     	log.info("Creating the first admin user: " + initialAdmin.getUsername());
 
+    	// create the user
     	U user = newUser();
 		user.setUsername(initialAdmin.getUsername());
 		user.setPassword(passwordEncoder.encode(
@@ -138,25 +140,35 @@ public abstract class LemonService
 		user.getRoles().add(Role.ADMIN);
 		
 		return user;
-
 	}
 
     
-	abstract protected U newUser();
+	/**
+	 * Creates a new user object. Must be overridden in the
+	 * subclass, like this:
+	 * 
+	 * <pre>
+	 * protected User newUser() {
+	 *    return new User();
+	 * }
+	 * </pre>
+	 */
+    abstract protected U newUser();
 
 
 	/**
 	 * Returns the context data to be sent to the client,
-	 * i.e. <em>reCaptchaSiteKey</em> and all the properties
-	 * prefixed with <em>lemon.shared</em>.
+	 * i.e. <code>reCaptchaSiteKey</code> and all the properties
+	 * prefixed with <code>lemon.shared</code>.
 	 * 
 	 * To send custom properties, put those in your application
 	 * properties in the format <em>lemon.shared.fooBar</em>.
 	 * 
-	 * You can also override this method.
+	 * Override this method if needed.
 	 */
 	public Map<String, Object> getContext() {
 		
+		// make the context
 		Map<String, Object> context = new HashMap<String, Object>(2);
 		context.put("reCaptchaSiteKey", properties.getRecaptcha().getSitekey());
 		context.put("shared", properties.getShared());
@@ -166,6 +178,12 @@ public abstract class LemonService
 		return context;		
 	}
 	
+	
+	/**
+	 * Signs up a user.
+	 * 
+	 * @param user	data fed by the user
+	 */
 	@PreAuthorize("isAnonymous()")
 	@Validated(SignUpValidation.class)
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
@@ -173,45 +191,68 @@ public abstract class LemonService
 		
 		log.debug("Signing up user: " + user);
 
-		initUser(user);
+		initUser(user); // sets right all fields of the user
 		userRepository.save(user);
 		
+		// if successfully committed
 		LemonUtil.afterCommit(() -> {
 		
-			LemonUtil.logIn(user);
-			sendVerificationMail(user);
+			LemonUtil.logIn(user); // log the user in
+			sendVerificationMail(user); // send verification mail
 			log.debug("Signed up user: " + user);
 		});
 	}
 	
-	protected U initUser(U user) {
+	
+	/**
+	 * Initializes the user based on the input data
+	 * 
+	 * @param user
+	 */
+	protected void initUser(U user) {
 		
 		log.debug("Initializing user: " + user);
 
-		user.setPassword(passwordEncoder.encode(user.getPassword()));
-		makeUnverified(user);
-		
-		return user;
+		user.setPassword(passwordEncoder.encode(user.getPassword())); // encode the password
+		makeUnverified(user); // make the user unverified
 	}
+
 	
+	/**
+	 * Makes a user unverified
+	 * @param user
+	 */
 	protected void makeUnverified(U user) {
 		user.getRoles().add(Role.UNVERIFIED);
 		user.setVerificationCode(UUID.randomUUID().toString());
 	}
 	
+	
+	/***
+	 * Makes a user verified
+	 * @param user
+	 */
 	protected void makeVerified(U user) {
 		user.getRoles().remove(Role.UNVERIFIED);
 		user.setVerificationCode(null);
 	}
 	
+	
+	/**
+	 * Sends verification mail to a unverified user.
+	 * 
+	 * @param user
+	 */
 	protected void sendVerificationMail(final U user) {
 		try {
 			
 			log.debug("Sending verification mail to: " + user);
 
+			// make the link
 			String verifyLink = properties.getApplicationUrl()
 				+ "/users/" + user.getVerificationCode() + "/verify";
 			
+			// send the mail
 			mailSender.send(user.getEmail(),
 				LemonUtil.getMessage("com.naturalprogrammer.spring.verifySubject"),
 				LemonUtil.getMessage(
@@ -220,35 +261,49 @@ public abstract class LemonService
 			log.debug("Verification mail to " + user.getEmail() + " queued.");
 			
 		} catch (MessagingException e) {
+			// In case of exception, just log the error and keep silent
 			log.error(ExceptionUtils.getStackTrace(e));
 		}
 	}	
+
 	
 	/**
-	 * Resends verification mail to user
-	 * See here for details
+	 * Resends verification mail to the user.
+	 * 
 	 * @param user
 	 */
 	@PreAuthorize("hasPermission(#user, 'edit')")
 	public void resendVerificationMail(U user) {
 
+		// The user must exist
 		LemonUtil.check("id", user != null,
 				"com.naturalprogrammer.spring.userNotFound").go();
 		
+		// must be unverified
 		LemonUtil.check(user.getRoles().contains(Role.UNVERIFIED),
 				"com.naturalprogrammer.spring.alreadyVerified").go();	
 
+		// send the verification mail
 		sendVerificationMail(user);
 	}
 
+	
+	/**
+	 * Fetchs a user by email
+	 * 
+	 * @param email
+	 * @return the decorated user object
+	 */
 	public U fetchUserByEmail(@Valid @Email @NotBlank String email) {
 		
 		log.debug("Fetching user by email: " + email);
 
+		// fetch the user
 		U user = userRepository.findByEmail(email)
 			.orElseThrow(() -> MultiErrorException.of("email",
 				"com.naturalprogrammer.spring.userNotFound"));
 
+		// decorate the user, and hide confidential fields
 		user.decorate().hideConfidentialFields();
 		
 		log.debug("Returning user: " + user);		
@@ -257,18 +312,32 @@ public abstract class LemonService
 	}
 
 	
-	public U fetchUser(U user) {
+	/**
+	 * Returns a non-null, decorated user for the client.
+	 * 
+	 * @param user
+	 * @return
+	 */
+	public U processUser(U user) {
 		
 		log.debug("Fetching user: " + user);
 
+		// ensure that the user exists
 		LemonUtil.check("id", user != null,
 			"com.naturalprogrammer.spring.userNotFound").go();
 		
+		// decorate the user, and hide confidential fields
 		user.decorate().hideConfidentialFields();
 		
 		return user;
 	}
 	
+	
+	/**
+	 * Verifies the email id of current-user
+	 *  
+	 * @param verificationCode
+	 */
 	@PreAuthorize("isAuthenticated()")
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
 	public void verifyUser(@Valid @NotBlank String verificationCode) {

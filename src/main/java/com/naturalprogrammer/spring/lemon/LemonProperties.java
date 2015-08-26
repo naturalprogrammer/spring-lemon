@@ -219,19 +219,19 @@ public class LemonProperties {
 
 	
 	/**
-	 * Properties regarding the initial Admin to be created
+	 * Properties regarding the initial Admin user to be created
 	 * 
 	 * @author Sanjay Patel
 	 */
 	public static class Admin {
 		
 		/**
-		 * Login ID of initial Admin user to be created 
+		 * Login ID of the initial Admin user to be created 
 		 */
 		private String username;
 		
 		/**
-		 * Password of initial Admin user to be created 
+		 * Password of the initial Admin user to be created 
 		 */		
 		private String password;
 

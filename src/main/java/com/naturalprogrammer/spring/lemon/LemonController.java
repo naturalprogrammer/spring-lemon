@@ -167,7 +167,7 @@ public abstract class LemonController
 	public U fetchUserById(@PathVariable("id") U user) {
 		
 		log.debug("Fetching user: " + user);				
-		return lemonService.fetchUser(user);
+		return lemonService.processUser(user);
 	}
 
 	
