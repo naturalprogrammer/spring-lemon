@@ -3,18 +3,11 @@ package com.naturalprogrammer.spring.lemon;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
-
-
-
 import javax.mail.MessagingException;
 import javax.validation.Valid;
-
-
-
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.logging.Log;
@@ -25,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -33,9 +25,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
-
-
-
+import com.naturalprogrammer.spring.lemon.LemonProperties.Admin;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser.Role;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser.SignUpValidation;
@@ -46,6 +36,14 @@ import com.naturalprogrammer.spring.lemon.mail.MailSender;
 import com.naturalprogrammer.spring.lemon.util.LemonUtil;
 import com.naturalprogrammer.spring.lemon.validation.Password;
 
+/**
+ * The Lemon Service class
+ * 
+ * @author Sanjay Patel
+ *
+ * @param <U>	The User class
+ * @param <ID>	The Primary key type of User class 
+ */
 @Validated
 @Transactional(propagation=Propagation.SUPPORTS, readOnly=true)
 public abstract class LemonService
@@ -53,23 +51,41 @@ public abstract class LemonService
 
     private static final Log log = LogFactory.getLog(LemonService.class);
     
-	@Autowired
 	private LemonProperties properties;
-
-	@Autowired
 	private PasswordEncoder passwordEncoder;
-
-	@Autowired
     private MailSender mailSender;
-
-    @Autowired
 	private AbstractUserRepository<U, ID> userRepository;
-    
-    @Autowired
 	private UserDetailsService userDetailsService;   
     
-    /**
-     * This method needs to be public; otherwise Spring screams
+	@Autowired
+    public void setProperties(LemonProperties properties) {
+		this.properties = properties;
+	}
+
+	@Autowired
+	public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
+		this.passwordEncoder = passwordEncoder;
+	}
+
+	@Autowired
+	public void setMailSender(MailSender mailSender) {
+		this.mailSender = mailSender;
+	}
+
+	@Autowired
+	public void setUserRepository(AbstractUserRepository<U, ID> userRepository) {
+		this.userRepository = userRepository;
+	}
+
+	@Autowired
+	public void setUserDetailsService(UserDetailsService userDetailsService) {
+		this.userDetailsService = userDetailsService;
+	}
+
+	
+	/**
+     * This method is called after the context is built.
+     * Needs to be public - otherwise Spring screams.
      * 
      * @param event
      */
@@ -77,40 +93,46 @@ public abstract class LemonService
     public void afterContextRefreshed(ContextRefreshedEvent event) {
     	
     	log.info("Starting up Spring Lemon ...");
-    	onStartup();
+    	onStartup(); // delegate to onStartup()
     	log.info("Spring Lemon started");
     	
     }
+
     
 	/**
-	 * Creates a new ADMIN user, if not found.
-	 * Override if needed.
+	 * Creates a the initial Admin user, if not found.
+	 * Override this method if needed.
 	 */
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
     public void onStartup() {
     	
 		try {
+			
+			// Check if the user already exists
 			userDetailsService
-				.loadUserByUsername(properties.getAdmin().getLogin());
+				.loadUserByUsername(properties.getAdmin().getUsername());
+			
 		} catch (UsernameNotFoundException e) {
+			
+			// Doesn't exist. So, create it.
 	    	U user = createAdminUser();
 	    	userRepository.save(user);			
 		}
 	}
 
-	
+
 	/**
-	 * Override this if you have more fields to set,
-	 * or if the email field if not your loginId
+	 * Creates the initial Admin user.
+	 * Override this if needed.
 	 */
     protected U createAdminUser() {
 		
-    	String adminEmail = properties.getAdmin().getLogin();
+    	Admin initialAdmin = properties.getAdmin();
     	
-    	log.info("Creating the first admin user: " + adminEmail);
+    	log.info("Creating the first admin user: " + initialAdmin.getUsername());
 
     	U user = newUser();
-		user.setEmail(adminEmail);
+		user.setUsername(initialAdmin.getUsername());
 		user.setPassword(passwordEncoder.encode(
 			properties.getAdmin().getPassword()));
 		user.getRoles().add(Role.ADMIN);
@@ -119,11 +141,10 @@ public abstract class LemonService
 
 	}
 
+    
 	abstract protected U newUser();
 
-	@Autowired
-	private LemonProperties lemonProperties;
-	
+
 	/**
 	 * Returns the context data to be sent to the client,
 	 * i.e. <em>reCaptchaSiteKey</em> and all the properties
@@ -220,7 +241,7 @@ public abstract class LemonService
 		sendVerificationMail(user);
 	}
 
-	public U fetchUser(@Valid @Email @NotBlank String email) {
+	public U fetchUserByEmail(@Valid @Email @NotBlank String email) {
 		
 		log.debug("Fetching user by email: " + email);
 
@@ -446,7 +467,7 @@ public abstract class LemonService
 		
 		U user = newUser();
 		user.setIdForClient(currentUser.getId());
-		user.setEmail(currentUser.getEmail());
+		user.setUsername(currentUser.getUsername());
 		user.setRoles(currentUser.getRoles());
 		user.decorate(currentUser);
 		

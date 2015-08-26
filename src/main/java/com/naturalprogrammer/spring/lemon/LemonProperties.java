@@ -18,12 +18,13 @@ import com.naturalprogrammer.spring.lemon.security.CsrfCookieFilter;
 public class LemonProperties {
 	
     /**
-	 * The URL users visit to use this deployment
+	 * Client web application's URL.
+	 * Used in the verification link mailed to the users, etc.
 	 */
     private String applicationUrl = "http://localhost:9000";
     
 	/**
-     * Secret string used for encrypting remember-me cookie
+     * Secret string used for encrypting the remember-me cookie
      */
     private String rememberMeKey;
     
@@ -38,7 +39,7 @@ public class LemonProperties {
 	private Cors cors = new Cors();
 
     /**
-	 * Properties related to initial Admin to be created
+	 * Properties related to the initial Admin user to be created
 	 */
 	private Admin admin = new Admin();
 	
@@ -112,13 +113,6 @@ public class LemonProperties {
      */
 	public static class Recaptcha {
     	
-//        /**
-//         * Set this false if you don't want to
-//         * enable ReCaptcha. E.g. while
-//         * automated testing.
-//         */
-//		private boolean enabled = true;
-//		
 		/**
          * Google ReCaptcha Site Key
          */
@@ -129,14 +123,6 @@ public class LemonProperties {
          */
     	private String secretkey;
 
-//		public boolean isEnabled() {
-//			return enabled;
-//		}
-//
-//		public void setEnabled(boolean enabled) {
-//			this.enabled = enabled;
-//		}
-//
 		public String getSitekey() {
 			return sitekey;
 		}
@@ -152,7 +138,6 @@ public class LemonProperties {
 		public void setSecretkey(String secretkey) {
 			this.secretkey = secretkey;
 		}
-    	
     }
 	
 	
@@ -162,30 +147,31 @@ public class LemonProperties {
 	public static class Cors {
 		
 		/**
-		 * Comma separated whitelisted URLs for CORS
+		 * Comma separated whitelisted URLs for CORS.
+		 * Should contain the applicationURL at the minimum.
+		 * Not defining this property would disable CORS configuration.
 		 */
 		private String[] allowedOrigins;
 		
 		/**
-		 * Comma separated methods to be allowed
+		 * Methods to be allowed, e.g. GET,POST,...
 		 */
 		private String[] allowedMethods = {"GET", "HEAD", "POST", "PUT", "DELETE", "TRACE", "OPTIONS", "PATCH"};
 		
 		/**
-		 * Comma separated headers to be allowed
+		 * Headers to be allowed, e.g. origin,content-type,...
 		 */
 		private String[] allowedHeaders = {"x-requested-with", "origin", "content-type", "accept", CsrfCookieFilter.XSRF_TOKEN_HEADER_NAME};
 		
 		/**
-		 * Comma separated response headers to be exposed to the client.
-		 * 
-		 * See http://stackoverflow.com/questions/25673089/why-is-access-control-expose-headers-needed#answer-25673446
-		 * for why this could be needed.
+		 * Response headers to be exposed to the client, e.g. origin,content-type,...<br/>
+		 * See <a href="http://stackoverflow.com/questions/25673089/why-is-access-control-expose-headers-needed#answer-25673446">
+		 * here</a> to know why this could be needed.
 		 */		
 		private String[] exposedHeaders = {"x-requested-with", "origin", "content-type", "accept", CsrfCookieFilter.XSRF_TOKEN_HEADER_NAME};
 		
 		/**
-		 * CORS maxAge long property
+		 * CORS <code>maxAge</code> long property
 		 */
 		private long maxAge = 3600L;
 
@@ -233,29 +219,28 @@ public class LemonProperties {
 
 	
 	/**
-	 * Properties regarding the first Admin to be created
+	 * Properties regarding the initial Admin to be created
 	 * 
 	 * @author Sanjay Patel
-	 *
 	 */
 	public static class Admin {
 		
 		/**
-		 * Login ID of first admin user to be created 
+		 * Login ID of initial Admin user to be created 
 		 */
-		private String login;
+		private String username;
 		
 		/**
-		 * Password of first admin user to be created 
+		 * Password of initial Admin user to be created 
 		 */		
 		private String password;
 
-		public String getLogin() {
-			return login;
+		public String getUsername() {
+			return username;
 		}
 
-		public void setLogin(String login) {
-			this.login = login;
+		public void setUsername(String username) {
+			this.username = username;
 		}
 
 		public String getPassword() {
@@ -264,8 +249,7 @@ public class LemonProperties {
 
 		public void setPassword(String password) {
 			this.password = password;
-		}
-		
+		}		
 	}
 	
 }

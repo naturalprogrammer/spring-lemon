@@ -1,9 +1,7 @@
 package com.naturalprogrammer.spring.lemon.domain;
 
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -38,7 +36,6 @@ implements UserDetails {
 	public static final int EMAIL_MIN = 4;
 	public static final int EMAIL_MAX = 250;
 	
-	//public static final String EMAIL_PATTERN = "[A-Za-z0-9._%-+]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}";
 	public static final int UUID_LENGTH = 36;
 	
 	public static final int PASSWORD_MAX = 30;
@@ -53,10 +50,6 @@ implements UserDetails {
 		static final String ADMIN = "ADMIN";
 	}
 	
-//	public static final Set<String> BAD_ROLES = new HashSet<String>(Arrays.asList(
-//		new String[] {Role.UNVERIFIED, Role.BLOCKED}
-//	));
-//	
 	public interface SignUpValidation {}
 	public interface UpdateValidation {}
 	public interface ChangeEmailValidation {}
@@ -313,7 +306,7 @@ implements UserDetails {
 	
 	@Override
 	public String toString() {
-		return "AbstractUser [email=" + email + ", roles=" + roles + "]";
+		return "AbstractUser [username=" + getUsername() + ", roles=" + roles + "]";
 	}
 	
 	@Override
@@ -342,6 +335,10 @@ implements UserDetails {
 	@Override
 	public String getUsername() {
 		return email;
+	}
+	
+	public void setUsername(String username) {
+		email = username;
 	}
 
 	@Override

@@ -36,17 +36,23 @@ public abstract class LemonController
 		this.lemonService = lemonService;
 	}
 
+
 	/**
-	 * A simple function for pinging this server
+	 * A simple function for pinging this server. See
+	 * <a href="http://www.naturalprogrammer.com">here</a>
+	 * for more details.
 	 */
 	@RequestMapping(value="/ping", method=RequestMethod.GET)
 	public void ping() {
 		log.debug("Received a ping");
 	}
 	
+
 	/**
 	 * Returns context properties needed at the client side, and
-	 * the current-user data
+	 * the current-user data. See
+	 * <a href="http://www.naturalprogrammer.com">here</a>
+	 * for more details. 
 	 */
 	@RequestMapping(value="/context", method=RequestMethod.GET)
 	public Map<String, Object> getContext() {
@@ -60,10 +66,13 @@ public abstract class LemonController
 		return context;
 	}
 	
+
 	/**
-	 * Signs up a user, and logs him in. See here for details.
-	 *  
-	 * @param user
+	 * Signs up a user, and logs him in. See
+	 * <a href="http://www.naturalprogrammer.com">here</a>
+	 * for more details. 
+     *
+	 * @param user	data fed by the user
 	 * @return data about the logged in user
 	 */
 	@RequestMapping(value="/signup", method=RequestMethod.POST)
@@ -78,8 +87,9 @@ public abstract class LemonController
 	
 	
 	/**
-	 * Resends verification mail. See here for details.
-	 * 
+	 * Resends verification mail. See
+	 * <a href="http://www.naturalprogrammer.com">here</a>
+	 * for more details. 
 	 */
 	@RequestMapping(value="/users/{id}/resend-verification-mail",
 			        method=RequestMethod.GET)
@@ -92,7 +102,9 @@ public abstract class LemonController
 
 
 	/**
-	 * Verify
+	 * Verifies current-user. See
+	 * <a href="http://www.naturalprogrammer.com">here</a>
+	 * for more details. 
 	 */
 	@RequestMapping(value="/users/{verificationCode}/verify",
 					method=RequestMethod.PATCH)
@@ -106,7 +118,9 @@ public abstract class LemonController
 	
 
 	/**
-	 * Forgot Password
+	 * The forgot Password feature. See
+	 * <a href="http://www.naturalprogrammer.com">here</a>
+	 * for more details. 
 	 */
 	@RequestMapping(value="/forgot-password", method=RequestMethod.PATCH)
 	public void forgotPassword(@RequestParam String email) {
@@ -117,7 +131,9 @@ public abstract class LemonController
 	
 
 	/**
-	 * Reset Password
+	 * Resets password after it is forgotten. See
+	 * <a href="http://www.naturalprogrammer.com">here</a>
+	 * for more details.
 	 */
 	@RequestMapping(value="/users/{forgotPasswordCode}/reset-password",
 					method=RequestMethod.PATCH)
@@ -130,18 +146,25 @@ public abstract class LemonController
 
 
 	/**
-	 * Fetch a user by email
+	 * Fetches a user by email. See
+	 * <a href="http://www.naturalprogrammer.com">here</a>
+	 * for more details.
 	 */
 	@RequestMapping(value="/users/fetch-by-email", method=RequestMethod.GET)
-	public U fetchByEmail(@RequestParam String email) {
+	public U fetchUserByEmail(@RequestParam String email) {
 		
 		log.debug("Fetching user by email: " + email);						
-		return lemonService.fetchUser(email);
+		return lemonService.fetchUserByEmail(email);
 	}
+
 	
-	
+	/**
+	 * Fetches a user by Id. See
+	 * <a href="http://www.naturalprogrammer.com">here</a>
+	 * for more details.
+	 */	
 	@RequestMapping(value="/users/{id}/fetch-by-id", method=RequestMethod.GET)
-	public U fetchById(@PathVariable("id") U user) {
+	public U fetchUserById(@PathVariable("id") U user) {
 		
 		log.debug("Fetching user: " + user);				
 		return lemonService.fetchUser(user);
@@ -149,7 +172,9 @@ public abstract class LemonController
 
 	
 	/**
-	 * Update
+	 * Updates a user. See
+	 * <a href="http://www.naturalprogrammer.com">here</a>
+	 * for more details.
 	 */
 	@RequestMapping(value="/users/{id}/update", method=RequestMethod.PATCH)
 	public U updateUser(@PathVariable("id") U user, @RequestBody U updatedUser) {
@@ -161,7 +186,9 @@ public abstract class LemonController
 	
 	
 	/**
-	 * Change Password
+	 * Changes password. See
+	 * <a href="http://www.naturalprogrammer.com">here</a>
+	 * for more details.
 	 */
 	@RequestMapping(value="/users/{id}/change-password",
 					method=RequestMethod.PATCH)
@@ -174,7 +201,9 @@ public abstract class LemonController
 
 
 	/**
-	 * Request for changing email
+	 * Requests for changing email. See
+	 * <a href="http://www.naturalprogrammer.com">here</a>
+	 * for more details.
 	 */
 	@RequestMapping(value="/users/{id}/request-email-change",
 					method=RequestMethod.PATCH)
@@ -186,7 +215,9 @@ public abstract class LemonController
 	}
 	
 	/**
-	 * Change email
+	 * Changes the email. See
+	 * <a href="http://www.naturalprogrammer.com">here</a>
+	 * for more details.
 	 */
 	@RequestMapping(value="/users/{changeEmailCode}/change-email",
 					method=RequestMethod.PATCH)
