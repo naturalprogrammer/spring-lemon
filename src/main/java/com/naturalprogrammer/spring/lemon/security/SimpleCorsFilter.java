@@ -22,24 +22,28 @@ import com.naturalprogrammer.spring.lemon.LemonProperties;
 import com.naturalprogrammer.spring.lemon.LemonProperties.Cors;
 
 /**
- * To disable this, e.g. while testing or in pure REST APIs,
+ * A filter to facilitate CORS handling.
+ * To disable this (e.g. while testing or in non-browser apps),
  * in your application.properties, don't provide
- * the lemon.cors.allowedOrigins property
- * 
- * https://spring.io/guides/gs/rest-service-cors/
+ * the <code>lemon.cors.allowedOrigins</code> property.
  * 
  * @author Sanjay Patel
+ * @see https://spring.io/guides/gs/rest-service-cors/
  */
 @Component
-@Order(Ordered.HIGHEST_PRECEDENCE)
+@Order(Ordered.HIGHEST_PRECEDENCE) // needs to come first
 @ConditionalOnProperty(name="lemon.cors.allowedOrigins")
 public class SimpleCorsFilter extends OncePerRequestFilter {
 
 	private final Log log = LogFactory.getLog(getClass());
 
+	protected LemonProperties properties;
+		
 	@Autowired
-	LemonProperties properties;
-	
+	public void setProperties(LemonProperties properties) {
+		this.properties = properties;
+	}
+
 	@Override
 	protected void doFilterInternal(HttpServletRequest request,
 			HttpServletResponse response, FilterChain filterChain)
@@ -49,17 +53,14 @@ public class SimpleCorsFilter extends OncePerRequestFilter {
 		
 		Cors cors = properties.getCors(); 
 				
+		// origin as provided by the browser
 		String origin = request.getHeader("Origin");
 		
-		String allowedOrigin = properties.getApplicationUrl();
-		if (ArrayUtils.contains(cors.getAllowedOrigins(), origin))
-			origin = allowedOrigin;
-		
-		// "*" is neither recommended, nor does it work 
+		// "*" is neither recommended, nor does it work
 		// when $httpProvider.defaults.withCredentials = true;
 		response.setHeader("Access-Control-Allow-Origin",
-			ArrayUtils.contains(cors.getAllowedOrigins(), origin) ?
-			origin : properties.getApplicationUrl()); 
+			ArrayUtils.contains(cors.getAllowedOrigins(), origin) ? // if origin is whitelisted,
+			origin : properties.getApplicationUrl()); // use it, or else, return the application url
 		
 		// allowed methods
 		response.setHeader("Access-Control-Allow-Methods",
@@ -83,7 +84,7 @@ public class SimpleCorsFilter extends OncePerRequestFilter {
 		// Don't let OPTIONs pass.
 		// Otherwise certain things like Spring Security
 		// don't behave properly sometimes.
-		// E.g. the SwitchUserFilter doesn't work. 
+		// E.g., the SwitchUserFilter doesn't work. 
 		if (!request.getMethod().equals("OPTIONS"))
 			filterChain.doFilter(request, response);
 	}

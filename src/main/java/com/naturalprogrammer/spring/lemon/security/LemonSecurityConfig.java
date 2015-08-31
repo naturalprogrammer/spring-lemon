@@ -26,33 +26,63 @@ import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 
 import com.naturalprogrammer.spring.lemon.LemonProperties;
 
+
+/**
+ * Security configuration class. Extend it in the
+ * application, and make a configuration class. Override
+ * protected methods, if you need any customization.
+ * 
+ * @author Sanjay Patel
+ */
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 	
+	// Computed authorities
 	public static final String GOOD_ADMIN = "GOOD_ADMIN";
 	public static final String GOOD_USER = "GOOD_USER";
 	
+	// remember-me related
 	public static final String REMEMBER_ME_COOKIE = "rememberMe";
 	public static final String REMEMBER_ME_PARAMETER = "rememberMe";
 	
-	@Autowired
-	private LemonProperties properties;
+	protected LemonProperties properties;
+	protected UserDetailsService userDetailsService;
+	protected AuthenticationSuccessHandler authenticationSuccessHandler;
+	protected LogoutSuccessHandler logoutSuccessHandler;
 	
 	@Autowired
-	private UserDetailsService userDetailsService;
-	
+	public void setProperties(LemonProperties properties) {
+		this.properties = properties;
+	}
+
 	@Autowired
-	private AuthenticationSuccessHandler authenticationSuccessHandler;
-	
+	public void setUserDetailsService(UserDetailsService userDetailsService) {
+		this.userDetailsService = userDetailsService;
+	}
+
 	@Autowired
-	private LogoutSuccessHandler logoutSuccessHandler;
-	
+	public void setAuthenticationSuccessHandler(AuthenticationSuccessHandler authenticationSuccessHandler) {
+		this.authenticationSuccessHandler = authenticationSuccessHandler;
+	}
+
+	@Autowired
+	public void setLogoutSuccessHandler(LogoutSuccessHandler logoutSuccessHandler) {
+		this.logoutSuccessHandler = logoutSuccessHandler;
+	}
+
+	/**
+	 * Authentication failure handler, to override the default behavior
+	 * of spring security -  redirecting to the login screen 
+	 */
 	@Bean
     public AuthenticationFailureHandler authenticationFailureHandler() {
     	return new SimpleUrlAuthenticationFailureHandler();
     }	
 	
+	/**
+	 * Password encoder
+	 */
 	@Bean
     public PasswordEncoder passwordEncoder() {
       return new BCryptPasswordEncoder();
@@ -68,6 +98,9 @@ public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
         builder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
     }
 	
+	/**
+	 * Security configuration, calling protected methods
+	 */
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		
@@ -103,12 +136,6 @@ public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 			 * Setting the failureUrl will redirect the user to
 			 * that url if login fails. Instead, we need to send
 			 * 401. So, let's set failureHandler instead.
-			 * 
-			 * Debug org.apache.catalina.core.StandardHostValve's
-			 * private void status(Request request, Response response)
-			 * if you want to understand why we get in the log. It's not a problem, as I understand.
-			 * 2015-05-06 13:56:26.908 DEBUG 10184 --- [nio-8080-exec-1] o.s.b.a.e.mvc.EndpointHandlerMapping     : Did not find handler method for [/error]
-			 * 2015-05-06 13:56:45.007 DEBUG 10184 --- [nio-8080-exec-3] o.s.b.a.e.mvc.EndpointHandlerMapping     : Looking up handler method for path /error2
 			 *******************************************/
         	.failureHandler(authenticationFailureHandler());
 	}
@@ -207,8 +234,6 @@ public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.authorizeRequests()
 			.antMatchers("/login/impersonate*").hasRole(GOOD_ADMIN)
 			.antMatchers("/logout/impersonate*").authenticated()
-			//.antMatchers("/only-for-admin*").hasRole("ADMIN")
-			//.antMatchers("/secure").authenticated()
 			.antMatchers("/**").permitAll();                  
 	}
 	
@@ -242,8 +267,10 @@ public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
         
     }
     
+
 	/**
-	 * Makes it compatible to AngularJS CSRF token header name.
+	 * A customized CsrfTokenRepository, for making it
+	 * compatible to AngularJS CSRF token header name.
 	 * Override this if you want to change the 
 	 * header name.
 	 *  
@@ -257,6 +284,12 @@ public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 		return repository;
 	}
 	
+	
+	/**
+	 * Returns switch-user filter
+	 * 
+	 * @return
+	 */
 	protected SwitchUserFilter switchUserFilter() {
 		SwitchUserFilter filter = new SwitchUserFilter();
 		filter.setUserDetailsService(userDetailsService);
@@ -265,6 +298,10 @@ public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 		return filter;
 	}
 	
+	
+	/**
+	 * Returns CSRF cookie filter
+	 */
 	protected Filter csrfCookieFilter() {
 		return new CsrfCookieFilter();
 	}
