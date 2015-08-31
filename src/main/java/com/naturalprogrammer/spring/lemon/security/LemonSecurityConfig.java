@@ -33,11 +33,11 @@ public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 	public static final String GOOD_ADMIN = "GOOD_ADMIN";
 	public static final String GOOD_USER = "GOOD_USER";
 	
-	@Autowired
-	private LemonProperties properties;
-	
 	public static final String REMEMBER_ME_COOKIE = "rememberMe";
 	public static final String REMEMBER_ME_PARAMETER = "rememberMe";
+	
+	@Autowired
+	private LemonProperties properties;
 	
 	@Autowired
 	private UserDetailsService userDetailsService;
@@ -71,65 +71,138 @@ public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		
-		///AbstractRememberMeServices rememberMe = rememberMeServices(); 
+		formLogin(http); // form-based authentication
+		logout(http); // logout related configuration
+		exceptionHandling(http); // exception handling
+		rememberMe(http); // remember-me
+		csrf(http); // csrf configuration
+		switchUser(http); // switch-user configuration
+		authorizeRequests(http); // authorize requests
+		otherConfigurations(http); // override this to add more configurations
+	}
+
+
+	/**
+	 * Configuring form-based authentication.
+	 * 
+	 * @param http
+	 * @throws Exception
+	 */
+	protected void formLogin(HttpSecurity http) throws Exception {
 		
 		http
-			.formLogin()
-//				.loginPage("/login")
-//				.permitAll()
-				
-				/******************************************
-				 * Setting a successUrl would redirect the user there. Instead,
-				 * let's send 200 and the userDto.
-				 *****************************************/
-				.successHandler(authenticationSuccessHandler)
-				
-				/*******************************************
-				 * Setting the failureUrl will redirect the user to
-				 * that url if login fails. Instead, we need to send
-				 * 401. So, let's set failureHandler instead.
-				 * 
-				 * Debug org.apache.catalina.core.StandardHostValve's
-				 * private void status(Request request, Response response)
-				 * if you want to understand why we get in the log. It's not a problem, as I understand.
-				 * 2015-05-06 13:56:26.908 DEBUG 10184 --- [nio-8080-exec-1] o.s.b.a.e.mvc.EndpointHandlerMapping     : Did not find handler method for [/error]
-				 * 2015-05-06 13:56:45.007 DEBUG 10184 --- [nio-8080-exec-3] o.s.b.a.e.mvc.EndpointHandlerMapping     : Looking up handler method for path /error2
-				 *******************************************/
-	        	.failureHandler(authenticationFailureHandler())
-	        	.and()
-			.logout()
-				
-				/************************************************
-				 * To prevent redirection to home page, we need to
-				 * have this custom logoutSuccessHandler
-				 ***********************************************/
-				.logoutSuccessHandler(logoutSuccessHandler)
-				.invalidateHttpSession(true)
-				.deleteCookies("JSESSIONID")
-				.and()
-				
-			.exceptionHandling()
+		.formLogin()
 			
-				/***********************************************
-				 * To prevent redirection to the login page
-				 * when someone tries to access a restricted page
-				 **********************************************/
-				.authenticationEntryPoint(new Http403ForbiddenEntryPoint())
-				.and()
+			/******************************************
+			 * Setting a successUrl would redirect the user there. Instead,
+			 * let's send 200 and the userDto.
+			 *****************************************/
+			.successHandler(authenticationSuccessHandler)
+			
+			/*******************************************
+			 * Setting the failureUrl will redirect the user to
+			 * that url if login fails. Instead, we need to send
+			 * 401. So, let's set failureHandler instead.
+			 * 
+			 * Debug org.apache.catalina.core.StandardHostValve's
+			 * private void status(Request request, Response response)
+			 * if you want to understand why we get in the log. It's not a problem, as I understand.
+			 * 2015-05-06 13:56:26.908 DEBUG 10184 --- [nio-8080-exec-1] o.s.b.a.e.mvc.EndpointHandlerMapping     : Did not find handler method for [/error]
+			 * 2015-05-06 13:56:45.007 DEBUG 10184 --- [nio-8080-exec-3] o.s.b.a.e.mvc.EndpointHandlerMapping     : Looking up handler method for path /error2
+			 *******************************************/
+        	.failureHandler(authenticationFailureHandler());
+	}
+
+
+	/**
+	 * Logout related configuration
+	 * 
+	 * @param http
+	 * @throws Exception
+	 */
+	protected void logout(HttpSecurity http) throws Exception {
+		
+		http
+		.logout()
+			
+			/************************************************
+			 * To prevent redirection to home page, we need to
+			 * have this custom logoutSuccessHandler
+			 ***********************************************/
+			.logoutSuccessHandler(logoutSuccessHandler)
+			.invalidateHttpSession(true)
+			.deleteCookies("JSESSIONID");
+	}
+
+	
+	/**
+	 * Configures exception-handling
+	 * 
+	 * @param http
+	 * @throws Exception
+	 */
+	protected void exceptionHandling(HttpSecurity http) throws Exception {
+		
+		http
+		.exceptionHandling()
+		
+			/***********************************************
+			 * To prevent redirection to the login page
+			 * when someone tries to access a restricted page
+			 **********************************************/
+			.authenticationEntryPoint(new Http403ForbiddenEntryPoint());
+	}
+
+
+	/**
+	 * Configures remember-me
+	 * 
+	 * @param http
+	 * @throws Exception
+	 */
+	protected void rememberMe(HttpSecurity http) throws Exception {
+		
+		http
 			.rememberMe()
 				.key(properties.getRememberMeKey())
-				.rememberMeServices(rememberMeServices())
-				.and()
-			//.csrf().disable()
+				.rememberMeServices(rememberMeServices());
+	}
+
+	
+	/**
+	 * Configures CSRF
+	 *  
+	 * @param http
+	 * @throws Exception
+	 */
+	protected void csrf(HttpSecurity http) throws Exception {
+		
+		http
 			.csrf()
 				.csrfTokenRepository(csrfTokenRepository())
 				.and()
-			.addFilterAfter(csrfCookieFilter(), CsrfFilter.class)
-			.addFilterAfter(switchUserFilter(), FilterSecurityInterceptor.class);
-		
-		authorizeRequests(http);
+			.addFilterAfter(csrfCookieFilter(), CsrfFilter.class);
 	}
 
+	
+	/**
+	 * Adds switch-user filter
+	 * 
+	 * @param http
+	 */
+	protected void switchUser(HttpSecurity http) {
+		
+		http
+			.addFilterAfter(switchUserFilter(), FilterSecurityInterceptor.class);
+	}
+
+
+	/**
+	 * URL based authorization configuration. Override this if needed.
+	 * 
+	 * @param http
+	 * @throws Exception
+	 */
 	protected void authorizeRequests(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
 			.antMatchers("/login/impersonate*").hasRole(GOOD_ADMIN)
@@ -138,6 +211,19 @@ public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 			//.antMatchers("/secure").authenticated()
 			.antMatchers("/**").permitAll();                  
 	}
+	
+	
+	/**
+	 * Override this to add more http configurations,
+	 * such as more authentication methods.
+	 * 
+	 * @param http
+	 * @throws Exception
+	 */
+	protected void otherConfigurations(HttpSecurity http)  throws Exception {
+
+	}
+
 	
 	/**
 	 * Override this method if you want to 
