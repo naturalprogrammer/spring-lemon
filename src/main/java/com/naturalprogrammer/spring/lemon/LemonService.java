@@ -364,9 +364,10 @@ public abstract class LemonService
 		// after successful commit,
 		LemonUtil.afterCommit(() -> {
 			
-			makeVerified(currentUser); // make the current-user verified
-			currentUser.decorate(currentUser); // need to decorate it again
-			log.debug("Removed UNVERIFIED role from current user.");		
+			// Re-login the user, so that the UNVERIFIED role is removed
+			LemonUtil.logIn(user);
+			
+			log.debug("Re-logged-in the user for removing UNVERIFIED role.");		
 		});
 		
 		log.debug("Verified user: " + user);		

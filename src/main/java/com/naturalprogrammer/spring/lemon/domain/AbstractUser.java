@@ -288,6 +288,8 @@ implements UserDetails {
 			rolesEditable = currentUser.isGoodAdmin() && !equals(currentUser); // another admin
 		}
 		
+		computeAuthorities();
+		
 		log.debug("Decorated user: " + this);
 
 		return (U) this;
@@ -353,14 +355,25 @@ implements UserDetails {
 	}
 	
 	
+	@Transient
+	protected Collection<GrantedAuthority> authorities;
+	
 	/**
 	 * Returns the authorities, for Spring Security
 	 */
 	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
+	public Collection<? extends GrantedAuthority> getAuthorities() {		
+		return authorities;
+	}
+	
+	
+	/**
+	 * Computes the authorities for Spring Security, and stores
+	 * those in the authorities transient field
+	 */
+	protected void computeAuthorities() {
 		
-		Collection<GrantedAuthority> authorities = new HashSet<GrantedAuthority>(
-				roles.size() + 2);
+		authorities = new HashSet<GrantedAuthority>(roles.size() + 2);
 	
 		for (String role : roles)
 			authorities.add(new SimpleGrantedAuthority("ROLE_" + role));
@@ -374,9 +387,6 @@ implements UserDetails {
 		}
 
 		log.debug("Authorities of " + this + ": " + authorities);
-
-		return authorities;
-		
 	}
 
 	
