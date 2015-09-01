@@ -8,11 +8,22 @@ import javax.validation.ConstraintViolation;
 
 import org.apache.commons.lang3.StringUtils;
 
+/**
+ * Holds a field or form error
+ * 
+ * @author Sanjay Patel
+ */
 public class FieldError {
 	
+	// Name of the field. Null in case of a form level error. 
 	private String field;
+	
+	// Error code. Typically the I18n message-code.
 	private String code;
+	
+	// Error message
 	private String message;
+	
 	
 	public FieldError(String field, String code, String message) {
 		this.field = field;
@@ -37,6 +48,13 @@ public class FieldError {
 		return "FieldError {field=" + field + ", code=" + code + ", message=" + message + "}";
 	}
 
+
+	/**
+	 * Converts a set of ConstraintViolations
+	 * to a list of FieldErrors
+	 * 
+	 * @param constraintViolations
+	 */
 	public static List<FieldError> getErrors(
 			Set<ConstraintViolation<?>> constraintViolations) {
 		
@@ -44,30 +62,18 @@ public class FieldError {
 				.map(FieldError::of).collect(Collectors.toList());	
 	}
 	
+
+	/**
+	 * Converts a ConstraintViolation
+	 * to a FieldError
+	 */
 	private static FieldError of(ConstraintViolation<?> constraintViolation) {
 		
+		// Get the field name by removing the first part of the propertyPath.
+		// (The first part would be the service method name)
 		String field = StringUtils.substringAfter(
 				constraintViolation.getPropertyPath().toString(), ".");
 		
 		return new FieldError(field, constraintViolation.getMessageTemplate(), constraintViolation.getMessage());		
 	}
-
-//	private static String computeFieldName(ConstraintViolation<?> constraintViolation) {
-//		
-//		// The first component of the path is 
-//		// the method name. Remove it. 
-//		return StringUtils.substringAfter(
-//			constraintViolation.getPropertyPath().toString(), ".");
-//		
-//	}
-//
-//	public static FieldError of(String field, String message) {
-//		
-//		FieldError fieldError = new FieldError();
-//		fieldError.field = field;
-//		fieldError.message = message;
-//		
-//		return fieldError;
-//	}
-
 }

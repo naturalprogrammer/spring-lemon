@@ -10,13 +10,12 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Component;
 
 /**
- * References
+ * Validator for RetypePassword constraint
  * 
- *   http://docs.jboss.org/hibernate/validator/4.1/reference/en-US/html/validator-usingvalidator.html#d0e326
- *   http://docs.jboss.org/hibernate/validator/4.1/reference/en-US/html/validator-customconstraints.html#validator-customconstraints-validator
+ * @see http://docs.jboss.org/hibernate/validator/4.1/reference/en-US/html/validator-usingvalidator.html#d0e326
+ * @see http://docs.jboss.org/hibernate/validator/4.1/reference/en-US/html/validator-customconstraints.html#validator-customconstraints-validator
  * 
  * @author Sanjay Patel
- *
  */
 @Component
 public class RetypePasswordValidator
@@ -33,6 +32,8 @@ implements ConstraintValidator<RetypePassword, RetypePasswordForm> {
 			
 			log.debug("Retype password validation failed.");
 			
+			// Moving the error from form-level to
+			// field-level property: retypePassword
 			context.disableDefaultConstraintViolation();
 			context.buildConstraintViolationWithTemplate(
 				"{com.naturalprogrammer.spring.different.passwords}")

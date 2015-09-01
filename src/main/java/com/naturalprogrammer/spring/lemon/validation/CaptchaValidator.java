@@ -8,6 +8,7 @@ import javax.annotation.Resource;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -29,6 +30,7 @@ import com.naturalprogrammer.spring.lemon.util.LemonUtil;
 
 /**
  * Captcha validation constraint
+ * 
  * Reference
  *   http://www.captaindebug.com/2011/07/writng-jsr-303-custom-constraint_26.html#.VIVhqjGUd8E
  *   http://www.captechconsulting.com/blog/jens-alm/versioned-validated-and-secured-rest-services-spring-40-2?_ga=1.71504976.2113127005.1416833905
@@ -41,6 +43,12 @@ public class CaptchaValidator implements ConstraintValidator<Captcha, String> {
 	
 	private final Log log = LogFactory.getLog(getClass());
 	
+	/**
+	 * A class to receive the response
+	 * from Google 
+	 * 
+	 * @author Sanjay Patel
+	 */
 	private static class ResponseData {
 		
 		private boolean success;
@@ -62,28 +70,40 @@ public class CaptchaValidator implements ConstraintValidator<Captcha, String> {
 		}
 	}
 	
-	@Autowired
 	private LemonProperties properties;
-
-	@Resource
 	private RestTemplate restTemplate;
 	
+	@Autowired
+	public void setProperties(LemonProperties properties) {
+		this.properties = properties;
+	}
+
+	@Autowired
+	public void setRestTemplate(RestTemplate restTemplate) {
+		this.restTemplate = restTemplate;
+	}
+
+	/**
+	 * Does the validation
+	 * 
+	 * @see http://www.journaldev.com/7133/how-to-integrate-google-recaptcha-in-java-web-application
+	 */
 	@Override
-	public boolean isValid(String captchaResponse, ConstraintValidatorContext context) {
-		
-	    
-		/**
-	     * Refer http://www.journaldev.com/7133/how-to-integrate-google-recaptcha-in-java-web-application  
-	     */
-		
-		if (properties.getRecaptcha().getSitekey() == null) { // e.g. while testing or getting started
+	public boolean isValid(String captchaResponse, ConstraintValidatorContext context) {		
+
+		// If reCAPTCHA site key is not given as a property,
+		// e.g. while testing or getting started,
+		// no need to validate.
+		if (properties.getRecaptcha().getSitekey() == null) { // 
 			log.debug("Captcha validation not done, as it is disabled in application properties.");
 			return true;
 		}
 		
-		if (captchaResponse == null || "".equals(captchaResponse))
+		// Ensure user hasn't submitted a blank captcha response
+		if (StringUtils.isBlank(captchaResponse))
 	         return false;
 	        
+		// Prepare the form data for sending to google
 		MultiValueMap<String, String> formData =
 			new LinkedMultiValueMap<String, String>(2);
 		formData.add("response", captchaResponse);
@@ -96,11 +116,12 @@ public class CaptchaValidator implements ConstraintValidator<Captcha, String> {
 			//	   "https://www.google.com/recaptcha/api/siteverify?response={0}&secret={1}",
 			//	    null, ResponseData.class, captchaResponse, reCaptchaSecretKey);
 
+			// Post the data to google
 			ResponseData responseData = restTemplate.postForObject(
 			   "https://www.google.com/recaptcha/api/siteverify",
 			   formData, ResponseData.class);
-			
-			if (responseData.success) {
+
+			if (responseData.success) { // Verified by google
 				log.debug("Captcha validation succeeded.");
 				return true;
 			}
@@ -112,7 +133,6 @@ public class CaptchaValidator implements ConstraintValidator<Captcha, String> {
 			log.error(ExceptionUtils.getStackTrace(t));
 			return false;
 		}
-		
 	}
 
 	@Override

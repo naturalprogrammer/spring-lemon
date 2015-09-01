@@ -9,6 +9,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
 
+/**
+ * Configures method validation
+ * 
+ * @author Sanjay Patel
+ *
+ */
 @Configuration
 public class ValidationConfig {
 
@@ -28,6 +34,5 @@ public class ValidationConfig {
     @Bean
     public Validator validator() {
         return new LocalValidatorFactoryBean();
-    }
-	
+    }	
 }

@@ -20,7 +20,9 @@ import org.hibernate.validator.constraints.NotBlank;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
 
 /**
- * See http://docs.jboss.org/hibernate/stable/validator/reference/en-US/html_single/#example-composed-constraint
+ * Annotation for password constraint
+ * 
+ * @see http://docs.jboss.org/hibernate/stable/validator/reference/en-US/html_single/#example-composed-constraint
  * @author Sanjay Patel
  *
  */

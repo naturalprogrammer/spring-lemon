@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 import javax.validation.Constraint;
 
 /**
- * Captcha validation constraint
+ * Captcha validation constraint annotation
  * 
  * Reference
  *   http://www.captaindebug.com/2011/07/writng-jsr-303-custom-constraint_26.html#.VIVhqjGUd8E
