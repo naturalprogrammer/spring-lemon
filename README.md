@@ -12,9 +12,9 @@ Most applications can use Spring Lemon straightaway, with some simple configurat
 
 # Documentation
 
-1. First, go through the [getting started guide](https://www.gitbook.com/book/sanjay/spring-lemon-getting-started). It will familiarize you with Spring Lemon and the core API you inherit when you use it. 
-2. Second, read the book [REST APIs using Spring Framework - A Complete Blueprint](https://www.gitbook.com/book/sanjay/spring-lemon-getting-started). This discusses the configurations and patterns needed for developing Spring Boot REST APIs, and the internals of Spring Lemon. After going through this book, you will be able to use Spring Lemon fluently, fork and customize it if needed, or develop another such library from scratch.
-3. Later, refer to the [JavaDoc](https://www.gitbook.com/book/sanjay/spring-lemon-getting-started) whenever needed.
+1. First, go through the [getting started guide](https://www.gitbook.com/book/naturalprogrammer/spring-lemon-getting-started/details). It will familiarize you with Spring Lemon and the core API you inherit when you use it. 
+2. Second, read the book [REST APIs using Spring Framework - A Complete Blueprint](https://gumroad.com/naturalprogrammer#). This discusses the configurations and patterns needed for developing Spring Boot REST APIs, and the internals of Spring Lemon. After going through this book, you will be able to use Spring Lemon fluently, fork and customize it if needed, or develop another such library from scratch.
+3. Later, refer to the [JavaDoc](https://javadocs.naturalprogrammer.com/rest) whenever needed.
  
 # Limitations
 
