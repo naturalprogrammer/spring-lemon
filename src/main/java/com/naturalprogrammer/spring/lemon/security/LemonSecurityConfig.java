@@ -104,7 +104,7 @@ public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		
-		formLogin(http); // form-based authentication
+		login(http); // authentication
 		logout(http); // logout related configuration
 		exceptionHandling(http); // exception handling
 		rememberMe(http); // remember-me
@@ -116,15 +116,15 @@ public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 
 
 	/**
-	 * Configuring form-based authentication.
+	 * Configuring authentication.
 	 * 
 	 * @param http
 	 * @throws Exception
 	 */
-	protected void formLogin(HttpSecurity http) throws Exception {
+	protected void login(HttpSecurity http) throws Exception {
 		
 		http
-		.formLogin()
+		.formLogin() // cookie based form login
 			
 			/******************************************
 			 * Setting a successUrl would redirect the user there. Instead,

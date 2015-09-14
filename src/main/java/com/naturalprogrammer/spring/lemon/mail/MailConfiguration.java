@@ -22,7 +22,7 @@ public class MailConfiguration {
 	 * <code>spring.mail.host</code> isn't defined.
 	 */
 	@Bean
-	@ConditionalOnProperty(name="spring.mail.host", matchIfMissing=true)
+	@ConditionalOnProperty(name="spring.mail.host", havingValue="foo", matchIfMissing=true)
 	public MailSender mockMailSender() {
 		return new MockMailSender();
 	}
