@@ -18,13 +18,13 @@ import com.naturalprogrammer.spring.lemon.security.CsrfCookieFilter;
 public class LemonProperties {
 	
     /**
-	 * Client web application's URL.
+	 * Client web application's base URL.
 	 * Used in the verification link mailed to the users, etc.
 	 */
     private String applicationUrl = "http://localhost:9000";
     
 	/**
-     * Secret string used for encrypting the remember-me cookie
+     * Secret string used for encrypting remember-me tokens
      */
     private String rememberMeKey;
     
@@ -149,7 +149,7 @@ public class LemonProperties {
 		/**
 		 * Comma separated whitelisted URLs for CORS.
 		 * Should contain the applicationURL at the minimum.
-		 * Not defining this property would disable CORS configuration.
+		 * Not providing this property would disable CORS configuration.
 		 */
 		private String[] allowedOrigins;
 		

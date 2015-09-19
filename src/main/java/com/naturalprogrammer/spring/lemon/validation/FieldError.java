@@ -74,6 +74,8 @@ public class FieldError {
 		String field = StringUtils.substringAfter(
 				constraintViolation.getPropertyPath().toString(), ".");
 		
-		return new FieldError(field, constraintViolation.getMessageTemplate(), constraintViolation.getMessage());		
+		return new FieldError(field,
+				constraintViolation.getMessageTemplate(),
+				constraintViolation.getMessage());		
 	}
 }

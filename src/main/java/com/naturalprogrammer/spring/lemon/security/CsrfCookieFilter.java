@@ -57,7 +57,7 @@ public class CsrfCookieFilter extends OncePerRequestFilter {
 				// set the cookie
 				cookie = new Cookie(XSRF_TOKEN_COOKIE_NAME, token);
 				cookie.setPath("/");
-				// cookie.setHttpOnly(true); client JavaScriot interceptor can't see the cookie if this is set
+				cookie.setHttpOnly(false); // client JavaScriot interceptor can't see the cookie if HttpOnly is true
 				response.addCookie(cookie);
 				
 				log.debug("Added cookie " + XSRF_TOKEN_COOKIE_NAME + ": " + token);
