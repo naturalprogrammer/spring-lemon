@@ -208,7 +208,7 @@ public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 			.csrf()
 				.csrfTokenRepository(csrfTokenRepository())
 				.and()
-			.addFilterAfter(csrfCookieFilter(), CsrfFilter.class);
+			.addFilterAfter(new CsrfCookieFilter(), CsrfFilter.class);
 	}
 
 	
@@ -296,14 +296,5 @@ public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 		filter.setSuccessHandler(authenticationSuccessHandler);
 		filter.setFailureHandler(authenticationFailureHandler());
 		return filter;
-	}
-	
-	
-	/**
-	 * Returns CSRF cookie filter
-	 */
-	protected Filter csrfCookieFilter() {
-		return new CsrfCookieFilter();
-	}
-
+	}	
 }

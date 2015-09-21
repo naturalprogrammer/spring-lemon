@@ -164,11 +164,11 @@ public class LemonProperties {
 		private String[] allowedHeaders = {"x-requested-with", "origin", "content-type", "accept", CsrfCookieFilter.XSRF_TOKEN_HEADER_NAME};
 		
 		/**
-		 * Response headers to be exposed to the client, e.g. origin,content-type,...<br/>
+		 * Response headers you want to expose to the client JavaScript programmer, e.g. "X-XSRF-TOKEN". <br/>
 		 * See <a href="http://stackoverflow.com/questions/25673089/why-is-access-control-expose-headers-needed#answer-25673446">
 		 * here</a> to know why this could be needed.
 		 */		
-		private String[] exposedHeaders = {"x-requested-with", "origin", "content-type", "accept", CsrfCookieFilter.XSRF_TOKEN_HEADER_NAME};
+		private String[] exposedHeaders = {CsrfCookieFilter.XSRF_TOKEN_HEADER_NAME};
 		
 		/**
 		 * CORS <code>maxAge</code> long property

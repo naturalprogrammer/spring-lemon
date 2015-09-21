@@ -1,7 +1,6 @@
 package com.naturalprogrammer.spring.lemon.security;
 
 import java.io.IOException;
-import java.util.Objects;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -13,7 +12,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.web.filter.OncePerRequestFilter;
-import org.springframework.web.util.WebUtils;
 
 /**
  * Filter for attaching the CSRF token as a cookie.
@@ -40,27 +38,27 @@ public class CsrfCookieFilter extends OncePerRequestFilter {
 
 		log.debug("Inside CsrfCookieFilter ...");
 
-		// get the token
+		// Get csrf attribute from request
 		CsrfToken csrf = (CsrfToken)
 			request.getAttribute(CsrfToken.class.getName()); // Or "_csrf" (See CSRFFilter.doFilterInternal).
 		
-		if (csrf != null) { // if there is a token found
-			Cookie cookie = WebUtils.getCookie(
-				request, XSRF_TOKEN_COOKIE_NAME); // get the cookie
+		if (csrf != null) { // if csrf attribute was found
 			
 			String token = csrf.getToken();
 			
-			if (token != null &&					 // there is a token, AND
-			    (cookie == null || 					 // the cookie is either not there
-				!cookie.getValue().equals(token))) { // or not equal to the token
+			if (token != null) { // if there is a token
 				
 				// set the cookie
-				cookie = new Cookie(XSRF_TOKEN_COOKIE_NAME, token);
+				Cookie cookie = new Cookie(XSRF_TOKEN_COOKIE_NAME, token);
 				cookie.setPath("/");
-				cookie.setHttpOnly(false); // client JavaScriot interceptor can't see the cookie if HttpOnly is true
+				cookie.setHttpOnly(true); // client JavaScriot interceptor can't see the cookie if HttpOnly is true
 				response.addCookie(cookie);
 				
-				log.debug("Added cookie " + XSRF_TOKEN_COOKIE_NAME + ": " + token);
+				// CORS requests can't see the cookie if domains are different,
+				// even if httpOnly is false. So, let's add it as a header as well.  
+				response.addHeader(XSRF_TOKEN_HEADER_NAME, token);
+				
+				log.debug("Set cookie " + XSRF_TOKEN_COOKIE_NAME + ": " + token);
 			}
 		}		
 		filterChain.doFilter(request, response);
