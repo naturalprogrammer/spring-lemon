@@ -107,7 +107,7 @@ public abstract class LemonController
 	 * for more details. 
 	 */
 	@RequestMapping(value="/users/{verificationCode}/verify",
-					method=RequestMethod.PATCH)
+					method=RequestMethod.POST)
 	public U verifyUser(@PathVariable String verificationCode) {
 		
 		log.debug("Verifying user ...");		
@@ -122,7 +122,7 @@ public abstract class LemonController
 	 * <a href="http://www.naturalprogrammer.com">here</a>
 	 * for more details. 
 	 */
-	@RequestMapping(value="/forgot-password", method=RequestMethod.PATCH)
+	@RequestMapping(value="/forgot-password", method=RequestMethod.POST)
 	public void forgotPassword(@RequestParam String email) {
 		
 		log.debug("Received forgot password request for: " + email);				
@@ -136,7 +136,7 @@ public abstract class LemonController
 	 * for more details.
 	 */
 	@RequestMapping(value="/users/{forgotPasswordCode}/reset-password",
-					method=RequestMethod.PATCH)
+					method=RequestMethod.POST)
 	public void resetPassword(@PathVariable String forgotPasswordCode,
 							  @RequestParam String newPassword) {
 		
@@ -176,7 +176,7 @@ public abstract class LemonController
 	 * <a href="http://www.naturalprogrammer.com">here</a>
 	 * for more details.
 	 */
-	@RequestMapping(value="/users/{id}/update", method=RequestMethod.PATCH)
+	@RequestMapping(value="/users/{id}/update", method=RequestMethod.POST)
 	public U updateUser(@PathVariable("id") U user, @RequestBody U updatedUser) {
 		
 		log.debug("Updating user ... ");				
@@ -191,7 +191,7 @@ public abstract class LemonController
 	 * for more details.
 	 */
 	@RequestMapping(value="/users/{id}/change-password",
-					method=RequestMethod.PATCH)
+					method=RequestMethod.POST)
 	public void changePassword(@PathVariable("id") U user,
 			@RequestBody ChangePasswordForm changePasswordForm) {
 		
@@ -206,7 +206,7 @@ public abstract class LemonController
 	 * for more details.
 	 */
 	@RequestMapping(value="/users/{id}/request-email-change",
-					method=RequestMethod.PATCH)
+					method=RequestMethod.POST)
 	public void requestEmailChange(@PathVariable("id") U user,
 								   @RequestBody U updatedUser) {
 		
@@ -220,7 +220,7 @@ public abstract class LemonController
 	 * for more details.
 	 */
 	@RequestMapping(value="/users/{changeEmailCode}/change-email",
-					method=RequestMethod.PATCH)
+					method=RequestMethod.POST)
 	public void changeEmail(@PathVariable String changeEmailCode) {
 		
 		log.debug("Changing email of user ...");		
