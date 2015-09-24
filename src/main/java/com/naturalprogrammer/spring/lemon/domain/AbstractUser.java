@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -373,11 +374,10 @@ implements UserDetails {
 	 */
 	protected void computeAuthorities() {
 		
-		authorities = new HashSet<GrantedAuthority>(roles.size() + 2);
-	
-		for (String role : roles)
-			authorities.add(new SimpleGrantedAuthority("ROLE_" + role));
-	
+		authorities = roles.stream()
+			.map(role -> new SimpleGrantedAuthority("ROLE_" + role))
+			.collect(Collectors.toCollection(() -> new HashSet<GrantedAuthority>(roles.size() + 2))); 
+		
 		if (goodUser) {
 			
 			authorities.add(new SimpleGrantedAuthority("ROLE_" + LemonSecurityConfig.GOOD_USER));
