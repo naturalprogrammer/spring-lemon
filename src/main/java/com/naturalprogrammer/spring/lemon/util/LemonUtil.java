@@ -40,8 +40,7 @@ public class LemonUtil {
 		MessageSource messageSource) {
 		
 		LemonUtil.applicationContext = applicationContext;
-		LemonUtil.messageSource = messageSource;
-		
+		LemonUtil.messageSource = messageSource;		
 	}
 
 	

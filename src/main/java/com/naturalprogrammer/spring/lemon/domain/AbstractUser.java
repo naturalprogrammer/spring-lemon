@@ -376,14 +376,17 @@ implements UserDetails {
 		
 		authorities = roles.stream()
 			.map(role -> new SimpleGrantedAuthority("ROLE_" + role))
-			.collect(Collectors.toCollection(() -> new HashSet<GrantedAuthority>(roles.size() + 2))); 
+			.collect(Collectors.toCollection(() ->
+				new HashSet<GrantedAuthority>(roles.size() + 2))); 
 		
 		if (goodUser) {
 			
-			authorities.add(new SimpleGrantedAuthority("ROLE_" + LemonSecurityConfig.GOOD_USER));
+			authorities.add(new SimpleGrantedAuthority("ROLE_"
+					+ LemonSecurityConfig.GOOD_USER));
 			
 			if (goodAdmin)
-				authorities.add(new SimpleGrantedAuthority("ROLE_" + LemonSecurityConfig.GOOD_ADMIN));			
+				authorities.add(new SimpleGrantedAuthority("ROLE_"
+						+ LemonSecurityConfig.GOOD_ADMIN));			
 		}
 
 		log.debug("Authorities of " + this + ": " + authorities);
