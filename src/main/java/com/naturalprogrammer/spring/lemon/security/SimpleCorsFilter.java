@@ -28,7 +28,7 @@ import com.naturalprogrammer.spring.lemon.LemonProperties.Cors;
  * the <code>lemon.cors.allowedOrigins</code> property.
  * 
  * @author Sanjay Patel
- * @see https://spring.io/guides/gs/rest-service-cors/
+ * @see <a href="https://spring.io/guides/gs/rest-service-cors/">Spring guide</a>
  */
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE) // needs to come first

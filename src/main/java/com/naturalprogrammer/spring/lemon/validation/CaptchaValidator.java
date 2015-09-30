@@ -86,7 +86,7 @@ public class CaptchaValidator implements ConstraintValidator<Captcha, String> {
 	/**
 	 * Does the validation
 	 * 
-	 * @see http://www.journaldev.com/7133/how-to-integrate-google-recaptcha-in-java-web-application
+	 * @see <a href="http://www.journaldev.com/7133/how-to-integrate-google-recaptcha-in-java-web-application">Integrating Google Captcha</a>
 	 */
 	@Override
 	public boolean isValid(String captchaResponse, ConstraintValidatorContext context) {		

@@ -22,7 +22,8 @@ import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
 /**
  * Annotation for password constraint
  * 
- * @see http://docs.jboss.org/hibernate/stable/validator/reference/en-US/html_single/#example-composed-constraint
+ * @see <a href="http://docs.jboss.org/hibernate/stable/validator/reference/en-US/html_single/#example-composed-constraint">Composed constraint example</a>
+ *  
  * @author Sanjay Patel
  *
  */
