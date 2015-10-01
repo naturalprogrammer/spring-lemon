@@ -14,13 +14,13 @@ import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 /**
- * Filter for attaching the CSRF token as a cookie.
+ * Filter for attaching the CSRF token as a cookie and a header.
  * 
  * @see <a href="https://spring.io/guides/tutorials/spring-security-and-angular-js/#_csrf_protection">CSRF protection</a>
  * 
  * @author Sanjay Patel
  */
-public class CsrfCookieFilter extends OncePerRequestFilter {
+public class LemonCsrfFilter extends OncePerRequestFilter {
 	
 	private final Log log = LogFactory.getLog(getClass());
 
@@ -36,7 +36,7 @@ public class CsrfCookieFilter extends OncePerRequestFilter {
 			HttpServletResponse response, FilterChain filterChain)
 					throws ServletException, IOException {		
 
-		log.debug("Inside CsrfCookieFilter ...");
+		log.debug("Inside LemonCsrfFilter ...");
 
 		// Get csrf attribute from request
 		CsrfToken csrf = (CsrfToken)
@@ -58,7 +58,7 @@ public class CsrfCookieFilter extends OncePerRequestFilter {
 				// even if httpOnly is false. So, let's add it as a header as well.  
 				response.addHeader(XSRF_TOKEN_HEADER_NAME, token);
 				
-				log.debug("Set cookie " + XSRF_TOKEN_COOKIE_NAME + ": " + token);
+				log.debug("Sending CSRF token to client: " + token);
 			}
 		}		
 		filterChain.doFilter(request, response);

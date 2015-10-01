@@ -5,7 +5,7 @@ import java.util.Map;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
-import com.naturalprogrammer.spring.lemon.security.CsrfCookieFilter;
+import com.naturalprogrammer.spring.lemon.security.LemonCsrfFilter;
 
 /**
  * Lemon Properties
@@ -161,14 +161,14 @@ public class LemonProperties {
 		/**
 		 * Headers to be allowed, e.g. origin,content-type,...
 		 */
-		private String[] allowedHeaders = {"x-requested-with", "origin", "content-type", "accept", CsrfCookieFilter.XSRF_TOKEN_HEADER_NAME};
+		private String[] allowedHeaders = {"x-requested-with", "origin", "content-type", "accept", LemonCsrfFilter.XSRF_TOKEN_HEADER_NAME};
 		
 		/**
 		 * Response headers you want to expose to the client JavaScript programmer, e.g. "X-XSRF-TOKEN". <br>
 		 * See <a href="http://stackoverflow.com/questions/25673089/why-is-access-control-expose-headers-needed#answer-25673446">
 		 * here</a> to know why this could be needed.
 		 */		
-		private String[] exposedHeaders = {CsrfCookieFilter.XSRF_TOKEN_HEADER_NAME};
+		private String[] exposedHeaders = {LemonCsrfFilter.XSRF_TOKEN_HEADER_NAME};
 		
 		/**
 		 * CORS <code>maxAge</code> long property
