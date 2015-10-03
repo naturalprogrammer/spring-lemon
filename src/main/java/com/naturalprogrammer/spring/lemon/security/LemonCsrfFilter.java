@@ -51,7 +51,6 @@ public class LemonCsrfFilter extends OncePerRequestFilter {
 				// set the cookie
 				Cookie cookie = new Cookie(XSRF_TOKEN_COOKIE_NAME, token);
 				cookie.setPath("/");
-				cookie.setHttpOnly(true); // client JavaScriot interceptor can't see the cookie if HttpOnly is true
 				response.addCookie(cookie);
 				
 				// CORS requests can't see the cookie if domains are different,
