@@ -32,7 +32,7 @@ import com.naturalprogrammer.spring.lemon.LemonProperties.Cors;
  */
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE) // needs to come first
-@ConditionalOnProperty(name="lemon.cors.allowedOrigins")
+@ConditionalOnProperty(name="lemon.cors.allowed-origins")
 public class LemonCorsFilter extends OncePerRequestFilter {
 
 	private final Log log = LogFactory.getLog(getClass());
