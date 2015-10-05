@@ -77,7 +77,7 @@ public class DefaultExceptionHandler {
 	 * @return the error response
 	 */
     @RequestMapping(produces = "application/json")
-    @ExceptionHandler({AccessDeniedException.class})
+    @ExceptionHandler(AccessDeniedException.class)
     @ResponseStatus(value = HttpStatus.FORBIDDEN)
     public @ResponseBody Map<String, Object>
 	handleAuthorizationException(AccessDeniedException ex) {
@@ -95,7 +95,7 @@ public class DefaultExceptionHandler {
 	 * @return the error response
 	 */
     @RequestMapping(produces = "application/json")
-    @ExceptionHandler({VersionException.class})
+    @ExceptionHandler(VersionException.class)
     @ResponseStatus(value = HttpStatus.CONFLICT)
     public @ResponseBody Map<String, Object> handleVersionException(VersionException ex) {
     	
@@ -111,7 +111,7 @@ public class DefaultExceptionHandler {
 	 * @return the error response
 	 */
     @RequestMapping(produces = "application/json")
-    @ExceptionHandler({Exception.class})
+    @ExceptionHandler(Exception.class)
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
     public @ResponseBody Map<String, Object> handleOtherException(Exception ex) {
     	

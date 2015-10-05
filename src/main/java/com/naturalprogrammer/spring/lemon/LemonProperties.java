@@ -159,16 +159,49 @@ public class LemonProperties {
 		private String[] allowedMethods = {"GET", "HEAD", "POST", "PUT", "DELETE", "TRACE", "OPTIONS", "PATCH"};
 		
 		/**
-		 * Custom headers to be allowed, e.g. x-requested-with,x-xsrf-token
+		 * Request headers to be allowed, e.g. content-type,accept,origin,x-requested-with,x-xsrf-token,...
 		 */
-		private String[] allowedHeaders = {"x-requested-with", LemonCsrfFilter.XSRF_TOKEN_HEADER_NAME};
+		private String[] allowedHeaders = {
+				"Accept",
+				"Accept-Encoding",
+				"Accept-Language",
+				"Cache-Control",
+				"Connection",
+				"Content-Length",
+				"Content-Type",
+				"Cookie",
+				"Host",
+				"Origin",
+				"Pragma",
+				"Referer",
+				"User-Agent",
+				"x-requested-with",
+				LemonCsrfFilter.XSRF_TOKEN_HEADER_NAME};
 		
 		/**
-		 * Custom response headers you want to expose to the client JavaScript programmer, e.g. "X-XSRF-TOKEN". <br>
+		 * Response headers that you want to expose to the client JavaScript programmer, e.g. "X-XSRF-TOKEN".
+		 * I don't think we need to mention here the headers that we don't want to access through JavaScript.
+		 * Still, by default, we have provided most of the common headers.
+		 *  
+		 * <br>
 		 * See <a href="http://stackoverflow.com/questions/25673089/why-is-access-control-expose-headers-needed#answer-25673446">
 		 * here</a> to know why this could be needed.
 		 */		
-		private String[] exposedHeaders = {LemonCsrfFilter.XSRF_TOKEN_HEADER_NAME};
+		private String[] exposedHeaders = {
+				"Cache-Control",
+				"Connection",
+				"Content-Type",
+				"Date",
+				"Expires",
+				"Pragma",
+				"Server",
+				"Set-Cookie",
+				"Transfer-Encoding",
+				"X-Content-Type-Options",
+				"X-XSS-Protection",
+				"X-Frame-Options",
+				"X-Application-Context",
+				LemonCsrfFilter.XSRF_TOKEN_HEADER_NAME};
 		
 		/**
 		 * CORS <code>maxAge</code> long property
