@@ -40,9 +40,7 @@ public abstract class LemonController
 
 
 	/**
-	 * A simple function for pinging this server. See
-	 * <a href="http://www.naturalprogrammer.com">here</a>
-	 * for more details.
+	 * A simple function for pinging this server.
 	 */
 	@RequestMapping(value="/ping", method=RequestMethod.GET)
 	public void ping() {
@@ -52,9 +50,7 @@ public abstract class LemonController
 
 	/**
 	 * Returns context properties needed at the client side, and
-	 * the current-user data. See
-	 * <a href="http://www.naturalprogrammer.com">here</a>
-	 * for more details. 
+	 * the current-user data.
 	 */
 	@RequestMapping(value="/context", method=RequestMethod.GET)
 	public Map<String, Object> getContext() {
@@ -70,9 +66,7 @@ public abstract class LemonController
 	
 
 	/**
-	 * Signs up a user, and logs him in. See
-	 * <a href="http://www.naturalprogrammer.com">here</a>
-	 * for more details. 
+	 * Signs up a user, and logs him in.
      *
 	 * @param user	data fed by the user
 	 * @return data about the logged in user
@@ -90,9 +84,7 @@ public abstract class LemonController
 	
 	
 	/**
-	 * Resends verification mail. See
-	 * <a href="http://www.naturalprogrammer.com">here</a>
-	 * for more details. 
+	 * Resends verification mail. 
 	 */
 	@RequestMapping(value="/users/{id}/resend-verification-mail",
 			        method=RequestMethod.GET)
@@ -105,9 +97,7 @@ public abstract class LemonController
 
 
 	/**
-	 * Verifies current-user. See
-	 * <a href="http://www.naturalprogrammer.com">here</a>
-	 * for more details. 
+	 * Verifies current-user.
 	 */
 	@RequestMapping(value="/users/{verificationCode}/verify",
 					method=RequestMethod.POST)
@@ -121,9 +111,7 @@ public abstract class LemonController
 	
 
 	/**
-	 * The forgot Password feature. See
-	 * <a href="http://www.naturalprogrammer.com">here</a>
-	 * for more details. 
+	 * The forgot Password feature.
 	 */
 	@RequestMapping(value="/forgot-password", method=RequestMethod.POST)
 	public void forgotPassword(@RequestParam String email) {
@@ -134,9 +122,7 @@ public abstract class LemonController
 	
 
 	/**
-	 * Resets password after it is forgotten. See
-	 * <a href="http://www.naturalprogrammer.com">here</a>
-	 * for more details.
+	 * Resets password after it is forgotten.
 	 */
 	@RequestMapping(value="/users/{forgotPasswordCode}/reset-password",
 					method=RequestMethod.POST)
@@ -149,9 +135,7 @@ public abstract class LemonController
 
 
 	/**
-	 * Fetches a user by email. See
-	 * <a href="http://www.naturalprogrammer.com">here</a>
-	 * for more details.
+	 * Fetches a user by email.
 	 */
 	@RequestMapping(value="/users/fetch-by-email", method=RequestMethod.GET)
 	public U fetchUserByEmail(@RequestParam String email) {
@@ -162,9 +146,7 @@ public abstract class LemonController
 
 	
 	/**
-	 * Fetches a user by Id. See
-	 * <a href="http://www.naturalprogrammer.com">here</a>
-	 * for more details.
+	 * Fetches a user by Id.
 	 */	
 	@RequestMapping(value="/users/{id}/fetch-by-id", method=RequestMethod.GET)
 	public U fetchUserById(@PathVariable("id") U user) {
@@ -175,9 +157,7 @@ public abstract class LemonController
 
 	
 	/**
-	 * Updates a user. See
-	 * <a href="http://www.naturalprogrammer.com">here</a>
-	 * for more details.
+	 * Updates a user.
 	 */
 	@RequestMapping(value="/users/{id}/update", method=RequestMethod.POST)
 	public U updateUser(@PathVariable("id") U user, @RequestBody U updatedUser) {
@@ -189,9 +169,7 @@ public abstract class LemonController
 	
 	
 	/**
-	 * Changes password. See
-	 * <a href="http://www.naturalprogrammer.com">here</a>
-	 * for more details.
+	 * Changes password.
 	 */
 	@RequestMapping(value="/users/{id}/change-password",
 					method=RequestMethod.POST)
@@ -204,9 +182,7 @@ public abstract class LemonController
 
 
 	/**
-	 * Requests for changing email. See
-	 * <a href="http://www.naturalprogrammer.com">here</a>
-	 * for more details.
+	 * Requests for changing email.
 	 */
 	@RequestMapping(value="/users/{id}/request-email-change",
 					method=RequestMethod.POST)
@@ -218,9 +194,7 @@ public abstract class LemonController
 	}
 	
 	/**
-	 * Changes the email. See
-	 * <a href="http://www.naturalprogrammer.com">here</a>
-	 * for more details.
+	 * Changes the email.
 	 */
 	@RequestMapping(value="/users/{changeEmailCode}/change-email",
 					method=RequestMethod.POST)
