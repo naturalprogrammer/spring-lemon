@@ -189,7 +189,7 @@ public abstract class LemonController
 	public void requestEmailChange(@PathVariable("id") U user,
 								   @RequestBody U updatedUser) {
 		
-		log.debug("Requesting enail change ... ");				
+		log.debug("Requesting email change ... ");				
 		lemonService.requestEmailChange(user, updatedUser);
 	}
 	

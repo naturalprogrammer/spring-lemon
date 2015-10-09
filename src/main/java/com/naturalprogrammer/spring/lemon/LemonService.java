@@ -289,7 +289,7 @@ public abstract class LemonService
 
 	
 	/**
-	 * Fetchs a user by email
+	 * Fetches a user by email
 	 * 
 	 * @param email
 	 * @return the decorated user object
