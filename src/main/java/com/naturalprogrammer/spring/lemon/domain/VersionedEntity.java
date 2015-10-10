@@ -5,8 +5,6 @@ import java.io.Serializable;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Version;
 
-import com.naturalprogrammer.spring.lemon.exceptions.VersionException;
-
 
 /**
  * Base class for all entities with optimistic locking.
