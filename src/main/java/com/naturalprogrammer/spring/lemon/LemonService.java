@@ -15,6 +15,7 @@ import org.apache.commons.logging.LogFactory;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -84,18 +85,17 @@ public abstract class LemonService
 
 	
 	/**
-     * This method is called after the context is built.
+     * This method is called after the application is ready.
      * Needs to be public - otherwise Spring screams.
      * 
      * @param event
      */
     @EventListener
-    public void afterContextRefreshed(ContextRefreshedEvent event) {
+    public void afterApplicationReady(ApplicationReadyEvent event) {
     	
     	log.info("Starting up Spring Lemon ...");
     	onStartup(); // delegate to onStartup()
-    	log.info("Spring Lemon started");
-    	
+    	log.info("Spring Lemon started");	
     }
 
     
