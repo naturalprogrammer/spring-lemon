@@ -21,7 +21,3 @@ Most applications can use Spring Lemon straightaway, with some simple configurat
 1. Community help is available at [stackoverflow.com](http://stackoverflow.com/questions/tagged/spring-lemon), under the `spring-lemon` tag. DO NOT FORGET TO TAG YOUR QUESTIONS WITH `spring-lemon`!  
 1. [Submit an issue](https://github.com/naturalprogrammer/spring-lemon/issues) for any bug or enhancement. Please check first that the issue isn't already reported earlier.
 1. Training and professional help is provided by [naturalprogrammer.com](http://www.naturalprogrammer.com).
-
-## Limitations
-
-The user module of Spring Lemon now works only with *Spring Data JPA*.
