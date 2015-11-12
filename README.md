@@ -1,7 +1,7 @@
 # Spring Lemon
 
 <div style="border: thick solid gray">
-<div style="float: left"><img src="http://www.naturalprogrammer.com/wp-content/uploads/2015/11/rest-api-spring-framework-cover-2-3d-50.png" alt="BOOK"></div><div style="float: right"><b>Attention</b>: <a href="https://gumroad.com/l/exuo">Spring Framework REST API Development – A Complete Blueprint now available only for <b>$17</b>! Don't Miss - this unbelievable early bird discount is available only until <b>16th November</b>!</div>
+<div style="float: left"><img src="http://www.naturalprogrammer.com/wp-content/uploads/2015/11/rest-api-spring-framework-cover-2-3d-50.png" alt="BOOK"></div><div style="float: right"><b>Attention</b>: <a href="https://gumroad.com/l/exuo">Spring Framework REST API Development – A Complete Blueprint</a> now available only for <b>$17</b>! Don't Miss - this unbelievable early bird discount is available only until <b>16th November</b>!</div>
 </div>
 
 When developing a *REST API* using Spring Framework for your *single page* or *mobo* applications, you will need to do many subtle configurations. You will also need to lay out some good patterns, base classes and utilities to elegantly handle validation, security etc.
@@ -22,7 +22,7 @@ Most Spring Boot applications can use Spring Lemon straightaway, with some simpl
 1. [Spring Framework REST API Development - A Complete Blueprint](https://gumroad.com/l/exuo) - An e-book discussing Spring Lemon internals, aiming to serve as a complete blueprint for developing Spring Boot REST APIs, whether you use Spring Lemon or not. After going through this book, you will be able to use Spring Lemon fluently, fork and customize it if needed, or develop another such library from scratch.
 
 <div style="border: thick solid gray">
-<div style="float: left"><img src="http://www.naturalprogrammer.com/wp-content/uploads/2015/11/rest-api-spring-framework-cover-2-3d-50.png" alt="BOOK"></div><div style="float: right"><b>Attention</b>: <a href="https://gumroad.com/l/exuo">Spring Framework REST API Development – A Complete Blueprint now available only for <b>$17</b>! Don't Miss - this unbelievable early bird discount is available only until <b>16th November</b>!</div>
+<div style="float: left"><img src="http://www.naturalprogrammer.com/wp-content/uploads/2015/11/rest-api-spring-framework-cover-2-3d-50.png" alt="BOOK"></div><div style="float: right"><b>Attention</b>: <a href="https://gumroad.com/l/exuo">Spring Framework REST API Development – A Complete Blueprint</a> now available only for <b>$17</b>! Don't Miss - this unbelievable early bird discount is available only until <b>16th November</b>!</div>
 </div>
 
 ## Help and Support
