@@ -1,5 +1,6 @@
 # Spring Lemon
 
+|------------|--------------|
 |![BOOK](http://www.naturalprogrammer.com/wp-content/uploads/2015/11/rest-api-spring-framework-cover-2-3d-50.png)
 |**Attention**: [Spring Framework REST API Development – A Complete Blueprint](https://gumroad.com/l/exuo) now available only for **$17**! Don't Miss - this unbelievable early bird discount is available only until **16th November**!|
 
@@ -20,6 +21,7 @@ Most Spring Boot applications can use Spring Lemon straightaway, with some simpl
 1. [Demo Angular 1.x front-end application](https://github.com/naturalprogrammer/lemon-demo-angular1) - A demo AngularJS 1.x front-end. It'll work both for the application developed in the above [getting started guide](https://www.gitbook.com/book/naturalprogrammer/spring-lemon-getting-started/details) as well as the [Lemon Demo application](https://github.com/naturalprogrammer/lemon-demo). 
 1. [Spring Framework REST API Development - A Complete Blueprint](https://gumroad.com/l/exuo) - An e-book discussing Spring Lemon internals, aiming to serve as a complete blueprint for developing Spring Boot REST APIs, whether you use Spring Lemon or not. After going through this book, you will be able to use Spring Lemon fluently, fork and customize it if needed, or develop another such library from scratch.
 
+|------------|--------------|
 |![BOOK](http://www.naturalprogrammer.com/wp-content/uploads/2015/11/rest-api-spring-framework-cover-2-3d-50.png)
 |**Attention**: [Spring Framework REST API Development – A Complete Blueprint](https://gumroad.com/l/exuo) now available only for **$17**! Don't Miss - this unbelievable early bird discount is available only until **16th November**!|
 
