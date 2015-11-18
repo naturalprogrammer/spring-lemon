@@ -60,10 +60,12 @@
 	    <dependency>
              <groupId>org.springframework.boot</groupId>
              <artifactId>spring-boot-starter-social-facebook</artifactId>
+             <scope>provided</scope>
          </dependency>
          <dependency>
              <groupId>org.springframework.social</groupId>
              <artifactId>spring-social-security</artifactId>
+             <scope>provided</scope>
          </dependency>
 		
 		<!-- Utilities -->
@@ -87,26 +89,6 @@
 		
 	</dependencies>
 	
-	<repositories>
-		<repository>
-			<id>spring-snapshots</id>
-			<name>Spring Snapshots</name>
-			<url>https://repo.spring.io/snapshot</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-		<repository>
-			<id>spring-milestones</id>
-			<name>Spring Milestones</name>
-			<url>https://repo.spring.io/milestone</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
-	
-
  	<build>
 		<plugins>
 		
@@ -128,8 +110,4 @@
 		</plugins>
 	</build>
 
-	<dependencyManagement>
-		<dependencies>
-		</dependencies>
-	</dependencyManagement>
 </project>

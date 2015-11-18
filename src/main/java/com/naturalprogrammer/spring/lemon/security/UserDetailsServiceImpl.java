@@ -7,9 +7,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.dao.DataAccessException;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.social.security.SocialUserDetails;
+import org.springframework.social.security.SocialUserDetailsService;
 import org.springframework.stereotype.Service;
 
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
@@ -31,7 +33,7 @@ import com.naturalprogrammer.spring.lemon.domain.AbstractUserRepository;
 @ConditionalOnProperty(name="lemon.enabled.user-details-service", matchIfMissing=true)
 public class UserDetailsServiceImpl
 	<U extends AbstractUser<U,ID>, ID extends Serializable>
-implements UserDetailsService {
+implements UserDetailsService, SocialUserDetailsService {
 
 	private final Log log = LogFactory.getLog(getClass());
 
@@ -43,7 +45,7 @@ implements UserDetailsService {
 	}
 
 	@Override
-	public UserDetails loadUserByUsername(String username)
+	public SocialUserDetails loadUserByUsername(String username)
 			throws UsernameNotFoundException {
 		
 		log.debug("Loading user having username: " + username);
@@ -68,5 +70,11 @@ implements UserDetailsService {
 	 */
 	protected Optional<U> findUserByUsername(String username) {
 		return userRepository.findByEmail(username);
+	}
+
+	@Override
+	public SocialUserDetails loadUserByUserId(String userId) throws UsernameNotFoundException, DataAccessException {
+
+		return loadUserByUsername(userId);
 	}
 }

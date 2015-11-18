@@ -17,6 +17,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.social.security.SocialUserDetails;
 
 import com.naturalprogrammer.spring.lemon.security.LemonSecurityConfig;
 import com.naturalprogrammer.spring.lemon.util.LemonUtil;
@@ -37,7 +38,7 @@ import com.naturalprogrammer.spring.lemon.validation.UniqueEmail;
 public abstract class AbstractUser
 	<U extends AbstractUser<U,ID>, ID extends Serializable>
 extends VersionedEntity<U, ID>
-implements UserDetails {
+implements SocialUserDetails {
 	
 	private static final Log log = LogFactory.getLog(AbstractUser.class); 
 			
@@ -416,6 +417,15 @@ implements UserDetails {
 	@Override
 	public boolean isEnabled() {
 		return true;
+	}
+	
+	/**
+	 * Needed by Spring Social
+	 */
+	@Override
+	public String getUserId() {
+		return getUsername();
+		
 	}
 
 }

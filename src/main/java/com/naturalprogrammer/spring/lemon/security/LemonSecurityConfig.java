@@ -21,6 +21,7 @@ import org.springframework.security.web.authentication.switchuser.SwitchUserFilt
 import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
+import org.springframework.social.security.SpringSocialConfigurer;
 
 import com.naturalprogrammer.spring.lemon.LemonProperties;
 
@@ -110,6 +111,8 @@ public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 		switchUser(http); // switch-user configuration
 		authorizeRequests(http); // authorize requests
 		otherConfigurations(http); // override this to add more configurations
+		
+		http.apply(new SpringSocialConfigurer());
 	}
 
 
