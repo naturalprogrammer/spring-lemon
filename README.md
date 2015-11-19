@@ -24,4 +24,4 @@ Most Spring Boot applications can use Spring Lemon straightaway, with some simpl
 
 ## Releases
 
-1. `0.8.x` - Should work with _Spring Boot_ `1.3.0 RC1` or above.
+1. See [here](https://github.com/naturalprogrammer/spring-lemon/releases).
