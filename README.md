@@ -12,13 +12,16 @@ Most Spring Boot applications can use Spring Lemon straightaway, with some simpl
 
 ## Documentation and Resources
 
-1. [Getting started guide](https://www.gitbook.com/book/naturalprogrammer/spring-lemon-getting-started/details) - It will familiarize you with Spring Lemon and the core API you inherit when you use it.
+1. Getting started guide - It will familiarize you with Spring Lemon and the core API you inherit when you use it.
+ 1. [Video Tutorial](https://www.udemy.com/spring-framework-rest-api-i/) - Coming soon
+ 1. [Book]
+(https://www.gitbook.com/book/naturalprogrammer/spring-lemon-getting-started/details)
 1. [Lemon Demo application](https://github.com/naturalprogrammer/lemon-demo) - A sample application using Spring Lemon. Quite similar to the one developed in the above [getting started guide](https://www.gitbook.com/book/naturalprogrammer/spring-lemon-getting-started/details), but additionally has automated tests.
 1. [Demo Angular 1.x front-end application](https://github.com/naturalprogrammer/lemon-demo-angular1) - A demo AngularJS 1.x front-end. It'll work both for the application developed in the above [getting started guide](https://www.gitbook.com/book/naturalprogrammer/spring-lemon-getting-started/details) as well as the [Lemon Demo application](https://github.com/naturalprogrammer/lemon-demo). 
 1. [Spring Framework REST API Development - A Complete Blueprint](https://gumroad.com/l/exuo) - An e-book discussing Spring Lemon internals, aiming to serve as a complete blueprint for developing Spring Boot REST APIs, whether you use Spring Lemon or not. After going through this book, you will be able to use Spring Lemon fluently, fork and customize it if needed, or develop another such library from scratch.
 
 ## Help and Support
-1. Community help is available at [stackoverflow.com](http://stackoverflow.com/questions/tagged/spring-lemon), under the `spring-lemon` tag. DO NOT FORGET TO TAG YOUR QUESTIONS WITH `spring-lemon`!  
+1. Community help is available at [stackoverflow.com](http://stackoverflow.com/questions/tagged/spring-lemon), under the `spring-lemon` tag. Do not miss to tag the questions with `spring-lemon`!
 1. [Submit an issue](https://github.com/naturalprogrammer/spring-lemon/issues) for any bug or enhancement. Please check first that the issue isn't already reported earlier.
 1. Training and professional help is provided by [naturalprogrammer.com](http://www.naturalprogrammer.com).
 
