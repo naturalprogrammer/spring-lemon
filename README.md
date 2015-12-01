@@ -1,19 +1,23 @@
 # Spring Lemon
 
+> [Getting Started Video Guide](https://gumroad.com/l/IKqz#) available now. 
+
 When developing a *REST API* using Spring Framework for your *single page* or *mobo* applications, you will need to do many subtle configurations. You will also need to lay out some good patterns, base classes and utilities to elegantly handle validation, security etc.
 
 All these configurations and code would be common to all your applications. Not only that, most of the user module, e.g. sign up, change password etc. would also be common.
 
 How about someone writing this code as a configurable and extensible library, which you can include in your project and start coding your business logic straightaway? This way, you not only get rid of coding this techie stuff, but also get rid of keeping it updated along with the new releases of Spring.
 
-Welcome to *Spring Lemon*. It has all the essential configurations, patterns, base classes and utilities for developing REST APIs using Spring Boot 1.3 or above. It also has a production-grade extensible user module with features like *sign up, sign in, verify email, update profile, forgot password, change password, change email, captcha validation* etc..
+Welcome to *Spring Lemon*. It has all the essential configurations, patterns, base classes and utilities for developing REST APIs using Spring Boot 1.3 or above. It also has a production-grade extensible user module with features like *sign up, sign in, verify email, update profile, forgot password, change password, change email, captcha validation* etc.. [Click here](https://www.youtube.com/watch?v=bDW6ICmJaJs) to watch a complete demo of the available features.
 
 Most Spring Boot applications can use Spring Lemon straightaway, with some simple configurations. But, if you don't find it suitable for your application, feel free to fork it, or just roll out your own library by learning its patterns and practices. Better yet, be a contributor to this library!
+
+For getting started, watch [this video guide](https://gumroad.com/l/IKqz#), or read [this book] (https://www.gitbook.com/book/naturalprogrammer/spring-lemon-getting-started/details). 
 
 ## Documentation and Resources
 
 1. Getting started guide - It will familiarize you with Spring Lemon and the core API you inherit when you use it.
- 1. [Video Tutorial](https://www.udemy.com/spring-framework-rest-api-i/) - Coming soon
+ 1. [Video Tutorial](https://gumroad.com/l/IKqz)
  1. [Book]
 (https://www.gitbook.com/book/naturalprogrammer/spring-lemon-getting-started/details)
 1. [Lemon Demo application](https://github.com/naturalprogrammer/lemon-demo) - A sample application using Spring Lemon. Quite similar to the one developed in the above [getting started guide](https://www.gitbook.com/book/naturalprogrammer/spring-lemon-getting-started/details), but additionally has automated tests.
