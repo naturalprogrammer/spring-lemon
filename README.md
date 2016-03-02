@@ -27,7 +27,7 @@ For getting started, watch [this video guide](https://gumroad.com/l/IKqz#), or r
 ## Help and Support
 1. Community help is available at [stackoverflow.com](http://stackoverflow.com/questions/tagged/spring-lemon), under the `spring-lemon` tag. Do not miss to tag the questions with `spring-lemon`!
 1. [Submit an issue](https://github.com/naturalprogrammer/spring-lemon/issues) for any bug or enhancement. Please check first that the issue isn't already reported earlier.
-1. Training and professional help is provided by [naturalprogrammer.com](http://www.naturalprogrammer.com).
+1. Mentoring, training and professional help is provided by [naturalprogrammer.com](http://www.naturalprogrammer.com/consulting/).
 
 ## Releases
 
