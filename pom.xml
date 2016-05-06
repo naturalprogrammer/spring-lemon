@@ -5,7 +5,7 @@
 
     <groupId>com.naturalprogrammer.spring</groupId>
     <artifactId>spring-lemon</artifactId>
-    <version>0.8.5</version>
+    <version>0.8.6</version>
     <packaging>jar</packaging>
 
     <name>spring-lemon</name>

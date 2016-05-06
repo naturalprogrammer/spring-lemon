@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.naturalprogrammer.spring.lemon.LemonService;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
+import com.naturalprogrammer.spring.lemon.util.LemonUtil;
 
 /**
  * Authentication success handler for sending the response
@@ -32,6 +34,7 @@ public class AuthenticationSuccessHandler
 	private final Log log = LogFactory.getLog(getClass());
 	
     private ObjectMapper objectMapper;
+    
     private LemonService<?,?> lemonService;
     
 	@Autowired    
@@ -40,6 +43,7 @@ public class AuthenticationSuccessHandler
 	}
 
 	@Autowired
+    @Lazy
 	public void setLemonService(LemonService<?, ?> lemonService) {
 		this.lemonService = lemonService;
 	}
@@ -55,7 +59,7 @@ public class AuthenticationSuccessHandler
     	response.setStatus(HttpServletResponse.SC_OK);
     	response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 
-		// get the current-user
+    	// get the current-user
     	AbstractUser<?,?> currentUser = lemonService.userForClient();
 
     	// write current-user data to the response  

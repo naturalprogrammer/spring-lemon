@@ -1,6 +1,6 @@
 # Spring Lemon
 
-> [Getting Started Video Tutorial](https://gumroad.com/l/IKqz#) available now. 
+> [Getting Started Video Tutorial](https://gum.co/IKqz) available now. 
 
 When developing a *REST API* using Spring Framework for your *single page* or *mobo* applications, you will need to do many subtle configurations. You will also need to lay out some good patterns, base classes and utilities to elegantly handle validation, security etc.
 
