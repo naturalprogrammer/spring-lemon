@@ -17,12 +17,12 @@ For getting started, watch [this video guide](https://gumroad.com/l/IKqz#), or r
 ## Documentation and Resources
 
 1. Getting started guide - It will familiarize you with Spring Lemon and the core API you inherit when you use it.
- 1. [Video Tutorial](https://gumroad.com/l/IKqz)
+ 1. [Video Tutorial](https://gum.co/IKqz)
  1. [Book]
 (https://www.gitbook.com/book/naturalprogrammer/spring-lemon-getting-started/details)
 1. [Example application](https://github.com/naturalprogrammer/lemon-demo) - A sample application using Spring Lemon. Quite similar to the one developed in the above [getting started guide](https://www.gitbook.com/book/naturalprogrammer/spring-lemon-getting-started/details), but additionally has automated tests.
 1. [Example Angular 1.x front-end application](https://github.com/naturalprogrammer/lemon-demo-angular1) - A sample AngularJS 1.x front-end. It'll work both for the application developed in the above [getting started guide](https://www.gitbook.com/book/naturalprogrammer/spring-lemon-getting-started/details) as well as the [Lemon Demo application](https://github.com/naturalprogrammer/lemon-demo). 
-1. [Spring Framework REST API Development - A Complete Blueprint](https://gumroad.com/l/exuo) - An eBook discussing Spring Lemon internals, aiming to serve as a complete blueprint for developing Spring Boot RESTful Web Services, whether you use Spring Lemon or not. After going through this book, you will be able to use Spring Lemon fluently, fork and customize it if needed, or develop another such library from scratch.
+1. [Spring Framework REST API Development - A Complete Blueprint](https://gum.co/exuo/associate) - An eBook discussing Spring Lemon internals, aiming to serve as a complete blueprint for developing Spring Boot RESTful Web Services, whether you use Spring Lemon or not. After going through this book, you will be able to use Spring Lemon fluently, fork and customize it if needed, or develop another such library from scratch.
 
 ## Help and Support
 1. Community help is available at [stackoverflow.com](http://stackoverflow.com/questions/tagged/spring-lemon), under the `spring-lemon` tag. Do not miss to tag the questions with `spring-lemon`!
