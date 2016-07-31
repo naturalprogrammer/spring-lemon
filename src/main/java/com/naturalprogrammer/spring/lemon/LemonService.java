@@ -34,6 +34,7 @@ import com.naturalprogrammer.spring.lemon.domain.AbstractUserRepository;
 import com.naturalprogrammer.spring.lemon.domain.ChangePasswordForm;
 import com.naturalprogrammer.spring.lemon.exceptions.MultiErrorException;
 import com.naturalprogrammer.spring.lemon.mail.MailSender;
+import com.naturalprogrammer.spring.lemon.permissions.UserEditPermission;
 import com.naturalprogrammer.spring.lemon.util.LemonUtil;
 import com.naturalprogrammer.spring.lemon.validation.Password;
 
@@ -272,7 +273,7 @@ public abstract class LemonService
 	 * 
 	 * @param user
 	 */
-	@PreAuthorize("hasPermission(#user, 'edit')")
+	@UserEditPermission
 	public void resendVerificationMail(U user) {
 
 		// The user must exist
@@ -464,7 +465,7 @@ public abstract class LemonService
 	 * @param user
 	 * @param updatedUser
 	 */
-	@PreAuthorize("hasPermission(#user, 'edit')")
+	@UserEditPermission
 	@Validated(AbstractUser.UpdateValidation.class)
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
 	public void updateUser(U user, @Valid U updatedUser) {
@@ -490,7 +491,7 @@ public abstract class LemonService
 	 * @param user
 	 * @param changePasswordForm
 	 */
-	@PreAuthorize("hasPermission(#user, 'edit')")
+	@UserEditPermission
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
 	public void changePassword(U user, @Valid ChangePasswordForm changePasswordForm) {
 		
@@ -612,7 +613,7 @@ public abstract class LemonService
 	 * @param user
 	 * @param updatedUser
 	 */
-	@PreAuthorize("hasPermission(#user, 'edit')")
+	@UserEditPermission
 	@Validated(AbstractUser.ChangeEmailValidation.class)
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
 	public void requestEmailChange(U user, @Valid U updatedUser) {

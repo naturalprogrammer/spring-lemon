@@ -18,6 +18,7 @@ import org.springframework.security.web.authentication.logout.LogoutSuccessHandl
 import org.springframework.security.web.authentication.rememberme.AbstractRememberMeServices;
 import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices;
 import org.springframework.security.web.authentication.switchuser.SwitchUserFilter;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
@@ -86,16 +87,16 @@ public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
       return new BCryptPasswordEncoder();
     }
 	
-    /**
-     * In case you don't want use the email field as the login id,
-     * you may want to have a different userDetailsServices, and
-     * override this method for injecting that here.
-     */
-	@Override
-    protected void configure(AuthenticationManagerBuilder builder) throws Exception {
-        builder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
-    }
-	
+//    /**
+//     * In case you don't want use the email field as the login id,
+//     * you may want to have a different userDetailsServices, and
+//     * override this method for injecting that here.
+//     */
+//	@Override
+//    protected void configure(AuthenticationManagerBuilder builder) throws Exception {
+//        builder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+//    }
+//	
 	/**
 	 * Security configuration, calling protected methods
 	 */
@@ -230,9 +231,9 @@ public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 	 */
 	protected void authorizeRequests(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
-			.antMatchers("/login/impersonate*").hasRole(GOOD_ADMIN)
-			.antMatchers("/logout/impersonate*").authenticated()
-			.antMatchers("/**").permitAll();                  
+			.mvcMatchers("/login/impersonate*").hasRole(GOOD_ADMIN)
+			.mvcMatchers("/logout/impersonate*").authenticated()
+			.mvcMatchers("/**").permitAll();                  
 	}
 	
 	
@@ -267,8 +268,8 @@ public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
     
 
 	/**
-	 * A customized CsrfTokenRepository, for making it
-	 * compatible to AngularJS CSRF token header name.
+	 * returns a CookieCsrfTokenRepository, to remain
+	 * compatible with AngularJS CSRF token header name.
 	 * Override this if you want to change the 
 	 * header name.
 	 *  
@@ -276,6 +277,7 @@ public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 	 */
 	protected CsrfTokenRepository csrfTokenRepository() {
 		
+		//return new CookieCsrfTokenRepository();
 		HttpSessionCsrfTokenRepository repository =
 				new HttpSessionCsrfTokenRepository();
 		repository.setHeaderName(LemonCsrfFilter.XSRF_TOKEN_HEADER_NAME);

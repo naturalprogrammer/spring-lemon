@@ -7,7 +7,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -42,7 +44,7 @@ public abstract class LemonController
 	/**
 	 * A simple function for pinging this server.
 	 */
-	@RequestMapping(value="/ping", method=RequestMethod.GET)
+	@GetMapping("/ping")
 	public void ping() {
 		log.debug("Received a ping");
 	}
@@ -52,7 +54,7 @@ public abstract class LemonController
 	 * Returns context properties needed at the client side, and
 	 * the current-user data.
 	 */
-	@RequestMapping(value="/context", method=RequestMethod.GET)
+	@GetMapping("/context")
 	public Map<String, Object> getContext() {
 		
 		Map<String, Object> context =
@@ -71,7 +73,7 @@ public abstract class LemonController
 	 * @param user	data fed by the user
 	 * @return data about the logged in user
 	 */
-	@RequestMapping(value="/signup", method=RequestMethod.POST)
+	@PostMapping("/signup")
 	@ResponseStatus(HttpStatus.CREATED)
 	public U signup(@RequestBody U user) {
 		
@@ -86,8 +88,7 @@ public abstract class LemonController
 	/**
 	 * Resends verification mail. 
 	 */
-	@RequestMapping(value="/users/{id}/resend-verification-mail",
-			        method=RequestMethod.GET)
+	@GetMapping("/users/{id}/resend-verification-mail")
 	public void resendVerificationMail(@PathVariable("id") U user) {
 		
 		log.debug("Resending verification mail for: " + user);
@@ -99,8 +100,7 @@ public abstract class LemonController
 	/**
 	 * Verifies current-user.
 	 */
-	@RequestMapping(value="/users/{verificationCode}/verify",
-					method=RequestMethod.POST)
+	@PostMapping("/users/{verificationCode}/verify")
 	public U verifyUser(@PathVariable String verificationCode) {
 		
 		log.debug("Verifying user ...");		
@@ -113,7 +113,7 @@ public abstract class LemonController
 	/**
 	 * The forgot Password feature.
 	 */
-	@RequestMapping(value="/forgot-password", method=RequestMethod.POST)
+	@PostMapping("/forgot-password")
 	public void forgotPassword(@RequestParam String email) {
 		
 		log.debug("Received forgot password request for: " + email);				
@@ -124,8 +124,7 @@ public abstract class LemonController
 	/**
 	 * Resets password after it is forgotten.
 	 */
-	@RequestMapping(value="/users/{forgotPasswordCode}/reset-password",
-					method=RequestMethod.POST)
+	@PostMapping("/users/{forgotPasswordCode}/reset-password")
 	public void resetPassword(@PathVariable String forgotPasswordCode,
 							  @RequestParam String newPassword) {
 		
@@ -137,7 +136,7 @@ public abstract class LemonController
 	/**
 	 * Fetches a user by email.
 	 */
-	@RequestMapping(value="/users/fetch-by-email", method=RequestMethod.GET)
+	@GetMapping("/users/fetch-by-email")
 	public U fetchUserByEmail(@RequestParam String email) {
 		
 		log.debug("Fetching user by email: " + email);						
@@ -148,7 +147,7 @@ public abstract class LemonController
 	/**
 	 * Fetches a user by Id.
 	 */	
-	@RequestMapping(value="/users/{id}/fetch-by-id", method=RequestMethod.GET)
+	@GetMapping("/users/{id}/fetch-by-id")
 	public U fetchUserById(@PathVariable("id") U user) {
 		
 		log.debug("Fetching user: " + user);				
@@ -159,7 +158,7 @@ public abstract class LemonController
 	/**
 	 * Updates a user.
 	 */
-	@RequestMapping(value="/users/{id}/update", method=RequestMethod.POST)
+	@PostMapping("/users/{id}/update")
 	public U updateUser(@PathVariable("id") U user, @RequestBody U updatedUser) {
 		
 		log.debug("Updating user ... ");				
@@ -171,8 +170,7 @@ public abstract class LemonController
 	/**
 	 * Changes password.
 	 */
-	@RequestMapping(value="/users/{id}/change-password",
-					method=RequestMethod.POST)
+	@PostMapping("/users/{id}/change-password")
 	public void changePassword(@PathVariable("id") U user,
 			@RequestBody ChangePasswordForm changePasswordForm) {
 		
@@ -184,8 +182,7 @@ public abstract class LemonController
 	/**
 	 * Requests for changing email.
 	 */
-	@RequestMapping(value="/users/{id}/request-email-change",
-					method=RequestMethod.POST)
+	@PostMapping("/users/{id}/request-email-change")
 	public void requestEmailChange(@PathVariable("id") U user,
 								   @RequestBody U updatedUser) {
 		
@@ -196,12 +193,10 @@ public abstract class LemonController
 	/**
 	 * Changes the email.
 	 */
-	@RequestMapping(value="/users/{changeEmailCode}/change-email",
-					method=RequestMethod.POST)
+	@PostMapping("/users/{changeEmailCode}/change-email")
 	public void changeEmail(@PathVariable String changeEmailCode) {
 		
 		log.debug("Changing email of user ...");		
 		lemonService.changeEmail(changeEmailCode);
 	}
-
 }
