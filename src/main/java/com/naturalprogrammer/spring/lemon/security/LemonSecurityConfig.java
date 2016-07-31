@@ -31,7 +31,6 @@ import com.naturalprogrammer.spring.lemon.LemonProperties;
  * 
  * @author Sanjay Patel
  */
-@EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 	
@@ -85,16 +84,7 @@ public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
       return new BCryptPasswordEncoder();
     }
 	
-//    /**
-//     * In case you don't want use the email field as the login id,
-//     * you may want to have a different userDetailsServices, and
-//     * override this method for injecting that here.
-//     */
-//	@Override
-//    protected void configure(AuthenticationManagerBuilder builder) throws Exception {
-//        builder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
-//    }
-//	
+
 	/**
 	 * Security configuration, calling protected methods
 	 */
