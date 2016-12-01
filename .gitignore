@@ -4,3 +4,6 @@
 /.project
 /.apt_generated/
 /.factorypath
+*.iml
+/.idea
+
