@@ -1,0 +1,2 @@
+include 'spring-lemon'
+rootProject.name = 'spring-lemon-project'
