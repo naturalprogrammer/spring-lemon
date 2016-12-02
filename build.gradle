@@ -1,17 +1,20 @@
 buildscript {
+
 	ext {
 		springBootVersion = "1.4.2.RELEASE"
 	}
+
 	repositories {
 		mavenCentral()
         maven { url "https://plugins.gradle.org/m2/" }
     }
+
 	dependencies {
 
 		classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
         classpath "gradle.plugin.com.gorylenko.gradle-git-properties:gradle-git-properties:1.4.17"
 
-        // https://github.com/nebula-plugins/gradle-extra-configurations-plugin
+        // See https://github.com/nebula-plugins/gradle-extra-configurations-plugin
         classpath "com.netflix.nebula:gradle-extra-configurations-plugin:+"
 	}
 }
@@ -21,6 +24,7 @@ allprojects {
     group "com.naturalprogrammer.spring"
     version "0.10.0"
 
+    apply plugin: "maven"
     apply plugin: "java"
     apply plugin: "eclipse"
     apply plugin: "idea"

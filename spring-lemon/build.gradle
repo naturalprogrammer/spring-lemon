@@ -5,7 +5,7 @@ dependencies {
 	compile "org.springframework.boot:spring-boot-starter-mail"
 	compile "org.springframework.boot:spring-boot-starter-security"
 	compile "joda-time:joda-time"
-	compile "org.apache.commons:commons-lang3:+"
+	compile "org.apache.commons:commons-lang3:3.5"
 	compile "org.springframework.boot:spring-boot-configuration-processor", optional
 	compile "org.springframework.boot:spring-boot-starter-web"
 	compile "org.springframework.boot:spring-boot-starter-web"
