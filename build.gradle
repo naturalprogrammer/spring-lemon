@@ -28,7 +28,6 @@ allprojects {
     apply plugin: "java"
     apply plugin: "eclipse"
     apply plugin: "idea"
-    apply plugin: "org.springframework.boot"
     apply plugin: "project-report" // adds projectReport task (see under Tasks -> reporting) to generate HTML dependency reports in build/reports folder
     apply plugin: "com.gorylenko.gradle-git-properties"
 
@@ -40,14 +39,19 @@ allprojects {
         options.encoding = "UTF-8"
     }
 
-    bootRepackage {
-        enabled = false
-    }
-
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
 
     repositories {
         mavenCentral()
+    }
+}
+
+subprojects {
+
+    apply plugin: "org.springframework.boot"
+
+    bootRepackage {
+        enabled = false
     }
 }
