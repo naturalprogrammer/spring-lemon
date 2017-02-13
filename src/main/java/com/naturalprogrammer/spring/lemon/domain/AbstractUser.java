@@ -18,6 +18,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.naturalprogrammer.spring.lemon.security.LemonSecurityConfig;
 import com.naturalprogrammer.spring.lemon.util.LemonUtil;
 import com.naturalprogrammer.spring.lemon.validation.Captcha;
@@ -67,12 +68,17 @@ implements UserDetails {
 	public interface UpdateValidation {}
 	public interface ChangeEmailValidation {}
 	
+	// JsonView for Sign up
+	public interface SignupView {}
+	
 	// email
+	@JsonView(SignupView.class)
 	@UniqueEmail(groups = {SignUpValidation.class})
 	@Column(nullable = false, unique=true, length = EMAIL_MAX)
 	protected String email;
 	
 	// password
+	@JsonView(SignupView.class)
 	@Password(groups = {SignUpValidation.class, ChangeEmailValidation.class})
 	@Column(nullable = false) // no length because it will be encrypted
 	protected String password;
