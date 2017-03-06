@@ -16,7 +16,7 @@ import org.springframework.data.repository.NoRepositoryBean;
  * @param <ID>	The Primary key type of User class 
  */
 @NoRepositoryBean
-public abstract interface AbstractUserRepository
+public interface AbstractUserRepository
 	<U extends AbstractUser<U,ID>, ID extends Serializable>
 extends JpaRepository<U, ID> {
 	
