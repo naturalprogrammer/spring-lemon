@@ -3,7 +3,9 @@ package com.naturalprogrammer.spring.lemon;
 import java.util.Map;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
+import org.springframework.validation.annotation.Validated;
 
 import com.naturalprogrammer.spring.lemon.security.LemonSecurityConfig;
 
@@ -13,7 +15,8 @@ import com.naturalprogrammer.spring.lemon.security.LemonSecurityConfig;
  * @author Sanjay Patel
  *
  */
-@Component
+@Validated
+@Configuration
 @ConfigurationProperties(prefix="lemon")
 public class LemonProperties {
 	
