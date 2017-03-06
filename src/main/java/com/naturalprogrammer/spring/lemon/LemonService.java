@@ -300,7 +300,7 @@ public abstract class LemonService
 
 		// fetch the user
 		U user = userRepository.findByEmail(email)
-			.orElseThrow(() -> MultiErrorException.of("email",
+			.orElseThrow(MultiErrorException.supplier("email",
 				"com.naturalprogrammer.spring.userNotFound"));
 
 		// decorate the user, and hide confidential fields
@@ -386,7 +386,7 @@ public abstract class LemonService
 		
 		// fetch the user record from database
 		U user = userRepository.findByEmail(email)
-				.orElseThrow(() -> MultiErrorException.of(
+				.orElseThrow(MultiErrorException.supplier(
 					"com.naturalprogrammer.spring.userNotFound"));
 
 		// set a forgot password code
@@ -444,7 +444,7 @@ public abstract class LemonService
 		// fetch the user
 		U user = userRepository
 			.findByForgotPasswordCode(forgotPasswordCode)
-			.orElseThrow(() -> MultiErrorException.of(
+			.orElseThrow(MultiErrorException.supplier(
 				"com.naturalprogrammer.spring.invalidLink"));
 		
 		// sets the password

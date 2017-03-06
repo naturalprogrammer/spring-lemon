@@ -2,6 +2,7 @@ package com.naturalprogrammer.spring.lemon.exceptions;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 import com.naturalprogrammer.spring.lemon.util.LemonUtil;
 import com.naturalprogrammer.spring.lemon.validation.FieldError;
@@ -85,13 +86,14 @@ public class MultiErrorException extends RuntimeException {
 	 * 
 	 * @return				the exception object
 	 */
-	public static MultiErrorException of(String fieldName, 
+	public static Supplier<MultiErrorException> supplier(String fieldName, 
 			String messageKey, Object... args) {
 		
 		MultiErrorException exception = new MultiErrorException();
 		exception.errors.add(new FieldError(fieldName, messageKey,
 				LemonUtil.getMessage(messageKey, args)));
-		return exception;
+		
+		return () -> exception;
 	}
 	
 	
@@ -103,9 +105,9 @@ public class MultiErrorException extends RuntimeException {
 	 * 
 	 * @return				the exception object
 	 */
-	public static MultiErrorException of(String messageKey, Object... args) {
+	public static Supplier<MultiErrorException> supplier(String messageKey, Object... args) {
 		
-		return MultiErrorException.of(null, messageKey, args);
+		return MultiErrorException.supplier(null, messageKey, args);
 	}
 	
 	
