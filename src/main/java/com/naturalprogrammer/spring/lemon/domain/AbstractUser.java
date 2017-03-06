@@ -19,6 +19,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.naturalprogrammer.spring.lemon.domain.AbstractUser.SignupView;
 import com.naturalprogrammer.spring.lemon.security.LemonSecurityConfig;
 import com.naturalprogrammer.spring.lemon.util.LemonUtil;
 import com.naturalprogrammer.spring.lemon.validation.Captcha;
@@ -106,6 +107,7 @@ implements UserDetails {
 
 	// holds reCAPTCHA response while signing up
 	@Transient
+	@JsonView(SignupView.class)
 	@Captcha(groups = {SignUpValidation.class})
 	private String captchaResponse;
 	
