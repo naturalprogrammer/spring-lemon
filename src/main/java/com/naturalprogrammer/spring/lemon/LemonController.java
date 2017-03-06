@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -73,7 +74,7 @@ public abstract class LemonController
 	 * @param user	data fed by the user
 	 * @return data about the logged in user
 	 */
-	@PostMapping("/signup")
+	@PostMapping("/users")
 	@ResponseStatus(HttpStatus.CREATED)
 	public U signup(@RequestBody @JsonView(SignupView.class) U user) {
 		
@@ -147,7 +148,7 @@ public abstract class LemonController
 	/**
 	 * Fetches a user by Id.
 	 */	
-	@GetMapping("/users/{id}/fetch-by-id")
+	@GetMapping("/users/{id}")
 	public U fetchUserById(@PathVariable("id") U user) {
 		
 		log.debug("Fetching user: " + user);				
@@ -158,7 +159,7 @@ public abstract class LemonController
 	/**
 	 * Updates a user.
 	 */
-	@PostMapping("/users/{id}/update")
+	@PutMapping("/users/{id}")
 	public U updateUser(@PathVariable("id") U user, @RequestBody U updatedUser) {
 		
 		log.debug("Updating user ... ");				
