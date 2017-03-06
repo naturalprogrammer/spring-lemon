@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -17,9 +16,7 @@ import org.springframework.security.web.authentication.logout.LogoutSuccessHandl
 import org.springframework.security.web.authentication.rememberme.AbstractRememberMeServices;
 import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices;
 import org.springframework.security.web.authentication.switchuser.SwitchUserFilter;
-import org.springframework.security.web.csrf.CsrfFilter;
-import org.springframework.security.web.csrf.CsrfTokenRepository;
-import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 import com.naturalprogrammer.spring.lemon.LemonProperties;
 
@@ -46,6 +43,10 @@ public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 	protected UserDetailsService userDetailsService;
 	protected AuthenticationSuccessHandler authenticationSuccessHandler;
 	protected LogoutSuccessHandler logoutSuccessHandler;
+	// name of the header to be receiving from the client
+	public static final String XSRF_TOKEN_HEADER_NAME = "X-XSRF-TOKEN";
+	// name of the cookie
+	public static final String XSRF_TOKEN_COOKIE_NAME = "XSRF-TOKEN";
 	
 	@Autowired
 	public void setProperties(LemonProperties properties) {
@@ -193,9 +194,7 @@ public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 		
 		http
 			.csrf()
-				.csrfTokenRepository(csrfTokenRepository())
-				.and()
-			.addFilterAfter(new LemonCsrfFilter(), CsrfFilter.class);
+				.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
 	}
 
 	
@@ -255,23 +254,6 @@ public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
     }
     
 
-	/**
-	 * A customized CsrfTokenRepository, for making it
-	 * compatible to AngularJS CSRF token header name.
-	 * Override this if you want to change the 
-	 * header name.
-	 *  
-	 * @return
-	 */
-	protected CsrfTokenRepository csrfTokenRepository() {
-		
-		HttpSessionCsrfTokenRepository repository =
-				new HttpSessionCsrfTokenRepository();
-		repository.setHeaderName(LemonCsrfFilter.XSRF_TOKEN_HEADER_NAME);
-		return repository;
-	}
-	
-	
 	/**
 	 * Returns switch-user filter
 	 * 

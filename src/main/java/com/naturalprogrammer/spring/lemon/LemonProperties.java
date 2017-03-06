@@ -5,7 +5,7 @@ import java.util.Map;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
-import com.naturalprogrammer.spring.lemon.security.LemonCsrfFilter;
+import com.naturalprogrammer.spring.lemon.security.LemonSecurityConfig;
 
 /**
  * Lemon Properties
@@ -176,7 +176,7 @@ public class LemonProperties {
 				"Referer",
 				"User-Agent",
 				"x-requested-with",
-				LemonCsrfFilter.XSRF_TOKEN_HEADER_NAME};
+				LemonSecurityConfig.XSRF_TOKEN_HEADER_NAME};
 		
 		/**
 		 * Response headers that you want to expose to the client JavaScript programmer, e.g. "X-XSRF-TOKEN".
@@ -201,7 +201,7 @@ public class LemonProperties {
 				"X-XSS-Protection",
 				"X-Frame-Options",
 				"X-Application-Context",
-				LemonCsrfFilter.XSRF_TOKEN_HEADER_NAME};
+				LemonSecurityConfig.XSRF_TOKEN_HEADER_NAME};
 		
 		/**
 		 * CORS <code>maxAge</code> long property
