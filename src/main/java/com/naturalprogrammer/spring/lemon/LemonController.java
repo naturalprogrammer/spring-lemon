@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
-import com.naturalprogrammer.spring.lemon.domain.AbstractUser.SignupView;
+import com.naturalprogrammer.spring.lemon.domain.AbstractUser.SignupInput;
 import com.naturalprogrammer.spring.lemon.domain.ChangePasswordForm;
 import com.naturalprogrammer.spring.lemon.util.LemonUtil;
 
@@ -76,7 +76,7 @@ public abstract class LemonController
 	 */
 	@PostMapping("/users")
 	@ResponseStatus(HttpStatus.CREATED)
-	public U signup(@RequestBody @JsonView(SignupView.class) U user) {
+	public U signup(@RequestBody @JsonView(SignupInput.class) U user) {
 		
 		log.debug("Signing up: " + user);
 		lemonService.signup(user);

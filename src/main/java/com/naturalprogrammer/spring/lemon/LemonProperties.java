@@ -2,6 +2,8 @@ package com.naturalprogrammer.spring.lemon;
 
 import java.util.Map;
 
+import javax.validation.constraints.Size;
+
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.validation.annotation.Validated;
@@ -28,6 +30,7 @@ public class LemonProperties {
 	/**
      * Secret string used for encrypting remember-me tokens
      */
+    @Size(min=6)
     private String rememberMeKey;
     
     /**

@@ -69,16 +69,16 @@ implements UserDetails {
 	public interface ChangeEmailValidation {}
 	
 	// JsonView for Sign up
-	public interface SignupView {}
+	public interface SignupInput {}
 	
 	// email
-	@JsonView(SignupView.class)
+	@JsonView(SignupInput.class)
 	@UniqueEmail(groups = {SignUpValidation.class})
 	@Column(nullable = false, unique=true, length = EMAIL_MAX)
 	protected String email;
 	
 	// password
-	@JsonView(SignupView.class)
+	@JsonView(SignupInput.class)
 	@Password(groups = {SignUpValidation.class, ChangeEmailValidation.class})
 	@Column(nullable = false) // no length because it will be encrypted
 	protected String password;
@@ -106,7 +106,7 @@ implements UserDetails {
 
 	// holds reCAPTCHA response while signing up
 	@Transient
-	@JsonView(SignupView.class)
+	@JsonView(SignupInput.class)
 	@Captcha(groups = {SignUpValidation.class})
 	private String captchaResponse;
 	
