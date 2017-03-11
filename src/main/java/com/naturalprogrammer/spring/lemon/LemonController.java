@@ -1,6 +1,7 @@
 package com.naturalprogrammer.spring.lemon;
 
 import java.io.Serializable;
+import java.security.Principal;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -199,5 +200,11 @@ public abstract class LemonController
 		
 		log.debug("Changing email of user ...");		
 		lemonService.changeEmail(changeEmailCode);
+	}
+	
+	
+	@GetMapping("/user")
+	public Principal user(Principal principal) {
+	    return principal;
 	}
 }

@@ -1,6 +1,12 @@
 package com.naturalprogrammer.spring.lemon.security;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.servlet.Filter;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.oauth2.resource.UserInfoTokenServices;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -8,17 +14,25 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.OAuth2ClientContext;
+import org.springframework.security.oauth2.client.OAuth2RestTemplate;
+import org.springframework.security.oauth2.client.filter.OAuth2ClientAuthenticationProcessingFilter;
+import org.springframework.security.oauth2.config.annotation.web.configuration.EnableOAuth2Client;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
+import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.authentication.rememberme.AbstractRememberMeServices;
 import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices;
 import org.springframework.security.web.authentication.switchuser.SwitchUserFilter;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.web.filter.CompositeFilter;
 
 import com.naturalprogrammer.spring.lemon.LemonProperties;
+import com.naturalprogrammer.spring.lemon.LemonProperties.ClientResource;
 
 
 /**
@@ -28,6 +42,7 @@ import com.naturalprogrammer.spring.lemon.LemonProperties;
  * 
  * @author Sanjay Patel
  */
+@EnableOAuth2Client
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 	
@@ -43,6 +58,8 @@ public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 	protected UserDetailsService userDetailsService;
 	protected AuthenticationSuccessHandler authenticationSuccessHandler;
 	protected LogoutSuccessHandler logoutSuccessHandler;
+	protected OAuth2ClientContext oauth2ClientContext;
+
 	// name of the header to be receiving from the client
 	public static final String XSRF_TOKEN_HEADER_NAME = "X-XSRF-TOKEN";
 	// name of the cookie
@@ -66,6 +83,11 @@ public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	public void setLogoutSuccessHandler(LogoutSuccessHandler logoutSuccessHandler) {
 		this.logoutSuccessHandler = logoutSuccessHandler;
+	}
+	
+	@Autowired
+	public void setOauth2ClientContext(OAuth2ClientContext oauth2ClientContext) {
+		this.oauth2ClientContext = oauth2ClientContext;
 	}
 
 	/**
@@ -98,6 +120,7 @@ public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 		rememberMe(http); // remember-me
 		csrf(http); // csrf configuration
 		switchUser(http); // switch-user configuration
+		sso(http); // Social login configuration
 		authorizeRequests(http); // authorize requests
 		otherConfigurations(http); // override this to add more configurations
 	}
@@ -210,6 +233,12 @@ public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 	}
 
 
+	protected void sso(HttpSecurity http) {
+		
+		http.addFilterBefore(ssoFilter(), BasicAuthenticationFilter.class);
+	}
+
+
 	/**
 	 * URL based authorization configuration. Override this if needed.
 	 * 
@@ -221,18 +250,6 @@ public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 			.mvcMatchers("/login/impersonate*").hasRole(GOOD_ADMIN)
 			.mvcMatchers("/logout/impersonate*").authenticated()
 			.mvcMatchers("/**").permitAll();                  
-	}
-	
-	
-	/**
-	 * Override this to add more http configurations,
-	 * such as more authentication methods.
-	 * 
-	 * @param http
-	 * @throws Exception
-	 */
-	protected void otherConfigurations(HttpSecurity http)  throws Exception {
-
 	}
 
 	
@@ -265,5 +282,48 @@ public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 		filter.setSuccessHandler(authenticationSuccessHandler);
 		filter.setFailureHandler(authenticationFailureHandler());
 		return filter;
-	}	
+	}
+	
+	
+	protected Filter ssoFilter() {
+		
+		  List<Filter> filters = properties.getClientResources()
+				  .stream()
+				  .map(this::ssoFilter)
+				  .collect(Collectors.toList());
+
+		  CompositeFilter filter = new CompositeFilter();		  
+		  filter.setFilters(filters);
+		  
+		  return filter;
+	}
+
+	protected Filter ssoFilter(ClientResource client) {
+		  
+		OAuth2ClientAuthenticationProcessingFilter filter =
+				new OAuth2ClientAuthenticationProcessingFilter("/login/" + client.getName());
+		SavedRequestAwareAuthenticationSuccessHandler successHandler = new SavedRequestAwareAuthenticationSuccessHandler();
+		successHandler.setDefaultTargetUrl("http://localhost:8080/api/core/user");
+		filter.setAuthenticationSuccessHandler(successHandler);
+		  
+		OAuth2RestTemplate template = new OAuth2RestTemplate(client.getClient(), oauth2ClientContext);
+		filter.setRestTemplate(template);
+		UserInfoTokenServices tokenServices = new UserInfoTokenServices(
+		    client.getResource().getUserInfoUri(), client.getClient().getClientId());
+		tokenServices.setRestTemplate(template);
+		filter.setTokenServices(tokenServices);
+		return filter;
+	}
+	
+	
+	/**
+	 * Override this to add more http configurations,
+	 * such as more authentication methods.
+	 * 
+	 * @param http
+	 * @throws Exception
+	 */
+	protected void otherConfigurations(HttpSecurity http)  throws Exception {
+
+	}
 }

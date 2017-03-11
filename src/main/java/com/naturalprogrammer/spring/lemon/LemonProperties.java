@@ -1,11 +1,14 @@
 package com.naturalprogrammer.spring.lemon;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.validation.constraints.Size;
 
+import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceServerProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.oauth2.client.token.grant.code.AuthorizationCodeResourceDetails;
 import org.springframework.validation.annotation.Validated;
 
 import com.naturalprogrammer.spring.lemon.security.LemonSecurityConfig;
@@ -48,12 +51,18 @@ public class LemonProperties {
 	 */
 	private Admin admin = new Admin();
 	
+	
+	/**
+	 * Social login related properties
+	 */
+	private List<ClientResource> clientResources;
+	
+	
 	/**
      * Any shared properties you want to pass to the 
      * client should begin with lemon.shared.
      */
 	private Map<String, Object> shared;
-
 
 
 	/**************************
@@ -108,12 +117,21 @@ public class LemonProperties {
 		this.applicationUrl = applicationUrl;
 	}
 
+    public List<ClientResource> getClientResources() {
+		return clientResources;
+	}
+
+	public void setClientResources(List<ClientResource> clientResources) {
+		this.clientResources = clientResources;
+	}
+
+
 	
 	/**************************
 	 * Static classes
 	 *************************/
-	
-    /**
+
+	/**
      * Recaptcha related properties
      */
 	public static class Recaptcha {
@@ -289,5 +307,32 @@ public class LemonProperties {
 			this.password = password;
 		}		
 	}
+	
+	public static class ClientResource {
+		
+		private String name;
+		private AuthorizationCodeResourceDetails client;
+		private ResourceServerProperties resource;
+		
+		public String getName() {
+			return name;
+		}
+		public void setName(String name) {
+			this.name = name;
+		}
+		public AuthorizationCodeResourceDetails getClient() {
+			return client;
+		}
+		public void setClient(AuthorizationCodeResourceDetails client) {
+			this.client = client;
+		}
+		public ResourceServerProperties getResource() {
+			return resource;
+		}
+		public void setResource(ResourceServerProperties resource) {
+			this.resource = resource;
+		}	
+	}
+
 	
 }
