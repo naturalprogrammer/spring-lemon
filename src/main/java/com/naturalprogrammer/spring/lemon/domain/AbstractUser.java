@@ -49,7 +49,7 @@ implements UserDetails {
 	
 	public static final int UUID_LENGTH = 36;
 	
-	public static final int PASSWORD_MAX = 30;
+	public static final int PASSWORD_MAX = 50;
 	public static final int PASSWORD_MIN = 6;
 	
 	/**

@@ -1,11 +1,15 @@
 package com.naturalprogrammer.spring.lemon.security;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.servlet.Filter;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.oauth2.resource.PrincipalExtractor;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.UserInfoTokenServices;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -21,8 +25,8 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
-import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.authentication.rememberme.AbstractRememberMeServices;
 import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices;
@@ -53,17 +57,17 @@ public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 	// remember-me related
 	public static final String REMEMBER_ME_COOKIE = "rememberMe";
 	public static final String REMEMBER_ME_PARAMETER = "rememberMe";
+
+	// CSRF related
+	public static final String XSRF_TOKEN_HEADER_NAME = "X-XSRF-TOKEN";
+	public static final String XSRF_TOKEN_COOKIE_NAME = "XSRF-TOKEN";
 	
 	protected LemonProperties properties;
 	protected UserDetailsService userDetailsService;
 	protected AuthenticationSuccessHandler authenticationSuccessHandler;
 	protected LogoutSuccessHandler logoutSuccessHandler;
 	protected OAuth2ClientContext oauth2ClientContext;
-
-	// name of the header to be receiving from the client
-	public static final String XSRF_TOKEN_HEADER_NAME = "X-XSRF-TOKEN";
-	// name of the cookie
-	public static final String XSRF_TOKEN_COOKIE_NAME = "XSRF-TOKEN";
+	protected Map<String, AbstractPrincipalExtractor> principalExtractors;
 	
 	@Autowired
 	public void setProperties(LemonProperties properties) {
@@ -89,6 +93,13 @@ public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 	public void setOauth2ClientContext(OAuth2ClientContext oauth2ClientContext) {
 		this.oauth2ClientContext = oauth2ClientContext;
 	}
+	
+	@Autowired
+	public void setPrincipalExtractor(Set<AbstractPrincipalExtractor> principalExtractors) {
+		this.principalExtractors = principalExtractors.stream().collect(
+                Collectors.toMap(AbstractPrincipalExtractor::getProvider, Function.identity()));;
+	}
+
 
 	/**
 	 * Authentication failure handler, to override the default behavior
@@ -302,14 +313,25 @@ public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 		  
 		OAuth2ClientAuthenticationProcessingFilter filter =
 				new OAuth2ClientAuthenticationProcessingFilter("/login/" + client.getName());
-		SavedRequestAwareAuthenticationSuccessHandler successHandler = new SavedRequestAwareAuthenticationSuccessHandler();
-		successHandler.setDefaultTargetUrl("http://localhost:8080/api/core/user");
+		
+		//SavedRequestAwareAuthenticationSuccessHandler successHandler =
+		//	new SavedRequestAwareAuthenticationSuccessHandler("http://localhost:9000");
+		SimpleUrlAuthenticationSuccessHandler successHandler =
+				new SimpleUrlAuthenticationSuccessHandler(/*"http://localhost:9000"*/ "http://localhost:8080/api/core/user");
+		
 		filter.setAuthenticationSuccessHandler(successHandler);
 		  
 		OAuth2RestTemplate template = new OAuth2RestTemplate(client.getClient(), oauth2ClientContext);
 		filter.setRestTemplate(template);
+		
 		UserInfoTokenServices tokenServices = new UserInfoTokenServices(
 		    client.getResource().getUserInfoUri(), client.getClient().getClientId());
+		
+		PrincipalExtractor principalExtractor = principalExtractors.get(client.getName());
+		if (principalExtractor == null)
+			principalExtractors.get(AbstractPrincipalExtractor.DEFAULT);
+		
+		tokenServices.setPrincipalExtractor(principalExtractor);
 		tokenServices.setRestTemplate(template);
 		filter.setTokenServices(tokenServices);
 		return filter;

@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 
 import javax.mail.MessagingException;
 import javax.validation.Valid;
@@ -224,7 +223,7 @@ public abstract class LemonService
 	 */
 	protected void makeUnverified(U user) {
 		user.getRoles().add(Role.UNVERIFIED);
-		user.setVerificationCode(UUID.randomUUID().toString());
+		user.setVerificationCode(LemonUtil.uid());
 	}
 	
 	
@@ -390,7 +389,7 @@ public abstract class LemonService
 					"com.naturalprogrammer.spring.userNotFound"));
 
 		// set a forgot password code
-		user.setForgotPasswordCode(UUID.randomUUID().toString());
+		user.setForgotPasswordCode(LemonUtil.uid());
 		userRepository.save(user);
 
 		// after successful commit, mail him a link to reset his password
@@ -629,7 +628,7 @@ public abstract class LemonService
 
 		// preserves the new email id
 		user.setNewEmail(updatedUser.getNewEmail());
-		user.setChangeEmailCode(UUID.randomUUID().toString());
+		user.setChangeEmailCode(LemonUtil.uid());
 		userRepository.save(user);
 		
 		// after successful commit, mails a link to the user

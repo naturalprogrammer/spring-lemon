@@ -3,6 +3,7 @@ package com.naturalprogrammer.spring.lemon.util;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -28,7 +29,7 @@ import com.naturalprogrammer.spring.lemon.exceptions.VersionException;
  */
 @Component
 public class LemonUtil {
-
+	
 	private static ApplicationContext applicationContext;
 	private static MessageSource messageSource;
 	
@@ -195,13 +196,20 @@ public class LemonUtil {
 	 * @param runnable
 	 */
 	public static void afterCommit(Runnable runnable) {
+		
 		TransactionSynchronizationManager.registerSynchronization(
 		    new TransactionSynchronizationAdapter() {
 		        @Override
 		        public void afterCommit() {
+		        	
 		        	runnable.run();
 		        }
 		});				
 	}
 
+	public static String uid() {
+		
+		return UUID.randomUUID().toString();
+	}
+	
 }
