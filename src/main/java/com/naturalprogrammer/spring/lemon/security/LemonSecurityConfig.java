@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -67,7 +68,7 @@ public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 	protected AuthenticationSuccessHandler authenticationSuccessHandler;
 	protected LogoutSuccessHandler logoutSuccessHandler;
 	protected OAuth2ClientContext oauth2ClientContext;
-	protected Map<String, AbstractPrincipalExtractor> principalExtractors;
+	protected Map<String, LemonPrincipalExtractor> principalExtractors;
 	
 	@Autowired
 	public void setProperties(LemonProperties properties) {
@@ -95,9 +96,9 @@ public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 	}
 	
 	@Autowired
-	public void setPrincipalExtractor(Set<AbstractPrincipalExtractor> principalExtractors) {
+	public void setPrincipalExtractor(Set<LemonPrincipalExtractor> principalExtractors) {
 		this.principalExtractors = principalExtractors.stream().collect(
-                Collectors.toMap(AbstractPrincipalExtractor::getProvider, Function.identity()));;
+                Collectors.toMap(LemonPrincipalExtractor::getProvider, Function.identity()));;
 	}
 
 
@@ -109,14 +110,6 @@ public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
     public AuthenticationFailureHandler authenticationFailureHandler() {
     	return new SimpleUrlAuthenticationFailureHandler();
     }	
-	
-	/**
-	 * Password encoder
-	 */
-	@Bean
-    public PasswordEncoder passwordEncoder() {
-      return new BCryptPasswordEncoder();
-    }
 	
 
 	/**
@@ -317,7 +310,7 @@ public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 		//SavedRequestAwareAuthenticationSuccessHandler successHandler =
 		//	new SavedRequestAwareAuthenticationSuccessHandler("http://localhost:9000");
 		SimpleUrlAuthenticationSuccessHandler successHandler =
-				new SimpleUrlAuthenticationSuccessHandler(/*"http://localhost:9000"*/ "http://localhost:8080/api/core/user");
+				new SimpleUrlAuthenticationSuccessHandler("http://localhost:9000" /* "http://localhost:8080/api/core/user"*/);
 		
 		filter.setAuthenticationSuccessHandler(successHandler);
 		  
@@ -329,9 +322,11 @@ public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 		
 		PrincipalExtractor principalExtractor = principalExtractors.get(client.getName());
 		if (principalExtractor == null)
-			principalExtractors.get(AbstractPrincipalExtractor.DEFAULT);
+			principalExtractor = principalExtractors.get(AbstractPrincipalExtractor.DEFAULT);
 		
 		tokenServices.setPrincipalExtractor(principalExtractor);
+		tokenServices.setAuthoritiesExtractor(
+				map -> (List<GrantedAuthority>) map.get(AbstractPrincipalExtractor.AUTHORITIES));
 		tokenServices.setRestTemplate(template);
 		filter.setTokenServices(tokenServices);
 		return filter;

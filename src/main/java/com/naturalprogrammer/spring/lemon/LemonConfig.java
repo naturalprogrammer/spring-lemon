@@ -10,6 +10,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.client.RestTemplate;
 
@@ -74,5 +76,12 @@ public class LemonConfig {
 		
 		return new RestTemplate();
 	}
-
+	
+	/**
+	 * Password encoder
+	 */
+	@Bean
+    public PasswordEncoder passwordEncoder() {
+      return new BCryptPasswordEncoder();
+    }
 }

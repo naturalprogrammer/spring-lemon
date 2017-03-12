@@ -1,5 +1,6 @@
 package com.naturalprogrammer.spring.lemon.security;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 import javax.mail.MessagingException;
@@ -21,17 +22,18 @@ import com.naturalprogrammer.spring.lemon.util.LemonUtil;
 
 @Transactional(propagation=Propagation.SUPPORTS, readOnly=true)
 public abstract class AbstractPrincipalExtractor<U extends AbstractUser<U,?>>
-		implements PrincipalExtractor {
+		implements LemonPrincipalExtractor {
 
     private static final Log log = LogFactory.getLog(AbstractPrincipalExtractor.class);
     
     public static final String DEFAULT = "default";
+    public static final String AUTHORITIES = "lemon-authorities";
 
     @Autowired
     private PasswordEncoder passwordEncoder;
     
     @Autowired
-	private UserDetailsService userDetailsService;
+	private UserDetailsServiceImpl<U,?> userDetailsService;
     
     @Autowired
     private AbstractUserRepository<U, ?> userRepository;
@@ -45,16 +47,21 @@ public abstract class AbstractPrincipalExtractor<U extends AbstractUser<U,?>>
     @Override
     public Object extractPrincipal(Map<String, Object> map) {
     	
+    	AbstractUser<U,?> user;
+    	
 		try {
 			
 			// Return the user if it already exists
-			return userDetailsService
+			user = userDetailsService
 				.loadUserByUsername((String) map.get(usernameColumnName));
 			
 		} catch (UsernameNotFoundException e) {
 			
-			return createUser(map);
+			user = createUser(map);
 		}
+		
+		map.put(AUTHORITIES, user.getAuthorities());		
+		return user;		
     }
     
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
@@ -81,11 +88,12 @@ public abstract class AbstractPrincipalExtractor<U extends AbstractUser<U,?>>
 			}
 		});
 		
-		return user;
+		return user.decorate(user);
 	}
 	
 	protected abstract U newUser(Map<String, Object> principalMap);
 
+	@Override
 	public String getProvider() {
 		return provider;
 	}

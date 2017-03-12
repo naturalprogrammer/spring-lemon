@@ -43,7 +43,7 @@ implements UserDetailsService {
 	}
 
 	@Override
-	public UserDetails loadUserByUsername(String username)
+	public U loadUserByUsername(String username)
 			throws UsernameNotFoundException {
 		
 		log.debug("Loading user having username: " + username);

@@ -1,6 +1,7 @@
 package com.naturalprogrammer.spring.lemon.domain;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -384,7 +385,7 @@ implements UserDetails {
 		authorities = roles.stream()
 			.map(role -> new SimpleGrantedAuthority("ROLE_" + role))
 			.collect(Collectors.toCollection(() ->
-				new HashSet<GrantedAuthority>(roles.size() + 2))); 
+				new ArrayList<GrantedAuthority>(roles.size() + 2))); 
 		
 		if (goodUser) {
 			
