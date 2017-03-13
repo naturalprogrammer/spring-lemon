@@ -104,6 +104,9 @@ implements UserDetails {
 	// change email code
 	@Column(length = UUID_LENGTH, unique=true)
 	protected String changeEmailCode;
+	
+	protected String authenticationToken;	
+
 
 	// holds reCAPTCHA response while signing up
 	@Transient
@@ -166,6 +169,14 @@ implements UserDetails {
 
 	public void setChangeEmailCode(String changeEmailCode) {
 		this.changeEmailCode = changeEmailCode;
+	}
+
+	public String getAuthenticationToken() {
+		return authenticationToken;
+	}
+
+	public void setAuthenticationToken(String authenticationToken) {
+		this.authenticationToken = authenticationToken;
 	}
 
 	public String getCaptchaResponse() {

@@ -67,6 +67,7 @@ public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 	protected LogoutSuccessHandler logoutSuccessHandler;
 	protected OAuth2ClientContext oauth2ClientContext;
 	protected Map<String, LemonPrincipalExtractor> principalExtractors;
+	protected LemonTokenAuthenticationFilter<?, ?> lemonTokenAuthenticationFilter;
 	
 	@Autowired
 	public void setProperties(LemonProperties properties) {
@@ -99,6 +100,12 @@ public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
                 Collectors.toMap(LemonPrincipalExtractor::getProvider, Function.identity()));;
 	}
 
+	@Autowired
+	public void setLemonTokenAuthenticationFilter(
+			LemonTokenAuthenticationFilter<?, ?> lemonTokenAuthenticationFilter) {
+		this.lemonTokenAuthenticationFilter = lemonTokenAuthenticationFilter;
+	}
+
 
 	/**
 	 * Authentication failure handler, to override the default behavior
@@ -123,6 +130,7 @@ public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 		csrf(http); // csrf configuration
 		switchUser(http); // switch-user configuration
 		sso(http); // Social login configuration
+		customToken(http); // Custom token authentication
 		authorizeRequests(http); // authorize requests
 		otherConfigurations(http); // override this to add more configurations
 	}
@@ -240,6 +248,10 @@ public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.addFilterBefore(ssoFilter(), BasicAuthenticationFilter.class);
 	}
 
+
+	private void customToken(HttpSecurity http) {
+		http.addFilterBefore(lemonTokenAuthenticationFilter, BasicAuthenticationFilter.class);
+	}
 
 	/**
 	 * URL based authorization configuration. Override this if needed.
