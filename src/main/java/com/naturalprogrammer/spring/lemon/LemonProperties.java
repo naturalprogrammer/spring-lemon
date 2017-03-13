@@ -30,7 +30,13 @@ public class LemonProperties {
 	 */
     private String applicationUrl = "http://localhost:9000";
     
-	/**
+    /**
+	 * Client web application's base URL.
+	 * Used in the verification link mailed to the users, etc.
+	 */
+    private String afterOauth2LoginUrl = "http://localhost:9000/after-social-login";
+
+    /**
      * Secret string used for encrypting remember-me tokens
      */
     @Size(min=6)
@@ -101,6 +107,14 @@ public class LemonProperties {
 		this.shared = shared;
 	}
 
+	public String getAfterOauth2LoginUrl() {
+		return afterOauth2LoginUrl;
+	}
+
+	public void setAfterOauth2LoginUrl(String afterOauth2LoginUrl) {
+		this.afterOauth2LoginUrl = afterOauth2LoginUrl;
+	}
+
 	public String getRememberMeKey() {
 		return rememberMeKey;
 	}
@@ -130,6 +144,7 @@ public class LemonProperties {
 	/**************************
 	 * Static classes
 	 *************************/
+
 
 	/**
      * Recaptcha related properties

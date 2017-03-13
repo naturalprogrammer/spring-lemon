@@ -308,7 +308,7 @@ public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 		//SavedRequestAwareAuthenticationSuccessHandler successHandler =
 		//	new SavedRequestAwareAuthenticationSuccessHandler("http://localhost:9000");
 		SimpleUrlAuthenticationSuccessHandler successHandler =
-				new SimpleUrlAuthenticationSuccessHandler("http://localhost:9000" /* "http://localhost:8080/api/core/user"*/);
+				new SimpleUrlAuthenticationSuccessHandler(properties.getAfterOauth2LoginUrl());
 		
 		filter.setAuthenticationSuccessHandler(successHandler);
 		  
