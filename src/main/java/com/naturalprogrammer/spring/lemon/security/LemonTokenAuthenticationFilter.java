@@ -3,12 +3,12 @@ package com.naturalprogrammer.spring.lemon.security;
 import java.io.IOException;
 import java.io.Serializable;
 
+import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -32,15 +32,10 @@ public abstract class LemonTokenAuthenticationFilter
 	private AbstractUserRepository<U, ID> userRepository;
 	
 	@Autowired
-	public void setAuthenticationSuccessHandler(AuthenticationSuccessHandler authenticationSuccessHandler) {
-		super.setAuthenticationSuccessHandler(authenticationSuccessHandler);
-	}
-	
-	@Autowired
 	public void setAuthenticationFailureHandler(AuthenticationFailureHandler authenticationFailureHandler) {
 		super.setAuthenticationFailureHandler(authenticationFailureHandler);
 	}
-		
+	
 	public static boolean tokenPresent(HttpServletRequest request) {
 		
 		String header = request.getHeader("Authorization");		
@@ -50,7 +45,13 @@ public abstract class LemonTokenAuthenticationFilter
 	public LemonTokenAuthenticationFilter() {
 		
 		super(request -> tokenPresent(request));
-		setAuthenticationManager(new NoopAuthenticationManager());
+		
+		setAuthenticationSuccessHandler((request, response, authentication) -> {});
+		
+		setAuthenticationManager(authentication -> {
+			throw new UnsupportedOperationException("No authentication should be done with this AuthenticationManager");
+		});
+		
 	}
 
 	@Override
@@ -73,20 +74,22 @@ public abstract class LemonTokenAuthenticationFilter
 	    
 		return authentication;
 	}
+	
+	@Override
+    protected void successfulAuthentication(HttpServletRequest request,
+    		HttpServletResponse response, FilterChain chain, Authentication authResult)
+            throws IOException, ServletException {
+		
+        super.successfulAuthentication(request, response, chain, authResult);
+
+        // As this authentication is in HTTP header, after success we need to continue the request normally
+        // and return the response as if the resource was not secured at all
+        chain.doFilter(request, response);
+    }
 
 	protected String tokenSplitter() {
 		return ":";
 	}
 
 	abstract protected ID parseId(String id);
-	
-	private static class NoopAuthenticationManager implements AuthenticationManager {
-
-		@Override
-		public Authentication authenticate(Authentication authentication)
-				throws AuthenticationException {
-			throw new UnsupportedOperationException("No authentication should be done with this AuthenticationManager");
-		}		
-	}
-
 }
