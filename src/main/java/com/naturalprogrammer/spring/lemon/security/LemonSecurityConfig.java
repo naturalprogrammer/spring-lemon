@@ -305,12 +305,11 @@ public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 		OAuth2ClientAuthenticationProcessingFilter filter =
 				new OAuth2ClientAuthenticationProcessingFilter("/login/" + client.getName());
 		
-		//SavedRequestAwareAuthenticationSuccessHandler successHandler =
-		//	new SavedRequestAwareAuthenticationSuccessHandler("http://localhost:9000");
 		SimpleUrlAuthenticationSuccessHandler successHandler =
 				new SimpleUrlAuthenticationSuccessHandler(properties.getAfterOauth2LoginUrl());
 		
 		filter.setAuthenticationSuccessHandler(successHandler);
+		filter.setRememberMeServices(rememberMeServices());
 		  
 		OAuth2RestTemplate template = new OAuth2RestTemplate(client.getClient(), oauth2ClientContext);
 		filter.setRestTemplate(template);
