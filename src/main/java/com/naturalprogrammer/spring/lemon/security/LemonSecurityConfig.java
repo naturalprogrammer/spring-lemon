@@ -1,5 +1,7 @@
 package com.naturalprogrammer.spring.lemon.security;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -216,6 +218,9 @@ public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 				.rememberMeServices(rememberMeServices());
 	}
 
+
+	private final HashSet<String> csrfAllowedMethods = new HashSet<String>(
+			Arrays.asList("GET", "HEAD", "TRACE", "OPTIONS"));
 	
 	/**
 	 * Configures CSRF
@@ -227,7 +232,17 @@ public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 		
 		http
 			.csrf()
-				.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
+				.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+				.requireCsrfProtectionMatcher(request -> {
+					
+					if (csrfAllowedMethods.contains(request.getMethod()))
+						return false;
+						
+					if (LemonTokenAuthenticationFilter.tokenPresent(request))
+						return false;
+					
+					return true;
+				});
 	}
 
 	
@@ -245,7 +260,10 @@ public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	protected void sso(HttpSecurity http) {
 		
-		http.addFilterBefore(ssoFilter(), BasicAuthenticationFilter.class);
+		List<ClientResource> clientResources = properties.getClientResources();
+		
+		if (clientResources != null && clientResources.size() > 0)
+			http.addFilterBefore(ssoFilter(properties.getClientResources()), BasicAuthenticationFilter.class);
 	}
 
 
@@ -299,17 +317,17 @@ public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 	}
 	
 	
-	protected Filter ssoFilter() {
+	protected Filter ssoFilter(List<ClientResource> clientResources) {
 		
-		  List<Filter> filters = properties.getClientResources()
-				  .stream()
-				  .map(this::ssoFilter)
-				  .collect(Collectors.toList());
+		List<Filter> filters = properties.getClientResources()
+				.stream()
+				.map(this::ssoFilter)
+				.collect(Collectors.toList());
 
-		  CompositeFilter filter = new CompositeFilter();		  
-		  filter.setFilters(filters);
+		CompositeFilter filter = new CompositeFilter();		  
+		filter.setFilters(filters);
 		  
-		  return filter;
+		return filter;
 	}
 
 	protected Filter ssoFilter(ClientResource client) {

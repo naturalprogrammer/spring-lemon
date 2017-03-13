@@ -213,7 +213,11 @@ public abstract class LemonService
 		log.debug("Initializing user: " + user);
 
 		user.setPassword(passwordEncoder.encode(user.getPassword())); // encode the password
-		user.setAuthenticationToken(passwordEncoder.encode(LemonUtil.uid())); // set an authentication token
+		
+		String authenticationToken = LemonUtil.uid();
+		log.info("Authentication Token: Bearer " + user.getId() + ":" + authenticationToken);
+		
+		user.setAuthenticationToken(passwordEncoder.encode(authenticationToken)); // set an authentication token
 		makeUnverified(user); // make the user unverified
 	}
 

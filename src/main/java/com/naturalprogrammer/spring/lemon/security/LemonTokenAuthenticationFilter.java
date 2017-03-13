@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -39,18 +40,17 @@ public abstract class LemonTokenAuthenticationFilter
 	public void setAuthenticationFailureHandler(AuthenticationFailureHandler authenticationFailureHandler) {
 		super.setAuthenticationFailureHandler(authenticationFailureHandler);
 	}
-	
-	
-	@Autowired
-	private AuthenticationFailureHandler authenticationFailureHandler;	
+		
+	public static boolean tokenPresent(HttpServletRequest request) {
+		
+		String header = request.getHeader("Authorization");		
+		return header != null && header.startsWith("Bearer ");
+	}
 	
 	public LemonTokenAuthenticationFilter() {
 		
-		super(request -> {
-			
-			String header = request.getHeader("Authorization");		
-			return header != null && header.startsWith("Bearer ");
-		});
+		super(request -> tokenPresent(request));
+		setAuthenticationManager(new NoopAuthenticationManager());
 	}
 
 	@Override
@@ -79,4 +79,14 @@ public abstract class LemonTokenAuthenticationFilter
 	}
 
 	abstract protected ID parseId(String id);
+	
+	private static class NoopAuthenticationManager implements AuthenticationManager {
+
+		@Override
+		public Authentication authenticate(Authentication authentication)
+				throws AuthenticationException {
+			throw new UnsupportedOperationException("No authentication should be done with this AuthenticationManager");
+		}		
+	}
+
 }
