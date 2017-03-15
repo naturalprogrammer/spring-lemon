@@ -11,9 +11,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.naturalprogrammer.spring.lemon.util.LemonUtil;
 import com.naturalprogrammer.spring.lemon.validation.FieldError;
@@ -23,8 +21,8 @@ import com.naturalprogrammer.spring.lemon.validation.FieldError;
  * 
  * @author Sanjay Patel
  */
-@RestControllerAdvice
-@RequestMapping(produces = "application/json")
+//@RestControllerAdvice
+//@RequestMapping(produces = "application/json")
 public class DefaultExceptionHandler {
 	
     private final Log log = LogFactory.getLog(getClass());
