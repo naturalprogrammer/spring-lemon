@@ -5,7 +5,6 @@ import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 
-import com.naturalprogrammer.spring.lemon.util.LemonUtil;
 import com.naturalprogrammer.spring.lemon.validation.FieldError;
 
 public abstract class AbstractExceptionHandler<T extends Throwable> implements LemonExceptionHandler<T> {
@@ -24,9 +23,9 @@ public abstract class AbstractExceptionHandler<T extends Throwable> implements L
 	@Override
 	public void putErrorDetails(Map<String, Object> errorAttributes, T ex) {
 		
-		String messageKey = getMessageKey(ex);
-		if (messageKey != null)
-			errorAttributes.put("message", LemonUtil.getMessage(messageKey));
+		String message = getMessage(ex);
+		if (message != null)
+			errorAttributes.put("message", message);
 		
 		Collection<FieldError> errors = getErrors(ex);
 		if (errors != null)
@@ -40,7 +39,7 @@ public abstract class AbstractExceptionHandler<T extends Throwable> implements L
 		}
 	}
 
-	protected String getMessageKey(T ex) {
+	protected String getMessage(T ex) {
 		return null;
 	}
 	

@@ -7,6 +7,7 @@ import javax.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
+import com.naturalprogrammer.spring.lemon.util.LemonUtil;
 import com.naturalprogrammer.spring.lemon.validation.FieldError;
 
 @Component
@@ -17,15 +18,18 @@ public class ConstraintViolationExceptionHandler extends AbstractExceptionHandle
 		super(ConstraintViolationException.class.getSimpleName());
 	}
 	
+	@Override
 	protected HttpStatus getStatus(ConstraintViolationException ex) {
 		return HttpStatus.UNPROCESSABLE_ENTITY;
 	}
 	
+	@Override
 	protected Collection<FieldError> getErrors(ConstraintViolationException ex) {
 		return FieldError.getErrors(ex.getConstraintViolations());
 	}
 	
-	protected String getMessageKey(ConstraintViolationException ex) {
-		return "com.naturalprogrammer.spring.validationError";
+	@Override
+	protected String getMessage(ConstraintViolationException ex) {
+		return LemonUtil.getMessage("com.naturalprogrammer.spring.validationError");
 	}
 }

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
+import org.springframework.http.HttpStatus;
+
 import com.naturalprogrammer.spring.lemon.util.LemonUtil;
 import com.naturalprogrammer.spring.lemon.validation.FieldError;
 
@@ -17,13 +19,28 @@ public class MultiErrorException extends RuntimeException {
 
 	private static final long serialVersionUID = 6020532846519363456L;
 	
+	// HTTP Status code to be returned
+	private HttpStatus status = HttpStatus.UNPROCESSABLE_ENTITY;
+	
+	public HttpStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(HttpStatus status) {
+		this.status = status;
+	}
+
+	public MultiErrorException httpStatus(HttpStatus status) {
+		this.status = status;
+		return this;
+	}
+
 	// list of errors
 	private List<FieldError> errors = new ArrayList<FieldError>(10);
 	
 	public List<FieldError> getErrors() {
 		return errors;
-	}
-	
+	}	
 	
 	/**
 	 * Overrides the standard getMessage
@@ -118,5 +135,4 @@ public class MultiErrorException extends RuntimeException {
 		if (errors.size() > 0)
 			throw this;
 	}
-
 }

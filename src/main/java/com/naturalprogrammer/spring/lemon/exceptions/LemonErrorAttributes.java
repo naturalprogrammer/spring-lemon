@@ -40,7 +40,8 @@ public class LemonErrorAttributes extends DefaultErrorAttributes {
 	}
 
 	@SuppressWarnings("unchecked")
-	protected <T extends Throwable> void addLemonErrorDetails(Map<String, Object> errorAttributes, RequestAttributes requestAttributes) {
+	protected <T extends Throwable> void addLemonErrorDetails(
+			Map<String, Object> errorAttributes, RequestAttributes requestAttributes) {
 		
 		Throwable ex = getError(requestAttributes);
 		
@@ -56,18 +57,11 @@ public class LemonErrorAttributes extends DefaultErrorAttributes {
 			
 			if (handler != null) // found a handler
 				break;
+			
 			ex = ex.getCause();			
 		}
         
-//        do {
-//        	
-//            handler = (LemonExceptionHandler<T>) handlers.get(ex.getClass().getSimpleName());
-//
-//        } while (handler == null && (ex = ex.getCause()) != null);
-//
-//        log.warn("Exception: ", ex);
-//        
-        if (handler != null) {
+        if (handler != null) { // a handler is found
         	
         	log.warn("Handling exception ", ex);
         	
