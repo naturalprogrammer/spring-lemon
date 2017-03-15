@@ -9,6 +9,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.web.DefaultErrorAttributes;
+import org.springframework.core.annotation.AnnotationAwareOrderComparator;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestAttributes;
 
@@ -25,7 +26,13 @@ public class LemonErrorAttributes extends DefaultErrorAttributes {
 	public void setHandlers(List<LemonExceptionHandler<?>> handlers) {
 		
         this.handlers = handlers.stream().collect(
-            Collectors.toMap(LemonExceptionHandler::getExceptionName, Function.identity()));
+            Collectors.toMap(LemonExceptionHandler::getExceptionName,
+            		Function.identity(), (handler1, handler2) -> {
+            			
+            			return AnnotationAwareOrderComparator
+            					.INSTANCE.compare(handler1, handler2) < 0 ?
+            					handler1 : handler2;
+            		}));
 	}
 	
 	@Override

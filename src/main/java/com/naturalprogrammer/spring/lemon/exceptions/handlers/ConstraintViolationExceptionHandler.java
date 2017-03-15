@@ -4,6 +4,8 @@ import java.util.Collection;
 
 import javax.validation.ConstraintViolationException;
 
+import org.springframework.core.annotation.Order;
+import org.springframework.core.Ordered;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
@@ -11,6 +13,7 @@ import com.naturalprogrammer.spring.lemon.util.LemonUtil;
 import com.naturalprogrammer.spring.lemon.validation.FieldError;
 
 @Component
+@Order(Ordered.LOWEST_PRECEDENCE)
 public class ConstraintViolationExceptionHandler extends AbstractExceptionHandler<ConstraintViolationException> {
 
 	public ConstraintViolationExceptionHandler() {
