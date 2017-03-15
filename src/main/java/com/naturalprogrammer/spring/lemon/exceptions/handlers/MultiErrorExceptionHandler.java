@@ -18,7 +18,7 @@ public class MultiErrorExceptionHandler extends AbstractExceptionHandler<MultiEr
 	
 	@Override
 	protected HttpStatus getStatus(MultiErrorException ex) {
-		return HttpStatus.UNPROCESSABLE_ENTITY;
+		return ex.getStatus();
 	}
 	
 	@Override
