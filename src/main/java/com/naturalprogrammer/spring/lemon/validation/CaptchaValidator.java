@@ -10,6 +10,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -31,7 +32,7 @@ import com.naturalprogrammer.spring.lemon.LemonProperties;
 @Component
 public class CaptchaValidator implements ConstraintValidator<Captcha, String> {
 	
-	private final Log log = LogFactory.getLog(getClass());
+	private static final Log log = LogFactory.getLog(CaptchaValidator.class);
 	
 	/**
 	 * A class to receive the response
@@ -63,14 +64,22 @@ public class CaptchaValidator implements ConstraintValidator<Captcha, String> {
 	private LemonProperties properties;
 	private RestTemplate restTemplate;
 	
+	public CaptchaValidator() {
+		log.info("Created");
+	}
+	
 	@Autowired
 	public void setProperties(LemonProperties properties) {
+
+		log.info("Setting properties");
 		this.properties = properties;
 	}
 
 	@Autowired
-	public void setRestTemplate(RestTemplate restTemplate) {
-		this.restTemplate = restTemplate;
+	public void setRestTemplateBuilder(RestTemplateBuilder restTemplateBuilder) {
+
+		log.info("Setting restTemplateBuilder");
+		this.restTemplate = restTemplateBuilder.build();
 	}
 
 	/**

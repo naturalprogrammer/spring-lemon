@@ -19,11 +19,21 @@ import com.naturalprogrammer.spring.lemon.domain.AbstractUserRepository;
 public class UniqueEmailValidator
 implements ConstraintValidator<UniqueEmail, String> {
 
-	private final Log log = LogFactory.getLog(getClass());
+	private static final Log log = LogFactory.getLog(UniqueEmailValidator.class);
 
-	@Autowired
 	private AbstractUserRepository<?,?> userRepository;
+
+	public UniqueEmailValidator() {
+		log.info("Created");
+	}
 	
+	@Autowired	
+	public void setUserRepository(AbstractUserRepository<?, ?> userRepository) {
+
+		log.info("Setting userRepository");
+		this.userRepository = userRepository;
+	}
+
 	@Override
 	public void initialize(UniqueEmail constraintAnnotation) {
 		log.debug("UniqueEmailValidator initialized");

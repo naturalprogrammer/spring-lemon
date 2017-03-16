@@ -2,9 +2,11 @@ package com.naturalprogrammer.spring.lemon;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.web.WebMvcAutoConfiguration;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
@@ -13,7 +15,6 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import org.springframework.web.client.RestTemplate;
 
 /**
  * Although most of the configurations are
@@ -23,10 +24,12 @@ import org.springframework.web.client.RestTemplate;
  * @author Sanjay Patel
  */
 @Configuration
+@ComponentScan
 @EnableSpringDataWebSupport
 @EnableTransactionManagement
 @EnableJpaAuditing
 @EnableAsync
+@AutoConfigureBefore({WebMvcAutoConfiguration.class})
 public class LemonConfig {
 	
 	/**
@@ -37,6 +40,10 @@ public class LemonConfig {
 	public final static String JSON_PREFIX = ")]}',\n";
 
 	private static final Log log = LogFactory.getLog(LemonConfig.class);
+	
+	public LemonConfig() {
+		log.info("Created");
+	}
 
 	/**
 	 * Prefixes JSON responses for JSON vulnerability. See for more details:
@@ -51,30 +58,12 @@ public class LemonConfig {
 	@ConditionalOnProperty(name="lemon.enabled.json-prefix", matchIfMissing=true)
 	public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter() {
 		
+        log.info("Configuring JSON vulnerability prefix ...");       
+
         MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
         converter.setJsonPrefix(JSON_PREFIX);
         
-        log.info("Configuring JSON vulnerability prefix ...");
-        
         return converter;
-	}
-	
-	/**
-	 * Needed in CaptchaValidator.
-	 * 
-	 * ConditionalOnMissingBean will ensure that this bean will be processed
-	 * in the REGISTER_BEAN ConfigurationPhase. For more details see:
-	 * ConditionEvaluator.shouldSkip, ConfigurationPhase.REGISTER_BEAN
-	 *  
-	 * @return
-	 */
-	@Bean
-	@ConditionalOnMissingBean(RestTemplate.class)
-	public RestTemplate restTemplate() {
-		
-		log.info("Configuring RestTemplate ...");
-		
-		return new RestTemplate();
 	}
 	
 	/**
@@ -82,6 +71,8 @@ public class LemonConfig {
 	 */
 	@Bean
     public PasswordEncoder passwordEncoder() {
-      return new BCryptPasswordEncoder();
+	
+		log.info("Configuring Password Encoder ...");		
+        return new BCryptPasswordEncoder();
     }
 }

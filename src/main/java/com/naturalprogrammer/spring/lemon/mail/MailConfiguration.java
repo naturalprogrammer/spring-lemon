@@ -1,5 +1,7 @@
 package com.naturalprogrammer.spring.lemon.mail;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -17,6 +19,13 @@ import org.springframework.mail.javamail.JavaMailSender;
 @ConditionalOnMissingBean(MailSender.class)
 public class MailConfiguration {
 	
+	private static final Log log = LogFactory.getLog(MailConfiguration.class);
+
+	public MailConfiguration() {
+		log.info("Created");
+	}
+
+
 	/**
 	 * Configures a MockMailSender when the property
 	 * <code>spring.mail.host</code> isn't defined.

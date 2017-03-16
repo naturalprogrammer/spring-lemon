@@ -24,9 +24,13 @@ import org.springframework.stereotype.Component;
 public class LemonLogoutSuccessHandler
 	implements LogoutSuccessHandler {
 
-	private final Log log = LogFactory.getLog(getClass());
+	private static final Log log = LogFactory.getLog(LemonLogoutSuccessHandler.class);
 
-    @Override
+	public LemonLogoutSuccessHandler() {
+		log.info("Created");
+	}
+
+	@Override
 	public void onLogoutSuccess(HttpServletRequest request,
 			HttpServletResponse response, Authentication authentication)
 			throws IOException, ServletException {

@@ -12,6 +12,10 @@ import org.apache.commons.logging.LogFactory;
 public class MockMailSender implements MailSender {
 	
 	private static final Log log = LogFactory.getLog(MockMailSender.class);
+	
+	public MockMailSender() {
+		log.info("Created");
+	}
 
 	@Override
 	public void send(String to, String subject, String body) {

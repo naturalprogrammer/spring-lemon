@@ -28,14 +28,28 @@ public abstract class LemonTokenAuthenticationFilter
 	
     private static final Log log = LogFactory.getLog(LemonTokenAuthenticationFilter.class);
 	
-	@Autowired
 	private PasswordEncoder passwordEncoder;
-	
-	@Autowired
 	private AbstractUserRepository<U, ID> userRepository;
 	
 	private String tokenSplitter = ":";
 	
+	public LemonTokenAuthenticationFilter() {
+		log.info("Created");
+	}
+	
+	@Autowired
+	public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
+		
+		log.info("Setting passwordEncoder");
+		this.passwordEncoder = passwordEncoder;
+	}
+
+	public void setUserRepository(AbstractUserRepository<U, ID> userRepository) {
+		
+		log.info("Setting userRepository");
+		this.userRepository = userRepository;
+	}
+
 	public static boolean tokenPresent(HttpServletRequest request) {
 		
 		String header = request.getHeader("Authorization");		

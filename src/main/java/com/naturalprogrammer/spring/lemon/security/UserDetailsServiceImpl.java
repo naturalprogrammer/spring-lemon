@@ -32,12 +32,18 @@ public class UserDetailsServiceImpl
 	<U extends AbstractUser<U,ID>, ID extends Serializable>
 implements UserDetailsService {
 
-	private final Log log = LogFactory.getLog(getClass());
+	private static final Log log = LogFactory.getLog(UserDetailsServiceImpl.class);
 
 	protected AbstractUserRepository<U,ID> userRepository;
 	
+	public UserDetailsServiceImpl() {
+		log.info("Created");
+	}
+	
 	@Autowired	
 	public void setUserRepository(AbstractUserRepository<U, ID> userRepository) {
+
+		log.info("Setting userRepository");
 		this.userRepository = userRepository;
 	}
 

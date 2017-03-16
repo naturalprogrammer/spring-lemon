@@ -55,30 +55,44 @@ public abstract class LemonService
 	private PasswordEncoder passwordEncoder;
     private MailSender mailSender;
 	private AbstractUserRepository<U, ID> userRepository;
-	private UserDetailsService userDetailsService;   
-    
+	private UserDetailsService userDetailsService;
+	
+	public LemonService() {
+		log.info("Created");
+	}
+
 	@Autowired
     public void setProperties(LemonProperties properties) {
+		
+		log.info("Setting properties");
 		this.properties = properties;
 	}
 
 	@Autowired
 	public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
+		
+		log.info("Setting passwordEncoder");
 		this.passwordEncoder = passwordEncoder;
 	}
 
 	@Autowired
 	public void setMailSender(MailSender mailSender) {
+		
+		log.info("Setting mailSender");
 		this.mailSender = mailSender;
 	}
 
 	@Autowired
 	public void setUserRepository(AbstractUserRepository<U, ID> userRepository) {
+		
+		log.info("Setting userRepository");
 		this.userRepository = userRepository;
 	}
 
 	@Autowired
 	public void setUserDetailsService(UserDetailsService userDetailsService) {
+		
+		log.info("Setting userDetailsService");
 		this.userDetailsService = userDetailsService;
 	}
 

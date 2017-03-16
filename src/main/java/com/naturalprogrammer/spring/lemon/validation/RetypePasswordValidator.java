@@ -21,8 +21,12 @@ import org.springframework.stereotype.Component;
 public class RetypePasswordValidator
 implements ConstraintValidator<RetypePassword, RetypePasswordForm> {
 	
-	private final Log log = LogFactory.getLog(getClass());
+	private static final Log log = LogFactory.getLog(RetypePasswordValidator.class);
 
+	public RetypePasswordValidator() {
+		log.info("Created");
+	}
+	
 	@Override
 	public boolean isValid(RetypePasswordForm retypePasswordForm,
 		ConstraintValidatorContext context) {

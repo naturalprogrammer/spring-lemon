@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.MessageSource;
@@ -30,6 +32,8 @@ import com.naturalprogrammer.spring.lemon.exceptions.VersionException;
 @Component
 public class LemonUtil {
 	
+	private static final Log log = LogFactory.getLog(LemonUtil.class);
+
 	private static ApplicationContext applicationContext;
 	private static MessageSource messageSource;
 	
@@ -38,7 +42,8 @@ public class LemonUtil {
 		MessageSource messageSource) {
 		
 		LemonUtil.applicationContext = applicationContext;
-		LemonUtil.messageSource = messageSource;		
+		LemonUtil.messageSource = messageSource;
+		log.info("Created");
 	}
 
 	

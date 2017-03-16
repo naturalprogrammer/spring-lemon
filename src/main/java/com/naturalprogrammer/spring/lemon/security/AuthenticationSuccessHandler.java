@@ -30,20 +30,28 @@ import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
 public class AuthenticationSuccessHandler
 	extends SimpleUrlAuthenticationSuccessHandler {
 	
-	private final Log log = LogFactory.getLog(getClass());
+	private static final Log log = LogFactory.getLog(AuthenticationSuccessHandler.class);
 	
     private ObjectMapper objectMapper;
     
     private LemonService<?,?> lemonService;
     
+	public AuthenticationSuccessHandler() {
+		log.info("Created");
+	}
+
 	@Autowired    
 	public void setObjectMapper(ObjectMapper objectMapper) {
+		
+		log.info("Setting objectMapper");
 		this.objectMapper = objectMapper;
 	}
 
 	@Autowired
     @Lazy
 	public void setLemonService(LemonService<?, ?> lemonService) {
+
+		log.info("Setting lemonService");
 		this.lemonService = lemonService;
 	}
 

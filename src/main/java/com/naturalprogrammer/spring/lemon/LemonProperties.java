@@ -5,10 +5,12 @@ import java.util.Map;
 
 import javax.validation.constraints.Size;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceServerProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.security.oauth2.client.token.grant.code.AuthorizationCodeResourceDetails;
+import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
 
 import com.naturalprogrammer.spring.lemon.security.LemonSecurityConfig;
@@ -20,11 +22,17 @@ import com.naturalprogrammer.spring.lemon.security.LemonSecurityConfig;
  *
  */
 @Validated
-@Configuration
+@Component
 @ConfigurationProperties(prefix="lemon")
 public class LemonProperties {
 	
-    /**
+    private static final Log log = LogFactory.getLog(LemonProperties.class);
+    
+    public LemonProperties() {
+		log.info("Created");
+	}
+
+	/**
 	 * Client web application's base URL.
 	 * Used in the verification link mailed to the users, etc.
 	 */

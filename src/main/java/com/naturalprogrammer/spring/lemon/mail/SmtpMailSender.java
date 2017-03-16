@@ -23,6 +23,10 @@ public class SmtpMailSender implements MailSender {
 
 	private JavaMailSender javaMailSender;
 	
+	public SmtpMailSender() {
+		log.info("Created");
+	}
+
 	/**
 	 * Setter method for injecting a JavaMailSender.
 	 */

@@ -10,6 +10,8 @@ import java.util.stream.Collectors;
 
 import javax.servlet.Filter;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.PrincipalExtractor;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.UserInfoTokenServices;
@@ -39,7 +41,6 @@ import org.springframework.web.filter.CompositeFilter;
 import com.naturalprogrammer.spring.lemon.LemonProperties;
 import com.naturalprogrammer.spring.lemon.LemonProperties.ClientResource;
 
-
 /**
  * Security configuration class. Extend it in the
  * application, and make a configuration class. Override
@@ -51,6 +52,8 @@ import com.naturalprogrammer.spring.lemon.LemonProperties.ClientResource;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 	
+	private static final Log log = LogFactory.getLog(LemonPermissionEvaluator.class);
+
 	// Computed authorities
 	public static final String GOOD_ADMIN = "GOOD_ADMIN";
 	public static final String GOOD_USER = "GOOD_USER";
@@ -71,33 +74,49 @@ public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 	protected Map<String, LemonPrincipalExtractor> principalExtractors;
 	protected LemonTokenAuthenticationFilter<?, ?> lemonTokenAuthenticationFilter;
 	
+	public LemonSecurityConfig() {
+		log.info("Created");
+	}
+	
 	@Autowired
 	public void setProperties(LemonProperties properties) {
+		
+		log.info("Setting properties");
 		this.properties = properties;
 	}
 
 	@Autowired
 	public void setUserDetailsService(UserDetailsService userDetailsService) {
+		
+		log.info("Setting userDetailsService");
 		this.userDetailsService = userDetailsService;
 	}
 
 	@Autowired
 	public void setAuthenticationSuccessHandler(AuthenticationSuccessHandler authenticationSuccessHandler) {
+		
+		log.info("Setting authenticationSuccessHandler");
 		this.authenticationSuccessHandler = authenticationSuccessHandler;
 	}
 
 	@Autowired
 	public void setLogoutSuccessHandler(LogoutSuccessHandler logoutSuccessHandler) {
+		
+		log.info("Setting logoutSuccessHandler");
 		this.logoutSuccessHandler = logoutSuccessHandler;
 	}
 	
 	@Autowired
 	public void setOauth2ClientContext(OAuth2ClientContext oauth2ClientContext) {
+		
+		log.info("Setting oauth2ClientContext");
 		this.oauth2ClientContext = oauth2ClientContext;
 	}
 	
 	@Autowired
 	public void setPrincipalExtractor(Set<LemonPrincipalExtractor> principalExtractors) {
+		
+		log.info("Setting principalExtractors");
 		this.principalExtractors = principalExtractors.stream().collect(
                 Collectors.toMap(LemonPrincipalExtractor::getProvider, Function.identity()));;
 	}
@@ -105,6 +124,8 @@ public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	public void setLemonTokenAuthenticationFilter(
 			LemonTokenAuthenticationFilter<?, ?> lemonTokenAuthenticationFilter) {
+		
+		log.info("Setting lemonTokenAuthenticationFilter");
 		this.lemonTokenAuthenticationFilter = lemonTokenAuthenticationFilter;
 	}
 
@@ -115,6 +136,8 @@ public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 	 */
 	@Bean
     public AuthenticationFailureHandler authenticationFailureHandler() {
+		
+		log.info("Creating authenticationFailureHandler");
     	return new SimpleUrlAuthenticationFailureHandler();
     }	
 	

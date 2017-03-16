@@ -5,5 +5,4 @@ import org.springframework.boot.autoconfigure.security.oauth2.resource.Principal
 public interface LemonPrincipalExtractor extends PrincipalExtractor {
 	
 	String getProvider();
-
 }

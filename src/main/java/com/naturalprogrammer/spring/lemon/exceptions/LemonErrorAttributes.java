@@ -22,10 +22,16 @@ public class LemonErrorAttributes extends DefaultErrorAttributes {
 	
 	Map<String, LemonExceptionHandler<?>> handlers;
 	
+	public LemonErrorAttributes() {
+		log.info("Created");
+	}
+
 	@Autowired
 	public void setHandlers(List<LemonExceptionHandler<?>> handlers) {
 		
-        this.handlers = handlers.stream().collect(
+		log.info("Setting handlers ...");
+
+		this.handlers = handlers.stream().collect(
             Collectors.toMap(LemonExceptionHandler::getExceptionName,
             		Function.identity(), (handler1, handler2) -> {
             			

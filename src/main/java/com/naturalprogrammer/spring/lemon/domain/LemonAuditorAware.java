@@ -2,6 +2,8 @@ package com.naturalprogrammer.spring.lemon.domain;
 
 import java.io.Serializable;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.stereotype.Component;
 
@@ -17,10 +19,16 @@ import com.naturalprogrammer.spring.lemon.util.LemonUtil;
  * @param <ID>	The Primary key type of User class 
  */
 @Component
-public class AuditorAwareImpl
+public class LemonAuditorAware
 	<U extends AbstractUser<U,ID>,
 	 ID extends Serializable>
 implements AuditorAware<U> {
+	
+    private static final Log log = LogFactory.getLog(LemonAuditorAware.class);
+    
+	public LemonAuditorAware() {
+		log.info("Created");
+	}
 
 	@Override
 	public U getCurrentAuditor() {

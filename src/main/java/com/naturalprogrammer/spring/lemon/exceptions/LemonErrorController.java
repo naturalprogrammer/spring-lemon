@@ -7,6 +7,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.boot.autoconfigure.web.BasicErrorController;
 import org.springframework.boot.autoconfigure.web.ErrorAttributes;
 import org.springframework.boot.autoconfigure.web.ErrorViewResolver;
@@ -20,11 +22,14 @@ import org.springframework.stereotype.Component;
 @Component
 public class LemonErrorController extends BasicErrorController {
 	
-	public LemonErrorController(ErrorAttributes errorAttributes,
+    private static final Log log = LogFactory.getLog(LemonErrorController.class);
+
+    public LemonErrorController(ErrorAttributes errorAttributes,
 			ServerProperties serverProperties,
 			List<ErrorViewResolver> errorViewResolvers) {
 		
 		super(errorAttributes, serverProperties.getError(), errorViewResolvers);
+		log.info("Created");
 	}
 
 	@Override	

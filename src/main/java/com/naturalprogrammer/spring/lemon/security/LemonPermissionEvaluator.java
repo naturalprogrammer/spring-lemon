@@ -26,7 +26,11 @@ public class LemonPermissionEvaluator
 <U extends AbstractUser<U,ID>, ID extends Serializable>
 implements PermissionEvaluator {
 
-	private final Log log = LogFactory.getLog(getClass());
+	private static final Log log = LogFactory.getLog(LemonPermissionEvaluator.class);
+
+	public LemonPermissionEvaluator() {
+		log.info("Created");
+	}
 
 	/**
 	 * Called by Spring Security to evaluate the permission

@@ -35,12 +35,18 @@ import com.naturalprogrammer.spring.lemon.LemonProperties.Cors;
 @ConditionalOnProperty(name="lemon.cors.allowed-origins")
 public class LemonCorsFilter extends OncePerRequestFilter {
 
-	private final Log log = LogFactory.getLog(getClass());
+	private static final Log log = LogFactory.getLog(LemonCorsFilter.class);
 
-	protected LemonProperties properties;
+	private LemonProperties properties;
 		
+	public LemonCorsFilter() {
+		log.info("Created");
+	}
+
 	@Autowired
 	public void setProperties(LemonProperties properties) {
+		
+		log.info("Setting properties");		
 		this.properties = properties;
 	}
 
