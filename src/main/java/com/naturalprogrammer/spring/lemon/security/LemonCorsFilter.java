@@ -12,6 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -33,22 +34,19 @@ import com.naturalprogrammer.spring.lemon.LemonProperties.Cors;
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE) // needs to come first
 @ConditionalOnProperty(name="lemon.cors.allowed-origins")
+@ConditionalOnMissingBean(LemonCorsFilter.class)
 public class LemonCorsFilter extends OncePerRequestFilter {
 
 	private static final Log log = LogFactory.getLog(LemonCorsFilter.class);
 
 	private LemonProperties properties;
 		
-	public LemonCorsFilter() {
+	public LemonCorsFilter(LemonProperties properties) {
+
+		this.properties = properties;
 		log.info("Created");
 	}
 
-	@Autowired
-	public void setProperties(LemonProperties properties) {
-		
-		log.info("Setting properties");		
-		this.properties = properties;
-	}
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request,

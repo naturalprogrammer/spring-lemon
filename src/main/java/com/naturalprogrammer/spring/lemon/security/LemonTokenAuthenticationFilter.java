@@ -33,21 +33,13 @@ public abstract class LemonTokenAuthenticationFilter
 	
 	private String tokenSplitter = ":";
 	
-	public LemonTokenAuthenticationFilter() {
-		log.info("Created");
-	}
-	
 	@Autowired
-	public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
+	public void createLemonTokenAuthenticationFilter(PasswordEncoder passwordEncoder,
+			AbstractUserRepository<U, ID> userRepository) {
 		
-		log.info("Setting passwordEncoder");
 		this.passwordEncoder = passwordEncoder;
-	}
-
-	public void setUserRepository(AbstractUserRepository<U, ID> userRepository) {
-		
-		log.info("Setting userRepository");
 		this.userRepository = userRepository;
+		log.info("Created");
 	}
 
 	public static boolean tokenPresent(HttpServletRequest request) {

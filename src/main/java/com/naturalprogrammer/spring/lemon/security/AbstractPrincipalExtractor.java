@@ -23,23 +23,23 @@ public abstract class AbstractPrincipalExtractor<U extends AbstractUser<U,?>>
 
     private static final Log log = LogFactory.getLog(AbstractPrincipalExtractor.class);
     
-    public static final String DEFAULT = "default";
-    public static final String AUTHORITIES = "lemon-authorities";
-
-    @Autowired
     private PasswordEncoder passwordEncoder;
-    
-    @Autowired
 	private UserDetailsServiceImpl<U,?> userDetailsService;
-    
-    @Autowired
     private AbstractUserRepository<U, ?> userRepository;
+    private MailSender mailSender;
+	private String provider = LemonPrincipalExtractor.DEFAULT;
+    private String usernameColumnName = "email";
     
     @Autowired
-    private MailSender mailSender;
-    
-    protected String provider;
-    protected String usernameColumnName = "email";
+    public void createAbstractPrincipalExtractor(PasswordEncoder passwordEncoder, UserDetailsServiceImpl<U, ?> userDetailsService,
+			AbstractUserRepository<U, ?> userRepository, MailSender mailSender) {
+
+    	this.passwordEncoder = passwordEncoder;
+		this.userDetailsService = userDetailsService;
+		this.userRepository = userRepository;
+		this.mailSender = mailSender;
+	}
+
 
     @Override
     public Object extractPrincipal(Map<String, Object> map) {
@@ -97,5 +97,13 @@ public abstract class AbstractPrincipalExtractor<U extends AbstractUser<U,?>>
 
 	public void setProvider(String provider) {
 		this.provider = provider;
-	}  
+	}
+	
+	public String getUsernameColumnName() {
+		return usernameColumnName;
+	}
+
+	public void setUsernameColumnName(String usernameColumnName) {
+		this.usernameColumnName = usernameColumnName;
+	}
 }

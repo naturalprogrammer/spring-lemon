@@ -13,6 +13,7 @@ import javax.servlet.Filter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.PrincipalExtractor;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.UserInfoTokenServices;
 import org.springframework.context.annotation.Bean;
@@ -50,6 +51,7 @@ import com.naturalprogrammer.spring.lemon.LemonProperties.ClientResource;
  */
 @EnableOAuth2Client
 @EnableGlobalMethodSecurity(prePostEnabled = true)
+@ConditionalOnMissingBean(LemonSecurityConfig.class)
 public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	private static final Log log = LogFactory.getLog(LemonPermissionEvaluator.class);
@@ -66,67 +68,29 @@ public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 	public static final String XSRF_TOKEN_HEADER_NAME = "X-XSRF-TOKEN";
 	public static final String XSRF_TOKEN_COOKIE_NAME = "XSRF-TOKEN";
 	
-	protected LemonProperties properties;
-	protected UserDetailsService userDetailsService;
-	protected AuthenticationSuccessHandler authenticationSuccessHandler;
-	protected LogoutSuccessHandler logoutSuccessHandler;
-	protected OAuth2ClientContext oauth2ClientContext;
-	protected Map<String, LemonPrincipalExtractor> principalExtractors;
-	protected LemonTokenAuthenticationFilter<?, ?> lemonTokenAuthenticationFilter;
-	
-	public LemonSecurityConfig() {
-		log.info("Created");
-	}
+	private LemonProperties properties;
+	private UserDetailsService userDetailsService;
+	private AuthenticationSuccessHandler authenticationSuccessHandler;
+	private LogoutSuccessHandler logoutSuccessHandler;
+	private OAuth2ClientContext oauth2ClientContext;
+	private Map<String, LemonPrincipalExtractor> principalExtractors;
+	private LemonTokenAuthenticationFilter<?, ?> lemonTokenAuthenticationFilter;
 	
 	@Autowired
-	public void setProperties(LemonProperties properties) {
-		
-		log.info("Setting properties");
-		this.properties = properties;
-	}
-
-	@Autowired
-	public void setUserDetailsService(UserDetailsService userDetailsService) {
-		
-		log.info("Setting userDetailsService");
-		this.userDetailsService = userDetailsService;
-	}
-
-	@Autowired
-	public void setAuthenticationSuccessHandler(AuthenticationSuccessHandler authenticationSuccessHandler) {
-		
-		log.info("Setting authenticationSuccessHandler");
-		this.authenticationSuccessHandler = authenticationSuccessHandler;
-	}
-
-	@Autowired
-	public void setLogoutSuccessHandler(LogoutSuccessHandler logoutSuccessHandler) {
-		
-		log.info("Setting logoutSuccessHandler");
-		this.logoutSuccessHandler = logoutSuccessHandler;
-	}
-	
-	@Autowired
-	public void setOauth2ClientContext(OAuth2ClientContext oauth2ClientContext) {
-		
-		log.info("Setting oauth2ClientContext");
-		this.oauth2ClientContext = oauth2ClientContext;
-	}
-	
-	@Autowired
-	public void setPrincipalExtractor(Set<LemonPrincipalExtractor> principalExtractors) {
-		
-		log.info("Setting principalExtractors");
-		this.principalExtractors = principalExtractors.stream().collect(
-                Collectors.toMap(LemonPrincipalExtractor::getProvider, Function.identity()));;
-	}
-
-	@Autowired
-	public void setLemonTokenAuthenticationFilter(
+	public void createLemonSecurityConfig(LemonProperties properties, UserDetailsService userDetailsService,
+			AuthenticationSuccessHandler authenticationSuccessHandler, LogoutSuccessHandler logoutSuccessHandler,
+			OAuth2ClientContext oauth2ClientContext, Set<LemonPrincipalExtractor> principalExtractors,
 			LemonTokenAuthenticationFilter<?, ?> lemonTokenAuthenticationFilter) {
-		
-		log.info("Setting lemonTokenAuthenticationFilter");
+
+		this.properties = properties;
+		this.userDetailsService = userDetailsService;
+		this.authenticationSuccessHandler = authenticationSuccessHandler;
+		this.logoutSuccessHandler = logoutSuccessHandler;
+		this.oauth2ClientContext = oauth2ClientContext;
+		this.principalExtractors = principalExtractors.stream().collect(
+              Collectors.toMap(LemonPrincipalExtractor::getProvider, Function.identity()));
 		this.lemonTokenAuthenticationFilter = lemonTokenAuthenticationFilter;
+		log.info("Created");
 	}
 
 
@@ -135,6 +99,7 @@ public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 	 * of spring security -  redirecting to the login screen 
 	 */
 	@Bean
+	@ConditionalOnMissingBean(AuthenticationFailureHandler.class)
     public AuthenticationFailureHandler authenticationFailureHandler() {
 		
 		log.info("Creating authenticationFailureHandler");

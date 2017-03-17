@@ -56,44 +56,21 @@ public abstract class LemonService
     private MailSender mailSender;
 	private AbstractUserRepository<U, ID> userRepository;
 	private UserDetailsService userDetailsService;
-	
-	public LemonService() {
-		log.info("Created");
-	}
 
 	@Autowired
-    public void setProperties(LemonProperties properties) {
+	public void createLemonService(LemonProperties properties,
+			PasswordEncoder passwordEncoder,
+			MailSender mailSender,
+			AbstractUserRepository<U, ID> userRepository,
+			UserDetailsService userDetailsService) {
 		
-		log.info("Setting properties");
 		this.properties = properties;
-	}
-
-	@Autowired
-	public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
-		
-		log.info("Setting passwordEncoder");
 		this.passwordEncoder = passwordEncoder;
-	}
-
-	@Autowired
-	public void setMailSender(MailSender mailSender) {
-		
-		log.info("Setting mailSender");
 		this.mailSender = mailSender;
-	}
-
-	@Autowired
-	public void setUserRepository(AbstractUserRepository<U, ID> userRepository) {
-		
-		log.info("Setting userRepository");
 		this.userRepository = userRepository;
-	}
-
-	@Autowired
-	public void setUserDetailsService(UserDetailsService userDetailsService) {
-		
-		log.info("Setting userDetailsService");
 		this.userDetailsService = userDetailsService;
+		
+		log.info("Created");
 	}
 
 	
@@ -113,7 +90,7 @@ public abstract class LemonService
 
     
 	/**
-	 * Creates a the initial Admin user, if not found.
+	 * Creates the initial Admin user, if not found.
 	 * Override this method if needed.
 	 */
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)

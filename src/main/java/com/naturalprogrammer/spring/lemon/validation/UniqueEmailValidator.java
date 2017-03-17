@@ -23,16 +23,12 @@ implements ConstraintValidator<UniqueEmail, String> {
 
 	private AbstractUserRepository<?,?> userRepository;
 
-	public UniqueEmailValidator() {
+	public UniqueEmailValidator(AbstractUserRepository<?, ?> userRepository) {
+		
+		this.userRepository = userRepository;
 		log.info("Created");
 	}
-	
-	@Autowired	
-	public void setUserRepository(AbstractUserRepository<?, ?> userRepository) {
 
-		log.info("Setting userRepository");
-		this.userRepository = userRepository;
-	}
 
 	@Override
 	public void initialize(UniqueEmail constraintAnnotation) {

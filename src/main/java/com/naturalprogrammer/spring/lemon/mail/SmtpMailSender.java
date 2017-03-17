@@ -21,18 +21,14 @@ public class SmtpMailSender implements MailSender {
 	
 	private static final Log log = LogFactory.getLog(SmtpMailSender.class);
 
-	private JavaMailSender javaMailSender;
+	private final JavaMailSender javaMailSender;
 	
-	public SmtpMailSender() {
+	public SmtpMailSender(JavaMailSender javaMailSender) {
+		
+		this.javaMailSender = javaMailSender;
 		log.info("Created");
 	}
 
-	/**
-	 * Setter method for injecting a JavaMailSender.
-	 */
-	public void setJavaMailSender(JavaMailSender javaMailSender) {
-		this.javaMailSender = javaMailSender;
-	}
 
 	/**
 	 * Sends a mail using a MimeMessageHelper

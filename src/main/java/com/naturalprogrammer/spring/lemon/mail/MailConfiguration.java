@@ -44,8 +44,8 @@ public class MailConfiguration {
 	@Bean
 	@ConditionalOnProperty("spring.mail.host")
 	public MailSender smtpMailSender(JavaMailSender javaMailSender) {
-		SmtpMailSender mailSender = new SmtpMailSender();
-		mailSender.setJavaMailSender(javaMailSender);
+		SmtpMailSender mailSender = new SmtpMailSender(javaMailSender);
+		//mailSender.setJavaMailSender(javaMailSender);
 		return mailSender;
 	}
 

@@ -8,7 +8,9 @@ import java.util.stream.Collectors;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.web.DefaultErrorAttributes;
+import org.springframework.boot.autoconfigure.web.ErrorAttributes;
 import org.springframework.core.annotation.AnnotationAwareOrderComparator;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestAttributes;
@@ -16,30 +18,27 @@ import org.springframework.web.context.request.RequestAttributes;
 import com.naturalprogrammer.spring.lemon.exceptions.handlers.LemonExceptionHandler;
 
 @Component
+@ConditionalOnMissingBean(ErrorAttributes.class)
 public class LemonErrorAttributes extends DefaultErrorAttributes {
 	
     private static final Log log = LogFactory.getLog(LemonErrorAttributes.class);
 	
-	Map<String, LemonExceptionHandler<?>> handlers;
+	private final Map<String, LemonExceptionHandler<?>> handlers;
 	
-	public LemonErrorAttributes() {
+	public LemonErrorAttributes(List<LemonExceptionHandler<?>> handlers) {
+		
+		this.handlers = handlers.stream().collect(
+	            Collectors.toMap(LemonExceptionHandler::getExceptionName,
+	            		Function.identity(), (handler1, handler2) -> {
+	            			
+	            			return AnnotationAwareOrderComparator
+	            					.INSTANCE.compare(handler1, handler2) < 0 ?
+	            					handler1 : handler2;
+	            		}));
+		
 		log.info("Created");
 	}
 
-	@Autowired
-	public void setHandlers(List<LemonExceptionHandler<?>> handlers) {
-		
-		log.info("Setting handlers ...");
-
-		this.handlers = handlers.stream().collect(
-            Collectors.toMap(LemonExceptionHandler::getExceptionName,
-            		Function.identity(), (handler1, handler2) -> {
-            			
-            			return AnnotationAwareOrderComparator
-            					.INSTANCE.compare(handler1, handler2) < 0 ?
-            					handler1 : handler2;
-            		}));
-	}
 	
 	@Override
 	public Map<String, Object> getErrorAttributes(RequestAttributes requestAttributes,

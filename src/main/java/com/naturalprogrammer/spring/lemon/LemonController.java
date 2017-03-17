@@ -37,16 +37,11 @@ public abstract class LemonController
 
 	private LemonService<U, ID> lemonService;
 	
-	public LemonController() {
-		log.info("Created");
-	}
-
-
 	@Autowired
-	public void setLemonService(LemonService<U, ID> lemonService) {
+	public void setLemonController(LemonService<U, ID> lemonService) {
 		
-		log.info("Setting lemonService");
 		this.lemonService = lemonService;
+		log.info("Created");
 	}
 
 

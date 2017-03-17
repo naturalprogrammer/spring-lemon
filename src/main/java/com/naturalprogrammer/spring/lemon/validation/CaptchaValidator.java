@@ -10,6 +10,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
@@ -18,6 +19,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.naturalprogrammer.spring.lemon.LemonProperties;
+import com.naturalprogrammer.spring.lemon.security.LemonSecurityConfig;
 
 /**
  * Captcha validation constraint
@@ -30,6 +32,7 @@ import com.naturalprogrammer.spring.lemon.LemonProperties;
  *
  */
 @Component
+@ConditionalOnMissingBean(CaptchaValidator.class)
 public class CaptchaValidator implements ConstraintValidator<Captcha, String> {
 	
 	private static final Log log = LogFactory.getLog(CaptchaValidator.class);
@@ -64,23 +67,13 @@ public class CaptchaValidator implements ConstraintValidator<Captcha, String> {
 	private LemonProperties properties;
 	private RestTemplate restTemplate;
 	
-	public CaptchaValidator() {
+	public CaptchaValidator(LemonProperties properties, RestTemplateBuilder restTemplateBuilder) {
+		
+		this.properties = properties;
+		this.restTemplate = restTemplateBuilder.build();;
 		log.info("Created");
 	}
-	
-	@Autowired
-	public void setProperties(LemonProperties properties) {
 
-		log.info("Setting properties");
-		this.properties = properties;
-	}
-
-	@Autowired
-	public void setRestTemplateBuilder(RestTemplateBuilder restTemplateBuilder) {
-
-		log.info("Setting restTemplateBuilder");
-		this.restTemplate = restTemplateBuilder.build();
-	}
 
 	/**
 	 * Does the validation

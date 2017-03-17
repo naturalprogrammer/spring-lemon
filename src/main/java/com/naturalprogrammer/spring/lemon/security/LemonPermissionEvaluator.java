@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
@@ -22,6 +23,7 @@ import com.naturalprogrammer.spring.lemon.util.LemonUtil;
  * @param <ID>	Primary key class, e.g. Long
  */
 @Component
+@ConditionalOnMissingBean(PermissionEvaluator.class)
 public class LemonPermissionEvaluator
 <U extends AbstractUser<U,ID>, ID extends Serializable>
 implements PermissionEvaluator {
