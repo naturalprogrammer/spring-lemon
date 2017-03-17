@@ -2,8 +2,6 @@ package com.naturalprogrammer.spring.lemon.exceptions.handlers;
 
 import java.util.Collection;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
@@ -15,8 +13,6 @@ import com.naturalprogrammer.spring.lemon.validation.FieldError;
 @Component
 @Order(Ordered.LOWEST_PRECEDENCE)
 public class MultiErrorExceptionHandler extends AbstractExceptionHandler<MultiErrorException> {
-
-	private static final Log log = LogFactory.getLog(MultiErrorExceptionHandler.class);
 
 	public MultiErrorExceptionHandler() {
 		

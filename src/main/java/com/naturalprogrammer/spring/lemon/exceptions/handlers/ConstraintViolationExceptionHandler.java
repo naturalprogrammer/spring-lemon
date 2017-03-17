@@ -4,8 +4,6 @@ import java.util.Collection;
 
 import javax.validation.ConstraintViolationException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
@@ -17,8 +15,6 @@ import com.naturalprogrammer.spring.lemon.validation.FieldError;
 @Component
 @Order(Ordered.LOWEST_PRECEDENCE)
 public class ConstraintViolationExceptionHandler extends AbstractExceptionHandler<ConstraintViolationException> {
-
-	private static final Log log = LogFactory.getLog(ConstraintViolationExceptionHandler.class);
 
 	public ConstraintViolationExceptionHandler() {
 		

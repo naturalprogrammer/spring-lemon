@@ -5,7 +5,6 @@ import javax.validation.ConstraintValidatorContext;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.stereotype.Component;
 
 import com.naturalprogrammer.spring.lemon.domain.AbstractUserRepository;
 

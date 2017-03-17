@@ -1,7 +1,7 @@
 package com.naturalprogrammer.spring.lemon;
 
+import java.io.IOException;
 import java.io.Serializable;
-import java.security.Principal;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -10,14 +10,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.github.fge.jsonpatch.JsonPatchException;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser.SignupInput;
 import com.naturalprogrammer.spring.lemon.domain.ChangePasswordForm;
@@ -166,12 +168,23 @@ public abstract class LemonController
 	
 	/**
 	 * Updates a user.
+	 * @throws JsonPatchException 
+	 * @throws IOException 
+	 * @throws JsonProcessingException 
 	 */
-	@PutMapping("/users/{id}")
-	public U updateUser(@PathVariable("id") U user, @RequestBody U updatedUser) {
+	@PatchMapping("/users/{id}")
+	public U updateUser(@PathVariable("id") U user, @RequestBody String patch)
+			throws JsonProcessingException, IOException, JsonPatchException {
 		
-		log.debug("Updating user ... ");				
+		log.debug("Updating user ... ");
+		
+		// ensure that the user exists
+		LemonUtil.check("id", user != null,
+			"com.naturalprogrammer.spring.userNotFound").go();
+		
+		U updatedUser = LemonUtil.applyPatch(user, patch); // create a patched form
 		lemonService.updateUser(user, updatedUser);
+		
 		return lemonService.userForClient();		
 	}
 	

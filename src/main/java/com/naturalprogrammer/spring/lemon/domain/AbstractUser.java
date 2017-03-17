@@ -19,7 +19,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
+import com.naturalprogrammer.spring.lemon.security.LemonGrantedAuthority;
 import com.naturalprogrammer.spring.lemon.security.LemonSecurityConfig;
 import com.naturalprogrammer.spring.lemon.util.LemonUtil;
 import com.naturalprogrammer.spring.lemon.validation.Captcha;
@@ -376,6 +378,7 @@ implements UserDetails {
 	
 	
 	@Transient
+	@JsonIgnore
 	protected Collection<GrantedAuthority> authorities;
 	
 	/**
@@ -394,17 +397,17 @@ implements UserDetails {
 	protected void computeAuthorities() {
 		
 		authorities = roles.stream()
-			.map(role -> new SimpleGrantedAuthority("ROLE_" + role))
+			.map(role -> new LemonGrantedAuthority("ROLE_" + role))
 			.collect(Collectors.toCollection(() ->
 				new ArrayList<GrantedAuthority>(roles.size() + 2))); 
 		
 		if (goodUser) {
 			
-			authorities.add(new SimpleGrantedAuthority("ROLE_"
+			authorities.add(new LemonGrantedAuthority("ROLE_"
 					+ LemonSecurityConfig.GOOD_USER));
 			
 			if (goodAdmin)
-				authorities.add(new SimpleGrantedAuthority("ROLE_"
+				authorities.add(new LemonGrantedAuthority("ROLE_"
 						+ LemonSecurityConfig.GOOD_ADMIN));			
 		}
 

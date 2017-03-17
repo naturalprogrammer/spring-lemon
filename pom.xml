@@ -64,6 +64,12 @@
             <version>RELEASE</version>
         </dependency>       
         
+        <dependency>
+            <groupId>com.github.fge</groupId>
+            <artifactId>json-patch</artifactId>
+            <version>RELEASE</version>
+        </dependency>       
+
         <!-- For generating Auto Completion of lemon.* in application.properties
         See: http://docs.spring.io/spring-boot/docs/current-SNAPSHOT/reference/htmlsingle/#configuration-metadata-annotation-processor
          -->

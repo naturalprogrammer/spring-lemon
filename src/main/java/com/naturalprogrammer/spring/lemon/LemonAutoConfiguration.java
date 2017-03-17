@@ -8,6 +8,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.security.SecurityAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.ErrorAttributes;
 import org.springframework.boot.autoconfigure.web.ErrorController;
 import org.springframework.boot.autoconfigure.web.ErrorMvcAutoConfiguration;
@@ -38,8 +39,6 @@ import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -76,7 +75,9 @@ import com.naturalprogrammer.spring.lemon.validation.UniqueEmailValidator;
 @EnableAsync
 @EnableOAuth2Client
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-@AutoConfigureBefore({WebMvcAutoConfiguration.class, ErrorMvcAutoConfiguration.class})
+@AutoConfigureBefore({WebMvcAutoConfiguration.class,
+	ErrorMvcAutoConfiguration.class,
+	SecurityAutoConfiguration.class})
 public class LemonAutoConfiguration {
 	
 	// remember-me related constants
@@ -274,10 +275,10 @@ public class LemonAutoConfiguration {
 	
 	@Bean
 	public LemonUtil lemonUtil(ApplicationContext applicationContext,
-			MessageSource messageSource) {
+			MessageSource messageSource, ObjectMapper objectMapper) {
 
         log.info("Configuring LemonUtil");       		
-		return new LemonUtil(applicationContext, messageSource);
+		return new LemonUtil(applicationContext, messageSource, objectMapper);
 	}
 	
 	@Bean

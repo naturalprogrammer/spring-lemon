@@ -1,13 +1,13 @@
 package com.naturalprogrammer.spring.lemon;
 
 import java.io.Serializable;
-import java.security.Principal;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
 import javax.mail.MessagingException;
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.logging.Log;
@@ -463,8 +463,6 @@ public abstract class LemonService
 		log.debug("Updating user: " + user);
 
 		// checks
-		LemonUtil.check("id", user != null,
-			"com.naturalprogrammer.spring.userNotFound").go();
 		LemonUtil.validateVersion(user, updatedUser);
 
 		// delegates to updateUserFields

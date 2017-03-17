@@ -1,5 +1,6 @@
 package com.naturalprogrammer.spring.lemon.util;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,6 +19,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.support.TransactionSynchronizationAdapter;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.TreeNode;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.fge.jsonpatch.JsonPatch;
+import com.github.fge.jsonpatch.JsonPatchException;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
 import com.naturalprogrammer.spring.lemon.domain.VersionedEntity;
 import com.naturalprogrammer.spring.lemon.exceptions.MultiErrorException;
@@ -36,13 +43,16 @@ public class LemonUtil {
 
 	private static ApplicationContext applicationContext;
 	private static MessageSource messageSource;
+	private static ObjectMapper objectMapper;
 	
 	@Autowired
 	public LemonUtil(ApplicationContext applicationContext,
-		MessageSource messageSource) {
+		MessageSource messageSource,
+		ObjectMapper objectMapper) {
 		
 		LemonUtil.applicationContext = applicationContext;
 		LemonUtil.messageSource = messageSource;
+		LemonUtil.objectMapper = objectMapper;
 		log.info("Created");
 	}
 
@@ -217,4 +227,24 @@ public class LemonUtil {
 		return UUID.randomUUID().toString();
 	}
 	
+	
+    @SuppressWarnings("unchecked")
+	public static <T> T applyPatch(T originalObj, String patchString)
+			throws JsonProcessingException, IOException, JsonPatchException {
+
+        // Parse the patch to JsonNode
+        JsonNode patchNode = objectMapper.readTree(patchString);
+
+        // Create the patch
+        JsonPatch patch = JsonPatch.fromJson(patchNode);
+
+        // Convert the original object to JsonNode
+        JsonNode originalObjNode = objectMapper.valueToTree(originalObj);
+
+        // Apply the patch
+        TreeNode patchedObjNode = patch.apply(originalObjNode);
+
+        // Convert the patched node to an updated obj
+        return objectMapper.treeToValue(patchedObjNode, (Class<T>) originalObj.getClass());
+    }	
 }
