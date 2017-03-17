@@ -4,9 +4,7 @@ import java.io.Serializable;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.data.domain.AuditorAware;
-import org.springframework.stereotype.Component;
 
 import com.naturalprogrammer.spring.lemon.util.LemonUtil;
 
@@ -19,8 +17,6 @@ import com.naturalprogrammer.spring.lemon.util.LemonUtil;
  * @param <U>	The User class
  * @param <ID>	The Primary key type of User class 
  */
-@Component
-@ConditionalOnMissingBean(AuditorAware.class)
 public class LemonAuditorAware
 	<U extends AbstractUser<U,ID>,
 	 ID extends Serializable>

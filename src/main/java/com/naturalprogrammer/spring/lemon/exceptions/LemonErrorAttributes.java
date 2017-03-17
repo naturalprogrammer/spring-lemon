@@ -7,18 +7,12 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.web.DefaultErrorAttributes;
-import org.springframework.boot.autoconfigure.web.ErrorAttributes;
 import org.springframework.core.annotation.AnnotationAwareOrderComparator;
-import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestAttributes;
 
 import com.naturalprogrammer.spring.lemon.exceptions.handlers.LemonExceptionHandler;
 
-@Component
-@ConditionalOnMissingBean(ErrorAttributes.class)
 public class LemonErrorAttributes extends DefaultErrorAttributes {
 	
     private static final Log log = LogFactory.getLog(LemonErrorAttributes.class);

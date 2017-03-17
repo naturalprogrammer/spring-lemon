@@ -24,14 +24,14 @@ public abstract class AbstractPrincipalExtractor<U extends AbstractUser<U,?>>
     private static final Log log = LogFactory.getLog(AbstractPrincipalExtractor.class);
     
     private PasswordEncoder passwordEncoder;
-	private UserDetailsServiceImpl<U,?> userDetailsService;
+	private LemonUserDetailsService<U,?> userDetailsService;
     private AbstractUserRepository<U, ?> userRepository;
     private MailSender mailSender;
 	private String provider = LemonPrincipalExtractor.DEFAULT;
     private String usernameColumnName = "email";
     
     @Autowired
-    public void createAbstractPrincipalExtractor(PasswordEncoder passwordEncoder, UserDetailsServiceImpl<U, ?> userDetailsService,
+    public void createAbstractPrincipalExtractor(PasswordEncoder passwordEncoder, LemonUserDetailsService<U, ?> userDetailsService,
 			AbstractUserRepository<U, ?> userRepository, MailSender mailSender) {
 
     	this.passwordEncoder = passwordEncoder;
@@ -64,7 +64,7 @@ public abstract class AbstractPrincipalExtractor<U extends AbstractUser<U,?>>
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
 	protected U createUser(Map<String, Object> map) {
 		
-		U user = newUser(map);
+		U user = createUser(map);
 		
 		user.setUsername((String) map.get(usernameColumnName));
 		
@@ -88,7 +88,7 @@ public abstract class AbstractPrincipalExtractor<U extends AbstractUser<U,?>>
 		return user.decorate(user);
 	}
 	
-	protected abstract U newUser(Map<String, Object> principalMap);
+	protected abstract U newUserWithAdditionalProperties(Map<String, Object> principalMap);
 
 	@Override
 	public String getProvider() {

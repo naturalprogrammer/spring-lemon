@@ -5,7 +5,6 @@ import javax.validation.ConstraintValidatorContext;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.naturalprogrammer.spring.lemon.domain.AbstractUserRepository;
@@ -15,7 +14,6 @@ import com.naturalprogrammer.spring.lemon.domain.AbstractUserRepository;
  * 
  * @author Sanjay Patel
  */
-@Component
 public class UniqueEmailValidator
 implements ConstraintValidator<UniqueEmail, String> {
 

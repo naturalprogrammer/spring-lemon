@@ -6,7 +6,6 @@ import java.util.Optional;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -26,17 +25,15 @@ import com.naturalprogrammer.spring.lemon.domain.AbstractUserRepository;
  * @param <U>	The user class
  * @param <ID>	Primary key class, e.g. Long
  */
-@Service
-@ConditionalOnMissingBean(UserDetailsService.class)
-public class UserDetailsServiceImpl
+public class LemonUserDetailsService
 	<U extends AbstractUser<U,ID>, ID extends Serializable>
 implements UserDetailsService {
 
-	private static final Log log = LogFactory.getLog(UserDetailsServiceImpl.class);
+	private static final Log log = LogFactory.getLog(LemonUserDetailsService.class);
 
 	private final AbstractUserRepository<U,ID> userRepository;
 	
-	public UserDetailsServiceImpl(AbstractUserRepository<U, ID> userRepository) {
+	public LemonUserDetailsService(AbstractUserRepository<U, ID> userRepository) {
 		
 		this.userRepository = userRepository;
 		log.info("Created");

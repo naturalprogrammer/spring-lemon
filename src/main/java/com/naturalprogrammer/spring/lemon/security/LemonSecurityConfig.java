@@ -13,11 +13,8 @@ import javax.servlet.Filter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.PrincipalExtractor;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.UserInfoTokenServices;
-import org.springframework.context.annotation.Bean;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.GrantedAuthority;
@@ -25,15 +22,12 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.oauth2.client.OAuth2ClientContext;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.security.oauth2.client.filter.OAuth2ClientAuthenticationProcessingFilter;
-import org.springframework.security.oauth2.config.annotation.web.configuration.EnableOAuth2Client;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
-import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
+import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
-import org.springframework.security.web.authentication.rememberme.AbstractRememberMeServices;
-import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices;
 import org.springframework.security.web.authentication.switchuser.SwitchUserFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
@@ -49,10 +43,7 @@ import com.naturalprogrammer.spring.lemon.LemonProperties.ClientResource;
  * 
  * @author Sanjay Patel
  */
-@EnableOAuth2Client
-@EnableGlobalMethodSecurity(prePostEnabled = true)
-@ConditionalOnMissingBean(LemonSecurityConfig.class)
-public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
+public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	private static final Log log = LogFactory.getLog(LemonPermissionEvaluator.class);
 
@@ -60,10 +51,6 @@ public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 	public static final String GOOD_ADMIN = "GOOD_ADMIN";
 	public static final String GOOD_USER = "GOOD_USER";
 	
-	// remember-me related
-	public static final String REMEMBER_ME_COOKIE = "rememberMe";
-	public static final String REMEMBER_ME_PARAMETER = "rememberMe";
-
 	// CSRF related
 	public static final String XSRF_TOKEN_HEADER_NAME = "X-XSRF-TOKEN";
 	public static final String XSRF_TOKEN_COOKIE_NAME = "XSRF-TOKEN";
@@ -71,40 +58,32 @@ public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 	private LemonProperties properties;
 	private UserDetailsService userDetailsService;
 	private AuthenticationSuccessHandler authenticationSuccessHandler;
+	private AuthenticationFailureHandler authenticationFailureHandler;
 	private LogoutSuccessHandler logoutSuccessHandler;
+	private RememberMeServices rememberMeServices;
 	private OAuth2ClientContext oauth2ClientContext;
 	private Map<String, LemonPrincipalExtractor> principalExtractors;
 	private LemonTokenAuthenticationFilter<?, ?> lemonTokenAuthenticationFilter;
 	
 	@Autowired
 	public void createLemonSecurityConfig(LemonProperties properties, UserDetailsService userDetailsService,
-			AuthenticationSuccessHandler authenticationSuccessHandler, LogoutSuccessHandler logoutSuccessHandler,
+			AuthenticationSuccessHandler authenticationSuccessHandler, AuthenticationFailureHandler authenticationFailureHandler,
+			LogoutSuccessHandler logoutSuccessHandler, RememberMeServices rememberMeServices,
 			OAuth2ClientContext oauth2ClientContext, Set<LemonPrincipalExtractor> principalExtractors,
 			LemonTokenAuthenticationFilter<?, ?> lemonTokenAuthenticationFilter) {
 
 		this.properties = properties;
 		this.userDetailsService = userDetailsService;
 		this.authenticationSuccessHandler = authenticationSuccessHandler;
+		this.authenticationFailureHandler = authenticationFailureHandler;
 		this.logoutSuccessHandler = logoutSuccessHandler;
+		this.rememberMeServices = rememberMeServices;
 		this.oauth2ClientContext = oauth2ClientContext;
 		this.principalExtractors = principalExtractors.stream().collect(
               Collectors.toMap(LemonPrincipalExtractor::getProvider, Function.identity()));
 		this.lemonTokenAuthenticationFilter = lemonTokenAuthenticationFilter;
 		log.info("Created");
 	}
-
-
-	/**
-	 * Authentication failure handler, to override the default behavior
-	 * of spring security -  redirecting to the login screen 
-	 */
-	@Bean
-	@ConditionalOnMissingBean(AuthenticationFailureHandler.class)
-    public AuthenticationFailureHandler authenticationFailureHandler() {
-		
-		log.info("Creating authenticationFailureHandler");
-    	return new SimpleUrlAuthenticationFailureHandler();
-    }	
 	
 
 	/**
@@ -148,7 +127,7 @@ public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 			 * that url if login fails. Instead, we need to send
 			 * 401. So, let's set failureHandler instead.
 			 *******************************************/
-        	.failureHandler(authenticationFailureHandler());
+        	.failureHandler(authenticationFailureHandler);
 	}
 
 
@@ -203,7 +182,7 @@ public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 		http
 			.rememberMe()
 				.key(properties.getRememberMeKey())
-				.rememberMeServices(rememberMeServices());
+				.rememberMeServices(rememberMeServices);
 	}
 
 
@@ -273,22 +252,6 @@ public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 	}
 
 	
-	/**
-	 * Override this method if you want to 
-	 * setup a different RememberMeServices
-	 * 
-	 * @return
-	 */
-	protected AbstractRememberMeServices rememberMeServices() {
-    	
-        TokenBasedRememberMeServices rememberMeServices =
-        	new TokenBasedRememberMeServices
-        		(properties.getRememberMeKey(), userDetailsService);
-        rememberMeServices.setParameter(REMEMBER_ME_PARAMETER); // default is "remember-me" (in earlier spring security versions it was "_spring_security_remember_me")
-        rememberMeServices.setCookieName(REMEMBER_ME_COOKIE);
-        return rememberMeServices;
-        
-    }
     
 
 	/**
@@ -300,7 +263,7 @@ public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 		SwitchUserFilter filter = new SwitchUserFilter();
 		filter.setUserDetailsService(userDetailsService);
 		filter.setSuccessHandler(authenticationSuccessHandler);
-		filter.setFailureHandler(authenticationFailureHandler());
+		filter.setFailureHandler(authenticationFailureHandler);
 		return filter;
 	}
 	
@@ -327,7 +290,7 @@ public abstract class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 				new SimpleUrlAuthenticationSuccessHandler(properties.getAfterOauth2LoginUrl());
 		
 		filter.setAuthenticationSuccessHandler(successHandler);
-		filter.setRememberMeServices(rememberMeServices());
+		filter.setRememberMeServices(rememberMeServices);
 		  
 		OAuth2RestTemplate template = new OAuth2RestTemplate(client.getClient(), oauth2ClientContext);
 		filter.setRestTemplate(template);

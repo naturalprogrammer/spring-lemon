@@ -8,12 +8,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
-import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.naturalprogrammer.spring.lemon.LemonService;
@@ -26,8 +24,6 @@ import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
  * 
  * @author Sanjay Patel
  */
-@Component
-@ConditionalOnMissingBean(AuthenticationSuccessHandler.class)
 public class AuthenticationSuccessHandler
 	extends SimpleUrlAuthenticationSuccessHandler {
 	
@@ -36,7 +32,7 @@ public class AuthenticationSuccessHandler
     private ObjectMapper objectMapper;    
     private LemonService<?,?> lemonService;
     
-	public AuthenticationSuccessHandler(ObjectMapper objectMapper, @Lazy LemonService<?, ?> lemonService) {
+	public AuthenticationSuccessHandler(ObjectMapper objectMapper, LemonService<?, ?> lemonService) {
 		
 		this.objectMapper = objectMapper;
 		this.lemonService = lemonService;

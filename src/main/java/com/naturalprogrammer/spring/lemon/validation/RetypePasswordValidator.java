@@ -18,8 +18,6 @@ import org.springframework.stereotype.Component;
  * 
  * @author Sanjay Patel
  */
-@Component
-@ConditionalOnMissingBean(RetypePasswordValidator.class)
 public class RetypePasswordValidator
 implements ConstraintValidator<RetypePassword, RetypePasswordForm> {
 	

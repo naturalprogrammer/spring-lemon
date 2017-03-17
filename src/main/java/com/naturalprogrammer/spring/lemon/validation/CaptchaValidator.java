@@ -9,7 +9,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Component;
@@ -19,7 +18,6 @@ import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.naturalprogrammer.spring.lemon.LemonProperties;
-import com.naturalprogrammer.spring.lemon.security.LemonSecurityConfig;
 
 /**
  * Captcha validation constraint
@@ -31,8 +29,6 @@ import com.naturalprogrammer.spring.lemon.security.LemonSecurityConfig;
  * @author Sanjay Patel
  *
  */
-@Component
-@ConditionalOnMissingBean(CaptchaValidator.class)
 public class CaptchaValidator implements ConstraintValidator<Captcha, String> {
 	
 	private static final Log log = LogFactory.getLog(CaptchaValidator.class);

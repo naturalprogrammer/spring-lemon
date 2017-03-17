@@ -11,12 +11,8 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
-import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.naturalprogrammer.spring.lemon.LemonProperties;
@@ -31,10 +27,7 @@ import com.naturalprogrammer.spring.lemon.LemonProperties.Cors;
  * @author Sanjay Patel
  * @see <a href="https://spring.io/guides/gs/rest-service-cors/">Spring guide</a>
  */
-@Component
 @Order(Ordered.HIGHEST_PRECEDENCE) // needs to come first
-@ConditionalOnProperty(name="lemon.cors.allowed-origins")
-@ConditionalOnMissingBean(LemonCorsFilter.class)
 public class LemonCorsFilter extends OncePerRequestFilter {
 
 	private static final Log log = LogFactory.getLog(LemonCorsFilter.class);
