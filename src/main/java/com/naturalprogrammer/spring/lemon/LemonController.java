@@ -8,6 +8,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -49,6 +50,7 @@ public abstract class LemonController
 	 * A simple function for pinging this server.
 	 */
 	@GetMapping("/ping")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void ping() {
 		log.debug("Received a ping");
 	}
@@ -93,6 +95,7 @@ public abstract class LemonController
 	 * Resends verification mail. 
 	 */
 	@GetMapping("/users/{id}/resend-verification-mail")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void resendVerificationMail(@PathVariable("id") U user) {
 		
 		log.debug("Resending verification mail for: " + user);
@@ -118,6 +121,7 @@ public abstract class LemonController
 	 * The forgot Password feature.
 	 */
 	@PostMapping("/forgot-password")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void forgotPassword(@RequestParam String email) {
 		
 		log.debug("Received forgot password request for: " + email);				
@@ -129,6 +133,7 @@ public abstract class LemonController
 	 * Resets password after it is forgotten.
 	 */
 	@PostMapping("/users/{forgotPasswordCode}/reset-password")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void resetPassword(@PathVariable String forgotPasswordCode,
 							  @RequestParam String newPassword) {
 		
@@ -175,6 +180,7 @@ public abstract class LemonController
 	 * Changes password.
 	 */
 	@PostMapping("/users/{id}/change-password")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void changePassword(@PathVariable("id") U user,
 			@RequestBody ChangePasswordForm changePasswordForm) {
 		
@@ -187,6 +193,7 @@ public abstract class LemonController
 	 * Requests for changing email.
 	 */
 	@PostMapping("/users/{id}/request-email-change")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void requestEmailChange(@PathVariable("id") U user,
 								   @RequestBody U updatedUser) {
 		
@@ -198,15 +205,25 @@ public abstract class LemonController
 	 * Changes the email.
 	 */
 	@PostMapping("/users/{changeEmailCode}/change-email")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void changeEmail(@PathVariable String changeEmailCode) {
 		
 		log.debug("Changing email of user ...");		
 		lemonService.changeEmail(changeEmailCode);
 	}
 	
+	@PostMapping("/users/{id}/token")
+	public Map<String, String> createToken(@PathVariable("id") U user) {
+		
+		log.debug("Creating token ... ");				
+		return lemonService.createToken(user);
+	}
 	
-	@GetMapping("/user")
-	public Principal user(Principal principal) {
-	    return principal;
+	@DeleteMapping("/users/{id}/token")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void removeToken(@PathVariable("id") U user) {
+		
+		log.debug("Removing token ... ");				
+		lemonService.removeToken(user);
 	}
 }

@@ -64,9 +64,7 @@ import com.naturalprogrammer.spring.lemon.validation.RetypePasswordValidator;
 import com.naturalprogrammer.spring.lemon.validation.UniqueEmailValidator;
 
 /**
- * Although most of the configurations are
- * inside various sub-packages, some didn't fit
- * anywhere, which are here, inside the root package. 
+ * Spring Lemon Auto Configuration
  * 
  * @author Sanjay Patel
  */

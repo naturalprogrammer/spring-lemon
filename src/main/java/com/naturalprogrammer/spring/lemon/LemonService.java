@@ -1,6 +1,7 @@
 package com.naturalprogrammer.spring.lemon;
 
 import java.io.Serializable;
+import java.security.Principal;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -204,11 +205,6 @@ public abstract class LemonService
 		log.debug("Initializing user: " + user);
 
 		user.setPassword(passwordEncoder.encode(user.getPassword())); // encode the password
-		
-		String authenticationToken = LemonUtil.uid();
-		log.info("Authentication Token: Bearer " + user.getId() + ":" + authenticationToken);
-		
-		user.setAuthenticationToken(passwordEncoder.encode(authenticationToken)); // set an authentication token
 		makeUnverified(user); // make the user unverified
 	}
 
@@ -708,5 +704,42 @@ public abstract class LemonService
 		
 		log.debug("Changed email of user: " + user);		
 	}
-	
+
+
+	@UserEditPermission
+	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
+	public Map<String, String> createToken(U user) {
+		
+		log.debug("Creating token for user: " + user);
+
+		// checks
+		LemonUtil.check("id", user != null,
+			"com.naturalprogrammer.spring.userNotFound").go();
+		
+		// set token
+		String token = LemonUtil.uid();
+		user.setAuthenticationToken(passwordEncoder.encode(token));
+		userRepository.save(user);
+
+		log.debug("Created token for user: " + user);	
+		return LemonUtil.mapOf("token", token);
+	}
+
+
+	@UserEditPermission
+	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
+	public void removeToken(U user) {
+		
+		log.debug("Removing token for user: " + user);
+
+		// checks
+		LemonUtil.check("id", user != null,
+			"com.naturalprogrammer.spring.userNotFound").go();
+		
+		// remove the token
+		user.setAuthenticationToken(null);
+		userRepository.save(user);
+
+		log.debug("Removed token for user: " + user);	
+	}
 }

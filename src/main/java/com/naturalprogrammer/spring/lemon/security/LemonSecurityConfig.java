@@ -252,8 +252,6 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 	}
 
 	
-    
-
 	/**
 	 * Returns switch-user filter
 	 * 
