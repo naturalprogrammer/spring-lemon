@@ -716,7 +716,7 @@ public abstract class LemonService
 		
 		// set token
 		String token = LemonUtil.uid();
-		user.setAuthenticationToken(passwordEncoder.encode(token));
+		user.setApiKey(passwordEncoder.encode(token));
 		userRepository.save(user);
 
 		log.debug("Created token for user: " + user);	
@@ -735,9 +735,11 @@ public abstract class LemonService
 			"com.naturalprogrammer.spring.userNotFound").go();
 		
 		// remove the token
-		user.setAuthenticationToken(null);
+		user.setApiKey(null);
 		userRepository.save(user);
 
 		log.debug("Removed token for user: " + user);	
 	}
+
+	abstract public ID parseId(String id);
 }

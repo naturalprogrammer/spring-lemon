@@ -56,6 +56,7 @@ import com.naturalprogrammer.spring.lemon.security.LemonCorsFilter;
 import com.naturalprogrammer.spring.lemon.security.LemonLogoutSuccessHandler;
 import com.naturalprogrammer.spring.lemon.security.LemonPermissionEvaluator;
 import com.naturalprogrammer.spring.lemon.security.LemonSecurityConfig;
+import com.naturalprogrammer.spring.lemon.security.LemonTokenAuthenticationFilter;
 import com.naturalprogrammer.spring.lemon.security.LemonUserDetailsService;
 import com.naturalprogrammer.spring.lemon.util.LemonUtil;
 import com.naturalprogrammer.spring.lemon.validation.CaptchaValidator;
@@ -263,6 +264,19 @@ public class LemonAutoConfiguration {
 		
         log.info("Configuring LemonCorsFilter");       
 		return new LemonCorsFilter(properties);		
+	}
+	
+	@Bean
+	@ConditionalOnMissingBean(LemonTokenAuthenticationFilter.class)	
+	public <U extends AbstractUser<U,ID>, ID extends Serializable>
+		LemonTokenAuthenticationFilter<U,ID> lemonTokenAuthenticationFilter(
+			PasswordEncoder passwordEncoder,
+			AbstractUserRepository<U, ID> userRepository,
+			LemonService<U,ID> lemonService) {
+		
+        log.info("Configuring LemonTokenAuthenticationFilter");       
+		return new LemonTokenAuthenticationFilter<U, ID>
+			(passwordEncoder, userRepository, lemonService);
 	}
 	
 	@Bean

@@ -107,8 +107,8 @@ implements UserDetails {
 	@Column(length = UUID_LENGTH, unique=true)
 	protected String changeEmailCode;
 	
-	protected String authenticationToken;	
-
+	// The authentication token to use
+	protected String apiKey;	
 
 	// holds reCAPTCHA response while signing up
 	@Transient
@@ -173,12 +173,12 @@ implements UserDetails {
 		this.changeEmailCode = changeEmailCode;
 	}
 
-	public String getAuthenticationToken() {
-		return authenticationToken;
+	public String getApiKey() {
+		return apiKey;
 	}
 
-	public void setAuthenticationToken(String authenticationToken) {
-		this.authenticationToken = authenticationToken;
+	public void setApiKey(String apiKey) {
+		this.apiKey = apiKey;
 	}
 
 	public String getCaptchaResponse() {

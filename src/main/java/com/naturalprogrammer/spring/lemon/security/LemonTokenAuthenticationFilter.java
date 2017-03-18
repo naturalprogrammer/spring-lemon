@@ -18,11 +18,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.filter.GenericFilterBean;
 
+import com.naturalprogrammer.spring.lemon.LemonService;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUserRepository;
 import com.naturalprogrammer.spring.lemon.util.LemonUtil;
 
-public abstract class LemonTokenAuthenticationFilter
+public class LemonTokenAuthenticationFilter
 	<U extends AbstractUser<U,ID>, ID extends Serializable>
 	extends GenericFilterBean {
 	
@@ -30,15 +31,17 @@ public abstract class LemonTokenAuthenticationFilter
 	
 	private PasswordEncoder passwordEncoder;
 	private AbstractUserRepository<U, ID> userRepository;
+	private LemonService<U,ID> lemonService;
 	
 	private String tokenSplitter = ":";
 	
-	@Autowired
-	public void createLemonTokenAuthenticationFilter(PasswordEncoder passwordEncoder,
-			AbstractUserRepository<U, ID> userRepository) {
+	public LemonTokenAuthenticationFilter(PasswordEncoder passwordEncoder,
+			AbstractUserRepository<U, ID> userRepository,
+			LemonService<U,ID> lemonService) {
 		
 		this.passwordEncoder = passwordEncoder;
 		this.userRepository = userRepository;
+		this.lemonService = lemonService;
 		log.info("Created");
 	}
 
@@ -68,14 +71,15 @@ public abstract class LemonTokenAuthenticationFilter
 		    
 			log.debug("Trying to get user " + id);
 
-			U user = userRepository.findOne(parseId(id));
+			ID userId = lemonService.parseId(id);
+			U user = userRepository.findOne(userId);
 			
 		    if (user == null)
 		    	throw new BadCredentialsException(LemonUtil.getMessage("com.naturalprogrammer.spring.userNotFound"));
 
 			log.debug("Trying to match the token");
 
-			if (!passwordEncoder.matches(token, user.getAuthenticationToken()))
+			if (!passwordEncoder.matches(token, user.getApiKey()))
 		    	throw new BadCredentialsException(LemonUtil.getMessage("com.naturalprogrammer.spring.wrong.authenticationToken"));
 		    
 		    user.decorate();
@@ -92,8 +96,6 @@ public abstract class LemonTokenAuthenticationFilter
 		chain.doFilter(request, response);
 	}
 
-	abstract protected ID parseId(String id);
-	
 	public String getTokenSplitter() {
 		return tokenSplitter;
 	}
