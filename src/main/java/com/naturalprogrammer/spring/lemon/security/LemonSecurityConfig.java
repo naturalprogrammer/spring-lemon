@@ -35,6 +35,8 @@ import org.springframework.web.filter.CompositeFilter;
 
 import com.naturalprogrammer.spring.lemon.LemonProperties;
 import com.naturalprogrammer.spring.lemon.LemonProperties.ClientResource;
+import com.naturalprogrammer.spring.lemon.security.principalextractors.AbstractPrincipalExtractor;
+import com.naturalprogrammer.spring.lemon.security.principalextractors.LemonPrincipalExtractor;
 
 /**
  * Security configuration class. Extend it in the

@@ -46,12 +46,11 @@ implements UserDetailsService {
 		
 		// delegates to findUserByUsername
 		U user = findUserByUsername(username)
-			.orElseThrow(() -> new UsernameNotFoundException(username))
-			.decorate();
+			.orElseThrow(() -> new UsernameNotFoundException(username));
 
 		log.debug("Loaded user having username: " + username);
-		
-		return user;
+
+		return user.decorate(user);
 	}
 
 	/**

@@ -16,10 +16,8 @@ import javax.persistence.Transient;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.naturalprogrammer.spring.lemon.security.LemonGrantedAuthority;
 import com.naturalprogrammer.spring.lemon.security.LemonSecurityConfig;
@@ -376,10 +374,8 @@ implements UserDetails {
 		return "AbstractUser [username=" + getUsername() + ", roles=" + roles + "]";
 	}
 	
-	
 	@Transient
-	@JsonIgnore
-	protected Collection<GrantedAuthority> authorities;
+	protected Collection<LemonGrantedAuthority> authorities;
 	
 	/**
 	 * Returns the authorities, for Spring Security
@@ -399,7 +395,7 @@ implements UserDetails {
 		authorities = roles.stream()
 			.map(role -> new LemonGrantedAuthority("ROLE_" + role))
 			.collect(Collectors.toCollection(() ->
-				new ArrayList<GrantedAuthority>(roles.size() + 2))); 
+				new ArrayList<LemonGrantedAuthority>(roles.size() + 2))); 
 		
 		if (goodUser) {
 			
