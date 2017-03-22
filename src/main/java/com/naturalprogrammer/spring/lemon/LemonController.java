@@ -185,6 +185,7 @@ public abstract class LemonController
 		U updatedUser = LemonUtil.applyPatch(user, patch); // create a patched form
 		lemonService.updateUser(user, updatedUser);
 		
+		// return the currently logged in user data (in case updated)
 		return lemonService.userForClient();		
 	}
 	

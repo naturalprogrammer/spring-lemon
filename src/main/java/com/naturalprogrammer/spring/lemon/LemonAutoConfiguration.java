@@ -110,11 +110,13 @@ public class LemonAutoConfiguration {
 	 */
 	@Bean
 	@ConditionalOnProperty(name="lemon.enabled.json-prefix", matchIfMissing=true)
-	public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter() {
+	public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter(
+			ObjectMapper objectMapper) {
 		
         log.info("Configuring JSON vulnerability prefix");       
 
-        MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
+        MappingJackson2HttpMessageConverter converter =
+        		new MappingJackson2HttpMessageConverter(objectMapper);
         converter.setJsonPrefix(JSON_PREFIX);
         
         return converter;
