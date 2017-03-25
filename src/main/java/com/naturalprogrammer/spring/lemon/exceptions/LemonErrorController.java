@@ -36,7 +36,6 @@ public class LemonErrorController extends BasicErrorController {
 		Map<String, Object> body = getErrorAttributes(request,
 				isIncludeStackTrace(request, MediaType.ALL));
 		
-		@SuppressWarnings("unchecked")
 		HttpStatus status =	(HttpStatus) body.get(HTTP_STATUS_KEY);
 		
 		if (status == null)

@@ -8,6 +8,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -62,7 +63,7 @@ public abstract class LemonController
 	 * Returns context properties needed at the client side, and
 	 * the current-user data.
 	 */
-	@GetMapping("/context")
+	@GetMapping(value = "/context", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public Map<String, Object> getContext() {
 		
 		Map<String, Object> context =
@@ -81,7 +82,7 @@ public abstract class LemonController
 	 * @param user	data fed by the user
 	 * @return data about the logged in user
 	 */
-	@PostMapping("/users")
+	@PostMapping(value = "/users", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@ResponseStatus(HttpStatus.CREATED)
 	public U signup(@RequestBody @JsonView(SignupInput.class) U user) {
 		
@@ -109,7 +110,7 @@ public abstract class LemonController
 	/**
 	 * Verifies current-user.
 	 */
-	@PostMapping("/users/{verificationCode}/verify")
+	@PostMapping(value = "/users/{verificationCode}/verify", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public U verifyUser(@PathVariable String verificationCode) {
 		
 		log.debug("Verifying user ...");		
@@ -147,7 +148,7 @@ public abstract class LemonController
 	/**
 	 * Fetches a user by email.
 	 */
-	@GetMapping("/users/fetch-by-email")
+	@GetMapping(value = "/users/fetch-by-email", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public U fetchUserByEmail(@RequestParam String email) {
 		
 		log.debug("Fetching user by email: " + email);						
@@ -158,7 +159,7 @@ public abstract class LemonController
 	/**
 	 * Fetches a user by Id.
 	 */	
-	@GetMapping("/users/{id}")
+	@GetMapping(value = "/users/{id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public U fetchUserById(@PathVariable("id") U user) {
 		
 		log.debug("Fetching user: " + user);				
@@ -172,7 +173,7 @@ public abstract class LemonController
 	 * @throws IOException 
 	 * @throws JsonProcessingException 
 	 */
-	@PatchMapping("/users/{id}")
+	@PatchMapping(value = "/users/{id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public U updateUser(@PathVariable("id") U user, @RequestBody String patch)
 			throws JsonProcessingException, IOException, JsonPatchException {
 		

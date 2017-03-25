@@ -56,7 +56,11 @@ public class LemonUtil {
 		log.info("Created");
 	}
 
-	
+
+	public static ObjectMapper getMapper() {
+		
+		return objectMapper;
+	}
 	/**
 	 * Gets the reference to an application-context bean
 	 *  

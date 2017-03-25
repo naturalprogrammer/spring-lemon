@@ -20,14 +20,13 @@ public abstract class VersionedEntity<U extends AbstractUser<U,ID>, ID extends S
 	private static final long serialVersionUID = 4310555782328370192L;
 	
 	@Version
-	private long version;
+	private Long version;
 
-	public long getVersion() {
+	public Long getVersion() {
 		return version;
 	}
 
-	public void setVersion(long version) {
+	public void setVersion(Long version) {
 		this.version = version;
 	}
-
 }
