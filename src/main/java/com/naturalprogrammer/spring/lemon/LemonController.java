@@ -227,18 +227,18 @@ public abstract class LemonController
 		lemonService.changeEmail(changeEmailCode);
 	}
 	
-	@PostMapping("/users/{id}/token")
-	public Map<String, String> createToken(@PathVariable("id") U user) {
+	@PostMapping("/users/{id}/api-key")
+	public Map<String, String> createApiKey(@PathVariable("id") U user) {
 		
-		log.debug("Creating token ... ");				
-		return lemonService.createToken(user);
+		log.debug("Creating API Key ... ");				
+		return lemonService.createApiKey(user);
 	}
 	
-	@DeleteMapping("/users/{id}/token")
+	@DeleteMapping("/users/{id}/api-key")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void removeToken(@PathVariable("id") U user) {
+	public void removeApiKey(@PathVariable("id") U user) {
 		
-		log.debug("Removing token ... ");				
-		lemonService.removeToken(user);
+		log.debug("Removing API Key ... ");				
+		lemonService.removeApiKey(user);
 	}
 }

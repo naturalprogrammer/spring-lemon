@@ -724,29 +724,29 @@ public abstract class LemonService
 
 	@UserEditPermission
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
-	public Map<String, String> createToken(U user) {
+	public Map<String, String> createApiKey(U user) {
 		
-		log.debug("Creating token for user: " + user);
+		log.debug("Creating API Key for user: " + user);
 
 		// checks
 		LemonUtil.check("id", user != null,
 			"com.naturalprogrammer.spring.userNotFound").go();
 		
-		// set token
-		String token = LemonUtil.uid();
-		user.setApiKey(passwordEncoder.encode(token));
+		// set API Key
+		String key = LemonUtil.uid();
+		user.setApiKey(passwordEncoder.encode(key));
 		userRepository.save(user);
 
 		log.debug("Created token for user: " + user);	
-		return LemonUtil.mapOf("token", token);
+		return LemonUtil.mapOf("apiKey", key);
 	}
 
 
 	@UserEditPermission
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
-	public void removeToken(U user) {
+	public void removeApiKey(U user) {
 		
-		log.debug("Removing token for user: " + user);
+		log.debug("Removing API key for user: " + user);
 
 		// checks
 		LemonUtil.check("id", user != null,
@@ -756,7 +756,7 @@ public abstract class LemonService
 		user.setApiKey(null);
 		userRepository.save(user);
 
-		log.debug("Removed token for user: " + user);	
+		log.debug("Removed API key for user: " + user);	
 	}
 
 	abstract public ID parseId(String id);
