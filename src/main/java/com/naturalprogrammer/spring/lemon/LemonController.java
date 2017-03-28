@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.Map;
 
+import javax.servlet.http.HttpSession;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,9 +57,20 @@ public abstract class LemonController
 	@GetMapping("/ping")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void ping() {
+		
 		log.debug("Received a ping");
 	}
 	
+	
+	/**
+	 * A simple function for pinging this server.
+	 */
+	@GetMapping("/ping-session")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void ping(HttpSession session) {
+		log.debug("Pinging session. Session id: " + session.getId());
+	}
+
 
 	/**
 	 * Returns context properties needed at the client side, and

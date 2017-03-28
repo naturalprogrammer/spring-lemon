@@ -17,6 +17,7 @@ import org.springframework.boot.autoconfigure.security.oauth2.resource.Principal
 import org.springframework.boot.autoconfigure.security.oauth2.resource.UserInfoTokenServices;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.oauth2.client.OAuth2ClientContext;
@@ -94,6 +95,7 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		
+		sessionCreationPolicy(http); // set session creation policy
 		login(http); // authentication
 		logout(http); // logout related configuration
 		exceptionHandling(http); // exception handling
@@ -104,6 +106,20 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 		customToken(http); // Custom token authentication
 		authorizeRequests(http); // authorize requests
 		otherConfigurations(http); // override this to add more configurations
+	}
+
+
+	/**
+	 * Configuring Session creation policy
+	 * 
+	 * @param http
+	 * @throws Exception
+	 */
+	protected void sessionCreationPolicy(HttpSecurity http) throws Exception {
+		
+		// Don't create a session; but if there's one, use it
+		http.sessionManagement()
+			.sessionCreationPolicy(SessionCreationPolicy.NEVER);
 	}
 
 
