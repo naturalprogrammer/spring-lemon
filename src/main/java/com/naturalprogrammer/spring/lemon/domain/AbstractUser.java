@@ -105,7 +105,7 @@ implements UserDetails {
 	@Column(length = UUID_LENGTH, unique=true)
 	protected String changeEmailCode;
 	
-	// The authentication token to use
+	// The authentication token
 	protected String apiKey;	
 
 	// holds reCAPTCHA response while signing up

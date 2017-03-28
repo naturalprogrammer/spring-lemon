@@ -760,29 +760,4 @@ public abstract class LemonService
 	}
 
 	abstract public ID parseId(String id);
-
-
-	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
-	public U extractPrincipal(Map<String, Object> map, String emailKey) {
-		
-		U user = newUser();
-		user.setEmail((String) map.get(emailKey));
-		user.setUsername(user.getEmail());
-		user.setPassword(passwordEncoder.encode(LemonUtil.uid()));
-		
-		fillAdditionalFields(user, map);
-
-		// set a forgot password code
-		user.setForgotPasswordCode(LemonUtil.uid());
-		userRepository.save(user);
-
-		// after successful commit, mail him a link to reset his password
-		LemonUtil.afterCommit(() -> mailForgotPasswordLink(user));
-		
-		return user.decorate(user);
-	}
-
-	protected void fillAdditionalFields(U user, Map<String, Object> map) {
-		// Override for filling any additional fields, e.g. name
-	}	
 }
