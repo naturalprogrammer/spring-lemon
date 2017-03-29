@@ -7,7 +7,6 @@ import javax.validation.constraints.Size;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceServerProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.security.oauth2.client.token.grant.code.AuthorizationCodeResourceDetails;
 import org.springframework.validation.annotation.Validated;
@@ -40,7 +39,7 @@ public class LemonProperties {
 	 * Client web application's base URL.
 	 * Used in the verification link mailed to the users, etc.
 	 */
-    private String afterOauth2LoginUrl = "http://localhost:9000/after-social-login";
+    private String oauth2AuthenticationSuccessUrl = "http://localhost:9000/social-login-success";
 
     /**
      * Secret string used for encrypting remember-me tokens
@@ -65,9 +64,9 @@ public class LemonProperties {
 	
 	
 	/**
-	 * Social login related properties
+	 * Remote resource properties for social sign up/in
 	 */
-	private List<ClientResource> clientResources;
+	private List<RemoteResource> remoteResources;
 	
 	
 	/**
@@ -113,12 +112,12 @@ public class LemonProperties {
 		this.shared = shared;
 	}
 
-	public String getAfterOauth2LoginUrl() {
-		return afterOauth2LoginUrl;
+	public String getOauth2AuthenticationSuccessUrl() {
+		return oauth2AuthenticationSuccessUrl;
 	}
 
-	public void setAfterOauth2LoginUrl(String afterOauth2LoginUrl) {
-		this.afterOauth2LoginUrl = afterOauth2LoginUrl;
+	public void setAfterOauth2LoginUrl(String oauth2AuthenticationSuccessUrl) {
+		this.oauth2AuthenticationSuccessUrl = oauth2AuthenticationSuccessUrl;
 	}
 
 	public String getRememberMeKey() {
@@ -137,12 +136,12 @@ public class LemonProperties {
 		this.applicationUrl = applicationUrl;
 	}
 
-    public List<ClientResource> getClientResources() {
-		return clientResources;
+    public List<RemoteResource> getRemoteResources() {
+		return remoteResources;
 	}
 
-	public void setClientResources(List<ClientResource> clientResources) {
-		this.clientResources = clientResources;
+	public void setRemoteResources(List<RemoteResource> remoteResources) {
+		this.remoteResources = remoteResources;
 	}
 
 
@@ -329,31 +328,29 @@ public class LemonProperties {
 		}		
 	}
 	
-	public static class ClientResource {
+	public static class RemoteResource {
 		
-		private String name;
-		private AuthorizationCodeResourceDetails client;
-		private ResourceServerProperties resource;
+		private String id;
+		private AuthorizationCodeResourceDetails details;
+		private String userInfoUri;
 		
-		public String getName() {
-			return name;
+		public String getId() {
+			return id;
 		}
-		public void setName(String name) {
-			this.name = name;
+		public void setId(String id) {
+			this.id = id;
 		}
-		public AuthorizationCodeResourceDetails getClient() {
-			return client;
+		public AuthorizationCodeResourceDetails getDetails() {
+			return details;
 		}
-		public void setClient(AuthorizationCodeResourceDetails client) {
-			this.client = client;
+		public void setDetails(AuthorizationCodeResourceDetails details) {
+			this.details = details;
 		}
-		public ResourceServerProperties getResource() {
-			return resource;
+		public String getUserInfoUri() {
+			return userInfoUri;
 		}
-		public void setResource(ResourceServerProperties resource) {
-			this.resource = resource;
-		}	
-	}
-
-	
+		public void setUserInfoUri(String userInfoUri) {
+			this.userInfoUri = userInfoUri;
+		}		
+	}	
 }

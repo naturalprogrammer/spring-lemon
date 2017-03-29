@@ -35,7 +35,7 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.web.filter.CompositeFilter;
 
 import com.naturalprogrammer.spring.lemon.LemonProperties;
-import com.naturalprogrammer.spring.lemon.LemonProperties.ClientResource;
+import com.naturalprogrammer.spring.lemon.LemonProperties.RemoteResource;
 import com.naturalprogrammer.spring.lemon.security.principalextractors.AbstractPrincipalExtractor;
 import com.naturalprogrammer.spring.lemon.security.principalextractors.LemonPrincipalExtractor;
 
@@ -245,10 +245,10 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	protected void sso(HttpSecurity http) {
 		
-		List<ClientResource> clientResources = properties.getClientResources();
+		List<RemoteResource> clientResources = properties.getRemoteResources();
 		
 		if (clientResources != null && clientResources.size() > 0)
-			http.addFilterBefore(ssoFilter(properties.getClientResources()), BasicAuthenticationFilter.class);
+			http.addFilterBefore(socialAuthenticationFilter(properties.getRemoteResources()), BasicAuthenticationFilter.class);
 	}
 
 
@@ -284,11 +284,11 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 	}
 	
 	
-	protected Filter ssoFilter(List<ClientResource> clientResources) {
+	protected Filter socialAuthenticationFilter(List<RemoteResource> clientResources) {
 		
-		List<Filter> filters = properties.getClientResources()
+		List<Filter> filters = properties.getRemoteResources()
 				.stream()
-				.map(this::ssoFilter)
+				.map(this::oauth2AuthenticationFilter)
 				.collect(Collectors.toList());
 
 		CompositeFilter filter = new CompositeFilter();		  
@@ -297,24 +297,24 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 		return filter;
 	}
 
-	protected Filter ssoFilter(ClientResource client) {
+	protected Filter oauth2AuthenticationFilter(RemoteResource resource) {
 		  
 		OAuth2ClientAuthenticationProcessingFilter filter =
-				new OAuth2ClientAuthenticationProcessingFilter("/login/" + client.getName());
+			new OAuth2ClientAuthenticationProcessingFilter("/login/" + resource.getId());
 		
 		SimpleUrlAuthenticationSuccessHandler successHandler =
-				new SimpleUrlAuthenticationSuccessHandler(properties.getAfterOauth2LoginUrl());
+			new SimpleUrlAuthenticationSuccessHandler(properties.getOauth2AuthenticationSuccessUrl());
 		
 		filter.setAuthenticationSuccessHandler(successHandler);
 		filter.setRememberMeServices(rememberMeServices);
 		  
-		OAuth2RestTemplate template = new OAuth2RestTemplate(client.getClient(), oauth2ClientContext);
+		OAuth2RestTemplate template = new OAuth2RestTemplate(resource.getDetails(), oauth2ClientContext);
 		filter.setRestTemplate(template);
 		
 		UserInfoTokenServices tokenServices = new UserInfoTokenServices(
-		    client.getResource().getUserInfoUri(), client.getClient().getClientId());
+		    resource.getUserInfoUri(), resource.getDetails().getClientId());
 		
-		PrincipalExtractor principalExtractor = principalExtractors.get(client.getName());
+		PrincipalExtractor principalExtractor = principalExtractors.get(resource.getId());
 		if (principalExtractor == null)
 			principalExtractor = principalExtractors.get(AbstractPrincipalExtractor.DEFAULT);
 		
