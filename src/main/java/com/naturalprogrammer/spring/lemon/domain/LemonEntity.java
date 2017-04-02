@@ -13,8 +13,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  * 
  * @author Sanjay Patel
  *
- * @param <U>
- * @param <ID>
+ * @param <U>	the concrete user type, e.g. User
+ * @param <ID>	the concrete primary key type, e.g. Long
  */
 @MappedSuperclass
 @JsonIgnoreProperties({ "createdBy", "lastModifiedBy", "createdDate", "lastModifiedDate" })
@@ -25,10 +25,6 @@ public class LemonEntity<U extends AbstractUser<U,ID>, ID extends Serializable> 
 	/**
 	 * Whether the given user has the given permission for
 	 * this entity. Override this method where you need.
-	 * 
-	 * @param user
-	 * @param permission
-	 * @return
 	 */
 	public boolean hasPermission(U user, String permission) {
 		return false;

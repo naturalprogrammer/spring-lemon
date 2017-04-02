@@ -358,8 +358,6 @@ implements UserDetails {
 	/**
 	 * Sets the Id of the user. setId is protected,
 	 * hence this had to be coded
-	 * 
-	 * @param id
 	 */
 	public void setIdForClient(ID id) {
 		setId(id);

@@ -102,8 +102,8 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 		rememberMe(http); // remember-me
 		csrf(http); // csrf configuration
 		switchUser(http); // switch-user configuration
-		sso(http); // Social login configuration
-		customToken(http); // Custom token authentication
+		socialAuthentication(http); // Social login configuration
+		customTokenAuthentication(http); // API key authentication
 		authorizeRequests(http); // authorize requests
 		otherConfigurations(http); // override this to add more configurations
 	}
@@ -243,16 +243,19 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 	}
 
 
-	protected void sso(HttpSecurity http) {
+	protected void socialAuthentication(HttpSecurity http) {
 		
-		List<RemoteResource> clientResources = properties.getRemoteResources();
+		List<RemoteResource> remoteResources = properties.getRemoteResources();
 		
-		if (clientResources != null && clientResources.size() > 0)
-			http.addFilterBefore(socialAuthenticationFilter(properties.getRemoteResources()), BasicAuthenticationFilter.class);
+		if (remoteResources != null && remoteResources.size() > 0) {
+			
+			Filter filter =	socialAuthenticationFilter(properties.getRemoteResources());
+			http.addFilterBefore(filter, BasicAuthenticationFilter.class);			
+		}
 	}
 
 
-	private void customToken(HttpSecurity http) {
+	private void customTokenAuthentication(HttpSecurity http) {
 		http.addFilterBefore(lemonTokenAuthenticationFilter, BasicAuthenticationFilter.class);
 	}
 
@@ -281,8 +284,7 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 		filter.setSuccessHandler(authenticationSuccessHandler);
 		filter.setFailureHandler(authenticationFailureHandler);
 		return filter;
-	}
-	
+	}	
 	
 	protected Filter socialAuthenticationFilter(List<RemoteResource> clientResources) {
 		
