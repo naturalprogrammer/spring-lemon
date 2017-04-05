@@ -34,11 +34,11 @@ public abstract class AbstractPrincipalExtractor<U extends AbstractUser<U,?>>
 	@Autowired
     public void createAbstractPrincipalExtractor(PasswordEncoder passwordEncoder,
     		LemonUserDetailsService<U,?> userDetailsService,
-		    LemonService<U,?> lemonService) {
+		    LemonService<?,?> lemonService) {
 
     	this.passwordEncoder = passwordEncoder;
 		this.userDetailsService = userDetailsService;
-		this.lemonService = lemonService;
+		this.lemonService = (LemonService<U,?>) lemonService;
 	}
 
 
