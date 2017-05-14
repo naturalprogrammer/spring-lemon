@@ -37,22 +37,22 @@ import com.naturalprogrammer.spring.lemon.exceptions.VersionException;
  *
  */
 @Component
-public class LemonUtil {
+public class LemonUtils {
 	
-	private static final Log log = LogFactory.getLog(LemonUtil.class);
+	private static final Log log = LogFactory.getLog(LemonUtils.class);
 
 	private static ApplicationContext applicationContext;
 	private static MessageSource messageSource;
 	private static ObjectMapper objectMapper;
 	
 	@Autowired
-	public LemonUtil(ApplicationContext applicationContext,
+	public LemonUtils(ApplicationContext applicationContext,
 		MessageSource messageSource,
 		ObjectMapper objectMapper) {
 		
-		LemonUtil.applicationContext = applicationContext;
-		LemonUtil.messageSource = messageSource;
-		LemonUtil.objectMapper = objectMapper;
+		LemonUtils.applicationContext = applicationContext;
+		LemonUtils.messageSource = messageSource;
+		LemonUtils.objectMapper = objectMapper;
 		log.info("Created");
 	}
 
@@ -189,7 +189,7 @@ public class LemonUtil {
 	public static MultiErrorException check(
 			boolean valid, String messageKey, Object... args) {
 		
-		return LemonUtil.check(null, valid, messageKey, args);
+		return LemonUtils.check(null, valid, messageKey, args);
 	}
 
 	

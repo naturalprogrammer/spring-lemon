@@ -59,7 +59,7 @@ import com.naturalprogrammer.spring.lemon.security.LemonSecurityConfig;
 import com.naturalprogrammer.spring.lemon.security.LemonTokenAuthenticationFilter;
 import com.naturalprogrammer.spring.lemon.security.LemonUserDetailsService;
 import com.naturalprogrammer.spring.lemon.security.principalextractors.DefaultPrincipalExtractor;
-import com.naturalprogrammer.spring.lemon.util.LemonUtil;
+import com.naturalprogrammer.spring.lemon.util.LemonUtils;
 import com.naturalprogrammer.spring.lemon.validation.CaptchaValidator;
 import com.naturalprogrammer.spring.lemon.validation.RetypePasswordValidator;
 import com.naturalprogrammer.spring.lemon.validation.UniqueEmailValidator;
@@ -300,11 +300,11 @@ public class LemonAutoConfiguration {
 	}
 	
 	@Bean
-	public LemonUtil lemonUtil(ApplicationContext applicationContext,
+	public LemonUtils lemonUtil(ApplicationContext applicationContext,
 			MessageSource messageSource, ObjectMapper objectMapper) {
 
         log.info("Configuring LemonUtil");       		
-		return new LemonUtil(applicationContext, messageSource, objectMapper);
+		return new LemonUtils(applicationContext, messageSource, objectMapper);
 	}
 	
 	@Bean

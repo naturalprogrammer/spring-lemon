@@ -20,7 +20,7 @@ import org.springframework.web.filter.GenericFilterBean;
 import com.naturalprogrammer.spring.lemon.LemonService;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUserRepository;
-import com.naturalprogrammer.spring.lemon.util.LemonUtil;
+import com.naturalprogrammer.spring.lemon.util.LemonUtils;
 
 public class LemonTokenAuthenticationFilter
 	<U extends AbstractUser<U,ID>, ID extends Serializable>
@@ -74,12 +74,12 @@ public class LemonTokenAuthenticationFilter
 			U user = userRepository.findOne(userId);
 			
 		    if (user == null)
-		    	throw new BadCredentialsException(LemonUtil.getMessage("com.naturalprogrammer.spring.userNotFound"));
+		    	throw new BadCredentialsException(LemonUtils.getMessage("com.naturalprogrammer.spring.userNotFound"));
 
 			log.debug("Trying to match the token");
 
 			if (!passwordEncoder.matches(token, user.getApiKey()))
-		    	throw new BadCredentialsException(LemonUtil.getMessage("com.naturalprogrammer.spring.wrong.authenticationToken"));
+		    	throw new BadCredentialsException(LemonUtils.getMessage("com.naturalprogrammer.spring.wrong.authenticationToken"));
 		    
 		    user.decorate();
 		    

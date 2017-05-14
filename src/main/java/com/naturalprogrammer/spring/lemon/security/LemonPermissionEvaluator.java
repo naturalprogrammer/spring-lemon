@@ -8,7 +8,7 @@ import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
 
 import com.naturalprogrammer.spring.lemon.domain.VersionedEntity;
-import com.naturalprogrammer.spring.lemon.util.LemonUtil;
+import com.naturalprogrammer.spring.lemon.util.LemonUtils;
 
 /**
  * Needed to check the permission for the service methods
@@ -49,7 +49,7 @@ public class LemonPermissionEvaluator implements PermissionEvaluator {
 		
 		// Let's delegate to the entity's hasPermission method
 		VersionedEntity<?, ?> entity = (VersionedEntity<?, ?>) targetDomainObject;
-		return entity.hasPermission(LemonUtil.getUser(auth), (String) permission);
+		return entity.hasPermission(LemonUtils.getUser(auth), (String) permission);
 	}
 
 	

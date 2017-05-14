@@ -21,7 +21,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.naturalprogrammer.spring.lemon.security.LemonGrantedAuthority;
 import com.naturalprogrammer.spring.lemon.security.LemonSecurityConfig;
-import com.naturalprogrammer.spring.lemon.util.LemonUtil;
+import com.naturalprogrammer.spring.lemon.util.LemonUtils;
 import com.naturalprogrammer.spring.lemon.validation.Captcha;
 import com.naturalprogrammer.spring.lemon.validation.Password;
 import com.naturalprogrammer.spring.lemon.validation.UniqueEmail;
@@ -281,7 +281,7 @@ implements UserDetails {
 	 */
 	public U decorate() {
 		// delegates
-		return decorate(LemonUtil.getUser());
+		return decorate(LemonUtils.getUser());
 	}
 	
 	

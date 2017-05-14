@@ -6,7 +6,7 @@ import java.util.function.Supplier;
 
 import org.springframework.http.HttpStatus;
 
-import com.naturalprogrammer.spring.lemon.util.LemonUtil;
+import com.naturalprogrammer.spring.lemon.util.LemonUtils;
 import com.naturalprogrammer.spring.lemon.validation.FieldError;
 
 /**
@@ -88,7 +88,7 @@ public class MultiErrorException extends RuntimeException {
 		
 		if (!valid)
 			errors.add(new FieldError(fieldName, messageKey,
-				LemonUtil.getMessage(messageKey, args)));
+				LemonUtils.getMessage(messageKey, args)));
 			
 		return this;
 	}
@@ -108,7 +108,7 @@ public class MultiErrorException extends RuntimeException {
 		
 		MultiErrorException exception = new MultiErrorException();
 		exception.errors.add(new FieldError(fieldName, messageKey,
-				LemonUtil.getMessage(messageKey, args)));
+				LemonUtils.getMessage(messageKey, args)));
 		
 		return () -> exception;
 	}

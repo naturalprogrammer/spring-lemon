@@ -9,7 +9,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
-import com.naturalprogrammer.spring.lemon.util.LemonUtil;
+import com.naturalprogrammer.spring.lemon.util.LemonUtils;
 import com.naturalprogrammer.spring.lemon.validation.FieldError;
 
 @Component
@@ -34,6 +34,6 @@ public class ConstraintViolationExceptionHandler extends AbstractExceptionHandle
 	
 	@Override
 	protected String getMessage(ConstraintViolationException ex) {
-		return LemonUtil.getMessage("com.naturalprogrammer.spring.validationError");
+		return LemonUtils.getMessage("com.naturalprogrammer.spring.validationError");
 	}
 }

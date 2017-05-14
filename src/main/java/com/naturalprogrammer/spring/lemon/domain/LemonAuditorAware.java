@@ -6,7 +6,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.data.domain.AuditorAware;
 
-import com.naturalprogrammer.spring.lemon.util.LemonUtil;
+import com.naturalprogrammer.spring.lemon.util.LemonUtils;
 
 /**
  * Needed for auto-filling of the
@@ -30,6 +30,6 @@ implements AuditorAware<U> {
 
 	@Override
 	public U getCurrentAuditor() {
-		return LemonUtil.getUser();
+		return LemonUtils.getUser();
 	}	
 }

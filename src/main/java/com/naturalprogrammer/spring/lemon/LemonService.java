@@ -33,7 +33,7 @@ import com.naturalprogrammer.spring.lemon.domain.ChangePasswordForm;
 import com.naturalprogrammer.spring.lemon.exceptions.MultiErrorException;
 import com.naturalprogrammer.spring.lemon.mail.MailSender;
 import com.naturalprogrammer.spring.lemon.permissions.UserEditPermission;
-import com.naturalprogrammer.spring.lemon.util.LemonUtil;
+import com.naturalprogrammer.spring.lemon.util.LemonUtils;
 import com.naturalprogrammer.spring.lemon.validation.Password;
 
 /**
@@ -185,9 +185,9 @@ public abstract class LemonService
 		userRepository.save(user);
 		
 		// if successfully committed
-		LemonUtil.afterCommit(() -> {
+		LemonUtils.afterCommit(() -> {
 		
-			LemonUtil.logIn(user); // log the user in
+			LemonUtils.logIn(user); // log the user in
 			sendVerificationMail(user); // send verification mail
 			log.debug("Signed up user: " + user);
 		});
@@ -214,7 +214,7 @@ public abstract class LemonService
 	 */
 	protected void makeUnverified(U user) {
 		user.getRoles().add(Role.UNVERIFIED);
-		user.setVerificationCode(LemonUtil.uid());
+		user.setVerificationCode(LemonUtils.uid());
 	}
 	
 	
@@ -244,8 +244,8 @@ public abstract class LemonService
 			
 			// send the mail
 			mailSender.send(user.getEmail(),
-				LemonUtil.getMessage("com.naturalprogrammer.spring.verifySubject"),
-				LemonUtil.getMessage(
+				LemonUtils.getMessage("com.naturalprogrammer.spring.verifySubject"),
+				LemonUtils.getMessage(
 					"com.naturalprogrammer.spring.verifyEmail",	verifyLink));
 			
 			log.debug("Verification mail to " + user.getEmail() + " queued.");
@@ -266,11 +266,11 @@ public abstract class LemonService
 	public void resendVerificationMail(U user) {
 
 		// The user must exist
-		LemonUtil.check("id", user != null,
+		LemonUtils.check("id", user != null,
 				"com.naturalprogrammer.spring.userNotFound").go();
 		
 		// must be unverified
-		LemonUtil.check(user.getRoles().contains(Role.UNVERIFIED),
+		LemonUtils.check(user.getRoles().contains(Role.UNVERIFIED),
 				"com.naturalprogrammer.spring.alreadyVerified").go();	
 
 		// send the verification mail
@@ -313,7 +313,7 @@ public abstract class LemonService
 		log.debug("Fetching user: " + user);
 
 		// ensure that the user exists
-		LemonUtil.check("id", user != null,
+		LemonUtils.check("id", user != null,
 			"com.naturalprogrammer.spring.userNotFound").go();
 		
 		// decorate the user, and hide confidential fields
@@ -335,27 +335,27 @@ public abstract class LemonService
 		log.debug("Verifying user ...");
 
 		// get the current-user from the session
-		U currentUser = LemonUtil.getUser();
+		U currentUser = LemonUtils.getUser();
 		
 		// fetch a fresh copy from the database
 		U user = userRepository.findOne(currentUser.getId());
 		
 		// ensure that he is unverified
-		LemonUtil.check(user.getRoles().contains(Role.UNVERIFIED),
+		LemonUtils.check(user.getRoles().contains(Role.UNVERIFIED),
 				"com.naturalprogrammer.spring.alreadyVerified").go();	
 		
 		// ensure that the verification code of the user matches with the given one
-		LemonUtil.check(verificationCode.equals(user.getVerificationCode()),
+		LemonUtils.check(verificationCode.equals(user.getVerificationCode()),
 				"com.naturalprogrammer.spring.wrong.verificationCode").go();
 		
 		makeVerified(user); // make him verified
 		userRepository.save(user);
 		
 		// after successful commit,
-		LemonUtil.afterCommit(() -> {
+		LemonUtils.afterCommit(() -> {
 			
 			// Re-login the user, so that the UNVERIFIED role is removed
-			LemonUtil.logIn(user);
+			LemonUtils.logIn(user);
 			
 			log.debug("Re-logged-in the user for removing UNVERIFIED role.");		
 		});
@@ -380,11 +380,11 @@ public abstract class LemonService
 					"com.naturalprogrammer.spring.userNotFound"));
 
 		// set a forgot password code
-		user.setForgotPasswordCode(LemonUtil.uid());
+		user.setForgotPasswordCode(LemonUtils.uid());
 		userRepository.save(user);
 
 		// after successful commit, mail him a link to reset his password
-		LemonUtil.afterCommit(() -> mailForgotPasswordLink(user));
+		LemonUtils.afterCommit(() -> mailForgotPasswordLink(user));
 	}
 	
 	
@@ -399,11 +399,11 @@ public abstract class LemonService
 		log.debug("Processing forgot password for user: " + user);
 		
 		// set a forgot password code
-		user.setForgotPasswordCode(LemonUtil.uid());
+		user.setForgotPasswordCode(LemonUtils.uid());
 		userRepository.save(user);
 
 		// after successful commit, mail him a link to reset his password
-		LemonUtil.afterCommit(() -> mailForgotPasswordLink(user));
+		LemonUtils.afterCommit(() -> mailForgotPasswordLink(user));
 	}
 	
 	
@@ -425,8 +425,8 @@ public abstract class LemonService
 			
 			// send the mail
 			mailSender.send(user.getEmail(),
-					LemonUtil.getMessage("com.naturalprogrammer.spring.forgotPasswordSubject"),
-					LemonUtil.getMessage("com.naturalprogrammer.spring.forgotPasswordEmail",
+					LemonUtils.getMessage("com.naturalprogrammer.spring.forgotPasswordSubject"),
+					LemonUtils.getMessage("com.naturalprogrammer.spring.forgotPasswordEmail",
 						forgotPasswordLink));
 			
 			log.debug("Forgot password link mail queued.");
@@ -481,10 +481,10 @@ public abstract class LemonService
 		log.debug("Updating user: " + user);
 
 		// checks
-		LemonUtil.validateVersion(user, updatedUser);
+		LemonUtils.validateVersion(user, updatedUser);
 
 		// delegates to updateUserFields
-		updateUserFields(user, updatedUser, LemonUtil.getUser());
+		updateUserFields(user, updatedUser, LemonUtils.getUser());
 		userRepository.save(user);
 		
 		log.debug("Updated user: " + user);		
@@ -504,9 +504,9 @@ public abstract class LemonService
 		log.debug("Changing password for user: " + user);
 
 		// checks
-		LemonUtil.check("id", user != null,
+		LemonUtils.check("id", user != null,
 			"com.naturalprogrammer.spring.userNotFound").go();
-		LemonUtil.check("changePasswordForm.oldPassword",
+		LemonUtils.check("changePasswordForm.oldPassword",
 			passwordEncoder.matches(changePasswordForm.getOldPassword(),
 									user.getPassword()),
 			"com.naturalprogrammer.spring.wrong.password").go();
@@ -516,14 +516,14 @@ public abstract class LemonService
 		userRepository.save(user);
 		
 		// after successful commit
-		LemonUtil.afterCommit(() -> {
+		LemonUtils.afterCommit(() -> {
 
-			U currentUser = LemonUtil.getUser();
+			U currentUser = LemonUtils.getUser();
 			
 			if (currentUser.equals(user)) { // if current-user's password changed,
 				
 				log.debug("Logging out ...");
-				LemonUtil.logOut(); // log him out
+				LemonUtils.logOut(); // log him out
 			}
 		});
 		
@@ -557,7 +557,7 @@ public abstract class LemonService
 				if (!user.hasRole(Role.UNVERIFIED)) {
 
 					makeUnverified(user); // make user unverified
-					LemonUtil.afterCommit(() -> sendVerificationMail(user)); // send a verification mail to the user
+					LemonUtils.afterCommit(() -> sendVerificationMail(user)); // send a verification mail to the user
 				}
 			} else {
 				
@@ -586,7 +586,7 @@ public abstract class LemonService
 	public U userForClient() {
 		
 		// delegates
-		return userForClient(LemonUtil.getUser());
+		return userForClient(LemonUtils.getUser());
 	}
 
 	
@@ -627,20 +627,20 @@ public abstract class LemonService
 		log.debug("Requesting email change: " + user);
 
 		// checks
-		LemonUtil.check("id", user != null,
+		LemonUtils.check("id", user != null,
 				"com.naturalprogrammer.spring.userNotFound").go();
-		LemonUtil.check("updatedUser.password",
+		LemonUtils.check("updatedUser.password",
 			passwordEncoder.matches(updatedUser.getPassword(),
-									LemonUtil.getUser().getPassword()),
+									LemonUtils.getUser().getPassword()),
 			"com.naturalprogrammer.spring.wrong.password").go();
 
 		// preserves the new email id
 		user.setNewEmail(updatedUser.getNewEmail());
-		user.setChangeEmailCode(LemonUtil.uid());
+		user.setChangeEmailCode(LemonUtils.uid());
 		userRepository.save(user);
 		
 		// after successful commit, mails a link to the user
-		LemonUtil.afterCommit(() -> mailChangeEmailLink(user));
+		LemonUtils.afterCommit(() -> mailChangeEmailLink(user));
 		
 		log.debug("Requested email change: " + user);		
 	}
@@ -664,9 +664,9 @@ public abstract class LemonService
 			
 			// mail it
 			mailSender.send(user.getEmail(),
-				LemonUtil.getMessage(
+				LemonUtils.getMessage(
 					"com.naturalprogrammer.spring.changeEmailSubject"),
-				LemonUtil.getMessage(
+				LemonUtils.getMessage(
 					"com.naturalprogrammer.spring.changeEmailEmail",
 					 changeEmailLink));
 			
@@ -691,16 +691,16 @@ public abstract class LemonService
 		log.debug("Changing email of current user ...");
 
 		// fetch the current-user
-		U currentUser = LemonUtil.getUser();
+		U currentUser = LemonUtils.getUser();
 		U user = userRepository.findOne(currentUser.getId());
 		
 		// checks
 		
-		LemonUtil.check(changeEmailCode.equals(user.getChangeEmailCode()),
+		LemonUtils.check(changeEmailCode.equals(user.getChangeEmailCode()),
 				"com.naturalprogrammer.spring.wrong.changeEmailCode").go();
 		
 		// Ensure that the email would be unique 
-		LemonUtil.check(
+		LemonUtils.check(
 				!userRepository.findByEmail(user.getNewEmail()).isPresent(),
 				"com.naturalprogrammer.spring.duplicate.email").go();	
 		
@@ -716,7 +716,7 @@ public abstract class LemonService
 		userRepository.save(user);
 		
 		// logout after successful commit
-		LemonUtil.afterCommit(LemonUtil::logOut);
+		LemonUtils.afterCommit(LemonUtils::logOut);
 		
 		log.debug("Changed email of user: " + user);		
 	}
@@ -729,16 +729,16 @@ public abstract class LemonService
 		log.debug("Creating API Key for user: " + user);
 
 		// checks
-		LemonUtil.check("id", user != null,
+		LemonUtils.check("id", user != null,
 			"com.naturalprogrammer.spring.userNotFound").go();
 		
 		// set API Key
-		String key = LemonUtil.uid();
+		String key = LemonUtils.uid();
 		user.setApiKey(passwordEncoder.encode(key));
 		userRepository.save(user);
 
 		log.debug("Created token for user: " + user);	
-		return LemonUtil.mapOf("apiKey", key);
+		return LemonUtils.mapOf("apiKey", key);
 	}
 
 
@@ -749,7 +749,7 @@ public abstract class LemonService
 		log.debug("Removing API key for user: " + user);
 
 		// checks
-		LemonUtil.check("id", user != null,
+		LemonUtils.check("id", user != null,
 			"com.naturalprogrammer.spring.userNotFound").go();
 		
 		// remove the token

@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.naturalprogrammer.spring.lemon.LemonService;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
 import com.naturalprogrammer.spring.lemon.security.LemonUserDetailsService;
-import com.naturalprogrammer.spring.lemon.util.LemonUtil;
+import com.naturalprogrammer.spring.lemon.util.LemonUtils;
 
 @Transactional(propagation=Propagation.SUPPORTS, readOnly=true)
 public abstract class AbstractPrincipalExtractor<U extends AbstractUser<U,?>>
@@ -59,7 +59,7 @@ public abstract class AbstractPrincipalExtractor<U extends AbstractUser<U,?>>
 			user = lemonService.newUser();
 			user.setEmail((String) map.get(emailKey));
 			user.setUsername(user.getEmail());
-			user.setPassword(passwordEncoder.encode(LemonUtil.uid()));
+			user.setPassword(passwordEncoder.encode(LemonUtils.uid()));
 			fillAdditionalFields(user, map);
 			
 			lemonService.forgotPassword(user);

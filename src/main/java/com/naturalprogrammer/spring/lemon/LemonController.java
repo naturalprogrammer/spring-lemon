@@ -26,7 +26,7 @@ import com.github.fge.jsonpatch.JsonPatchException;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser.SignupInput;
 import com.naturalprogrammer.spring.lemon.domain.ChangePasswordForm;
-import com.naturalprogrammer.spring.lemon.util.LemonUtil;
+import com.naturalprogrammer.spring.lemon.util.LemonUtils;
 
 /**
  * The Lemon API
@@ -80,7 +80,7 @@ public abstract class LemonController
 	public Map<String, Object> getContext() {
 		
 		Map<String, Object> context =
-			LemonUtil.mapOf("context", lemonService.getContext(),
+			LemonUtils.mapOf("context", lemonService.getContext(),
 							"user", lemonService.userForClient());
 		
 		log.debug("Returning context: " + context);
@@ -193,10 +193,10 @@ public abstract class LemonController
 		log.debug("Updating user ... ");
 		
 		// ensure that the user exists
-		LemonUtil.check("id", user != null,
+		LemonUtils.check("id", user != null,
 			"com.naturalprogrammer.spring.userNotFound").go();
 		
-		U updatedUser = LemonUtil.applyPatch(user, patch); // create a patched form
+		U updatedUser = LemonUtils.applyPatch(user, patch); // create a patched form
 		lemonService.updateUser(user, updatedUser);
 		
 		// return the currently logged in user data (in case updated)

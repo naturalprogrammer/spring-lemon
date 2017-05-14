@@ -1,6 +1,6 @@
 package com.naturalprogrammer.spring.lemon.exceptions;
 
-import com.naturalprogrammer.spring.lemon.util.LemonUtil;
+import com.naturalprogrammer.spring.lemon.util.LemonUtils;
 
 /**
  * Version exception, to be thrown when concurrent
@@ -13,7 +13,7 @@ public class VersionException extends RuntimeException {
 	private static final long serialVersionUID = 6020532846519363456L;
 	
 	public VersionException(String entityName) {
-		super(LemonUtil.getMessage(
+		super(LemonUtils.getMessage(
 			"com.naturalprogrammer.spring.versionException", entityName));
 	}
 }
