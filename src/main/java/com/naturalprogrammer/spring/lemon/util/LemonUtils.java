@@ -8,7 +8,6 @@ import java.util.UUID;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -45,7 +44,6 @@ public class LemonUtils {
 	private static MessageSource messageSource;
 	private static ObjectMapper objectMapper;
 	
-	@Autowired
 	public LemonUtils(ApplicationContext applicationContext,
 		MessageSource messageSource,
 		ObjectMapper objectMapper) {
@@ -61,6 +59,7 @@ public class LemonUtils {
 		
 		return objectMapper;
 	}
+	
 	/**
 	 * Gets the reference to an application-context bean
 	 *  

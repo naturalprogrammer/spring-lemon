@@ -41,7 +41,6 @@ public abstract class AbstractPrincipalExtractor<U extends AbstractUser<U,?>>
 		this.lemonService = (LemonService<U,?>) lemonService;
 	}
 
-
     @Override
     public Object extractPrincipal(Map<String, Object> map) {
     	

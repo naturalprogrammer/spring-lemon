@@ -63,7 +63,7 @@ public abstract class LemonController
 	
 	
 	/**
-	 * A simple function for pinging this server.
+	 * A simple function for pinging this server and create a session.
 	 */
 	@GetMapping("/ping-session")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
