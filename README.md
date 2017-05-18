@@ -1,28 +1,34 @@
 # Spring Lemon
 
-> [Getting Started Video Tutorial](https://gum.co/IKqz) available now. 
+A real-world Spring REST service will have tons of non-functional code, including
 
-When developing a *REST API* using Spring Framework for your *single page* or *mobo* applications, you will need to do many subtle configurations. You will also need to lay out some good patterns, base classes and utilities to elegantly handle validation, security etc.
+* Spring Security configuration for REST services (redirection, CSRF, CORS, JSON vulnerability, remember-me, switch user etc.)
+* Stateless API key authentication support, for mobo or machine clients
+* Support for traditional session-cookie based login (with remember-me and CSRF protection) for web clients
+* Social sign on support (using OAuth2 providers, such as Google and Facebook)
+* Mechanism for handling validations and exceptions in a cross functional manner, sending precise errors to the client
+* Support for elegantly using PATCH and JsonPatch to handle partial updates correctly
+* A robust user module
+* Test utilities and patterns
 
-All these configurations and code would be common to all your applications. Not only that, most of the user module, e.g. sign up, change password etc. would also be common.
+Coding the above effectively needs in-depth knowledge of the underlying framework, i.e. Spring. It also takes a lot of development time and effort, and needs to be properly maintained as new versions of Spring modules come out.
 
-How about someone writing this code as a configurable and extensible library, which you can include in your project and start coding your business logic straightaway? This way, you not only get rid of coding this techie stuff, but also get rid of keeping it updated along with the new releases of Spring.
+To relieve you of this non-trivial job, we thought to bring out this tiny open source library, named Spring Lemon, holding all these essential code and patterns. It aims to use the latest best practices found in the official guides, books, blog posts, etc.. It includes a production grade user module with features like sign up, sign in, verify email, social signup/in, update profile, forgot password, change password, change email, captcha validation, stateless token authentication etc..
 
-Welcome to *Spring Lemon*. It has all the essential configurations, patterns, base classes and utilities for developing JSON REST Web Services using Spring Boot. It also has a production-grade extensible user module with features like *sign up, sign in, verify email, update profile, forgot password, change password, change email, captcha validation* etc.. [Click here](https://www.youtube.com/watch?v=bDW6ICmJaJs) to watch a complete demo of the available features.
+Most Spring Boot applications can use Spring Lemon straight away, with some simple configurations. But, if you don't find it suitable for your application, feel free to fork it, or just roll out your own library by learning its patterns and practices. Better yet, be a contributor!
 
-Most Spring Boot applications can use Spring Lemon straight away, with some simple configurations. But, if you don't find it suitable for your application, feel free to fork it, or just roll out your own library by learning its patterns and practices. Better yet, be a contributor to this library!
-
-For getting started, watch [this video guide](https://gumroad.com/l/IKqz#), or read [this book] (https://www.gitbook.com/book/naturalprogrammer/spring-lemon-getting-started/details). 
+For getting started, read [this book] (https://gum.co/YOPH).
 
 ## Documentation and Resources
 
-1. Getting started guide - It will familiarize you with Spring Lemon and the core API you inherit when you use it.
- 1. [Video Tutorial](https://gum.co/IKqz)
- 1. [Book]
-(https://www.gitbook.com/book/naturalprogrammer/spring-lemon-getting-started/details)
-1. [Example application](https://github.com/naturalprogrammer/lemon-demo) - A sample application using Spring Lemon. Quite similar to the one developed in the above [getting started guide](https://www.gitbook.com/book/naturalprogrammer/spring-lemon-getting-started/details), but additionally has automated tests.
-1. [Example Angular 1.x front-end application](https://github.com/naturalprogrammer/lemon-demo-angular1) - A sample AngularJS 1.x front-end. It'll work both for the application developed in the above [getting started guide](https://www.gitbook.com/book/naturalprogrammer/spring-lemon-getting-started/details) as well as the [Lemon Demo application](https://github.com/naturalprogrammer/lemon-demo). 
-1. [Spring Framework REST API Development - A Complete Blueprint](https://gum.co/exuo/associate) - An eBook discussing Spring Lemon internals, aiming to serve as a complete blueprint for developing Spring Boot RESTful Web Services, whether you use Spring Lemon or not. After going through this book, you will be able to use Spring Lemon fluently, fork and customize it if needed, or develop another such library from scratch.
+1. Getting started guide
+ 1. Video Tutorial - Coming Soon
+ 1. [Book] (https://gum.co/YOPH)
+1. [Example application](https://github.com/naturalprogrammer/lemon-demo) - A sample application using Spring Lemon. Quite similar to the one developed in the above [getting started guide](https://gum.co/YOPH), but additionally has automated tests.
+1. [API documentation](http://www.naturalprogrammer.com/spring-lemon-apidoc) of the above application.
+1. [Example Angular 1.x front-end application](https://github.com/naturalprogrammer/lemon-demo-angular1) - A sample AngularJS 1.x front-end. It'll work both for the application developed in the above [getting started guide](https://gum.co/YOPH) as well as the [Lemon Demo application](https://github.com/naturalprogrammer/lemon-demo). 
+1. Coming Soon - Spring Framework REST API Development - A Real-World Guide - An eBook discussing the essential details and patterns for real-world Spring Framework REST API Development.
+1. Coming Soon - Spring Lemon Reference material
 
 ## Help and Support
 1. Community help is available at [stackoverflow.com](http://stackoverflow.com/questions/tagged/spring-lemon), under the `spring-lemon` tag. Do not miss to tag the questions with `spring-lemon`!
