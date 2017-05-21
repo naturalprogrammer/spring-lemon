@@ -23,9 +23,8 @@ For getting started, read [this book] (https://gum.co/YOPH).
 
 ## Documentation and Resources
 
-1. Getting started guide
-  1. [Book](https://gum.co/YOPH)
-  1. Video Tutorial - Coming Soon
+1. Getting started guide - [Book](https://gum.co/YOPH)
+1. Coming Soon - Getting started guide - Video Tutorial
 1. [Example application](https://github.com/naturalprogrammer/lemon-demo) - A sample application using Spring Lemon. Quite similar to the one developed in the above [getting started guide](https://gum.co/YOPH), but additionally has automated tests.
 1. [API documentation](http://www.naturalprogrammer.com/spring-lemon-apidoc) of the above application.
 1. [Example Angular 1.x front-end application](https://github.com/naturalprogrammer/lemon-demo-angular1) - A sample AngularJS 1.x front-end. It'll work both for the application developed in the above [getting started guide](https://gum.co/YOPH) as well as the [Lemon Demo application](https://github.com/naturalprogrammer/lemon-demo). 
