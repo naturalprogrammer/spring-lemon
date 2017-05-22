@@ -19,7 +19,7 @@ Even if you don't plan to use Spring Lemon in production, it's a good example ap
 
 Most Spring Boot applications can use Spring Lemon straight away, with some simple configurations. But, if you don't find it suitable for your application, feel free to fork it, or just roll out your own library by learning its patterns and practices. Better yet, be a contributor!
 
-For getting started, read [this quick starter guide] (https://www.gitbook.com/book/naturalprogrammer/spring-lemon-getting-started/details).
+Read [this quick starter guide](https://www.gitbook.com/book/naturalprogrammer/spring-lemon-getting-started/details) for getting started.
 
 ## Documentation and Resources
 
