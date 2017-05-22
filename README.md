@@ -19,15 +19,15 @@ Even if you don't plan to use Spring Lemon in production, it's a good example ap
 
 Most Spring Boot applications can use Spring Lemon straight away, with some simple configurations. But, if you don't find it suitable for your application, feel free to fork it, or just roll out your own library by learning its patterns and practices. Better yet, be a contributor!
 
-For getting started, read [this book] (https://gum.co/YOPH).
+For getting started, read [this quick starter guide] (https://www.gitbook.com/book/naturalprogrammer/spring-lemon-getting-started/details).
 
 ## Documentation and Resources
 
-1. Getting started guide - [Book](https://gum.co/YOPH)
+1. Getting started guide - [Book](https://www.gitbook.com/book/naturalprogrammer/spring-lemon-getting-started/details)
 1. Coming Soon - Getting started guide - Video Tutorial
-1. [Example application](https://github.com/naturalprogrammer/lemon-demo) - A sample application using Spring Lemon. Quite similar to the one developed in the above [getting started guide](https://gum.co/YOPH), but additionally has automated tests.
+1. [Example application](https://github.com/naturalprogrammer/lemon-demo) - A sample application using Spring Lemon. Quite similar to the one developed in the above [getting started guide](https://www.gitbook.com/book/naturalprogrammer/spring-lemon-getting-started/details), but additionally has automated tests.
 1. [API documentation](http://www.naturalprogrammer.com/spring-lemon-apidoc) of the above application.
-1. [Example Angular 1.x front-end application](https://github.com/naturalprogrammer/lemon-demo-angular1) - A sample AngularJS 1.x front-end. It'll work both for the application developed in the above [getting started guide](https://gum.co/YOPH) as well as the [Lemon Demo application](https://github.com/naturalprogrammer/lemon-demo). 
+1. [Example Angular 1.x front-end application](https://github.com/naturalprogrammer/lemon-demo-angular1) - A sample AngularJS 1.x front-end. It'll work both for the application developed in the above [getting started guide](https://www.gitbook.com/book/naturalprogrammer/spring-lemon-getting-started/details) as well as the [Lemon Demo application](https://github.com/naturalprogrammer/lemon-demo). 
 1. Coming Soon - Spring Framework REST API Development - A Real-World Guide - An eBook discussing the essential details and patterns for real-world Spring Framework REST API Development.
 1. Coming Soon - Spring Lemon Reference material
 
