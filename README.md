@@ -37,7 +37,7 @@ Read [this quick starter guide](https://www.gitbook.com/book/naturalprogrammer/s
 1. Mentoring, training and professional help is provided by [naturalprogrammer.com](http://www.naturalprogrammer.com/consulting/).
 
 ## Support Spring Lemon
-Like Spring Lemon? We have been putting enormous efforts and taking regular breaks to develop and maintain it. If it's being useful to you, donate generously — it’ll help us give more time to the project! [Click here](http://www.naturalprogrammer.com/support-spring-lemon/) to donate.
+Like Spring Lemon? We have been putting continuous efforts to develop and maintain it. If it's being useful to you, why not donate a little amount — it’ll help us give more time to the project! [Click here](http://www.naturalprogrammer.com/support-spring-lemon/) to donate.
 
 ## Releases
 
