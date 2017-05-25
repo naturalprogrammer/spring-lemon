@@ -1,5 +1,7 @@
 # Spring Lemon
 
+> Getting started video tutorial available now - [click here](https://gum.co/IKqz)!
+
 A real-world Spring REST service will have tons of non-functional code, including
 
 * Spring Security configuration for REST (redirection, CSRF, CORS, JSON vulnerability, remember-me, switch user etc.)
@@ -19,12 +21,12 @@ Even if you don't plan to use Spring Lemon in production, it's a good example ap
 
 Most Spring Boot applications can use Spring Lemon straight away, with some simple configurations. But, if you don't find it suitable for your application, feel free to fork it, or just roll out your own library by learning its patterns and practices. Better yet, be a contributor!
 
-Read [this quick starter guide](https://www.gitbook.com/book/naturalprogrammer/spring-lemon-getting-started/details) for getting started.
+Read [this quick starter guide](https://www.gitbook.com/book/naturalprogrammer/spring-lemon-getting-started/details) or watch [this video tutorial](https://gum.co/IKqz) for getting started.
 
 ## Documentation and Resources
 
 1. Getting started guide - [Book](https://www.gitbook.com/book/naturalprogrammer/spring-lemon-getting-started/details)
-1. Coming Soon - Getting started guide - Video Tutorial
+1. Getting started guide - [Video Tutorial](https://gum.co/IKqz)
 1. [Example application](https://github.com/naturalprogrammer/lemon-demo) - A sample application using Spring Lemon. Quite similar to the one developed in the above [getting started guide](https://www.gitbook.com/book/naturalprogrammer/spring-lemon-getting-started/details), but additionally has automated tests.
 1. [API documentation](http://www.naturalprogrammer.com/spring-lemon-apidoc) of the above application.
 1. [Example Angular 1.x front-end application](https://github.com/naturalprogrammer/lemon-demo-angular1) - A sample AngularJS 1.x front-end. It'll work both for the application developed in the above [getting started guide](https://www.gitbook.com/book/naturalprogrammer/spring-lemon-getting-started/details) as well as the [Lemon Demo application](https://github.com/naturalprogrammer/lemon-demo). 
