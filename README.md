@@ -25,13 +25,12 @@ Read [this quick starter guide](https://www.gitbook.com/book/naturalprogrammer/s
 
 ## Documentation and Resources
 
-1. Getting started guide - [Book](https://www.gitbook.com/book/naturalprogrammer/spring-lemon-getting-started/details)
-1. Getting started guide - [Video Tutorial](https://gum.co/IKqz)
-1. [Example application](https://github.com/naturalprogrammer/lemon-demo) - A sample application using Spring Lemon. Quite similar to the one developed in the above [getting started guide](https://www.gitbook.com/book/naturalprogrammer/spring-lemon-getting-started/details), but additionally has automated tests.
-1. [API documentation](http://www.naturalprogrammer.com/spring-lemon-apidoc) of the above application.
-1. [Example Angular 1.x front-end application](https://github.com/naturalprogrammer/lemon-demo-angular1) - A sample AngularJS 1.x front-end. It'll work both for the application developed in the above [getting started guide](https://www.gitbook.com/book/naturalprogrammer/spring-lemon-getting-started/details) as well as the [Lemon Demo application](https://github.com/naturalprogrammer/lemon-demo). 
-1. Coming Soon - Spring Framework REST API Development - A Real-World Guide - An eBook discussing the essential details and patterns for real-world Spring Framework REST API Development.
-1. Coming Soon - Spring Lemon Reference material
+1. _Getting started guide_ - [Book](https://www.gitbook.com/book/naturalprogrammer/spring-lemon-getting-started/details)
+1. _Getting started guide_ - [Video Tutorial](https://gum.co/IKqz)
+1. _[Example application](https://github.com/naturalprogrammer/lemon-demo)_ - A sample application using Spring Lemon. Quite similar to the one developed in the above [getting started guide](https://www.gitbook.com/book/naturalprogrammer/spring-lemon-getting-started/details), but additionally has automated tests.
+1. _[API documentation](http://www.naturalprogrammer.com/spring-lemon-apidoc)_ of the above application.
+1. _[Example Angular 1.x front-end application](https://github.com/naturalprogrammer/lemon-demo-angular1)_ - A sample AngularJS 1.x front-end. It'll work both for the application developed in the above [getting started guide](https://www.gitbook.com/book/naturalprogrammer/spring-lemon-getting-started/details) as well as the [Lemon Demo application](https://github.com/naturalprogrammer/lemon-demo). 
+1. _Real-World RESTful Web Services With Spring - A Complete Blueprint_ - Ultimate video tutorial discussing Spring Lemon code and features in minute details. Go through it to master REST API development using Spring, whether you use Spring Lemon or not. Supposed to be released after Spring Boot 2.0 GA release -- but [pre-order now](https://gum.co/NPFm/associate) to get it only for USD <s>297</s> 95 (plus taxes as applicable)!
 
 ## Help and Support
 1. Community help is available at [stackoverflow.com](http://stackoverflow.com/questions/tagged/spring-lemon), under the `spring-lemon` tag. Do not miss to tag the questions with `spring-lemon`!
