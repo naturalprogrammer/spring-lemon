@@ -7,9 +7,10 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.boot.autoconfigure.web.DefaultErrorAttributes;
+import org.springframework.boot.web.servlet.error.DefaultErrorAttributes;
 import org.springframework.core.annotation.AnnotationAwareOrderComparator;
 import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.WebRequest;
 
 import com.naturalprogrammer.spring.lemon.exceptions.handlers.LemonExceptionHandler;
 
@@ -35,21 +36,21 @@ public class LemonErrorAttributes extends DefaultErrorAttributes {
 
 	
 	@Override
-	public Map<String, Object> getErrorAttributes(RequestAttributes requestAttributes,
+	public Map<String, Object> getErrorAttributes(WebRequest request,
 			boolean includeStackTrace) {
 			
 		Map<String, Object> errorAttributes =
-				super.getErrorAttributes(requestAttributes, includeStackTrace);
+				super.getErrorAttributes(request, includeStackTrace);
 		
-		addLemonErrorDetails(errorAttributes, requestAttributes);
+		addLemonErrorDetails(errorAttributes, request);
 		return errorAttributes;
 	}
 
 	@SuppressWarnings("unchecked")
 	protected <T extends Throwable> void addLemonErrorDetails(
-			Map<String, Object> errorAttributes, RequestAttributes requestAttributes) {
+			Map<String, Object> errorAttributes, WebRequest request) {
 		
-		Throwable ex = getError(requestAttributes);
+		Throwable ex = getError(request);
 		
 		LemonExceptionHandler<T> handler = null;
 		

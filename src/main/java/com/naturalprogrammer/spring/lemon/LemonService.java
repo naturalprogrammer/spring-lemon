@@ -7,12 +7,12 @@ import java.util.Set;
 
 import javax.mail.MessagingException;
 import javax.validation.Valid;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.validator.constraints.Email;
-import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
@@ -338,7 +338,7 @@ public abstract class LemonService
 		U currentUser = LemonUtils.getUser();
 		
 		// fetch a fresh copy from the database
-		U user = userRepository.findOne(currentUser.getId());
+		U user = userRepository.getOne(currentUser.getId());
 		
 		// ensure that he is unverified
 		LemonUtils.check(user.getRoles().contains(Role.UNVERIFIED),
@@ -692,7 +692,7 @@ public abstract class LemonService
 
 		// fetch the current-user
 		U currentUser = LemonUtils.getUser();
-		U user = userRepository.findOne(currentUser.getId());
+		U user = userRepository.getOne(currentUser.getId());
 		
 		// checks
 		

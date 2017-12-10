@@ -1,6 +1,7 @@
 package com.naturalprogrammer.spring.lemon.domain;
 
 import java.io.Serializable;
+import java.util.Optional;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -29,7 +30,8 @@ implements AuditorAware<U> {
 	}
 
 	@Override
-	public U getCurrentAuditor() {
-		return LemonUtils.getUser();
+	public Optional<U> getCurrentAuditor() {
+		
+		return Optional.ofNullable(LemonUtils.getUser());
 	}	
 }
