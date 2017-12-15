@@ -71,11 +71,9 @@ public class LemonTokenAuthenticationFilter
 			log.debug("Trying to get user " + id);
 
 			ID userId = lemonService.parseId(id);
-			U user = userRepository.findOne(userId);
+			U user = userRepository.findById(userId)
+				.orElseThrow(() -> new BadCredentialsException(LemonUtils.getMessage("com.naturalprogrammer.spring.userNotFound")));
 			
-		    if (user == null)
-		    	throw new BadCredentialsException(LemonUtils.getMessage("com.naturalprogrammer.spring.userNotFound"));
-
 			log.debug("Trying to match the token");
 
 			if (!passwordEncoder.matches(token, user.getApiKey()))

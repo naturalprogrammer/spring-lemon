@@ -8,7 +8,6 @@ import javax.validation.constraints.Size;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.security.oauth2.client.token.grant.code.AuthorizationCodeResourceDetails;
 import org.springframework.validation.annotation.Validated;
 
 import com.naturalprogrammer.spring.lemon.security.LemonSecurityConfig;
@@ -61,12 +60,6 @@ public class LemonProperties {
 	 * Properties related to the initial Admin user to be created
 	 */
 	private Admin admin = new Admin();
-	
-	
-	/**
-	 * Remote resource properties for social sign up/in
-	 */
-	private List<RemoteResource> remoteResources;
 	
 	
 	/**
@@ -136,20 +129,10 @@ public class LemonProperties {
 		this.applicationUrl = applicationUrl;
 	}
 
-    public List<RemoteResource> getRemoteResources() {
-		return remoteResources;
-	}
-
-	public void setRemoteResources(List<RemoteResource> remoteResources) {
-		this.remoteResources = remoteResources;
-	}
-
-
 	
 	/**************************
 	 * Static classes
 	 *************************/
-
 
 	/**
      * Recaptcha related properties
@@ -327,30 +310,4 @@ public class LemonProperties {
 			this.password = password;
 		}		
 	}
-	
-	public static class RemoteResource {
-		
-		private String id;
-		private AuthorizationCodeResourceDetails details;
-		private String userInfoUri;
-		
-		public String getId() {
-			return id;
-		}
-		public void setId(String id) {
-			this.id = id;
-		}
-		public AuthorizationCodeResourceDetails getDetails() {
-			return details;
-		}
-		public void setDetails(AuthorizationCodeResourceDetails details) {
-			this.details = details;
-		}
-		public String getUserInfoUri() {
-			return userInfoUri;
-		}
-		public void setUserInfoUri(String userInfoUri) {
-			this.userInfoUri = userInfoUri;
-		}		
-	}	
 }

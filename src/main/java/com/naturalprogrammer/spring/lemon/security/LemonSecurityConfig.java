@@ -2,42 +2,28 @@ package com.naturalprogrammer.spring.lemon.security;
 
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import javax.servlet.Filter;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.oauth2.resource.PrincipalExtractor;
-import org.springframework.boot.autoconfigure.security.oauth2.resource.UserInfoTokenServices;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.oauth2.client.OAuth2ClientContext;
-import org.springframework.security.oauth2.client.OAuth2RestTemplate;
-import org.springframework.security.oauth2.client.filter.OAuth2ClientAuthenticationProcessingFilter;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
 import org.springframework.security.web.authentication.RememberMeServices;
-import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.authentication.switchuser.SwitchUserFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
-import org.springframework.web.filter.CompositeFilter;
 
 import com.naturalprogrammer.spring.lemon.LemonProperties;
-import com.naturalprogrammer.spring.lemon.LemonProperties.RemoteResource;
-import com.naturalprogrammer.spring.lemon.security.principalextractors.AbstractPrincipalExtractor;
-import com.naturalprogrammer.spring.lemon.security.principalextractors.LemonPrincipalExtractor;
 
 /**
  * Security configuration class. Extend it in the
@@ -64,15 +50,12 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 	private AuthenticationFailureHandler authenticationFailureHandler;
 	private LogoutSuccessHandler logoutSuccessHandler;
 	private RememberMeServices rememberMeServices;
-	private OAuth2ClientContext oauth2ClientContext;
-	private Map<String, LemonPrincipalExtractor> principalExtractors;
 	private LemonTokenAuthenticationFilter<?, ?> lemonTokenAuthenticationFilter;
 	
 	@Autowired
 	public void createLemonSecurityConfig(LemonProperties properties, UserDetailsService userDetailsService,
 			AuthenticationSuccessHandler authenticationSuccessHandler, AuthenticationFailureHandler authenticationFailureHandler,
 			LogoutSuccessHandler logoutSuccessHandler, RememberMeServices rememberMeServices,
-			OAuth2ClientContext oauth2ClientContext, Set<LemonPrincipalExtractor> principalExtractors,
 			LemonTokenAuthenticationFilter<?, ?> lemonTokenAuthenticationFilter) {
 
 		this.properties = properties;
@@ -81,9 +64,6 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 		this.authenticationFailureHandler = authenticationFailureHandler;
 		this.logoutSuccessHandler = logoutSuccessHandler;
 		this.rememberMeServices = rememberMeServices;
-		this.oauth2ClientContext = oauth2ClientContext;
-		this.principalExtractors = principalExtractors.stream().collect(
-              Collectors.toMap(LemonPrincipalExtractor::getProvider, Function.identity()));
 		this.lemonTokenAuthenticationFilter = lemonTokenAuthenticationFilter;
 		log.info("Created");
 	}
@@ -102,7 +82,6 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 		rememberMe(http); // remember-me
 		csrf(http); // csrf configuration
 		switchUser(http); // switch-user configuration
-		socialAuthentication(http); // Social login configuration
 		customTokenAuthentication(http); // API key authentication
 		authorizeRequests(http); // authorize requests
 		otherConfigurations(http); // override this to add more configurations
@@ -243,18 +222,6 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 	}
 
 
-	protected void socialAuthentication(HttpSecurity http) {
-		
-		List<RemoteResource> remoteResources = properties.getRemoteResources();
-		
-		if (remoteResources != null && remoteResources.size() > 0) {
-			
-			Filter filter =	socialAuthenticationFilter(properties.getRemoteResources());
-			http.addFilterBefore(filter, BasicAuthenticationFilter.class);			
-		}
-	}
-
-
 	private void customTokenAuthentication(HttpSecurity http) {
 		http.addFilterBefore(lemonTokenAuthenticationFilter, BasicAuthenticationFilter.class);
 	}
@@ -285,49 +252,6 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 		filter.setFailureHandler(authenticationFailureHandler);
 		return filter;
 	}	
-	
-	protected Filter socialAuthenticationFilter(List<RemoteResource> clientResources) {
-		
-		List<Filter> filters = properties.getRemoteResources()
-				.stream()
-				.map(this::oauth2AuthenticationFilter)
-				.collect(Collectors.toList());
-
-		CompositeFilter filter = new CompositeFilter();		  
-		filter.setFilters(filters);
-		  
-		return filter;
-	}
-
-	protected Filter oauth2AuthenticationFilter(RemoteResource resource) {
-		  
-		OAuth2ClientAuthenticationProcessingFilter filter =
-			new OAuth2ClientAuthenticationProcessingFilter("/login/" + resource.getId());
-		
-		SimpleUrlAuthenticationSuccessHandler successHandler =
-			new SimpleUrlAuthenticationSuccessHandler(properties.getOauth2AuthenticationSuccessUrl());
-		
-		filter.setAuthenticationSuccessHandler(successHandler);
-		filter.setRememberMeServices(rememberMeServices);
-		  
-		OAuth2RestTemplate template = new OAuth2RestTemplate(resource.getDetails(), oauth2ClientContext);
-		filter.setRestTemplate(template);
-		
-		UserInfoTokenServices tokenServices = new UserInfoTokenServices(
-		    resource.getUserInfoUri(), resource.getDetails().getClientId());
-		
-		PrincipalExtractor principalExtractor = principalExtractors.get(resource.getId());
-		if (principalExtractor == null)
-			principalExtractor = principalExtractors.get(AbstractPrincipalExtractor.DEFAULT);
-		
-		tokenServices.setPrincipalExtractor(principalExtractor);
-		tokenServices.setAuthoritiesExtractor(
-				map -> (List<GrantedAuthority>) map.get(AbstractPrincipalExtractor.AUTHORITIES));
-		tokenServices.setRestTemplate(template);
-		filter.setTokenServices(tokenServices);
-		return filter;
-	}
-	
 	
 	/**
 	 * Override this to add more http configurations,

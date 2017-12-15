@@ -57,7 +57,6 @@ import com.naturalprogrammer.spring.lemon.security.LemonPermissionEvaluator;
 import com.naturalprogrammer.spring.lemon.security.LemonSecurityConfig;
 import com.naturalprogrammer.spring.lemon.security.LemonTokenAuthenticationFilter;
 import com.naturalprogrammer.spring.lemon.security.LemonUserDetailsService;
-import com.naturalprogrammer.spring.lemon.security.principalextractors.DefaultPrincipalExtractor;
 import com.naturalprogrammer.spring.lemon.util.LemonUtils;
 import com.naturalprogrammer.spring.lemon.validation.CaptchaValidator;
 import com.naturalprogrammer.spring.lemon.validation.RetypePasswordValidator;
@@ -280,15 +279,15 @@ public class LemonAutoConfiguration {
 			(passwordEncoder, userRepository, lemonService);
 	}
 	
-	@Bean
-	@ConditionalOnMissingBean(DefaultPrincipalExtractor.class)
-	public <U extends AbstractUser<U,?>>
-	DefaultPrincipalExtractor<U> defaultPrincipalExtractor() {
-		
-        log.info("Configuring DefaultPrincipalExtractor");       
-		return new DefaultPrincipalExtractor<U>();
-	}
-	
+//	@Bean
+//	@ConditionalOnMissingBean(DefaultPrincipalExtractor.class)
+//	public <U extends AbstractUser<U,?>>
+//	DefaultPrincipalExtractor<U> defaultPrincipalExtractor() {
+//		
+//        log.info("Configuring DefaultPrincipalExtractor");       
+//		return new DefaultPrincipalExtractor<U>();
+//	}
+//	
 	@Bean
 	@ConditionalOnMissingBean(LemonSecurityConfig.class)	
 	public LemonSecurityConfig lemonSecurityConfig() {
