@@ -1,6 +1,5 @@
 package com.naturalprogrammer.spring.lemon;
 
-import java.util.List;
 import java.util.Map;
 
 import javax.validation.constraints.Size;

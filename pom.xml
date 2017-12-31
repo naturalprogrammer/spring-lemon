@@ -45,11 +45,21 @@
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
         
-        <!-- Using AbstractAuditable needed joda time -->
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-oauth2-client</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-oauth2-jose</artifactId>
+        </dependency>
+
+        <!-- Using AbstractAuditable needed joda time
         <dependency>
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
-        </dependency>       
+        </dependency> -->   
         
         <!-- Utilities -->
         

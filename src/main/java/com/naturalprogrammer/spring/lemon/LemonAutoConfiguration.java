@@ -10,6 +10,9 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.security.SecurityAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
+import org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguration;
+import org.springframework.boot.autoconfigure.web.servlet.error.ErrorMvcAutoConfiguration;
+import org.springframework.boot.autoconfigure.web.servlet.error.ErrorViewResolver;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.boot.web.servlet.error.ErrorController;
@@ -36,9 +39,6 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationFa
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguration;
-import org.springframework.boot.autoconfigure.web.servlet.error.ErrorMvcAutoConfiguration;
-import org.springframework.boot.autoconfigure.web.servlet.error.ErrorViewResolver;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
@@ -296,6 +296,16 @@ public class LemonAutoConfiguration {
 		return new LemonSecurityConfig();
 	}
 	
+/*
+ * 	@Bean
+	@ConditionalOnMissingBean
+	public OAuth2AuthorizedClientService authorizedClientService(
+			ClientRegistrationRepository clientRegistrationRepository) {
+		
+        log.info("Configuring OAuth2AuthorizedClientService");       
+		return new InMemoryOAuth2AuthorizedClientService(clientRegistrationRepository);
+	}
+*/
 	@Bean
 	public LemonUtils lemonUtil(ApplicationContext applicationContext,
 			MessageSource messageSource, ObjectMapper objectMapper) {

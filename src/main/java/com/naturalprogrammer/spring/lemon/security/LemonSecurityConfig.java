@@ -2,10 +2,6 @@ package com.naturalprogrammer.spring.lemon.security;
 
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -18,9 +14,9 @@ import org.springframework.security.web.access.intercept.FilterSecurityIntercept
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
 import org.springframework.security.web.authentication.RememberMeServices;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.authentication.switchuser.SwitchUserFilter;
-import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 import com.naturalprogrammer.spring.lemon.LemonProperties;
@@ -83,6 +79,7 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 		csrf(http); // csrf configuration
 		switchUser(http); // switch-user configuration
 		customTokenAuthentication(http); // API key authentication
+		oauth2Client(http);
 		authorizeRequests(http); // authorize requests
 		otherConfigurations(http); // override this to add more configurations
 	}
@@ -223,8 +220,14 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 
 
 	private void customTokenAuthentication(HttpSecurity http) {
-		http.addFilterBefore(lemonTokenAuthenticationFilter, BasicAuthenticationFilter.class);
+		http.addFilterBefore(lemonTokenAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 	}
+
+	private void oauth2Client(HttpSecurity http) throws Exception {
+		
+		http.oauth2Login()
+			.defaultSuccessUrl(properties.getOauth2AuthenticationSuccessUrl(), true);		
+	}	
 
 	/**
 	 * URL based authorization configuration. Override this if needed.
