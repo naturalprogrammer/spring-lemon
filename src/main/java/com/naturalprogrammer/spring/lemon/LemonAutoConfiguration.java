@@ -53,6 +53,7 @@ import com.naturalprogrammer.spring.lemon.mail.SmtpMailSender;
 import com.naturalprogrammer.spring.lemon.security.AuthenticationSuccessHandler;
 import com.naturalprogrammer.spring.lemon.security.LemonCorsFilter;
 import com.naturalprogrammer.spring.lemon.security.LemonLogoutSuccessHandler;
+import com.naturalprogrammer.spring.lemon.security.LemonOidcUserService;
 import com.naturalprogrammer.spring.lemon.security.LemonPermissionEvaluator;
 import com.naturalprogrammer.spring.lemon.security.LemonSecurityConfig;
 import com.naturalprogrammer.spring.lemon.security.LemonTokenAuthenticationFilter;
@@ -279,6 +280,14 @@ public class LemonAutoConfiguration {
 			(passwordEncoder, userRepository, lemonService);
 	}
 	
+	@Bean
+	@ConditionalOnMissingBean(LemonOidcUserService.class)	
+	public LemonOidcUserService lemonOidcUserService() {
+		
+        log.info("Configuring LemonOidcUserService");       
+		return new LemonOidcUserService();
+	}
+
 //	@Bean
 //	@ConditionalOnMissingBean(DefaultPrincipalExtractor.class)
 //	public <U extends AbstractUser<U,?>>

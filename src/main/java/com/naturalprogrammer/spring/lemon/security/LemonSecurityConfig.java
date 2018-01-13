@@ -47,12 +47,14 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 	private LogoutSuccessHandler logoutSuccessHandler;
 	private RememberMeServices rememberMeServices;
 	private LemonTokenAuthenticationFilter<?, ?> lemonTokenAuthenticationFilter;
+	private LemonOidcUserService oidcUserService;
 	
 	@Autowired
 	public void createLemonSecurityConfig(LemonProperties properties, UserDetailsService userDetailsService,
 			AuthenticationSuccessHandler authenticationSuccessHandler, AuthenticationFailureHandler authenticationFailureHandler,
 			LogoutSuccessHandler logoutSuccessHandler, RememberMeServices rememberMeServices,
-			LemonTokenAuthenticationFilter<?, ?> lemonTokenAuthenticationFilter) {
+			LemonTokenAuthenticationFilter<?, ?> lemonTokenAuthenticationFilter,
+			LemonOidcUserService oidcUserService) {
 
 		this.properties = properties;
 		this.userDetailsService = userDetailsService;
@@ -61,6 +63,8 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 		this.logoutSuccessHandler = logoutSuccessHandler;
 		this.rememberMeServices = rememberMeServices;
 		this.lemonTokenAuthenticationFilter = lemonTokenAuthenticationFilter;
+		this.oidcUserService = oidcUserService;
+		
 		log.info("Created");
 	}
 	
@@ -226,7 +230,10 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 	private void oauth2Client(HttpSecurity http) throws Exception {
 		
 		http.oauth2Login()
-			.defaultSuccessUrl(properties.getOauth2AuthenticationSuccessUrl(), true);		
+			.defaultSuccessUrl(properties.getOauth2AuthenticationSuccessUrl(), true)
+			.userInfoEndpoint()
+				.oidcUserService(oidcUserService);
+				//.userService(oidcUserService);
 	}	
 
 	/**
@@ -241,7 +248,6 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 			.mvcMatchers("/logout/impersonate*").authenticated()
 			.mvcMatchers("/**").permitAll();                  
 	}
-
 	
 	/**
 	 * Returns switch-user filter
