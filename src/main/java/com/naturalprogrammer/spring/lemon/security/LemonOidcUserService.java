@@ -3,6 +3,8 @@ package com.naturalprogrammer.spring.lemon.security;
 import java.io.Serializable;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
@@ -17,9 +19,23 @@ import com.naturalprogrammer.spring.lemon.util.LemonUtils;
 
 public class LemonOidcUserService<U extends AbstractUser<U,PK>, PK extends Serializable> extends OidcUserService {
 	
+	private static final Log log = LogFactory.getLog(LemonOidcUserService.class);
+
 	private LemonUserDetailsService<U, ?> userDetailsService;
 	private LemonService<U, ?> lemonService;
 	private PasswordEncoder passwordEncoder;
+
+	public LemonOidcUserService(
+			LemonUserDetailsService<U, ?> userDetailsService,
+			LemonService<U, ?> lemonService,
+			PasswordEncoder passwordEncoder) {
+
+		this.userDetailsService = userDetailsService;
+		this.lemonService = lemonService;
+		this.passwordEncoder = passwordEncoder;
+		
+		log.info("Created");
+	}
 
 	@Override
 	public OidcUser loadUser(OidcUserRequest userRequest) throws OAuth2AuthenticationException {
@@ -43,28 +59,18 @@ public class LemonOidcUserService<U extends AbstractUser<U,PK>, PK extends Seria
 			user.setEmail(email);
 			user.setUsername(user.getEmail());
 			user.setPassword(passwordEncoder.encode(LemonUtils.uid()));
-			fillAdditionalFields(user, attributes);
+			
+			lemonService.fillAdditionalFields(user, attributes);
 			
 			lemonService.forgotPassword(user);
 			user.decorate(user);
 		}
 		
-		LemonUser<PK> lemonUser = new LemonUser<PK>();
-		lemonUser.setAttributes(oidcUser.getAttributes());
-		lemonUser.setClaims(oidcUser.getClaims());
-		lemonUser.setAuthorities(user.getAuthorities());
-		lemonUser.setEmail(email);
-		lemonUser.setIdToken(oidcUser.getIdToken());
-		lemonUser.setName(oidcUser.getName());
-		lemonUser.setUserInfo(oidcUser.getUserInfo());
+		user.setAttributes(oidcUser.getAttributes());
+		user.setClaims(oidcUser.getClaims());
+		user.setIdToken(oidcUser.getIdToken());
+		user.setUserInfo(oidcUser.getUserInfo());
 		
-		lemonUser.setUserId(user.getId());
-		
-		return lemonUser;
-	}
-
-	private void fillAdditionalFields(U user, Map<String, Object> attributes) {
-		// TODO Auto-generated method stub
-		
+		return user;
 	}
 }

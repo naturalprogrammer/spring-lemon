@@ -760,4 +760,8 @@ public abstract class LemonService
 	}
 
 	abstract public ID parseId(String id);
+
+	public void fillAdditionalFields(U user, Map<String, Object> attributes) {
+		
+	}
 }

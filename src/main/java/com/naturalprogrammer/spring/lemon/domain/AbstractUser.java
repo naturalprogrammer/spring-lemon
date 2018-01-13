@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -15,10 +16,14 @@ import javax.persistence.Transient;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.security.core.CredentialsContainer;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.oidc.OidcIdToken;
+import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.naturalprogrammer.spring.lemon.security.LemonGrantedAuthority;
 import com.naturalprogrammer.spring.lemon.security.LemonSecurityConfig;
@@ -37,10 +42,10 @@ import com.naturalprogrammer.spring.lemon.validation.UniqueEmail;
  * @param <ID>	The Primary key type of User class 
  */
 @MappedSuperclass
-public abstract class AbstractUser
+public class AbstractUser
 	<U extends AbstractUser<U,ID>, ID extends Serializable>
 extends VersionedEntity<U, ID>
-implements UserDetails {
+implements UserDetails, OidcUser, CredentialsContainer {
 	
 	private static final Log log = LogFactory.getLog(AbstractUser.class); 
 			
@@ -435,4 +440,71 @@ implements UserDetails {
 		return true;
 	}
 
+	// OidcUser related fields
+	
+	@Transient
+	@JsonIgnore
+	private Map<String, Object> attributes;
+	
+	@Transient
+	@JsonIgnore
+	private Map<String, Object> claims;
+	
+	@Transient
+	@JsonIgnore
+	private OidcUserInfo userInfo;
+	
+	@Transient
+	@JsonIgnore
+	private OidcIdToken idToken;
+
+	@Override
+	public Map<String, Object> getAttributes() {
+		
+		return attributes;
+	}
+
+	@Override
+	public Map<String, Object> getClaims() {
+
+		return claims;
+	}
+
+	@Override
+	public OidcUserInfo getUserInfo() {
+
+		return userInfo;
+	}
+
+	@Override
+	public OidcIdToken getIdToken() {
+
+		return idToken;
+	}
+
+	public void setAttributes(Map<String, Object> attributes) {
+		this.attributes = attributes;
+	}
+
+	public void setClaims(Map<String, Object> claims) {
+		this.claims = claims;
+	}
+
+	public void setUserInfo(OidcUserInfo userInfo) {
+		this.userInfo = userInfo;
+	}
+
+	public void setIdToken(OidcIdToken idToken) {
+		this.idToken = idToken;
+	}
+
+	@Override
+	public void eraseCredentials() {
+		
+//		password = null;
+//		attributes = null;
+//		claims = null;
+//		userInfo = null;
+//		idToken = null;
+	}
 }

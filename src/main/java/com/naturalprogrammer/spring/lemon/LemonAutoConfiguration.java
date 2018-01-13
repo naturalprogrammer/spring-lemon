@@ -147,23 +147,23 @@ public class LemonAutoConfiguration {
 		return new LemonAuditorAware<U, ID>();
 	}
 	
-	@Bean
-	@ConditionalOnMissingBean(ErrorAttributes.class)
-	public ErrorAttributes errorAttributes(List<LemonExceptionHandler<?>> handlers) {
-		
-        log.info("Configuring LemonErrorAttributes");       
-		return new LemonErrorAttributes(handlers);
-	}
+//	@Bean
+//	@ConditionalOnMissingBean(ErrorAttributes.class)
+//	public ErrorAttributes errorAttributes(List<LemonExceptionHandler<?>> handlers) {
+//		
+//        log.info("Configuring LemonErrorAttributes");       
+//		return new LemonErrorAttributes(handlers);
+//	}
 	
-	@Bean
-	@ConditionalOnMissingBean(ErrorController.class)
-	public ErrorController errorController(ErrorAttributes errorAttributes,
-			ServerProperties serverProperties,
-			List<ErrorViewResolver> errorViewResolvers) {
-		
-        log.info("Configuring LemonErrorController");       
-		return new LemonErrorController(errorAttributes, serverProperties, errorViewResolvers);	
-	}
+//	@Bean
+//	@ConditionalOnMissingBean(ErrorController.class)
+//	public ErrorController errorController(ErrorAttributes errorAttributes,
+//			ServerProperties serverProperties,
+//			List<ErrorViewResolver> errorViewResolvers) {
+//		
+//        log.info("Configuring LemonErrorController");       
+//		return new LemonErrorController(errorAttributes, serverProperties, errorViewResolvers);	
+//	}
 	
 	/**
 	 * Configures a MockMailSender when the property
@@ -282,10 +282,15 @@ public class LemonAutoConfiguration {
 	
 	@Bean
 	@ConditionalOnMissingBean(LemonOidcUserService.class)	
-	public LemonOidcUserService lemonOidcUserService() {
+	public <U extends AbstractUser<U,ID>, ID extends Serializable>
+		LemonOidcUserService<U,ID> lemonOidcUserService(
+			LemonUserDetailsService<U, ?> userDetailsService,
+			LemonService<U, ?> lemonService,
+			PasswordEncoder passwordEncoder) {
 		
         log.info("Configuring LemonOidcUserService");       
-		return new LemonOidcUserService();
+		return new LemonOidcUserService<U,ID>
+			(userDetailsService, lemonService, passwordEncoder);
 	}
 
 //	@Bean
