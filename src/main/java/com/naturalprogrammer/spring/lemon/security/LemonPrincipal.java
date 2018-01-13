@@ -4,18 +4,18 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Map;
 
+import org.springframework.security.core.CredentialsContainer;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 
-public class LemonUser<PK extends Serializable> implements OidcUser, UserDetails {
+public class LemonPrincipal<PK extends Serializable> implements OidcUser, UserDetails, CredentialsContainer {
 
 	private static final long serialVersionUID = -7849730155307434535L;
 	
 	private PK userId;
-	private Serializable tag;
 	
 	private Collection<? extends GrantedAuthority> authorities;
 	private Map<String, Object> attributes;
@@ -24,9 +24,11 @@ public class LemonUser<PK extends Serializable> implements OidcUser, UserDetails
 	private OidcUserInfo userInfo;
 	private OidcIdToken idToken;
 
+	private String username;
 	private String password;
-	private String email;
 	
+	private Serializable tag;
+
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 
@@ -74,7 +76,7 @@ public class LemonUser<PK extends Serializable> implements OidcUser, UserDetails
 	@Override
 	public String getUsername() {
 
-		return email;
+		return username;
 	}
 
 	@Override
@@ -117,14 +119,6 @@ public class LemonUser<PK extends Serializable> implements OidcUser, UserDetails
 		this.tag = tag;
 	}
 
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
 	public void setAuthorities(Collection<? extends GrantedAuthority> authorities) {
 		this.authorities = authorities;
 	}
@@ -149,7 +143,21 @@ public class LemonUser<PK extends Serializable> implements OidcUser, UserDetails
 		this.idToken = idToken;
 	}
 
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
 	public void setPassword(String password) {
 		this.password = password;
+	}
+	
+	@Override
+	public void eraseCredentials() {
+		
+		password = null;
+		attributes = null;
+		claims = null;
+		userInfo = null;
+		idToken = null;
 	}
 }

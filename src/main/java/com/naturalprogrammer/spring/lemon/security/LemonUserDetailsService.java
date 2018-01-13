@@ -36,10 +36,9 @@ implements UserDetailsService {
 		this.userRepository = userRepository;
 		log.info("Created");
 	}
-
 	
 	@Override
-	public U loadUserByUsername(String username)
+	public LemonPrincipal<ID> loadUserByUsername(String username)
 			throws UsernameNotFoundException {
 		
 		log.debug("Loading user having username: " + username);
@@ -50,7 +49,15 @@ implements UserDetailsService {
 
 		log.debug("Loaded user having username: " + username);
 
-		return user.decorate(user);
+		user.decorate(user);
+		
+		LemonPrincipal<ID> principal = new LemonPrincipal<>();
+		principal.setAuthorities(user.getAuthorities());
+		principal.setPassword(user.getPassword());
+		principal.setUserId(user.getId());
+		principal.setUsername(username);
+		
+		return principal;
 	}
 
 	/**
@@ -60,7 +67,7 @@ implements UserDetailsService {
 	 * @param username
 	 * @return
 	 */
-	protected Optional<U> findUserByUsername(String username) {
+	public Optional<U> findUserByUsername(String username) {
 		return userRepository.findByEmail(username);
 	}
 }

@@ -44,13 +44,10 @@ import com.naturalprogrammer.spring.lemon.validation.UniqueEmail;
 @MappedSuperclass
 public class AbstractUser
 	<U extends AbstractUser<U,ID>, ID extends Serializable>
-extends VersionedEntity<U, ID>
-implements UserDetails, OidcUser, CredentialsContainer {
+extends VersionedEntity<U, ID> {
 	
 	private static final Log log = LogFactory.getLog(AbstractUser.class); 
 			
-	private static final long serialVersionUID = 655067760361294864L;
-	
 	public static final int EMAIL_MIN = 4;
 	public static final int EMAIL_MAX = 250;
 	
@@ -209,7 +206,6 @@ implements UserDetails, OidcUser, CredentialsContainer {
 		this.email = email;
 	}
 
-	@Override
 	public String getPassword() {
 		return password;
 	}
@@ -218,19 +214,6 @@ implements UserDetails, OidcUser, CredentialsContainer {
 		this.password = password;
 	}
 
-	// override this method
-	// if email isn't your username
-	@Override
-	public String getUsername() {
-		return email;
-	}
-	
-	// override this method
-	// if email isn't your username
-	public void setUsername(String username) {
-		email = username;
-	}	
-	
 	public boolean isUnverified() {
 		return unverified;
 	}
@@ -375,7 +358,7 @@ implements UserDetails, OidcUser, CredentialsContainer {
 	 */
 	@Override
 	public String toString() {
-		return "AbstractUser [username=" + getUsername() + ", roles=" + roles + "]";
+		return "AbstractUser [email=" + email + ", roles=" + roles + "]";
 	}
 	
 	@Transient
@@ -384,7 +367,6 @@ implements UserDetails, OidcUser, CredentialsContainer {
 	/**
 	 * Returns the authorities, for Spring Security
 	 */
-	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {		
 		return authorities;
 	}
@@ -414,97 +396,4 @@ implements UserDetails, OidcUser, CredentialsContainer {
 		log.debug("Authorities of " + this + ": " + authorities);
 	}
 
-	
-	/**
-	 * The following are needed
-	 * because we have implemented UserDetails. 
-	 */
-	
-	@Override
-	public boolean isAccountNonExpired() {
-		return true;
-	}
-
-	@Override
-	public boolean isAccountNonLocked() {
-		return true;
-	}
-
-	@Override
-	public boolean isCredentialsNonExpired() {
-		return true;
-	}
-
-	@Override
-	public boolean isEnabled() {
-		return true;
-	}
-
-	// OidcUser related fields
-	
-	@Transient
-	@JsonIgnore
-	private Map<String, Object> attributes;
-	
-	@Transient
-	@JsonIgnore
-	private Map<String, Object> claims;
-	
-	@Transient
-	@JsonIgnore
-	private OidcUserInfo userInfo;
-	
-	@Transient
-	@JsonIgnore
-	private OidcIdToken idToken;
-
-	@Override
-	public Map<String, Object> getAttributes() {
-		
-		return attributes;
-	}
-
-	@Override
-	public Map<String, Object> getClaims() {
-
-		return claims;
-	}
-
-	@Override
-	public OidcUserInfo getUserInfo() {
-
-		return userInfo;
-	}
-
-	@Override
-	public OidcIdToken getIdToken() {
-
-		return idToken;
-	}
-
-	public void setAttributes(Map<String, Object> attributes) {
-		this.attributes = attributes;
-	}
-
-	public void setClaims(Map<String, Object> claims) {
-		this.claims = claims;
-	}
-
-	public void setUserInfo(OidcUserInfo userInfo) {
-		this.userInfo = userInfo;
-	}
-
-	public void setIdToken(OidcIdToken idToken) {
-		this.idToken = idToken;
-	}
-
-	@Override
-	public void eraseCredentials() {
-		
-//		password = null;
-//		attributes = null;
-//		claims = null;
-//		userInfo = null;
-//		idToken = null;
-	}
 }

@@ -45,32 +45,33 @@ public class LemonOidcUserService<U extends AbstractUser<U,PK>, PK extends Seria
 		Map<String, Object> attributes = oidcUser.getAttributes();
 		String email = (String) attributes.get(StandardClaimNames.EMAIL);
 		
-    	U user;
-    	
-		try {
-			
-			// Return the user if it already exists
-			user = userDetailsService.loadUserByUsername(email);
-			
-		} catch (UsernameNotFoundException e) {
-			
+    	U user = userDetailsService.findUserByUsername(email).orElseGet(()  -> {
+    		
 			// register a new user
-			user = lemonService.newUser();
-			user.setEmail(email);
-			user.setUsername(user.getEmail());
-			user.setPassword(passwordEncoder.encode(LemonUtils.uid()));
+			U newUser = lemonService.newUser();
+			newUser.setEmail(email);
+			newUser.setPassword(passwordEncoder.encode(LemonUtils.uid()));
 			
-			lemonService.fillAdditionalFields(user, attributes);
+			lemonService.fillAdditionalFields(newUser, attributes);
 			
-			lemonService.forgotPassword(user);
-			user.decorate(user);
-		}
+			lemonService.forgotPassword(newUser);
+			newUser.decorate(newUser);
+			
+			return newUser;
+    	});
+    	
+		LemonPrincipal<PK> principal = new LemonPrincipal<PK>();
+		principal.setUserId(user.getId());
 		
-		user.setAttributes(oidcUser.getAttributes());
-		user.setClaims(oidcUser.getClaims());
-		user.setIdToken(oidcUser.getIdToken());
-		user.setUserInfo(oidcUser.getUserInfo());
+		principal.setAttributes(attributes);
+		principal.setAuthorities(user.getAuthorities());
+		principal.setName(oidcUser.getName());
+		principal.setClaims(oidcUser.getClaims());
+		principal.setIdToken(oidcUser.getIdToken());
+		principal.setUserInfo(oidcUser.getUserInfo());
 		
-		return user;
+		principal.setUsername(email);
+		
+		return principal;
 	}
 }

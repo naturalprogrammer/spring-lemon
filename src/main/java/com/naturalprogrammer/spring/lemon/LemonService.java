@@ -124,7 +124,6 @@ public abstract class LemonService
 
     	// create the user
     	U user = newUser();
-		user.setUsername(initialAdmin.getUsername());
 		user.setPassword(passwordEncoder.encode(
 			properties.getAdmin().getPassword()));
 		user.getRoles().add(Role.ADMIN);
@@ -603,7 +602,6 @@ public abstract class LemonService
 		
 		U user = newUser();
 		user.setIdForClient(currentUser.getId());
-		user.setUsername(currentUser.getUsername());
 		user.setRoles(currentUser.getRoles());
 		user.decorate(currentUser);
 		
