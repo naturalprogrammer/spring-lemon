@@ -1,12 +1,9 @@
 package com.naturalprogrammer.spring.lemon.domain;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -16,17 +13,11 @@ import javax.persistence.Transient;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.security.core.CredentialsContainer;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.oauth2.core.oidc.OidcIdToken;
-import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
-import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.naturalprogrammer.spring.lemon.security.LemonGrantedAuthority;
-import com.naturalprogrammer.spring.lemon.security.LemonSecurityConfig;
+import com.naturalprogrammer.spring.lemon.security.SpringUser;
 import com.naturalprogrammer.spring.lemon.util.LemonUtils;
 import com.naturalprogrammer.spring.lemon.validation.Captcha;
 import com.naturalprogrammer.spring.lemon.validation.Password;
@@ -43,7 +34,8 @@ import com.naturalprogrammer.spring.lemon.validation.UniqueEmail;
  */
 @MappedSuperclass
 public class AbstractUser
-	<U extends AbstractUser<U,ID>, ID extends Serializable>
+	<U extends AbstractUser<U,ID>,
+	 ID extends Serializable>
 extends VersionedEntity<U, ID> {
 	
 	private static final Log log = LogFactory.getLog(AbstractUser.class); 
@@ -60,11 +52,16 @@ extends VersionedEntity<U, ID> {
 	 * Role constants. To allow extensibility, this couldn't
 	 * be made an enum
 	 */
-	public static interface Role {
+	public interface Role {
 
 		static final String UNVERIFIED = "UNVERIFIED";
 		static final String BLOCKED = "BLOCKED";
 		static final String ADMIN = "ADMIN";
+	}
+	
+	public interface Permission {
+		
+		static final String EDIT = "edit";		
 	}
 	
 	// validation groups
@@ -119,26 +116,26 @@ extends VersionedEntity<U, ID> {
 	
 	// redundant transient fields
 	
-	@Transient
-	protected boolean unverified = false;
-
-	@Transient
-	protected boolean blocked = false;
-
-	@Transient
-	protected boolean admin = false;
-
-	@Transient
-	protected boolean goodUser = false;
-
-	@Transient
-	protected boolean goodAdmin = false;
-
-	@Transient
-	protected boolean editable = false;
-	
-	@Transient
-	protected boolean rolesEditable = false;	
+//	@Transient
+//	protected boolean unverified = false;
+//
+//	@Transient
+//	protected boolean blocked = false;
+//
+//	@Transient
+//	protected boolean admin = false;
+//
+//	@Transient
+//	protected boolean goodUser = false;
+//
+//	@Transient
+//	protected boolean goodAdmin = false;
+//
+//	@Transient
+//	protected boolean editable = false;
+//	
+//	@Transient
+//	protected boolean rolesEditable = false;	
 	
 	// getters and setters
 	
@@ -214,95 +211,54 @@ extends VersionedEntity<U, ID> {
 		this.password = password;
 	}
 
-	public boolean isUnverified() {
-		return unverified;
-	}
-
-	public void setUnverified(boolean unverified) {
-		this.unverified = unverified;
-	}
-
-	public boolean isBlocked() {
-		return blocked;
-	}
-
-	public void setBlocked(boolean blocked) {
-		this.blocked = blocked;
-	}
-
-	public boolean isAdmin() {
-		return admin;
-	}
-
-	public void setAdmin(boolean admin) {
-		this.admin = admin;
-	}
-
-	public boolean isEditable() {
-		return editable;
-	}
-
-	public void setEditable(boolean editable) {
-		this.editable = editable;
-	}
-	
-	public boolean isRolesEditable() {
-		return rolesEditable;
-	}
-
 	public final boolean hasRole(String role) {
 		return roles.contains(role);
 	}
 	
-	public boolean isGoodUser() {
-		return goodUser;
-	}
 	
-	public boolean isGoodAdmin() {
-		return goodAdmin;
-	}
-
-	
-	/**
-	 * Sets the transient fields of this user
-	 * 
-	 * @return	this user
-	 */
-	public U decorate() {
-		// delegates
-		return decorate(LemonUtils.getUser());
-	}
+//	/**
+//	 * Sets the transient fields of this user
+//	 * 
+//	 * @return	this user
+//	 */
+//	public U decorate() {
+//		// delegates
+//		return decorate(LemonUtils.getUser());
+//	}
 	
 	
-	/**
-	 * Sets the transient fields of this user,
-	 * given the current-user
-	 * 
-	 * @param currentUser	the current-user
-	 * @return	this user
-	 */
-	public U decorate(U currentUser) {
-				
-		unverified = hasRole(Role.UNVERIFIED);
-		blocked = hasRole(Role.BLOCKED);
-		admin = hasRole(Role.ADMIN);
-		goodUser = !(unverified || blocked);
-		goodAdmin = goodUser && admin;
-		
-		editable = false;
-		rolesEditable = false;
-		
-		if (currentUser != null) {
-			editable = currentUser.isGoodAdmin() || equals(currentUser); // admin or self
-			rolesEditable = currentUser.isGoodAdmin() && !equals(currentUser); // another admin
-		}
-		
-		computeAuthorities();
-		
-		log.debug("Decorated user: " + this);
-
-		return (U) this;
-	}
+//	/**
+//	 * Sets the transient fields of this user,
+//	 * given the current-user
+//	 * 
+//	 * @param currentUser	the current-user
+//	 * @return	this user
+//	 */
+//	public U decorate(LemonPrincipal<?> currentUser) {
+//				
+//		unverified = hasRole(Role.UNVERIFIED);
+//		blocked = hasRole(Role.BLOCKED);
+//		admin = hasRole(Role.ADMIN);
+//		goodUser = !(unverified || blocked);
+//		goodAdmin = goodUser && admin;
+//		
+//		editable = false;
+//		rolesEditable = false;
+//		
+//		if (currentUser != null) {
+//			
+//			boolean self = currentUser.getUserId().equals(getId());
+//			
+//			editable = self || currentUser.isGoodAdmin(); // self or admin
+//			rolesEditable = currentUser.isGoodAdmin() && !self; // another admin
+//		}
+//		
+//		computeAuthorities();
+//		
+//		log.debug("Decorated user: " + this);
+//
+//		return (U) this;
+//	}
 	
 	
 	/**
@@ -316,7 +272,7 @@ extends VersionedEntity<U, ID> {
 		verificationCode = null;
 		forgotPasswordCode = null;
 		
-		if (!editable)
+		if (!hasPermission(LemonUtils.getSpringUser(), Permission.EDIT))
 			email = null;
 		
 		log.debug("Hid confidential fields for user: " + this);
@@ -329,16 +285,15 @@ extends VersionedEntity<U, ID> {
 	 * on this entity. 
 	 */
 	@Override
-	public boolean hasPermission(U currentUser, String permission) {
+	public boolean hasPermission(SpringUser<?> currentUser, String permission) {
 		
 		log.debug("Computing " + permission	+ " permission for : " + this
 			+ "\n  Logged in user: " + currentUser);
 
-		// decorate this entity
-		decorate(currentUser);
-		
+		boolean self = currentUser.getId().equals(getId());		
+
 		if (permission.equals("edit"))
-			return editable;
+			return self || currentUser.isGoodAdmin(); // self or admin;
 
 		return false;
 	}
@@ -372,28 +327,61 @@ extends VersionedEntity<U, ID> {
 	}
 	
 	
-	/**
-	 * Computes the authorities for Spring Security, and stores
-	 * those in the authorities transient field
-	 */
-	protected void computeAuthorities() {
+//	/**
+//	 * Computes the authorities for Spring Security, and stores
+//	 * those in the authorities transient field
+//	 * @return 
+//	 */
+//	protected void computeAuthorities() {
+//		
+//		authorities = roles.stream()
+//			.map(role -> new LemonGrantedAuthority("ROLE_" + role))
+//			.collect(Collectors.toCollection(() ->
+//				new ArrayList<LemonGrantedAuthority>(roles.size() + 2))); 
+//		
+//		if (goodUser) {
+//			
+//			authorities.add(new LemonGrantedAuthority("ROLE_"
+//					+ LemonSecurityConfig.GOOD_USER));
+//			
+//			if (goodAdmin)
+//				authorities.add(new LemonGrantedAuthority("ROLE_"
+//						+ LemonSecurityConfig.GOOD_ADMIN));
+//		}
+//
+//		log.debug("Authorities of " + this + ": " + authorities);
+//		
+//		return authorities;
+//	}
+	
+	public SpringUser<ID> toSpringUser() {
 		
-		authorities = roles.stream()
-			.map(role -> new LemonGrantedAuthority("ROLE_" + role))
-			.collect(Collectors.toCollection(() ->
-				new ArrayList<LemonGrantedAuthority>(roles.size() + 2))); 
+		SpringUser<ID> springUser = new SpringUser<>();
 		
-		if (goodUser) {
-			
-			authorities.add(new LemonGrantedAuthority("ROLE_"
-					+ LemonSecurityConfig.GOOD_USER));
-			
-			if (goodAdmin)
-				authorities.add(new LemonGrantedAuthority("ROLE_"
-						+ LemonSecurityConfig.GOOD_ADMIN));			
-		}
+		springUser.setId(getId());
+		springUser.setUsername(email);
+		springUser.setPassword(password);
+		springUser.setRoles(roles);
+		springUser.setTag(toTag());
+		
+		boolean unverified = hasRole(Role.UNVERIFIED);
+		boolean blocked = hasRole(Role.BLOCKED);
+		boolean admin = hasRole(Role.ADMIN);
+		boolean goodUser = !(unverified || blocked);
+		boolean goodAdmin = goodUser && admin;
 
-		log.debug("Authorities of " + this + ": " + authorities);
+		springUser.setAdmin(admin);
+		springUser.setBlocked(blocked);
+		springUser.setGoodAdmin(goodAdmin);
+		springUser.setGoodUser(goodUser);
+		springUser.setUnverified(unverified);
+		
+		return springUser;
+	}
+
+	protected Serializable toTag() {
+		
+		return null;
 	}
 
 }

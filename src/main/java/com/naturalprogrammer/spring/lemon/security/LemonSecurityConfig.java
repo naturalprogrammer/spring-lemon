@@ -47,14 +47,14 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 	private LogoutSuccessHandler logoutSuccessHandler;
 	private RememberMeServices rememberMeServices;
 	private LemonTokenAuthenticationFilter<?, ?> lemonTokenAuthenticationFilter;
-	private LemonOidcUserService oidcUserService;
+	private LemonOidcUserService<?, ?> oidcUserService;
 	
 	@Autowired
 	public void createLemonSecurityConfig(LemonProperties properties, UserDetailsService userDetailsService,
 			AuthenticationSuccessHandler authenticationSuccessHandler, AuthenticationFailureHandler authenticationFailureHandler,
 			LogoutSuccessHandler logoutSuccessHandler, RememberMeServices rememberMeServices,
 			LemonTokenAuthenticationFilter<?, ?> lemonTokenAuthenticationFilter,
-			LemonOidcUserService oidcUserService) {
+			LemonOidcUserService<?, ?> oidcUserService) {
 
 		this.properties = properties;
 		this.userDetailsService = userDetailsService;

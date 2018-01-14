@@ -26,6 +26,7 @@ import com.github.fge.jsonpatch.JsonPatchException;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser.SignupInput;
 import com.naturalprogrammer.spring.lemon.domain.ChangePasswordForm;
+import com.naturalprogrammer.spring.lemon.security.SpringUser;
 import com.naturalprogrammer.spring.lemon.util.LemonUtils;
 
 /**
@@ -97,7 +98,7 @@ public abstract class LemonController
 	 */
 	@PostMapping(value = "/users", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@ResponseStatus(HttpStatus.CREATED)
-	public U signup(@RequestBody @JsonView(SignupInput.class) U user) {
+	public SpringUser<ID> signup(@RequestBody @JsonView(SignupInput.class) U user) {
 		
 		log.debug("Signing up: " + user);
 		lemonService.signup(user);
@@ -124,7 +125,7 @@ public abstract class LemonController
 	 * Verifies current-user.
 	 */
 	@PostMapping(value = "/users/{verificationCode}/verify", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public U verifyUser(@PathVariable String verificationCode) {
+	public SpringUser<ID> verifyUser(@PathVariable String verificationCode) {
 		
 		log.debug("Verifying user ...");		
 		lemonService.verifyUser(verificationCode);
@@ -187,7 +188,7 @@ public abstract class LemonController
 	 * @throws JsonProcessingException 
 	 */
 	@PatchMapping(value = "/users/{id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public U updateUser(@PathVariable("id") U user, @RequestBody String patch)
+	public SpringUser<ID> updateUser(@PathVariable("id") U user, @RequestBody String patch)
 			throws JsonProcessingException, IOException, JsonPatchException {
 		
 		log.debug("Updating user ... ");

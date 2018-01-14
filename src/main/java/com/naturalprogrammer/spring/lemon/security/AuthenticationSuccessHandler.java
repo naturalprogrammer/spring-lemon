@@ -14,7 +14,6 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.naturalprogrammer.spring.lemon.LemonService;
-import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
 
 /**
  * Authentication success handler for sending the response
@@ -52,7 +51,7 @@ public class AuthenticationSuccessHandler
     	response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 
     	// get the current-user
-    	AbstractUser<?,?> currentUser = lemonService.userForClient();
+    	SpringUser<?> currentUser = lemonService.userForClient();
 
     	// write current-user data to the response  
     	response.getOutputStream().print(

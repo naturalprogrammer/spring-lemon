@@ -79,10 +79,8 @@ public class LemonTokenAuthenticationFilter
 			if (!passwordEncoder.matches(token, user.getApiKey()))
 		    	throw new BadCredentialsException(LemonUtils.getMessage("com.naturalprogrammer.spring.wrong.authenticationToken"));
 		    
-		    user.decorate();
-		    
 		    SecurityContextHolder.getContext().setAuthentication(
-			    	new UsernamePasswordAuthenticationToken(user, user.getPassword(), user.getAuthorities()));
+			    	new UsernamePasswordAuthenticationToken(new LemonPrincipal<>(user.toSpringUser()), user.getPassword(), user.getAuthorities()));
 			    
 			log.debug("Token authentication successful");
 			    

@@ -49,7 +49,7 @@ public class LemonPermissionEvaluator implements PermissionEvaluator {
 		
 		// Let's delegate to the entity's hasPermission method
 		VersionedEntity<?, ?> entity = (VersionedEntity<?, ?>) targetDomainObject;
-		return entity.hasPermission(LemonUtils.getUser(auth), (String) permission);
+		return entity.hasPermission(LemonUtils.getSpringUser(auth), (String) permission);
 	}
 
 	

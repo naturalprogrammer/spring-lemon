@@ -1,8 +1,11 @@
 package com.naturalprogrammer.spring.lemon.security;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.security.core.CredentialsContainer;
 import org.springframework.security.core.GrantedAuthority;
@@ -15,24 +18,44 @@ public class LemonPrincipal<PK extends Serializable> implements OidcUser, UserDe
 
 	private static final long serialVersionUID = -7849730155307434535L;
 	
-	private PK userId;
+	private SpringUser<PK> springUser;
 	
-	private Collection<? extends GrantedAuthority> authorities;
 	private Map<String, Object> attributes;
 	private String name;
 	private Map<String, Object> claims;
 	private OidcUserInfo userInfo;
 	private OidcIdToken idToken;
-
-	private String username;
-	private String password;
 	
-	private Serializable tag;
+	public LemonPrincipal(SpringUser<PK> springUser) {
+
+		this.springUser = springUser;
+	}
+
+	public SpringUser<PK> getSpringUser() {
+		return springUser;
+	}
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 
-		return authorities;
+		Set<String> roles = springUser.getRoles();
+		
+		Collection<LemonGrantedAuthority> authorities = roles.stream()
+				.map(role -> new LemonGrantedAuthority("ROLE_" + role))
+				.collect(Collectors.toCollection(() ->
+					new ArrayList<LemonGrantedAuthority>(roles.size() + 2))); 
+		
+		if (springUser.isGoodUser()) {
+			
+			authorities.add(new LemonGrantedAuthority("ROLE_"
+					+ LemonSecurityConfig.GOOD_USER));
+			
+			if (springUser.isGoodAdmin())
+				authorities.add(new LemonGrantedAuthority("ROLE_"
+					+ LemonSecurityConfig.GOOD_ADMIN));
+		}
+		
+		return authorities;	
 	}
 
 	@Override
@@ -70,13 +93,13 @@ public class LemonPrincipal<PK extends Serializable> implements OidcUser, UserDe
 	@Override
 	public String getPassword() {
 
-		return password;
+		return springUser.getPassword();
 	}
 
 	@Override
 	public String getUsername() {
 
-		return username;
+		return springUser.getUsername();
 	}
 
 	@Override
@@ -103,24 +126,14 @@ public class LemonPrincipal<PK extends Serializable> implements OidcUser, UserDe
 		return true;
 	}
 
-	public PK getUserId() {
-		return userId;
-	}
-
-	public void setUserId(PK userId) {
-		this.userId = userId;
-	}
-
-	public Serializable getTag() {
-		return tag;
-	}
-
-	public void setTag(Serializable tag) {
-		this.tag = tag;
-	}
-
-	public void setAuthorities(Collection<? extends GrantedAuthority> authorities) {
-		this.authorities = authorities;
+	@Override
+	public void eraseCredentials() {
+		
+		springUser.setPassword(null);
+		attributes = null;
+		claims = null;
+		userInfo = null;
+		idToken = null;
 	}
 
 	public void setAttributes(Map<String, Object> attributes) {
@@ -141,23 +154,5 @@ public class LemonPrincipal<PK extends Serializable> implements OidcUser, UserDe
 
 	public void setIdToken(OidcIdToken idToken) {
 		this.idToken = idToken;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
-	
-	@Override
-	public void eraseCredentials() {
-		
-		password = null;
-		attributes = null;
-		claims = null;
-		userInfo = null;
-		idToken = null;
 	}
 }

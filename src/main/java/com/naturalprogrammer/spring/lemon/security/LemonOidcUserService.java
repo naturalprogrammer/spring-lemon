@@ -5,7 +5,6 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
@@ -55,22 +54,16 @@ public class LemonOidcUserService<U extends AbstractUser<U,PK>, PK extends Seria
 			lemonService.fillAdditionalFields(newUser, attributes);
 			
 			lemonService.forgotPassword(newUser);
-			newUser.decorate(newUser);
 			
 			return newUser;
     	});
     	
-		LemonPrincipal<PK> principal = new LemonPrincipal<PK>();
-		principal.setUserId(user.getId());
-		
+		LemonPrincipal<PK> principal = new LemonPrincipal<>(user.toSpringUser());
 		principal.setAttributes(attributes);
-		principal.setAuthorities(user.getAuthorities());
 		principal.setName(oidcUser.getName());
 		principal.setClaims(oidcUser.getClaims());
 		principal.setIdToken(oidcUser.getIdToken());
 		principal.setUserInfo(oidcUser.getUserInfo());
-		
-		principal.setUsername(email);
 		
 		return principal;
 	}

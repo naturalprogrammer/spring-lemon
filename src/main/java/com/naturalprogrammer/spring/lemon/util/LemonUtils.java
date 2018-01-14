@@ -28,6 +28,8 @@ import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
 import com.naturalprogrammer.spring.lemon.domain.VersionedEntity;
 import com.naturalprogrammer.spring.lemon.exceptions.MultiErrorException;
 import com.naturalprogrammer.spring.lemon.exceptions.VersionException;
+import com.naturalprogrammer.spring.lemon.security.LemonPrincipal;
+import com.naturalprogrammer.spring.lemon.security.SpringUser;
 
 /**
  * Useful static methods
@@ -109,15 +111,14 @@ public class LemonUtils {
 	/**
 	 * Gets the current-user
 	 */
-	public static <U extends AbstractUser<U,ID>, ID extends Serializable>
-	U getUser() {
+	public static <ID extends Serializable> SpringUser<ID> getSpringUser() {
 		
 		// get the authentication object
 		Authentication auth = SecurityContextHolder
 			.getContext().getAuthentication();
 		
 		// get the user from the authentication object
-		return getUser(auth);
+		return getSpringUser(auth);
 	}
 	
 
@@ -127,13 +128,12 @@ public class LemonUtils {
 	 * @param auth
 	 * @return
 	 */
-	public static <U extends AbstractUser<U,ID>, ID extends Serializable>
-	U getUser(Authentication auth) {
+	public static <ID extends Serializable> SpringUser<ID> getSpringUser(Authentication auth) {
 		
 	    if (auth != null) {
 	      Object principal = auth.getPrincipal();
-	      if (principal instanceof AbstractUser<?,?>) {
-	        return (U) principal;
+	      if (principal instanceof LemonPrincipal<?>) {
+	        return ((LemonPrincipal<ID>) principal).getSpringUser();
 	      }
 	    }
 	    return null;	  
@@ -148,9 +148,11 @@ public class LemonUtils {
 	public static <U extends AbstractUser<U,ID>, ID extends Serializable>
 	void logIn(U user) {
 		
-	    user.decorate(user); // decorate self
+		LemonPrincipal<ID> principal = new LemonPrincipal<>(user.toSpringUser());
+
 		Authentication authentication = // make the authentication object
-	    	new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+	    	new UsernamePasswordAuthenticationToken(principal, null, principal.getAuthorities());
+
 	    SecurityContextHolder.getContext().setAuthentication(authentication); // put that in the security context
 	}
 	

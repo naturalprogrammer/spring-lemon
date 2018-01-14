@@ -3,7 +3,6 @@ package com.naturalprogrammer.spring.lemon;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import javax.mail.MessagingException;
 import javax.validation.Valid;
@@ -33,6 +32,7 @@ import com.naturalprogrammer.spring.lemon.domain.ChangePasswordForm;
 import com.naturalprogrammer.spring.lemon.exceptions.MultiErrorException;
 import com.naturalprogrammer.spring.lemon.mail.MailSender;
 import com.naturalprogrammer.spring.lemon.permissions.UserEditPermission;
+import com.naturalprogrammer.spring.lemon.security.SpringUser;
 import com.naturalprogrammer.spring.lemon.util.LemonUtils;
 import com.naturalprogrammer.spring.lemon.validation.Password;
 
@@ -293,7 +293,7 @@ public abstract class LemonService
 				"com.naturalprogrammer.spring.userNotFound"));
 
 		// decorate the user, and hide confidential fields
-		user.decorate().hideConfidentialFields();
+		user.hideConfidentialFields();
 		
 		log.debug("Returning user: " + user);		
 
@@ -316,7 +316,7 @@ public abstract class LemonService
 			"com.naturalprogrammer.spring.userNotFound").go();
 		
 		// decorate the user, and hide confidential fields
-		user.decorate().hideConfidentialFields();
+		user.hideConfidentialFields();
 		
 		return user;
 	}
@@ -333,14 +333,11 @@ public abstract class LemonService
 		
 		log.debug("Verifying user ...");
 
-		// get the current-user from the session
-		U currentUser = LemonUtils.getUser();
-		
 		// fetch a fresh copy from the database
-		U user = userRepository.getOne(currentUser.getId());
+		U user = userRepository.getOne((ID) LemonUtils.getSpringUser().getId());
 		
 		// ensure that he is unverified
-		LemonUtils.check(user.getRoles().contains(Role.UNVERIFIED),
+		LemonUtils.check(user.hasRole(Role.UNVERIFIED),
 				"com.naturalprogrammer.spring.alreadyVerified").go();	
 		
 		// ensure that the verification code of the user matches with the given one
@@ -483,7 +480,7 @@ public abstract class LemonService
 		LemonUtils.validateVersion(user, updatedUser);
 
 		// delegates to updateUserFields
-		updateUserFields(user, updatedUser, LemonUtils.getUser());
+		updateUserFields(user, updatedUser, LemonUtils.getSpringUser());
 		userRepository.save(user);
 		
 		log.debug("Updated user: " + user);		
@@ -517,9 +514,9 @@ public abstract class LemonService
 		// after successful commit
 		LemonUtils.afterCommit(() -> {
 
-			U currentUser = LemonUtils.getUser();
+			SpringUser<ID> currentUser = LemonUtils.getSpringUser();
 			
-			if (currentUser.equals(user)) { // if current-user's password changed,
+			if (currentUser.getId().equals(user.getId())) { // if current-user's password changed,
 				
 				log.debug("Logging out ...");
 				LemonUtils.logOut(); // log him out
@@ -537,21 +534,22 @@ public abstract class LemonService
 	 * @param updatedUser
 	 * @param currentUser
 	 */
-	protected void updateUserFields(U user, U updatedUser, U currentUser) {
+	protected void updateUserFields(U user, U updatedUser, SpringUser<ID> currentUser) {
 
 		log.debug("Updating user fields for user: " + user);
 
 		// User is already decorated while checking the 'edit' permission
 		// So, user.isRolesEditable() below would work
-		if (user.isRolesEditable()) { 
+		
+		// Another good admin must be logged in to edit roles
+		if (currentUser.isGoodAdmin() &&
+		   !currentUser.getId().equals(user.getId())) { 
 			
 			log.debug("Updating roles for user: " + user);
 
 			// update the roles
 			
-			Set<String> roles = user.getRoles();
-			
-			if (updatedUser.isUnverified()) {
+			if (updatedUser.hasRole(Role.UNVERIFIED)) {
 				
 				if (!user.hasRole(Role.UNVERIFIED)) {
 
@@ -564,15 +562,7 @@ public abstract class LemonService
 					makeVerified(user); // make user verified
 			}
 			
-			if (updatedUser.isAdmin())
-				roles.add(Role.ADMIN);
-			else
-				roles.remove(Role.ADMIN);
-			
-			if (updatedUser.isBlocked())
-				roles.add(Role.BLOCKED);
-			else
-				roles.remove(Role.BLOCKED);
+			user.setRoles(updatedUser.getRoles());
 		}
 	}
 
@@ -582,33 +572,33 @@ public abstract class LemonService
 	 * 
 	 * @return
 	 */
-	public U userForClient() {
+	public SpringUser<ID> userForClient() {
 		
 		// delegates
-		return userForClient(LemonUtils.getUser());
+		return LemonUtils.getSpringUser();
 	}
 
-	
-	/**
-	 * Gets the current-user to be sent to a client.
-	 * Override this if you have more fields.
-	 * 
-	 * @param currentUser
-	 */
-	protected U userForClient(U currentUser) {
-		
-		if (currentUser == null)
-			return null;
-		
-		U user = newUser();
-		user.setIdForClient(currentUser.getId());
-		user.setRoles(currentUser.getRoles());
-		user.decorate(currentUser);
-		
-		log.debug("Returning user for client: " + user);
-		
-		return user;
-	}
+//	
+//	/**
+//	 * Gets the current-user to be sent to a client.
+//	 * Override this if you have more fields.
+//	 * 
+//	 * @param currentUser
+//	 */
+//	protected U userForClient(U currentUser) {
+//		
+//		if (currentUser == null)
+//			return null;
+//		
+//		U user = newUser();
+//		user.setIdForClient(currentUser.getId());
+//		user.setRoles(currentUser.getRoles());
+//		user.decorate(currentUser);
+//		
+//		log.debug("Returning user for client: " + user);
+//		
+//		return user;
+//	}
 	
 
 	/**
@@ -626,10 +616,11 @@ public abstract class LemonService
 
 		// checks
 		LemonUtils.check("id", user != null,
-				"com.naturalprogrammer.spring.userNotFound").go();
+			"com.naturalprogrammer.spring.userNotFound").go();
+	
 		LemonUtils.check("updatedUser.password",
 			passwordEncoder.matches(updatedUser.getPassword(),
-									LemonUtils.getUser().getPassword()),
+									user.getPassword()),
 			"com.naturalprogrammer.spring.wrong.password").go();
 
 		// preserves the new email id
@@ -689,7 +680,7 @@ public abstract class LemonService
 		log.debug("Changing email of current user ...");
 
 		// fetch the current-user
-		U currentUser = LemonUtils.getUser();
+		SpringUser<ID> currentUser = LemonUtils.getSpringUser();
 		U user = userRepository.getOne(currentUser.getId());
 		
 		// checks
