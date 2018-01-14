@@ -47,14 +47,16 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 	private LogoutSuccessHandler logoutSuccessHandler;
 	private RememberMeServices rememberMeServices;
 	private LemonTokenAuthenticationFilter<?, ?> lemonTokenAuthenticationFilter;
-	private LemonOidcUserService<?, ?> oidcUserService;
+	private LemonOidcUserService oidcUserService;
+	private LemonOAuth2UserService<?, ?> oauth2UserService;
 	
 	@Autowired
 	public void createLemonSecurityConfig(LemonProperties properties, UserDetailsService userDetailsService,
 			AuthenticationSuccessHandler authenticationSuccessHandler, AuthenticationFailureHandler authenticationFailureHandler,
 			LogoutSuccessHandler logoutSuccessHandler, RememberMeServices rememberMeServices,
 			LemonTokenAuthenticationFilter<?, ?> lemonTokenAuthenticationFilter,
-			LemonOidcUserService<?, ?> oidcUserService) {
+			LemonOidcUserService oidcUserService,
+			LemonOAuth2UserService<?, ?> oauth2UserService) {
 
 		this.properties = properties;
 		this.userDetailsService = userDetailsService;
@@ -64,6 +66,7 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 		this.rememberMeServices = rememberMeServices;
 		this.lemonTokenAuthenticationFilter = lemonTokenAuthenticationFilter;
 		this.oidcUserService = oidcUserService;
+		this.oauth2UserService = oauth2UserService;
 		
 		log.info("Created");
 	}
@@ -232,8 +235,8 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.oauth2Login()
 			.defaultSuccessUrl(properties.getOauth2AuthenticationSuccessUrl(), true)
 			.userInfoEndpoint()
-				.oidcUserService(oidcUserService);
-				//.userService(oidcUserService);
+				.oidcUserService(oidcUserService)
+				.userService(oauth2UserService);
 	}	
 
 	/**

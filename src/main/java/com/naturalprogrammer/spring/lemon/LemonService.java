@@ -19,6 +19,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.core.oidc.StandardClaimNames;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -750,7 +751,21 @@ public abstract class LemonService
 
 	abstract public ID parseId(String id);
 
-	public void fillAdditionalFields(U user, Map<String, Object> attributes) {
+	public String getOAuth2Email(String registrationId, Map<String, Object> attributes) {
+
+		return (String) attributes.get(StandardClaimNames.EMAIL);
+	}
+	
+	public void fillAdditionalFields(String clientId, U user, Map<String, Object> attributes) {
 		
+	}
+
+	public boolean getOAuth2AccountVerified(String registrationId, Map<String, Object> attributes) {
+
+		Object verified = attributes.get(StandardClaimNames.EMAIL_VERIFIED);
+		if (verified == null)
+			verified = attributes.get("verified");
+		
+		return (boolean) verified;
 	}
 }

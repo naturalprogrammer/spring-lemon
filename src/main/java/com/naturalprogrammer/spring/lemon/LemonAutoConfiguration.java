@@ -46,6 +46,7 @@ import com.naturalprogrammer.spring.lemon.mail.SmtpMailSender;
 import com.naturalprogrammer.spring.lemon.security.AuthenticationSuccessHandler;
 import com.naturalprogrammer.spring.lemon.security.LemonCorsFilter;
 import com.naturalprogrammer.spring.lemon.security.LemonLogoutSuccessHandler;
+import com.naturalprogrammer.spring.lemon.security.LemonOAuth2UserService;
 import com.naturalprogrammer.spring.lemon.security.LemonOidcUserService;
 import com.naturalprogrammer.spring.lemon.security.LemonPermissionEvaluator;
 import com.naturalprogrammer.spring.lemon.security.LemonSecurityConfig;
@@ -275,15 +276,22 @@ public class LemonAutoConfiguration {
 	
 	@Bean
 	@ConditionalOnMissingBean(LemonOidcUserService.class)	
+	public LemonOidcUserService lemonOidcUserService(LemonOAuth2UserService<?, ?> lemonOAuth2UserService) {
+		
+        log.info("Configuring LemonOidcUserService");       
+		return new LemonOidcUserService(lemonOAuth2UserService);
+	}
+
+	@Bean
+	@ConditionalOnMissingBean(LemonOAuth2UserService.class)	
 	public <U extends AbstractUser<U,ID>, ID extends Serializable>
-		LemonOidcUserService<U,ID> lemonOidcUserService(
+		LemonOAuth2UserService<U,ID> lemonOAuth2UserService(
 			LemonUserDetailsService<U, ?> userDetailsService,
 			LemonService<U, ?> lemonService,
 			PasswordEncoder passwordEncoder) {
 		
-        log.info("Configuring LemonOidcUserService");       
-		return new LemonOidcUserService<U,ID>
-			(userDetailsService, lemonService, passwordEncoder);
+        log.info("Configuring LemonOAuth2UserService");       
+		return new LemonOAuth2UserService<U,ID>(userDetailsService, lemonService, passwordEncoder);
 	}
 
 //	@Bean
