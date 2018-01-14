@@ -28,7 +28,9 @@ implements AuditorAware<U> {
     
     private AbstractUserRepository<U,ID> userRepository;
     
-	public LemonAuditorAware() {
+	public LemonAuditorAware(AbstractUserRepository<U,ID> userRepository) {
+		
+		this.userRepository = userRepository;
 		log.info("Created");
 	}
 

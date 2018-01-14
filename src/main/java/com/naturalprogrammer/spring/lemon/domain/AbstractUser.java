@@ -266,8 +266,8 @@ extends VersionedEntity<U, ID> {
 	 */
 	public void hideConfidentialFields() {
 		
-		setCreatedDate(null);
-		setLastModifiedDate(null);
+		//setCreatedDate(null);
+		//setLastModifiedDate(null);
 		password = null;
 		verificationCode = null;
 		forgotPasswordCode = null;
@@ -290,10 +290,15 @@ extends VersionedEntity<U, ID> {
 		log.debug("Computing " + permission	+ " permission for : " + this
 			+ "\n  Logged in user: " + currentUser);
 
-		boolean self = currentUser.getId().equals(getId());		
 
-		if (permission.equals("edit"))
-			return self || currentUser.isGoodAdmin(); // self or admin;
+		if (permission.equals("edit")) {
+			
+			if (currentUser == null)
+				return false;
+			
+			boolean self = currentUser.getId().equals(getId());		
+			return self || currentUser.isGoodAdmin(); // self or admin;			
+		}
 
 		return false;
 	}

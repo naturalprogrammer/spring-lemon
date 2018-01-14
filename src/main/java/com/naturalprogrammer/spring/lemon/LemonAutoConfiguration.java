@@ -134,10 +134,10 @@ public class LemonAutoConfiguration {
 	@Bean
 	@ConditionalOnMissingBean(AuditorAware.class)
 	public <U extends AbstractUser<U,ID>, ID extends Serializable>
-	AuditorAware<U> auditorAware() {
+	AuditorAware<U> auditorAware(AbstractUserRepository<U,ID> userRepository) {
 		
         log.info("Configuring LemonAuditorAware");       
-		return new LemonAuditorAware<U, ID>();
+		return new LemonAuditorAware<U, ID>(userRepository);
 	}
 	
 //	@Bean
