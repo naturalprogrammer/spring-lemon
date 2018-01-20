@@ -102,7 +102,7 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 		
 		// Don't create a session; but if there's one, use it
 		http.sessionManagement()
-			.sessionCreationPolicy(SessionCreationPolicy.NEVER);
+			.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 	}
 
 
@@ -233,7 +233,10 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 	private void oauth2Client(HttpSecurity http) throws Exception {
 		
 		http.oauth2Login()
-			.defaultSuccessUrl(properties.getOauth2AuthenticationSuccessUrl(), true)
+			.authorizationEndpoint()
+				.authorizationRequestRepository(new HttpCookieOAuth2AuthorizationRequestRepository()).and()
+			.successHandler(authenticationSuccessHandler)
+			//.defaultSuccessUrl(properties.getOauth2AuthenticationSuccessUrl(), true)
 			.userInfoEndpoint()
 				.oidcUserService(oidcUserService)
 				.userService(oauth2UserService);
