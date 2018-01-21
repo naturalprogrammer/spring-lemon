@@ -52,6 +52,7 @@ import com.naturalprogrammer.spring.lemon.security.LemonPermissionEvaluator;
 import com.naturalprogrammer.spring.lemon.security.LemonSecurityConfig;
 import com.naturalprogrammer.spring.lemon.security.LemonTokenAuthenticationFilter;
 import com.naturalprogrammer.spring.lemon.security.LemonUserDetailsService;
+import com.naturalprogrammer.spring.lemon.security.OAuth2AuthenticationSuccessHandler;
 import com.naturalprogrammer.spring.lemon.util.LemonUtils;
 import com.naturalprogrammer.spring.lemon.validation.CaptchaValidator;
 import com.naturalprogrammer.spring.lemon.validation.RetypePasswordValidator;
@@ -195,6 +196,15 @@ public class LemonAutoConfiguration {
 		return new AuthenticationSuccessHandler(objectMapper, lemonService);
 	}
 	
+	@Bean
+	@ConditionalOnMissingBean(OAuth2AuthenticationSuccessHandler.class)
+	public OAuth2AuthenticationSuccessHandler<?,?> oauth2AuthenticationSuccessHandler(
+			LemonProperties properties) {
+		
+        log.info("Configuring OAuth2AuthenticationSuccessHandler");       
+		return new OAuth2AuthenticationSuccessHandler<>(properties);
+	}
+
 	/**
 	 * Authentication failure handler, to override the default behavior
 	 * of spring security -  redirecting to the login screen 

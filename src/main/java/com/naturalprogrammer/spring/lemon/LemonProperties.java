@@ -32,12 +32,6 @@ public class LemonProperties {
 	 * Used in the verification link mailed to the users, etc.
 	 */
     private String applicationUrl = "http://localhost:9000";
-    
-    /**
-	 * Client web application's base URL.
-	 * Used in the verification link mailed to the users, etc.
-	 */
-    private String oauth2AuthenticationSuccessUrl = "http://localhost:9000/social-login-success";
 
     /**
      * Secret string used for encrypting remember-me tokens
@@ -102,14 +96,6 @@ public class LemonProperties {
 
 	public void setShared(Map<String, Object> shared) {
 		this.shared = shared;
-	}
-
-	public String getOauth2AuthenticationSuccessUrl() {
-		return oauth2AuthenticationSuccessUrl;
-	}
-
-	public void setAfterOauth2LoginUrl(String oauth2AuthenticationSuccessUrl) {
-		this.oauth2AuthenticationSuccessUrl = oauth2AuthenticationSuccessUrl;
 	}
 
 	public String getRememberMeKey() {

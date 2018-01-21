@@ -41,6 +41,7 @@ public class HttpCookieOAuth2AuthorizationRequestRepository implements Authoriza
 		
 		Cookie cookie = new Cookie(COOKIE_NAME, fromAuthorizationRequest(authorizationRequest));
 		cookie.setPath("/");
+		cookie.setHttpOnly(true);
 		response.addCookie(cookie);
 	}
 
@@ -56,6 +57,7 @@ public class HttpCookieOAuth2AuthorizationRequestRepository implements Authoriza
 		fetchCookie(request).ifPresent(cookie -> {
 			
 			cookie.setValue("");
+			cookie.setPath("/");
 	        cookie.setMaxAge(0);
 	        response.addCookie(cookie);
 		});

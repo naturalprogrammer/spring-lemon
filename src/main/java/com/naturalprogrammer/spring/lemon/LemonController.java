@@ -26,6 +26,7 @@ import com.github.fge.jsonpatch.JsonPatchException;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser.SignupInput;
 import com.naturalprogrammer.spring.lemon.domain.ChangePasswordForm;
+import com.naturalprogrammer.spring.lemon.forms.NonceForm;
 import com.naturalprogrammer.spring.lemon.security.SpringUser;
 import com.naturalprogrammer.spring.lemon.util.LemonUtils;
 
@@ -255,4 +256,11 @@ public abstract class LemonController
 		log.debug("Removing API Key ... ");				
 		lemonService.removeApiKey(user);
 	}
+	
+	@PostMapping("/login-with-nonce")
+	public SpringUser<ID> loginWithNonce(@RequestBody NonceForm<ID> nonce) {
+		
+		log.debug("Logging in user in exchange of noncc ... ");				
+		return lemonService.loginWithNonce(nonce);
+	}	
 }

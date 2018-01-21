@@ -5,9 +5,11 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 
@@ -86,7 +88,9 @@ extends VersionedEntity<U, ID> {
 	
 	// roles collection
 	@ElementCollection(fetch = FetchType.EAGER)
-	private Set<String> roles = new HashSet<String>();
+    @CollectionTable(name="usr_role", joinColumns=@JoinColumn(name="user_id"))
+    @Column(name="role")
+	private Set<String> roles = new HashSet<>();
 	
 	// verification code
 	@Column(length = UUID_LENGTH, unique=true)
@@ -106,7 +110,9 @@ extends VersionedEntity<U, ID> {
 	protected String changeEmailCode;
 	
 	// The authentication token
-	protected String apiKey;	
+	protected String apiKey;
+	
+	private String nonce;
 
 	// holds reCAPTCHA response while signing up
 	@Transient
@@ -279,6 +285,14 @@ extends VersionedEntity<U, ID> {
 	}
 
 	
+	public String getNonce() {
+		return nonce;
+	}
+
+	public void setNonce(String nonce) {
+		this.nonce = nonce;
+	}
+
 	/**
 	 * Called by spring security permission evaluator
 	 * to check whether the current-user has the given permission

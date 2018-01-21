@@ -64,7 +64,10 @@ public class LemonOAuth2UserService<U extends AbstractUser<U,PK>, PK extends Ser
 			return newUser;
     	});
     	
-		LemonPrincipal<PK> principal = new LemonPrincipal<>(user.toSpringUser());
+    	SpringUser<PK> springUser = user.toSpringUser();
+    	springUser.setNonce(lemonService.addNonce(user));
+    	
+		LemonPrincipal<PK> principal = new LemonPrincipal<>(springUser);
 		principal.setAttributes(attributes);
 		principal.setName(oath2User.getName());
 		

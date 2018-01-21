@@ -31,6 +31,7 @@ import com.naturalprogrammer.spring.lemon.domain.AbstractUser.SignUpValidation;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUserRepository;
 import com.naturalprogrammer.spring.lemon.domain.ChangePasswordForm;
 import com.naturalprogrammer.spring.lemon.exceptions.MultiErrorException;
+import com.naturalprogrammer.spring.lemon.forms.NonceForm;
 import com.naturalprogrammer.spring.lemon.mail.MailSender;
 import com.naturalprogrammer.spring.lemon.permissions.UserEditPermission;
 import com.naturalprogrammer.spring.lemon.security.SpringUser;
@@ -767,5 +768,33 @@ public abstract class LemonService
 			verified = attributes.get("verified");
 		
 		return (boolean) verified;
+	}
+
+	public SpringUser<ID> loginWithNonce(@Valid NonceForm<ID> nonce) {
+		
+		U user = userRepository.findById(nonce.getUserId())
+			.orElseThrow(MultiErrorException.supplier(
+				"com.naturalprogrammer.spring.userNotFound"));
+
+		if (user.getNonce().equals(nonce.getNonce())) {
+			
+			user.setNonce(null);
+			userRepository.save(user);
+			
+			// TODO: return JwtToken
+			return user.toSpringUser();
+		}
+		
+		throw MultiErrorException.supplier("com.naturalprogrammer.spring.invalidNonce").get();
+	}
+
+	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
+	public String addNonce(U user) {
+		
+		String nonce = LemonUtils.uid();
+		user.setNonce(nonce);
+		userRepository.save(user);
+		
+		return nonce;
 	}
 }

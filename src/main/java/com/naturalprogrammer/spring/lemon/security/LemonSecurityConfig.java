@@ -17,7 +17,6 @@ import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.authentication.switchuser.SwitchUserFilter;
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 import com.naturalprogrammer.spring.lemon.LemonProperties;
 
@@ -49,6 +48,7 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 	private LemonTokenAuthenticationFilter<?, ?> lemonTokenAuthenticationFilter;
 	private LemonOidcUserService oidcUserService;
 	private LemonOAuth2UserService<?, ?> oauth2UserService;
+	private OAuth2AuthenticationSuccessHandler<?,?> oauth2AuthenticationSuccessHandler;
 	
 	@Autowired
 	public void createLemonSecurityConfig(LemonProperties properties, UserDetailsService userDetailsService,
@@ -56,7 +56,8 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 			LogoutSuccessHandler logoutSuccessHandler, RememberMeServices rememberMeServices,
 			LemonTokenAuthenticationFilter<?, ?> lemonTokenAuthenticationFilter,
 			LemonOidcUserService oidcUserService,
-			LemonOAuth2UserService<?, ?> oauth2UserService) {
+			LemonOAuth2UserService<?, ?> oauth2UserService,
+			OAuth2AuthenticationSuccessHandler<?,?> oauth2AuthenticationSuccessHandler) {
 
 		this.properties = properties;
 		this.userDetailsService = userDetailsService;
@@ -67,6 +68,7 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 		this.lemonTokenAuthenticationFilter = lemonTokenAuthenticationFilter;
 		this.oidcUserService = oidcUserService;
 		this.oauth2UserService = oauth2UserService;
+		this.oauth2AuthenticationSuccessHandler = oauth2AuthenticationSuccessHandler;
 		
 		log.info("Created");
 	}
@@ -199,18 +201,18 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void csrf(HttpSecurity http) throws Exception {
 		
 		http
-			.csrf()
-				.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-				.requireCsrfProtectionMatcher(request -> {
-					
-					if (csrfAllowedMethods.contains(request.getMethod()))
-						return false;
-						
-					if (LemonTokenAuthenticationFilter.tokenPresent(request))
-						return false;
-					
-					return true;
-				});
+			.csrf().disable();
+//				.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+//				.requireCsrfProtectionMatcher(request -> {
+//					
+//					if (csrfAllowedMethods.contains(request.getMethod()))
+//						return false;
+//						
+//					if (LemonTokenAuthenticationFilter.tokenPresent(request))
+//						return false;
+//					
+//					return true;
+//				});
 	}
 
 	
@@ -235,7 +237,7 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.oauth2Login()
 			.authorizationEndpoint()
 				.authorizationRequestRepository(new HttpCookieOAuth2AuthorizationRequestRepository()).and()
-			.successHandler(authenticationSuccessHandler)
+			.successHandler(oauth2AuthenticationSuccessHandler)
 			//.defaultSuccessUrl(properties.getOauth2AuthenticationSuccessUrl(), true)
 			.userInfoEndpoint()
 				.oidcUserService(oidcUserService)
