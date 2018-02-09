@@ -11,7 +11,6 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 
 import com.naturalprogrammer.spring.lemon.LemonProperties;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
-import com.naturalprogrammer.spring.lemon.domain.AbstractUserRepository;
 import com.naturalprogrammer.spring.lemon.util.LemonUtils;
 
 /**
@@ -27,7 +26,6 @@ public class OAuth2AuthenticationSuccessHandler
 	private static final Log log = LogFactory.getLog(OAuth2AuthenticationSuccessHandler.class);
 
 	private LemonProperties properties;
-	private AbstractUserRepository<U,ID> userRepository;
 
 	public OAuth2AuthenticationSuccessHandler(LemonProperties properties) {
 

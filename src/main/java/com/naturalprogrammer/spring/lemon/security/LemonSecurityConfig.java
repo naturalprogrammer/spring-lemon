@@ -39,7 +39,12 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 	public static final String XSRF_TOKEN_HEADER_NAME = "X-XSRF-TOKEN";
 	public static final String XSRF_TOKEN_COOKIE_NAME = "XSRF-TOKEN";
 	
-	private LemonProperties properties;
+	// JWT Token related
+    public static final String TOKEN_PREFIX = "Bearer ";
+    public static final String TOKEN_REQUEST_HEADER = "Authorization";
+    public static final String TOKEN_RESPONSE_HEADER_NAME = "Lemon-Authorization";
+
+    private LemonProperties properties;
 	private UserDetailsService userDetailsService;
 	private AuthenticationSuccessHandler authenticationSuccessHandler;
 	private AuthenticationFailureHandler authenticationFailureHandler;

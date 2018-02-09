@@ -61,6 +61,11 @@ public class LemonProperties {
      */
 	private Map<String, Object> shared;
 
+	/**
+	 * JWT token generation related properties
+	 */
+	private Jwt jwt;
+
 
 	/**************************
 	 * Gettrer and setters
@@ -114,6 +119,13 @@ public class LemonProperties {
 		this.applicationUrl = applicationUrl;
 	}
 
+	public Jwt getJwt() {
+		return jwt;
+	}
+
+	public void setJwt(Jwt jwt) {
+		this.jwt = jwt;
+	}
 	
 	/**************************
 	 * Static classes
@@ -187,7 +199,8 @@ public class LemonProperties {
 				"Referer",
 				"User-Agent",
 				"x-requested-with",
-				LemonSecurityConfig.XSRF_TOKEN_HEADER_NAME};
+				LemonSecurityConfig.XSRF_TOKEN_HEADER_NAME,
+				LemonSecurityConfig.TOKEN_RESPONSE_HEADER_NAME};
 		
 		/**
 		 * Response headers that you want to expose to the client JavaScript programmer, e.g. "X-XSRF-TOKEN".
@@ -295,4 +308,38 @@ public class LemonProperties {
 			this.password = password;
 		}		
 	}
+	
+	/**
+	 * Properties related to JWT token generation
+	 * 
+	 * @author Sanjay Patel
+	 */
+	public static class Jwt {
+		
+		/**
+		 * Secret for signing JWT
+		 */
+		private String secret;
+		
+		/**
+		 * Default expiration milli seconds
+		 */
+		private long expirationMilli = 864000000L; // 10 days
+		
+		public String getSecret() {
+			return secret;
+		}
+		
+		public void setSecret(String secret) {
+			this.secret = secret;
+		}
+		
+		public long getExpirationMilli() {
+			return expirationMilli;
+		}
+		
+		public void setExpirationMilli(long expirationMilli) {
+			this.expirationMilli = expirationMilli;
+		}		
+	}	
 }

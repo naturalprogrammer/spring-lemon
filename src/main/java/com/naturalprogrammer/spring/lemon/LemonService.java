@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.mail.MessagingException;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -34,6 +35,7 @@ import com.naturalprogrammer.spring.lemon.exceptions.MultiErrorException;
 import com.naturalprogrammer.spring.lemon.forms.NonceForm;
 import com.naturalprogrammer.spring.lemon.mail.MailSender;
 import com.naturalprogrammer.spring.lemon.permissions.UserEditPermission;
+import com.naturalprogrammer.spring.lemon.security.JwtService;
 import com.naturalprogrammer.spring.lemon.security.SpringUser;
 import com.naturalprogrammer.spring.lemon.util.LemonUtils;
 import com.naturalprogrammer.spring.lemon.validation.Password;
@@ -58,19 +60,22 @@ public abstract class LemonService
     private MailSender mailSender;
 	private AbstractUserRepository<U, ID> userRepository;
 	private UserDetailsService userDetailsService;
+	private JwtService jwtService;
 
 	@Autowired
 	public void createLemonService(LemonProperties properties,
 			PasswordEncoder passwordEncoder,
 			MailSender mailSender,
 			AbstractUserRepository<U, ID> userRepository,
-			UserDetailsService userDetailsService) {
+			UserDetailsService userDetailsService,
+			JwtService jwtService) {
 		
 		this.properties = properties;
 		this.passwordEncoder = passwordEncoder;
 		this.mailSender = mailSender;
 		this.userRepository = userRepository;
 		this.userDetailsService = userDetailsService;
+		this.jwtService = jwtService;
 		
 		log.info("Created");
 	}
@@ -770,7 +775,8 @@ public abstract class LemonService
 		return (boolean) verified;
 	}
 
-	public SpringUser<ID> loginWithNonce(@Valid NonceForm<ID> nonce) {
+	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
+	public SpringUser<ID> loginWithNonce(@Valid NonceForm<ID> nonce, HttpServletResponse response) {
 		
 		U user = userRepository.findById(nonce.getUserId())
 			.orElseThrow(MultiErrorException.supplier(
@@ -781,7 +787,7 @@ public abstract class LemonService
 			user.setNonce(null);
 			userRepository.save(user);
 			
-			// TODO: return JwtToken
+			jwtService.addJwtAuthHeader(response, user.getId().toString(), properties.getJwt().getExpirationMilli());
 			return user.toSpringUser();
 		}
 		

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
@@ -258,9 +259,9 @@ public abstract class LemonController
 	}
 	
 	@PostMapping("/login-with-nonce")
-	public SpringUser<ID> loginWithNonce(@RequestBody NonceForm<ID> nonce) {
+	public SpringUser<ID> loginWithNonce(@RequestBody NonceForm<ID> nonce, HttpServletResponse response) {
 		
-		log.debug("Logging in user in exchange of noncc ... ");				
-		return lemonService.loginWithNonce(nonce);
+		log.debug("Logging in user in exchange of nonce ... ");
+		return lemonService.loginWithNonce(nonce, response);
 	}	
 }
