@@ -1,22 +1,29 @@
 package com.naturalprogrammer.spring.lemon.security;
 
+import java.io.Serializable;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
+import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
+import com.naturalprogrammer.spring.lemon.util.LemonUtils;
+
+import io.jsonwebtoken.JwtException;
+
 @Component
-public class JwtAuthenticationProvider implements AuthenticationProvider {
+public class JwtAuthenticationProvider
+<U extends AbstractUser<U,ID>, ID extends Serializable> implements AuthenticationProvider {
 
     private static final Log log = LogFactory.getLog(LemonTokenAuthenticationFilter.class);
 
 	private final JwtService jwtService;
-	private UserDetailsService userDetailsService;
+	private LemonUserDetailsService<U, ID> userDetailsService;
 	
-	public JwtAuthenticationProvider(JwtService jwtHelper, UserDetailsService userDetailsService) {
+	public JwtAuthenticationProvider(JwtService jwtHelper, LemonUserDetailsService<U, ID> userDetailsService) {
 
 		this.jwtService = jwtHelper;
 		this.userDetailsService = userDetailsService;
@@ -31,12 +38,16 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
 
 		String jwtToken = (String) auth.getCredentials();
 		
-        String email = jwtService.parseAuthSubject(jwtToken);
-        UserDetails user = userDetailsService.loadUserByUsername(email);
+        String username = jwtService.parseAuthSubject(jwtToken);
+        U user = userDetailsService.findUserByUsername(username)
+        		.orElseThrow(() -> new UsernameNotFoundException(username));
 
         log.debug("User found ...");
+        
+        if (jwtService.parseIssuedAt(jwtToken).before(user.getCredentialsUpdatedAt()))
+        	throw new JwtException(LemonUtils.getMessage("credentialsChanged"));
 
-        return new JwtAuthenticationToken(user, jwtToken, user.getAuthorities());
+        return new JwtAuthenticationToken(new LemonPrincipal<ID>(user.toSpringUser()), jwtToken, user.getAuthorities());
 	}
 
 	@Override

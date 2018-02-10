@@ -1,6 +1,7 @@
 package com.naturalprogrammer.spring.lemon;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -517,6 +518,7 @@ public abstract class LemonService
 		
 		// sets the password
 		user.setPassword(passwordEncoder.encode(changePasswordForm.getPassword()));
+		user.setCredentialsUpdatedAt(new Date());
 		userRepository.save(user);
 		
 		// after successful commit
@@ -704,6 +706,7 @@ public abstract class LemonService
 		user.setEmail(user.getNewEmail());
 		user.setNewEmail(null);
 		user.setChangeEmailCode(null);
+		user.setCredentialsUpdatedAt(new Date());
 		
 		// make the user verified if he is not
 		if (user.hasRole(Role.UNVERIFIED))

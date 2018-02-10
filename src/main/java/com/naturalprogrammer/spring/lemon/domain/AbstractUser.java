@@ -2,6 +2,7 @@ package com.naturalprogrammer.spring.lemon.domain;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -112,7 +113,12 @@ extends VersionedEntity<U, ID> {
 	// The authentication token
 	protected String apiKey;
 	
+	// One time token
 	private String nonce;
+	
+	// A JWT after before this won't be valid
+	@Column(nullable = false)
+	private Date credentialsUpdatedAt = new Date();
 
 	// holds reCAPTCHA response while signing up
 	@Transient
@@ -291,6 +297,14 @@ extends VersionedEntity<U, ID> {
 
 	public void setNonce(String nonce) {
 		this.nonce = nonce;
+	}
+
+	public Date getCredentialsUpdatedAt() {
+		return credentialsUpdatedAt;
+	}
+
+	public void setCredentialsUpdatedAt(Date credentialsUpdatedAt) {
+		this.credentialsUpdatedAt = credentialsUpdatedAt;
 	}
 
 	/**

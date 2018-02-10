@@ -49,4 +49,16 @@ public class JwtService {
 		     .getBody()
 		     .getSubject();
 	}
+
+
+	public Date parseIssuedAt(String token) {
+
+		Date issuedAt = Jwts.parser()
+			     .setSigningKey(secretKey)
+			     .parseClaimsJws(token)
+			     .getBody().getIssuedAt();
+		
+		assert issuedAt != null;
+		return issuedAt;
+	}
 }
