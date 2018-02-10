@@ -3,6 +3,7 @@ package com.naturalprogrammer.spring.lemon;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletResponse;
@@ -574,17 +575,16 @@ public abstract class LemonService
 	}
 
 	
-	/**
-	 * Gets the current-user to be sent to a client.
-	 * 
-	 * @return
-	 */
-	public SpringUser<ID> userForClient() {
-		
-		// delegates
-		return LemonUtils.getSpringUser();
-	}
-
+//	/**
+//	 * Gets the current-user to be sent to a client.
+//	 * 
+//	 * @return
+//	 */
+//	public SpringUser<ID> userForClient() {
+//		
+//		return LemonUtils.getSpringUser();
+//	}
+//
 //	
 //	/**
 //	 * Gets the current-user to be sent to a client.
@@ -787,7 +787,13 @@ public abstract class LemonService
 			user.setNonce(null);
 			userRepository.save(user);
 			
-			jwtService.addJwtAuthHeader(response, user.toSpringUser().getUsername(), properties.getJwt().getExpirationMilli());
+			if (nonce.getExpirationMilli() == null)
+				nonce.setExpirationMilli(properties.getJwt().getExpirationMilli());
+			
+			jwtService.addJwtAuthHeader(response,
+					user.toSpringUser().getUsername(),
+					nonce.getExpirationMilli());
+
 			return user.toSpringUser();
 		}
 		
@@ -802,5 +808,21 @@ public abstract class LemonService
 		userRepository.save(user);
 		
 		return nonce;
+	}
+
+
+	/**
+	 * Fetches a new token - for session scrolling etc.
+	 */
+	@PreAuthorize("isAuthenticated()")
+	public SpringUser<ID> fetchNewToken(Optional<Long> expirationMillis, HttpServletResponse response) {
+		
+		SpringUser<ID> user = LemonUtils.getSpringUser();
+		
+		jwtService.addJwtAuthHeader(response,
+				user.getUsername(),
+				expirationMillis.orElse(properties.getJwt().getExpirationMilli()));
+		
+		return user;
 	}
 }

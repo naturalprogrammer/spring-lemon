@@ -16,7 +16,6 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
@@ -189,10 +188,10 @@ public class LemonAutoConfiguration {
 	@Bean
 	@ConditionalOnMissingBean(AuthenticationSuccessHandler.class)
 	public AuthenticationSuccessHandler authenticationSuccessHandler(
-			ObjectMapper objectMapper, @Lazy LemonService<?, ?> lemonService) {
+			ObjectMapper objectMapper) {
 		
         log.info("Configuring AuthenticationSuccessHandler");       
-		return new AuthenticationSuccessHandler(objectMapper, lemonService);
+		return new AuthenticationSuccessHandler(objectMapper);
 	}
 	
 	@Bean

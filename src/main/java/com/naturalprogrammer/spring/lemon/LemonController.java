@@ -3,6 +3,7 @@ package com.naturalprogrammer.spring.lemon;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -84,7 +85,7 @@ public abstract class LemonController
 		
 		Map<String, Object> context =
 			LemonUtils.mapOf("context", lemonService.getContext(),
-							"user", lemonService.userForClient());
+							"user", LemonUtils.getSpringUser());
 		
 		log.debug("Returning context: " + context);
 
@@ -106,7 +107,7 @@ public abstract class LemonController
 		lemonService.signup(user);
 		log.debug("Signed up: " + user);
 		
-		return lemonService.userForClient();
+		return LemonUtils.getSpringUser();
 	}
 	
 	
@@ -132,7 +133,7 @@ public abstract class LemonController
 		log.debug("Verifying user ...");		
 		lemonService.verifyUser(verificationCode);
 		
-		return lemonService.userForClient();
+		return LemonUtils.getSpringUser();
 	}
 	
 
@@ -203,7 +204,7 @@ public abstract class LemonController
 		lemonService.updateUser(user, updatedUser);
 		
 		// return the currently logged in user data (in case updated)
-		return lemonService.userForClient();		
+		return LemonUtils.getSpringUser();		
 	}
 	
 	
@@ -258,10 +259,23 @@ public abstract class LemonController
 		lemonService.removeApiKey(user);
 	}
 	
+	/**
+	 * Login with nonce - used after a user social logs in
+	 */
 	@PostMapping("/login-with-nonce")
 	public SpringUser<ID> loginWithNonce(@RequestBody NonceForm<ID> nonce, HttpServletResponse response) {
 		
 		log.debug("Logging in user in exchange of nonce ... ");
 		return lemonService.loginWithNonce(nonce, response);
+	}
+	
+	/**
+	 * Fetch a new token - for session scrolling etc.
+	 */
+	@PostMapping("/fetch-new-token")
+	public SpringUser<ID> fetchNewToken(@RequestParam Optional<Long> expirationMillis, HttpServletResponse response) {
+		
+		log.debug("Logging in user in exchange of nonce ... ");
+		return lemonService.fetchNewToken(expirationMillis, response);
 	}	
 }

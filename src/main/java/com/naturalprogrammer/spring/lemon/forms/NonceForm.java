@@ -11,6 +11,8 @@ public class NonceForm<ID> {
 	@NotBlank
 	private String nonce;
 	
+	private Long expirationMilli;
+	
 	public ID getUserId() {
 		return userId;
 	}
@@ -22,5 +24,11 @@ public class NonceForm<ID> {
 	}
 	public void setNonce(String nonce) {
 		this.nonce = nonce;
+	}
+	public Long getExpirationMilli() {
+		return expirationMilli;
+	}
+	public void setExpirationMilli(Long expirationMilli) {
+		this.expirationMilli = expirationMilli;
 	}
 }

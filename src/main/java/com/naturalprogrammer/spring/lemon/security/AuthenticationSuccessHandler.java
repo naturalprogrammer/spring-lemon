@@ -13,7 +13,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.naturalprogrammer.spring.lemon.LemonService;
+import com.naturalprogrammer.spring.lemon.util.LemonUtils;
 
 /**
  * Authentication success handler for sending the response
@@ -28,13 +28,10 @@ public class AuthenticationSuccessHandler
 	private static final Log log = LogFactory.getLog(AuthenticationSuccessHandler.class);
 	
     private ObjectMapper objectMapper;    
-    private LemonService<?,?> lemonService;
     
-	public AuthenticationSuccessHandler(ObjectMapper objectMapper, LemonService<?, ?> lemonService) {
+	public AuthenticationSuccessHandler(ObjectMapper objectMapper) {
 		
 		this.objectMapper = objectMapper;
-		this.lemonService = lemonService;
-		
 		log.info("Created");
 	}
 
@@ -51,7 +48,7 @@ public class AuthenticationSuccessHandler
     	response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 
     	// get the current-user
-    	SpringUser<?> currentUser = lemonService.userForClient();
+    	SpringUser<?> currentUser = LemonUtils.getSpringUser();
 
     	// write current-user data to the response  
     	response.getOutputStream().print(
