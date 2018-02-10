@@ -1,53 +1,37 @@
 package com.naturalprogrammer.spring.lemon.security;
 
 import java.io.IOException;
-import java.io.Serializable;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.filter.GenericFilterBean;
 
-import com.naturalprogrammer.spring.lemon.LemonService;
-import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
-import com.naturalprogrammer.spring.lemon.domain.AbstractUserRepository;
-import com.naturalprogrammer.spring.lemon.util.LemonUtils;
-
-public class LemonTokenAuthenticationFilter
-	<U extends AbstractUser<U,ID>, ID extends Serializable>
-	extends GenericFilterBean {
+public class LemonTokenAuthenticationFilter	extends GenericFilterBean {
 	
     private static final Log log = LogFactory.getLog(LemonTokenAuthenticationFilter.class);
 	
-	private PasswordEncoder passwordEncoder;
-	private AbstractUserRepository<U, ID> userRepository;
-	private LemonService<U,ID> lemonService;
+	private AuthenticationManager authenticationManager;
 	
-	private String tokenSplitter = ":";
-	
-	public LemonTokenAuthenticationFilter(PasswordEncoder passwordEncoder,
-			AbstractUserRepository<U, ID> userRepository,
-			LemonService<U,ID> lemonService) {
+	public LemonTokenAuthenticationFilter(AuthenticationManager authenticationManager) {
 		
-		this.passwordEncoder = passwordEncoder;
-		this.userRepository = userRepository;
-		this.lemonService = lemonService;
+		this.authenticationManager = authenticationManager;
 		log.info("Created");
 	}
 
 	public static boolean tokenPresent(HttpServletRequest request) {
 		
-		String header = request.getHeader("Authorization");		
-		return header != null && header.startsWith("Bearer ");
+		String header = request.getHeader(LemonSecurityConfig.TOKEN_REQUEST_HEADER);		
+		return header != null && header.startsWith(LemonSecurityConfig.TOKEN_PREFIX);
 	}	
 
 	@Override
@@ -57,45 +41,36 @@ public class LemonTokenAuthenticationFilter
 		log.debug("Inside LemonTokenAuthenticationFilter ...");
 		
 		HttpServletRequest req = (HttpServletRequest) request;
+		HttpServletResponse res = (HttpServletResponse) response;
 		
-		if (tokenPresent(req)) {
+    	if (tokenPresent(req)) {
 			
 			log.debug("Found a token");
 			
-		    String tokenStr = req.getHeader("Authorization").substring(7);
-		    String[] tokenParts = tokenStr.split(tokenSplitter);
+		    String token = req.getHeader(LemonSecurityConfig.TOKEN_REQUEST_HEADER).substring(7);
+		    JwtAuthenticationToken authRequest = new JwtAuthenticationToken(token);
 		    
-		    String id = tokenParts[0];
-		    String token = tokenParts[1];
+		    try {
+		    	
+		    	Authentication auth = authenticationManager.authenticate(authRequest);
+		    	SecurityContextHolder.getContext().setAuthentication(auth);
+		    	
+				log.debug("Token authentication successful");
+				    		    	
+		    } catch (Exception e) {
+		    	
+				log.debug("Token authentication failed - " + e.getMessage());
+				
+		    	res.sendError(HttpServletResponse.SC_UNAUTHORIZED,
+						"Authentication Failed: " + e.getMessage());
+		    	
+		    	return;
+		    }
 		    
-			log.debug("Trying to get user " + id);
-
-			ID userId = lemonService.parseId(id);
-			U user = userRepository.findById(userId)
-				.orElseThrow(() -> new BadCredentialsException(LemonUtils.getMessage("com.naturalprogrammer.spring.userNotFound")));
-			
-			log.debug("Trying to match the token");
-
-			if (!passwordEncoder.matches(token, user.getApiKey()))
-		    	throw new BadCredentialsException(LemonUtils.getMessage("com.naturalprogrammer.spring.wrong.authenticationToken"));
-		    
-		    SecurityContextHolder.getContext().setAuthentication(
-			    	new UsernamePasswordAuthenticationToken(new LemonPrincipal<>(user.toSpringUser()), user.getPassword(), user.getAuthorities()));
-			    
-			log.debug("Token authentication successful");
-			    
 		} else
 		
 			log.debug("Token authentication skipped");
 		
 		chain.doFilter(request, response);
-	}
-
-	public String getTokenSplitter() {
-		return tokenSplitter;
-	}
-
-	public void setTokenSplitter(String tokenSplitter) {
-		this.tokenSplitter = tokenSplitter;
 	}
 }

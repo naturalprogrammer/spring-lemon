@@ -50,7 +50,6 @@ import com.naturalprogrammer.spring.lemon.security.LemonOAuth2UserService;
 import com.naturalprogrammer.spring.lemon.security.LemonOidcUserService;
 import com.naturalprogrammer.spring.lemon.security.LemonPermissionEvaluator;
 import com.naturalprogrammer.spring.lemon.security.LemonSecurityConfig;
-import com.naturalprogrammer.spring.lemon.security.LemonTokenAuthenticationFilter;
 import com.naturalprogrammer.spring.lemon.security.LemonUserDetailsService;
 import com.naturalprogrammer.spring.lemon.security.OAuth2AuthenticationSuccessHandler;
 import com.naturalprogrammer.spring.lemon.util.LemonUtils;
@@ -271,18 +270,18 @@ public class LemonAutoConfiguration {
 		return new LemonCorsFilter(properties);		
 	}
 	
-	@Bean
-	@ConditionalOnMissingBean(LemonTokenAuthenticationFilter.class)	
-	public <U extends AbstractUser<U,ID>, ID extends Serializable>
-		LemonTokenAuthenticationFilter<U,ID> lemonTokenAuthenticationFilter(
-			PasswordEncoder passwordEncoder,
-			AbstractUserRepository<U, ID> userRepository,
-			LemonService<U,ID> lemonService) {
-		
-        log.info("Configuring LemonTokenAuthenticationFilter");       
-		return new LemonTokenAuthenticationFilter<U, ID>
-			(passwordEncoder, userRepository, lemonService);
-	}
+//	@Bean
+//	@ConditionalOnMissingBean(LemonTokenAuthenticationFilter.class)	
+//	public <U extends AbstractUser<U,ID>, ID extends Serializable>
+//		LemonTokenAuthenticationFilter<U,ID> lemonTokenAuthenticationFilter(
+//			PasswordEncoder passwordEncoder,
+//			AbstractUserRepository<U, ID> userRepository,
+//			LemonService<U,ID> lemonService) {
+//		
+//        log.info("Configuring LemonTokenAuthenticationFilter");       
+//		return new LemonTokenAuthenticationFilter<U, ID>
+//			(passwordEncoder, userRepository, lemonService);
+//	}
 	
 	@Bean
 	@ConditionalOnMissingBean(LemonOidcUserService.class)	

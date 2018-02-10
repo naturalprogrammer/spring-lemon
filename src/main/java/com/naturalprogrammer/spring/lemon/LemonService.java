@@ -787,7 +787,7 @@ public abstract class LemonService
 			user.setNonce(null);
 			userRepository.save(user);
 			
-			jwtService.addJwtAuthHeader(response, user.getId().toString(), properties.getJwt().getExpirationMilli());
+			jwtService.addJwtAuthHeader(response, user.toSpringUser().getUsername(), properties.getJwt().getExpirationMilli());
 			return user.toSpringUser();
 		}
 		
