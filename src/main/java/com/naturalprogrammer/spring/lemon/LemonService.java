@@ -721,45 +721,9 @@ public abstract class LemonService
 	}
 
 
-	@UserEditPermission
-	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
-	public Map<String, String> createApiKey(U user) {
-		
-		log.debug("Creating API Key for user: " + user);
-
-		// checks
-		LemonUtils.check("id", user != null,
-			"com.naturalprogrammer.spring.userNotFound").go();
-		
-		// set API Key
-		String key = LemonUtils.uid();
-		user.setApiKey(passwordEncoder.encode(key));
-		userRepository.save(user);
-
-		log.debug("Created token for user: " + user);	
-		return LemonUtils.mapOf("apiKey", key);
-	}
-
-
-	@UserEditPermission
-	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
-	public void removeApiKey(U user) {
-		
-		log.debug("Removing API key for user: " + user);
-
-		// checks
-		LemonUtils.check("id", user != null,
-			"com.naturalprogrammer.spring.userNotFound").go();
-		
-		// remove the token
-		user.setApiKey(null);
-		userRepository.save(user);
-
-		log.debug("Removed API key for user: " + user);	
-	}
-
 	abstract public ID parseId(String id);
 
+	
 	public String getOAuth2Email(String registrationId, Map<String, Object> attributes) {
 
 		return (String) attributes.get(StandardClaimNames.EMAIL);

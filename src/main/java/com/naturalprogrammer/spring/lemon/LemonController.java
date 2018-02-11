@@ -12,7 +12,6 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -221,7 +220,8 @@ public abstract class LemonController
 		log.debug("Requesting email change ... ");				
 		lemonService.requestEmailChange(user, updatedUser);
 	}
-	
+
+
 	/**
 	 * Changes the email.
 	 */
@@ -231,21 +231,6 @@ public abstract class LemonController
 		
 		log.debug("Changing email of user ...");		
 		lemonService.changeEmail(changeEmailCode);
-	}
-	
-	@PostMapping("/users/{id}/api-key")
-	public Map<String, String> createApiKey(@PathVariable("id") U user) {
-		
-		log.debug("Creating API Key ... ");				
-		return lemonService.createApiKey(user);
-	}
-	
-	@DeleteMapping("/users/{id}/api-key")
-	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void removeApiKey(@PathVariable("id") U user) {
-		
-		log.debug("Removing API Key ... ");				
-		lemonService.removeApiKey(user);
 	}
 	
 	/**

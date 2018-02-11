@@ -110,9 +110,6 @@ extends VersionedEntity<U, ID> {
 	@Column(length = UUID_LENGTH, unique=true)
 	protected String changeEmailCode;
 	
-	// The authentication token
-	protected String apiKey;
-	
 	// One time token
 	private String nonce;
 	
@@ -181,14 +178,6 @@ extends VersionedEntity<U, ID> {
 
 	public void setChangeEmailCode(String changeEmailCode) {
 		this.changeEmailCode = changeEmailCode;
-	}
-
-	public String getApiKey() {
-		return apiKey;
-	}
-
-	public void setApiKey(String apiKey) {
-		this.apiKey = apiKey;
 	}
 
 	public String getCaptchaResponse() {
