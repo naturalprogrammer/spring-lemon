@@ -181,6 +181,14 @@ public class LemonAutoConfiguration {
 	}
 	
 	@Bean
+	@ConditionalOnMissingBean(JwtService.class)
+	public JwtService jwtService(LemonProperties properties) {
+		
+        log.info("Configuring AuthenticationSuccessHandler");       
+		return new JwtService(properties);
+	}
+
+	@Bean
 	@ConditionalOnMissingBean(AuthenticationSuccessHandler.class)
 	public AuthenticationSuccessHandler authenticationSuccessHandler(
 			ObjectMapper objectMapper, JwtService jwtService, LemonProperties properties) {

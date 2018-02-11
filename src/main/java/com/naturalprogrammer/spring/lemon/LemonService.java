@@ -136,6 +136,7 @@ public abstract class LemonService
 
     	// create the user
     	U user = newUser();
+    	user.setEmail(initialAdmin.getUsername());
 		user.setPassword(passwordEncoder.encode(
 			properties.getAdmin().getPassword()));
 		user.getRoles().add(Role.ADMIN);

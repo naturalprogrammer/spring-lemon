@@ -11,7 +11,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
-import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.authentication.switchuser.SwitchUserFilter;
@@ -42,33 +41,26 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
     public static final String TOKEN_REQUEST_HEADER = "Authorization";
     public static final String TOKEN_RESPONSE_HEADER_NAME = "Lemon-Authorization";
 
-    private AuthenticationManager authenticationManager;
-    private LemonProperties properties;
 	private UserDetailsService userDetailsService;
 	private AuthenticationSuccessHandler authenticationSuccessHandler;
 	private AuthenticationFailureHandler authenticationFailureHandler;
 	private LogoutSuccessHandler logoutSuccessHandler;
-	private RememberMeServices rememberMeServices;
 	private LemonOidcUserService oidcUserService;
 	private LemonOAuth2UserService<?, ?> oauth2UserService;
 	private OAuth2AuthenticationSuccessHandler<?,?> oauth2AuthenticationSuccessHandler;
 	
 	@Autowired
-	public void createLemonSecurityConfig(AuthenticationManager authenticationManager,
-			LemonProperties properties, UserDetailsService userDetailsService,
+	public void createLemonSecurityConfig(LemonProperties properties, UserDetailsService userDetailsService,
 			AuthenticationSuccessHandler authenticationSuccessHandler, AuthenticationFailureHandler authenticationFailureHandler,
-			LogoutSuccessHandler logoutSuccessHandler, RememberMeServices rememberMeServices,
+			LogoutSuccessHandler logoutSuccessHandler,
 			LemonOidcUserService oidcUserService,
 			LemonOAuth2UserService<?, ?> oauth2UserService,
 			OAuth2AuthenticationSuccessHandler<?,?> oauth2AuthenticationSuccessHandler) {
 
-		this.authenticationManager = authenticationManager;
-		this.properties = properties;
 		this.userDetailsService = userDetailsService;
 		this.authenticationSuccessHandler = authenticationSuccessHandler;
 		this.authenticationFailureHandler = authenticationFailureHandler;
 		this.logoutSuccessHandler = logoutSuccessHandler;
-		this.rememberMeServices = rememberMeServices;
 		this.oidcUserService = oidcUserService;
 		this.oauth2UserService = oauth2UserService;
 		this.oauth2AuthenticationSuccessHandler = oauth2AuthenticationSuccessHandler;
@@ -200,9 +192,14 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 
 
 	private void customTokenAuthentication(HttpSecurity http) {
+	
+		AuthenticationManager authenticationManager = http
+				.getSharedObject(AuthenticationManager.class);
 		
+		assert authenticationManager != null;
 		
-		http.addFilterBefore(new LemonTokenAuthenticationFilter(authenticationManager), UsernamePasswordAuthenticationFilter.class);
+		http.addFilterBefore(new LemonTokenAuthenticationFilter(authenticationManager),
+				UsernamePasswordAuthenticationFilter.class);
 	}
 
 	private void oauth2Client(HttpSecurity http) throws Exception {
