@@ -1,8 +1,5 @@
 package com.naturalprogrammer.spring.lemon.security;
 
-import java.util.Arrays;
-import java.util.HashSet;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,7 +87,6 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 		login(http); // authentication
 		logout(http); // logout related configuration
 		exceptionHandling(http); // exception handling
-		rememberMe(http); // remember-me
 		csrf(http); // csrf configuration
 		switchUser(http); // switch-user configuration
 		customTokenAuthentication(http); // API key authentication
@@ -108,7 +104,7 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 	 */
 	protected void sessionCreationPolicy(HttpSecurity http) throws Exception {
 		
-		// Don't create a session; but if there's one, use it
+		// No session
 		http.sessionManagement()
 			.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 	}
@@ -155,9 +151,7 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 			 * To prevent redirection to home page, we need to
 			 * have this custom logoutSuccessHandler
 			 ***********************************************/
-			.logoutSuccessHandler(logoutSuccessHandler)
-			.invalidateHttpSession(true)
-			.deleteCookies("JSESSIONID");
+			.logoutSuccessHandler(logoutSuccessHandler);
 	}
 
 	
@@ -181,24 +175,6 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 
 
 	/**
-	 * Configures remember-me
-	 * 
-	 * @param http
-	 * @throws Exception
-	 */
-	protected void rememberMe(HttpSecurity http) throws Exception {
-		
-		http
-			.rememberMe()
-				.key(properties.getRememberMeKey())
-				.rememberMeServices(rememberMeServices);
-	}
-
-
-	private final HashSet<String> csrfAllowedMethods = new HashSet<String>(
-			Arrays.asList("GET", "HEAD", "TRACE", "OPTIONS"));
-	
-	/**
 	 * Configures CSRF
 	 *  
 	 * @param http
@@ -208,17 +184,6 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 		
 		http
 			.csrf().disable();
-//				.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-//				.requireCsrfProtectionMatcher(request -> {
-//					
-//					if (csrfAllowedMethods.contains(request.getMethod()))
-//						return false;
-//						
-//					if (LemonTokenAuthenticationFilter.tokenPresent(request))
-//						return false;
-//					
-//					return true;
-//				});
 	}
 
 	
@@ -246,7 +211,6 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 			.authorizationEndpoint()
 				.authorizationRequestRepository(new HttpCookieOAuth2AuthorizationRequestRepository()).and()
 			.successHandler(oauth2AuthenticationSuccessHandler)
-			//.defaultSuccessUrl(properties.getOauth2AuthenticationSuccessUrl(), true)
 			.userInfoEndpoint()
 				.oidcUserService(oidcUserService)
 				.userService(oauth2UserService);
@@ -271,6 +235,7 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 	 * @return
 	 */
 	protected SwitchUserFilter switchUserFilter() {
+		
 		SwitchUserFilter filter = new SwitchUserFilter();
 		filter.setUserDetailsService(userDetailsService);
 		filter.setSuccessHandler(authenticationSuccessHandler);

@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -66,16 +65,6 @@ public abstract class LemonController
 	}
 	
 	
-	/**
-	 * A simple function for pinging this server and create a session.
-	 */
-	@GetMapping("/ping-session")
-	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void ping(HttpSession session) {
-		log.debug("Pinging session. Session id: " + session.getId());
-	}
-
-
 	/**
 	 * Returns context properties needed at the client side, and
 	 * the current-user data.
