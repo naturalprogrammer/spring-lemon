@@ -1,7 +1,6 @@
 package com.naturalprogrammer.spring.lemon.domain;
 
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -16,10 +15,8 @@ import javax.persistence.Transient;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.security.core.GrantedAuthority;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.naturalprogrammer.spring.lemon.security.LemonGrantedAuthority;
 import com.naturalprogrammer.spring.lemon.security.SpringUser;
 import com.naturalprogrammer.spring.lemon.util.LemonUtils;
 import com.naturalprogrammer.spring.lemon.validation.Captcha;
@@ -123,29 +120,6 @@ extends VersionedEntity<U, ID> {
 	@Captcha(groups = {SignUpValidation.class})
 	private String captchaResponse;
 	
-	// redundant transient fields
-	
-//	@Transient
-//	protected boolean unverified = false;
-//
-//	@Transient
-//	protected boolean blocked = false;
-//
-//	@Transient
-//	protected boolean admin = false;
-//
-//	@Transient
-//	protected boolean goodUser = false;
-//
-//	@Transient
-//	protected boolean goodAdmin = false;
-//
-//	@Transient
-//	protected boolean editable = false;
-//	
-//	@Transient
-//	protected boolean rolesEditable = false;	
-	
 	// getters and setters
 	
 	public String getVerificationCode() {
@@ -217,58 +191,11 @@ extends VersionedEntity<U, ID> {
 	}
 	
 	
-//	/**
-//	 * Sets the transient fields of this user
-//	 * 
-//	 * @return	this user
-//	 */
-//	public U decorate() {
-//		// delegates
-//		return decorate(LemonUtils.getUser());
-//	}
-	
-	
-//	/**
-//	 * Sets the transient fields of this user,
-//	 * given the current-user
-//	 * 
-//	 * @param currentUser	the current-user
-//	 * @return	this user
-//	 */
-//	public U decorate(LemonPrincipal<?> currentUser) {
-//				
-//		unverified = hasRole(Role.UNVERIFIED);
-//		blocked = hasRole(Role.BLOCKED);
-//		admin = hasRole(Role.ADMIN);
-//		goodUser = !(unverified || blocked);
-//		goodAdmin = goodUser && admin;
-//		
-//		editable = false;
-//		rolesEditable = false;
-//		
-//		if (currentUser != null) {
-//			
-//			boolean self = currentUser.getUserId().equals(getId());
-//			
-//			editable = self || currentUser.isGoodAdmin(); // self or admin
-//			rolesEditable = currentUser.isGoodAdmin() && !self; // another admin
-//		}
-//		
-//		computeAuthorities();
-//		
-//		log.debug("Decorated user: " + this);
-//
-//		return (U) this;
-//	}
-	
-	
 	/**
 	 * Hides the confidential fields before sending to client
 	 */
 	public void hideConfidentialFields() {
 		
-		//setCreatedDate(null);
-		//setLastModifiedDate(null);
 		password = null;
 		verificationCode = null;
 		forgotPasswordCode = null;
@@ -278,7 +205,6 @@ extends VersionedEntity<U, ID> {
 		
 		log.debug("Hid confidential fields for user: " + this);
 	}
-
 	
 	public String getNonce() {
 		return nonce;
@@ -322,60 +248,19 @@ extends VersionedEntity<U, ID> {
 
 	
 	/**
-	 * Sets the Id of the user. setId is protected,
-	 * hence this had to be coded
-	 */
-	public void setIdForClient(ID id) {
-		setId(id);
-	}
-	
-	
-	/**
 	 * A convenient toString method
 	 */
 	@Override
 	public String toString() {
 		return "AbstractUser [email=" + email + ", roles=" + roles + "]";
 	}
-	
-	@Transient
-	protected Collection<LemonGrantedAuthority> authorities;
-	
+
+
 	/**
-	 * Returns the authorities, for Spring Security
+	 * Makes a Spring User
+	 * 
+	 * @return
 	 */
-	public Collection<? extends GrantedAuthority> getAuthorities() {		
-		return authorities;
-	}
-	
-	
-//	/**
-//	 * Computes the authorities for Spring Security, and stores
-//	 * those in the authorities transient field
-//	 * @return 
-//	 */
-//	protected void computeAuthorities() {
-//		
-//		authorities = roles.stream()
-//			.map(role -> new LemonGrantedAuthority("ROLE_" + role))
-//			.collect(Collectors.toCollection(() ->
-//				new ArrayList<LemonGrantedAuthority>(roles.size() + 2))); 
-//		
-//		if (goodUser) {
-//			
-//			authorities.add(new LemonGrantedAuthority("ROLE_"
-//					+ LemonSecurityConfig.GOOD_USER));
-//			
-//			if (goodAdmin)
-//				authorities.add(new LemonGrantedAuthority("ROLE_"
-//						+ LemonSecurityConfig.GOOD_ADMIN));
-//		}
-//
-//		log.debug("Authorities of " + this + ": " + authorities);
-//		
-//		return authorities;
-//	}
-	
 	public SpringUser<ID> toSpringUser() {
 		
 		SpringUser<ID> springUser = new SpringUser<>();
@@ -405,5 +290,4 @@ extends VersionedEntity<U, ID> {
 		
 		return null;
 	}
-
 }

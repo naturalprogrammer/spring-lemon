@@ -47,7 +47,9 @@ public class JwtAuthenticationProvider
         if (jwtService.parseIssuedAt(jwtToken).before(user.getCredentialsUpdatedAt()))
         	throw new JwtException(LemonUtils.getMessage("credentialsChanged"));
 
-        return new JwtAuthenticationToken(new LemonPrincipal<ID>(user.toSpringUser()), jwtToken, user.getAuthorities());
+        LemonPrincipal<ID> principal = new LemonPrincipal<ID>(user.toSpringUser());
+        		
+        return new JwtAuthenticationToken(principal, jwtToken, principal.getAuthorities());
 	}
 
 	@Override

@@ -25,13 +25,11 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
-import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
-import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -73,10 +71,6 @@ import com.naturalprogrammer.spring.lemon.validation.UniqueEmailValidator;
 	ErrorMvcAutoConfiguration.class,
 	SecurityAutoConfiguration.class})
 public class LemonAutoConfiguration {
-	
-	// remember-me related constants
-	public static final String REMEMBER_ME_COOKIE = "rememberMe";
-	public static final String REMEMBER_ME_PARAMETER = "rememberMe";
 	
 	/**
 	 * For handling JSON vulnerability,
@@ -122,7 +116,7 @@ public class LemonAutoConfiguration {
     public PasswordEncoder passwordEncoder() {
 	
 		log.info("Configuring BCryptPasswordEncoder");		
-        return new BCryptPasswordEncoder();
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 	
 	@Bean
@@ -232,26 +226,6 @@ public class LemonAutoConfiguration {
 		return new LemonPermissionEvaluator();
 	}
 
-	/**
-	 * Override this method if you want to 
-	 * setup a different RememberMeServices
-	 * 
-	 * @return
-	 */
-	@Bean
-	@ConditionalOnMissingBean(RememberMeServices.class)
-	public RememberMeServices rememberMeServices(LemonProperties properties, UserDetailsService userDetailsService) {
-    	
-        log.info("Configuring TokenBasedRememberMeServices");       
-
-        TokenBasedRememberMeServices rememberMeServices =
-        	new TokenBasedRememberMeServices
-        		(properties.getRememberMeKey(), userDetailsService);
-        rememberMeServices.setParameter(REMEMBER_ME_PARAMETER); // default is "remember-me" (in earlier spring security versions it was "_spring_security_remember_me")
-        rememberMeServices.setCookieName(REMEMBER_ME_COOKIE);
-        return rememberMeServices;       
-    }
-
 	@Bean
 	@ConditionalOnMissingBean(UserDetailsService.class)
 	public <U extends AbstractUser<U,ID>, ID extends Serializable>
@@ -303,15 +277,6 @@ public class LemonAutoConfiguration {
 		return new LemonOAuth2UserService<U,ID>(userDetailsService, lemonService, passwordEncoder);
 	}
 
-//	@Bean
-//	@ConditionalOnMissingBean(DefaultPrincipalExtractor.class)
-//	public <U extends AbstractUser<U,?>>
-//	DefaultPrincipalExtractor<U> defaultPrincipalExtractor() {
-//		
-//        log.info("Configuring DefaultPrincipalExtractor");       
-//		return new DefaultPrincipalExtractor<U>();
-//	}
-//	
 	@Bean
 	@ConditionalOnMissingBean(LemonSecurityConfig.class)	
 	public LemonSecurityConfig lemonSecurityConfig() {
@@ -320,16 +285,6 @@ public class LemonAutoConfiguration {
 		return new LemonSecurityConfig();
 	}
 	
-/*
- * 	@Bean
-	@ConditionalOnMissingBean
-	public OAuth2AuthorizedClientService authorizedClientService(
-			ClientRegistrationRepository clientRegistrationRepository) {
-		
-        log.info("Configuring OAuth2AuthorizedClientService");       
-		return new InMemoryOAuth2AuthorizedClientService(clientRegistrationRepository);
-	}
-*/
 	@Bean
 	public LemonUtils lemonUtil(ApplicationContext applicationContext,
 			MessageSource messageSource, ObjectMapper objectMapper) {

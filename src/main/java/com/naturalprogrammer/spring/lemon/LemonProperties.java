@@ -2,8 +2,6 @@ package com.naturalprogrammer.spring.lemon;
 
 import java.util.Map;
 
-import javax.validation.constraints.Size;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -33,12 +31,6 @@ public class LemonProperties {
 	 */
     private String applicationUrl = "http://localhost:9000";
 
-    /**
-     * Secret string used for encrypting remember-me tokens
-     */
-    @Size(min=6)
-    private String rememberMeKey;
-    
     /**
 	 * Recaptcha related properties
 	 */
@@ -103,14 +95,6 @@ public class LemonProperties {
 		this.shared = shared;
 	}
 
-	public String getRememberMeKey() {
-		return rememberMeKey;
-	}
-
-	public void setRememberMeKey(String rememberMeKey) {
-		this.rememberMeKey = rememberMeKey;
-	}
-    
 	public String getApplicationUrl() {
 		return applicationUrl;
 	}

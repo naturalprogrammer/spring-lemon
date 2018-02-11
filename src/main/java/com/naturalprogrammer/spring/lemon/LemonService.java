@@ -83,6 +83,9 @@ public abstract class LemonService
 	}
 
 	
+	abstract public ID parseId(String id);
+
+	
 	/**
      * This method is called after the application is ready.
      * Needs to be public - otherwise Spring screams.
@@ -301,7 +304,7 @@ public abstract class LemonService
 			.orElseThrow(MultiErrorException.supplier("email",
 				"com.naturalprogrammer.spring.userNotFound"));
 
-		// decorate the user, and hide confidential fields
+		// hide confidential fields
 		user.hideConfidentialFields();
 		
 		log.debug("Returning user: " + user);		
@@ -311,7 +314,7 @@ public abstract class LemonService
 
 	
 	/**
-	 * Returns a non-null, decorated user for the client.
+	 * Returns a non-null, processed user for the client.
 	 * 
 	 * @param user
 	 * @return
@@ -324,7 +327,7 @@ public abstract class LemonService
 		LemonUtils.check("id", user != null,
 			"com.naturalprogrammer.spring.userNotFound").go();
 		
-		// decorate the user, and hide confidential fields
+		// hide confidential fields
 		user.hideConfidentialFields();
 		
 		return user;
@@ -577,39 +580,6 @@ public abstract class LemonService
 	}
 
 	
-//	/**
-//	 * Gets the current-user to be sent to a client.
-//	 * 
-//	 * @return
-//	 */
-//	public SpringUser<ID> userForClient() {
-//		
-//		return LemonUtils.getSpringUser();
-//	}
-//
-//	
-//	/**
-//	 * Gets the current-user to be sent to a client.
-//	 * Override this if you have more fields.
-//	 * 
-//	 * @param currentUser
-//	 */
-//	protected U userForClient(U currentUser) {
-//		
-//		if (currentUser == null)
-//			return null;
-//		
-//		U user = newUser();
-//		user.setIdForClient(currentUser.getId());
-//		user.setRoles(currentUser.getRoles());
-//		user.decorate(currentUser);
-//		
-//		log.debug("Returning user for client: " + user);
-//		
-//		return user;
-//	}
-	
-
 	/**
 	 * Requests for email change.
 	 * 
@@ -721,9 +691,6 @@ public abstract class LemonService
 	}
 
 
-	abstract public ID parseId(String id);
-
-	
 	public String getOAuth2Email(String registrationId, Map<String, Object> attributes) {
 
 		return (String) attributes.get(StandardClaimNames.EMAIL);
