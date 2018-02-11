@@ -14,11 +14,11 @@ import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 
-public class LemonPrincipal<PK extends Serializable> implements OidcUser, UserDetails, CredentialsContainer {
+public class LemonPrincipal<ID extends Serializable> implements OidcUser, UserDetails, CredentialsContainer {
 
 	private static final long serialVersionUID = -7849730155307434535L;
 	
-	private SpringUser<PK> springUser;
+	private SpringUser<ID> springUser;
 	
 	private Map<String, Object> attributes;
 	private String name;
@@ -26,12 +26,12 @@ public class LemonPrincipal<PK extends Serializable> implements OidcUser, UserDe
 	private OidcUserInfo userInfo;
 	private OidcIdToken idToken;
 	
-	public LemonPrincipal(SpringUser<PK> springUser) {
+	public LemonPrincipal(SpringUser<ID> springUser) {
 
 		this.springUser = springUser;
 	}
 
-	public SpringUser<PK> getSpringUser() {
+	public SpringUser<ID> getSpringUser() {
 		return springUser;
 	}
 

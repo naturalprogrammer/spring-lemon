@@ -15,7 +15,7 @@ import com.naturalprogrammer.spring.lemon.LemonService;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
 import com.naturalprogrammer.spring.lemon.util.LemonUtils;
 
-public class LemonOAuth2UserService<U extends AbstractUser<U,PK>, PK extends Serializable> extends DefaultOAuth2UserService {
+public class LemonOAuth2UserService<U extends AbstractUser<U,ID>, ID extends Serializable> extends DefaultOAuth2UserService {
 
 	private static final Log log = LogFactory.getLog(LemonOAuth2UserService.class);
 
@@ -42,7 +42,7 @@ public class LemonOAuth2UserService<U extends AbstractUser<U,PK>, PK extends Ser
 		return buildPrincipal(oath2User, userRequest.getClientRegistration().getRegistrationId());
 	}
 
-	public LemonPrincipal<PK> buildPrincipal(OAuth2User oath2User, String registrationId) {
+	public LemonPrincipal<ID> buildPrincipal(OAuth2User oath2User, String registrationId) {
 		
 		Map<String, Object> attributes = oath2User.getAttributes();
 		String email = lemonService.getOAuth2Email(registrationId, attributes);
@@ -64,10 +64,10 @@ public class LemonOAuth2UserService<U extends AbstractUser<U,PK>, PK extends Ser
 			return newUser;
     	});
     	
-    	SpringUser<PK> springUser = user.toSpringUser();
+    	SpringUser<ID> springUser = user.toSpringUser();
     	springUser.setNonce(lemonService.addNonce(user));
     	
-		LemonPrincipal<PK> principal = new LemonPrincipal<>(springUser);
+		LemonPrincipal<ID> principal = new LemonPrincipal<>(springUser);
 		principal.setAttributes(attributes);
 		principal.setName(oath2User.getName());
 		

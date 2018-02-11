@@ -4,9 +4,9 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-public class SpringUser<PK extends Serializable> {
+public class SpringUser<ID extends Serializable> {
 
-	private PK id;
+	private ID id;
 	private String username;
 	private String password;
 	private Set<String> roles = new HashSet<String>();
@@ -19,10 +19,10 @@ public class SpringUser<PK extends Serializable> {
 	private boolean goodUser = false;
 	private boolean goodAdmin = false;
 	
-	public PK getId() {
+	public ID getId() {
 		return id;
 	}
-	public void setId(PK id) {
+	public void setId(ID id) {
 		this.id = id;
 	}
 	public String getUsername() {
