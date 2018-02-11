@@ -18,7 +18,7 @@ public class VersionExceptionHandler extends AbstractExceptionHandler<VersionExc
 	}
 	
 	@Override
-	protected HttpStatus getStatus(VersionException ex) {
+	public HttpStatus getStatus(VersionException ex) {
 		return HttpStatus.CONFLICT;
 	}
 }

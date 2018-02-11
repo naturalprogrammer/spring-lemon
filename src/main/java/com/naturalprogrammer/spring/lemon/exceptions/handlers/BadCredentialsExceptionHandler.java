@@ -17,7 +17,7 @@ public class BadCredentialsExceptionHandler extends AbstractExceptionHandler<Bad
 	}
 	
 	@Override
-	protected HttpStatus getStatus(BadCredentialsException ex) {
+	public HttpStatus getStatus(BadCredentialsException ex) {
 		return HttpStatus.UNAUTHORIZED;
 	}
 }

@@ -1,7 +1,5 @@
 package com.naturalprogrammer.spring.lemon.exceptions;
 
-import static com.naturalprogrammer.spring.lemon.exceptions.handlers.LemonExceptionHandler.HTTP_STATUS_KEY;
-
 import java.util.List;
 import java.util.Map;
 
@@ -36,12 +34,12 @@ public class LemonErrorController extends BasicErrorController {
 		Map<String, Object> body = getErrorAttributes(request,
 				isIncludeStackTrace(request, MediaType.ALL));
 		
-		HttpStatus status =	(HttpStatus) body.get(HTTP_STATUS_KEY);
+		HttpStatus status =	(HttpStatus) body.get(LemonErrorAttributes.HTTP_STATUS_KEY);
 		
 		if (status == null)
 			status = getStatus(request);
 		else
-			body.remove(HTTP_STATUS_KEY);
+			body.remove(LemonErrorAttributes.HTTP_STATUS_KEY);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON_UTF8);

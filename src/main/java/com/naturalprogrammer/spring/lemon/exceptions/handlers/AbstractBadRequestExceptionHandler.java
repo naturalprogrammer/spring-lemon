@@ -12,7 +12,7 @@ public abstract class AbstractBadRequestExceptionHandler<T extends Throwable> ex
 	}
 
 	@Override
-	protected HttpStatus getStatus(T ex) {
+	public HttpStatus getStatus(T ex) {
 		return HttpStatus.BAD_REQUEST;
 	}
 }

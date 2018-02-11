@@ -23,17 +23,17 @@ public class ConstraintViolationExceptionHandler extends AbstractExceptionHandle
 	}
 	
 	@Override
-	protected HttpStatus getStatus(ConstraintViolationException ex) {
+	public HttpStatus getStatus(ConstraintViolationException ex) {
 		return HttpStatus.UNPROCESSABLE_ENTITY;
 	}
 	
 	@Override
-	protected Collection<FieldError> getErrors(ConstraintViolationException ex) {
+	public Collection<FieldError> getErrors(ConstraintViolationException ex) {
 		return FieldError.getErrors(ex.getConstraintViolations());
 	}
 	
 	@Override
-	protected String getMessage(ConstraintViolationException ex) {
+	public String getMessage(ConstraintViolationException ex) {
 		return LemonUtils.getMessage("com.naturalprogrammer.spring.validationError");
 	}
 }

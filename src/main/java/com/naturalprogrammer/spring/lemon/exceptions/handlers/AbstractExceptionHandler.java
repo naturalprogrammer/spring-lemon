@@ -25,33 +25,17 @@ public abstract class AbstractExceptionHandler<T extends Throwable> implements L
 	}
 	
 	@Override
-	public void putErrorDetails(Map<String, Object> errorAttributes, T ex) {
-		
-		String message = getMessage(ex);
-		if (message != null)
-			errorAttributes.put("message", message);
-		
-		Collection<FieldError> errors = getErrors(ex);
-		if (errors != null)
-			errorAttributes.put(ERRORS_KEY, errors);
-		
-		HttpStatus status = getStatus(ex);
-		if (status != null) {
-			errorAttributes.put(HTTP_STATUS_KEY, status);
-			errorAttributes.put("status", status.value());
-			errorAttributes.put("error", status.getReasonPhrase());
-		}
-	}
-
-	protected String getMessage(T ex) {
+	public String getMessage(T ex) {
 		return null;
 	}
 	
-	protected HttpStatus getStatus(T ex) {
+	@Override
+	public HttpStatus getStatus(T ex) {
 		return null;
 	}
 	
-	protected Collection<FieldError> getErrors(T ex) {
+	@Override
+	public Collection<FieldError> getErrors(T ex) {
 		return null;
 	}
 }

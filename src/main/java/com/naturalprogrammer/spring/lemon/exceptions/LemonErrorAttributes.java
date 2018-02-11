@@ -1,5 +1,6 @@
 package com.naturalprogrammer.spring.lemon.exceptions;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -9,30 +10,26 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.boot.web.servlet.error.DefaultErrorAttributes;
 import org.springframework.core.annotation.AnnotationAwareOrderComparator;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.context.request.WebRequest;
 
 import com.naturalprogrammer.spring.lemon.exceptions.handlers.LemonExceptionHandler;
+import com.naturalprogrammer.spring.lemon.validation.FieldError;
 
-public class LemonErrorAttributes extends DefaultErrorAttributes {
+public class LemonErrorAttributes<T extends Throwable> extends DefaultErrorAttributes {
 	
     private static final Log log = LogFactory.getLog(LemonErrorAttributes.class);
+
+	private static final String ERRORS_KEY = "errors";
+	static final String HTTP_STATUS_KEY = "httpStatus";
 	
-	private final Map<String, LemonExceptionHandler<?>> handlers;
+	private ExceptionResponseComposer<T> exceptionResponseComposer;
 	
-	public LemonErrorAttributes(List<LemonExceptionHandler<?>> handlers) {
-		
-		this.handlers = handlers.stream().collect(
-	            Collectors.toMap(LemonExceptionHandler::getExceptionName,
-	            		Function.identity(), (handler1, handler2) -> {
-	            			
-	            			return AnnotationAwareOrderComparator
-	            					.INSTANCE.compare(handler1, handler2) < 0 ?
-	            					handler1 : handler2;
-	            		}));
-		
+    public LemonErrorAttributes(ExceptionResponseComposer<T> exceptionResponseComposer) {
+
+		this.exceptionResponseComposer = exceptionResponseComposer;
 		log.info("Created");
 	}
-
 	
 	@Override
 	public Map<String, Object> getErrorAttributes(WebRequest request,
@@ -42,37 +39,30 @@ public class LemonErrorAttributes extends DefaultErrorAttributes {
 				super.getErrorAttributes(request, includeStackTrace);
 		
 		addLemonErrorDetails(errorAttributes, request);
+		
 		return errorAttributes;
 	}
 
 	@SuppressWarnings("unchecked")
-	protected <T extends Throwable> void addLemonErrorDetails(
+	protected void addLemonErrorDetails(
 			Map<String, Object> errorAttributes, WebRequest request) {
 		
 		Throwable ex = getError(request);
+		ExceptionResponseData exceptionResponseData = exceptionResponseComposer.compose((T)ex);
 		
-		LemonExceptionHandler<T> handler = null;
+		String message = exceptionResponseData.getMessage();
+		if (message != null)
+			errorAttributes.put("message", message);
 		
-        // find a handler for the exception
-        // if no handler is found,
-        // loop into for its cause (ex.getCause())
-
-		while (ex != null) {
-			
-			handler = (LemonExceptionHandler<T>) handlers.get(ex.getClass().getSimpleName());
-			
-			if (handler != null) // found a handler
-				break;
-			
-			ex = ex.getCause();			
+		Collection<FieldError> errors = exceptionResponseData.getErrors();
+		if (errors != null)
+			errorAttributes.put(ERRORS_KEY, errors);
+		
+		HttpStatus status = exceptionResponseData.getStatus();
+		if (status != null) {
+			errorAttributes.put(HTTP_STATUS_KEY, status);
+			errorAttributes.put("status", status.value());
+			errorAttributes.put("error", status.getReasonPhrase());
 		}
-        
-        if (handler != null) { // a handler is found
-        	
-        	log.warn("Handling exception ", ex);
-        	
-	        // Use the handler to add errors and update status
-	        handler.putErrorDetails(errorAttributes, (T) ex);
-        }
 	}
 }

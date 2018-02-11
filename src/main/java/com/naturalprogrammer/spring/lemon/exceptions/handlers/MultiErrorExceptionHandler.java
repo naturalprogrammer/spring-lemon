@@ -21,12 +21,12 @@ public class MultiErrorExceptionHandler extends AbstractExceptionHandler<MultiEr
 	}
 	
 	@Override
-	protected HttpStatus getStatus(MultiErrorException ex) {
+	public HttpStatus getStatus(MultiErrorException ex) {
 		return ex.getStatus();
 	}
 	
 	@Override
-	protected Collection<FieldError> getErrors(MultiErrorException ex) {
+	public Collection<FieldError> getErrors(MultiErrorException ex) {
 		return ex.getErrors();
 	}
 }
