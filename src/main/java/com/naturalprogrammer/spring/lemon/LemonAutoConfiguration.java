@@ -43,6 +43,7 @@ import com.naturalprogrammer.spring.lemon.mail.MailSender;
 import com.naturalprogrammer.spring.lemon.mail.MockMailSender;
 import com.naturalprogrammer.spring.lemon.mail.SmtpMailSender;
 import com.naturalprogrammer.spring.lemon.security.AuthenticationSuccessHandler;
+import com.naturalprogrammer.spring.lemon.security.JwtService;
 import com.naturalprogrammer.spring.lemon.security.LemonCorsFilter;
 import com.naturalprogrammer.spring.lemon.security.LemonLogoutSuccessHandler;
 import com.naturalprogrammer.spring.lemon.security.LemonOAuth2UserService;
@@ -188,10 +189,10 @@ public class LemonAutoConfiguration {
 	@Bean
 	@ConditionalOnMissingBean(AuthenticationSuccessHandler.class)
 	public AuthenticationSuccessHandler authenticationSuccessHandler(
-			ObjectMapper objectMapper) {
+			ObjectMapper objectMapper, JwtService jwtService, LemonProperties properties) {
 		
         log.info("Configuring AuthenticationSuccessHandler");       
-		return new AuthenticationSuccessHandler(objectMapper);
+		return new AuthenticationSuccessHandler(objectMapper, jwtService, properties);
 	}
 	
 	@Bean
