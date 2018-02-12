@@ -41,9 +41,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUserRepository;
 import com.naturalprogrammer.spring.lemon.domain.LemonAuditorAware;
+import com.naturalprogrammer.spring.lemon.exceptions.DefaultExceptionHandler;
+import com.naturalprogrammer.spring.lemon.exceptions.ErrorResponseComposer;
 import com.naturalprogrammer.spring.lemon.exceptions.LemonErrorAttributes;
 import com.naturalprogrammer.spring.lemon.exceptions.LemonErrorController;
-import com.naturalprogrammer.spring.lemon.exceptions.handlers.LemonExceptionHandler;
+import com.naturalprogrammer.spring.lemon.exceptions.handlers.AbstractExceptionHandler;
 import com.naturalprogrammer.spring.lemon.mail.MailSender;
 import com.naturalprogrammer.spring.lemon.mail.MockMailSender;
 import com.naturalprogrammer.spring.lemon.mail.SmtpMailSender;
@@ -68,7 +70,7 @@ import com.naturalprogrammer.spring.lemon.validation.UniqueEmailValidator;
  * @author Sanjay Patel
  */
 @Configuration
-@ComponentScan(basePackageClasses=LemonExceptionHandler.class)
+@ComponentScan(basePackageClasses=AbstractExceptionHandler.class)
 @EnableSpringDataWebSupport
 @EnableTransactionManagement
 @EnableJpaAuditing
@@ -141,13 +143,32 @@ public class LemonAutoConfiguration {
         log.info("Configuring LemonAuditorAware");       
 		return new LemonAuditorAware<U, ID>(userRepository);
 	}
+
+	@Bean
+	@ConditionalOnMissingBean(ErrorResponseComposer.class)
+	public <T extends Throwable>
+	ErrorResponseComposer<T> errorResponseComposer(List<AbstractExceptionHandler<T>> handlers) {
+		
+        log.info("Configuring ErrorResponseComposer");       
+		return new ErrorResponseComposer<T>(handlers);
+	}
+	
+	@Bean
+	@ConditionalOnMissingBean(DefaultExceptionHandler.class)
+	public <T extends Throwable>
+	DefaultExceptionHandler<T> defaultExceptionHandler(ErrorResponseComposer<T> errorResponseComposer) {
+		
+        log.info("Configuring DefaultExceptionHandler");       
+		return new DefaultExceptionHandler<T>(errorResponseComposer);
+	}
 	
 	@Bean
 	@ConditionalOnMissingBean(ErrorAttributes.class)
-	public ErrorAttributes errorAttributes(List<LemonExceptionHandler<?>> handlers) {
+	public <T extends Throwable>
+	ErrorAttributes errorAttributes(ErrorResponseComposer<T> errorResponseComposer) {
 		
         log.info("Configuring LemonErrorAttributes");       
-		return new LemonErrorAttributes(handlers);
+		return new LemonErrorAttributes<T>(errorResponseComposer);
 	}
 	
 	@Bean

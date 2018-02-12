@@ -2,6 +2,7 @@ package com.naturalprogrammer.spring.lemon.exceptions;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -9,18 +10,18 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.core.annotation.AnnotationAwareOrderComparator;
 
-import com.naturalprogrammer.spring.lemon.exceptions.handlers.LemonExceptionHandler;
+import com.naturalprogrammer.spring.lemon.exceptions.handlers.AbstractExceptionHandler;
 
-public class ExceptionResponseComposer<T extends Throwable> {
+public class ErrorResponseComposer<T extends Throwable> {
 	
     private static final Log log = LogFactory.getLog(LemonErrorAttributes.class);
 	
-	private final Map<String, LemonExceptionHandler<T>> handlers;
+	private final Map<String, AbstractExceptionHandler<T>> handlers;
 	
-	public ExceptionResponseComposer(List<LemonExceptionHandler<T>> handlers) {
+	public ErrorResponseComposer(List<AbstractExceptionHandler<T>> handlers) {
 		
 		this.handlers = handlers.stream().collect(
-	            Collectors.toMap(LemonExceptionHandler::getExceptionName,
+	            Collectors.toMap(AbstractExceptionHandler::getExceptionName,
 	            		Function.identity(), (handler1, handler2) -> {
 	            			
 	            			return AnnotationAwareOrderComparator
@@ -32,9 +33,9 @@ public class ExceptionResponseComposer<T extends Throwable> {
 	}
 
 	
-	public ExceptionResponseData compose(T ex) {
+	public Optional<ErrorResponse> compose(T ex) {
 
-		LemonExceptionHandler<T> handler = null;
+		AbstractExceptionHandler<T> handler = null;
 		
         // find a handler for the exception
         // if no handler is found,
@@ -50,12 +51,9 @@ public class ExceptionResponseComposer<T extends Throwable> {
 			ex = (T) ex.getCause();			
 		}
         
-        if (handler != null) { // a handler is found
-        	
-        	log.warn("Handling exception ", ex);       	
-        	return new ExceptionResponseData(handler.getMessage(ex), handler.getStatus(ex), handler.getErrors(ex));
-        }
+        if (handler != null) // a handler is found    	
+        	return Optional.of(handler.getErrorResponse(ex));
         
-        return new ExceptionResponseData(null, null, null);
+        return Optional.empty();
 	}
 }

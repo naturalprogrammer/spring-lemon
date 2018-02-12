@@ -32,7 +32,7 @@ public class LemonErrorController extends BasicErrorController {
 	public ResponseEntity<Map<String, Object>> error(HttpServletRequest request) {
 		
 		Map<String, Object> body = getErrorAttributes(request,
-				isIncludeStackTrace(request, MediaType.ALL));
+			isIncludeStackTrace(request, MediaType.ALL));
 		
 		HttpStatus status =	(HttpStatus) body.get(LemonErrorAttributes.HTTP_STATUS_KEY);
 		

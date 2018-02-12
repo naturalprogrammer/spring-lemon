@@ -1,33 +1,23 @@
 package com.naturalprogrammer.spring.lemon.exceptions;
 
-import java.util.Collection;
-import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.boot.web.servlet.error.DefaultErrorAttributes;
-import org.springframework.core.annotation.AnnotationAwareOrderComparator;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.context.request.WebRequest;
-
-import com.naturalprogrammer.spring.lemon.exceptions.handlers.LemonExceptionHandler;
-import com.naturalprogrammer.spring.lemon.validation.FieldError;
 
 public class LemonErrorAttributes<T extends Throwable> extends DefaultErrorAttributes {
 	
     private static final Log log = LogFactory.getLog(LemonErrorAttributes.class);
 
-	private static final String ERRORS_KEY = "errors";
 	static final String HTTP_STATUS_KEY = "httpStatus";
 	
-	private ExceptionResponseComposer<T> exceptionResponseComposer;
+	private ErrorResponseComposer<T> errorResponseComposer;
 	
-    public LemonErrorAttributes(ExceptionResponseComposer<T> exceptionResponseComposer) {
+    public LemonErrorAttributes(ErrorResponseComposer<T> errorResponseComposer) {
 
-		this.exceptionResponseComposer = exceptionResponseComposer;
+		this.errorResponseComposer = errorResponseComposer;
 		log.info("Created");
 	}
 	
@@ -48,21 +38,24 @@ public class LemonErrorAttributes<T extends Throwable> extends DefaultErrorAttri
 			Map<String, Object> errorAttributes, WebRequest request) {
 		
 		Throwable ex = getError(request);
-		ExceptionResponseData exceptionResponseData = exceptionResponseComposer.compose((T)ex);
 		
-		String message = exceptionResponseData.getMessage();
-		if (message != null)
-			errorAttributes.put("message", message);
+		errorAttributes.put("exception", ex.getClass().getSimpleName());
 		
-		Collection<FieldError> errors = exceptionResponseData.getErrors();
-		if (errors != null)
-			errorAttributes.put(ERRORS_KEY, errors);
-		
-		HttpStatus status = exceptionResponseData.getStatus();
-		if (status != null) {
-			errorAttributes.put(HTTP_STATUS_KEY, status);
-			errorAttributes.put("status", status.value());
-			errorAttributes.put("error", status.getReasonPhrase());
-		}
+		errorResponseComposer.compose((T)ex).ifPresent(errorResponse -> {
+			
+			if (errorResponse.getMessage() != null)
+				errorAttributes.put("message", errorResponse.getMessage());
+			
+			Integer status = errorResponse.getStatus();
+			
+			if (status != null) {
+				errorAttributes.put(HTTP_STATUS_KEY, status);
+				errorAttributes.put("status", status);
+				errorAttributes.put("error", errorResponse.getError());
+			}
+
+			if (errorResponse.getErrors() != null)
+				errorAttributes.put("errors", errorResponse.getErrors());			
+		});
 	}
 }

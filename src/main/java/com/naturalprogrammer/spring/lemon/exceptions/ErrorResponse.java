@@ -2,22 +2,21 @@ package com.naturalprogrammer.spring.lemon.exceptions;
 
 import java.util.Collection;
 
-import org.springframework.http.HttpStatus;
-
 import com.naturalprogrammer.spring.lemon.validation.FieldError;
 
-public class ExceptionResponseData {
+public class ErrorResponse {
 	
+	private String exception;
 	private String error;
 	private String message;
-	private HttpStatus status;
+	private Integer status;
 	private Collection<FieldError> errors;
 	
-	public ExceptionResponseData(String message, HttpStatus status, Collection<FieldError> errors) {
-
-		this.message = message;
-		this.status = status;
-		this.errors = errors;
+	public String getException() {
+		return exception;
+	}
+	public void setException(String exception) {
+		this.exception = exception;
 	}
 	public String getError() {
 		return error;
@@ -31,10 +30,10 @@ public class ExceptionResponseData {
 	public void setMessage(String message) {
 		this.message = message;
 	}
-	public HttpStatus getStatus() {
+	public Integer getStatus() {
 		return status;
 	}
-	public void setStatus(HttpStatus status) {
+	public void setStatus(Integer status) {
 		this.status = status;
 	}
 	public Collection<FieldError> getErrors() {
@@ -42,5 +41,5 @@ public class ExceptionResponseData {
 	}
 	public void setErrors(Collection<FieldError> errors) {
 		this.errors = errors;
-	}	
+	}
 }

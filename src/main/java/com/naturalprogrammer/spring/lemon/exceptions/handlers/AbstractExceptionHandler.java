@@ -1,17 +1,17 @@
 package com.naturalprogrammer.spring.lemon.exceptions.handlers;
 
 import java.util.Collection;
-import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.http.HttpStatus;
 
+import com.naturalprogrammer.spring.lemon.exceptions.ErrorResponse;
 import com.naturalprogrammer.spring.lemon.validation.FieldError;
 
-public abstract class AbstractExceptionHandler<T extends Throwable> implements LemonExceptionHandler<T> {
+public abstract class AbstractExceptionHandler<T extends Throwable> {
 	
-	protected Log log = LogFactory.getLog(this.getClass());
+	protected final Log log = LogFactory.getLog(this.getClass());
 	
 	private String exceptionName;
 	
@@ -19,23 +19,38 @@ public abstract class AbstractExceptionHandler<T extends Throwable> implements L
 		this.exceptionName = exceptionName;
 	}
 
-	@Override
 	public String getExceptionName() {
 		return exceptionName;
 	}
 	
-	@Override
-	public String getMessage(T ex) {
+	protected String getMessage(T ex) {
 		return null;
 	}
 	
-	@Override
-	public HttpStatus getStatus(T ex) {
+	protected HttpStatus getStatus(T ex) {
 		return null;
 	}
 	
-	@Override
-	public Collection<FieldError> getErrors(T ex) {
+	protected Collection<FieldError> getErrors(T ex) {
 		return null;
+	}
+
+	public ErrorResponse getErrorResponse(T ex) {
+		
+		ErrorResponse errorResponse = new ErrorResponse();
+		
+		String message = getMessage(ex);
+		if (message != null)
+			errorResponse.setMessage(message);
+		
+		HttpStatus status = getStatus(ex);
+		if (status != null) {
+			errorResponse.setStatus(status.value());
+			errorResponse.setError(status.getReasonPhrase());
+		}
+		
+		errorResponse.setErrors(getErrors(ex));
+		
+		return errorResponse;
 	}
 }

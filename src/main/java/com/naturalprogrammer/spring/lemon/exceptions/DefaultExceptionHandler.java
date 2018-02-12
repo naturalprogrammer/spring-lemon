@@ -2,21 +2,23 @@ package com.naturalprogrammer.spring.lemon.exceptions;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 @RequestMapping(produces = "application/json")
-public class DefaultExceptionHandler {
+public class DefaultExceptionHandler<T extends Throwable> {
 	
 	private static final Log log = LogFactory.getLog(DefaultExceptionHandler.class);
 
-	private ExceptionResponseComposer<?> exceptionResponseComposer;
+	private ErrorResponseComposer<T> errorResponseComposer;
 	
-    public DefaultExceptionHandler(ExceptionResponseComposer<?> exceptionResponseComposer) {
+    public DefaultExceptionHandler(ErrorResponseComposer<T> errorResponseComposer) {
 
-		this.exceptionResponseComposer = exceptionResponseComposer;
+		this.errorResponseComposer = errorResponseComposer;
 		log.info("Created");
 	}
 
@@ -26,35 +28,19 @@ public class DefaultExceptionHandler {
      *
      * @param ex the exception
      * @return the error response
+	 * @throws T 
      */
     @RequestMapping(produces = "application/json")
-    public ResponseEntity<?> handleException(Throwable ex) {
-
-        AbstractExceptionHandler handler;
-
-        // find a handler for the exception
-        // if no handler is found,
-        // loop into for its cause (ex.getCause())
-        do {
-            handler = handlers.get(ex.getClass().getSimpleName());
-
-            if (handler != null) // a handler is found!
-                break;
-
-            if (ex.getCause() == null) { // no underlying cause to dig into
-                handler = handlers.get(Exception.class.getSimpleName()); // default to Exception
-                break;
-            }
-
-            ex = ex.getCause(); // let's dig into the underlying cause
-
-        } while (true);
-
-        log.warn("Exception: ", ex);
-
-        // Use the handler to get an Error object to be sent to client
-        Error error = handler.getError(ex);
-
-        return new ResponseEntity<ExceptionResponseData>(error, error.getStatus(ex));
+    @ExceptionHandler(Throwable.class)
+    public ResponseEntity<?> handleException(T ex) throws T {
+    	
+    	ErrorResponse errorResponse = errorResponseComposer.compose(ex).orElseThrow(() -> ex);
+    	if (errorResponse.getMessage() == null || errorResponse.getStatus() == null)
+    		throw ex;
+    	
+    	log.warn("Handling exception", ex);
+    	
+    	errorResponse.setException(ex.getClass().getSimpleName());
+        return new ResponseEntity<ErrorResponse>(errorResponse, HttpStatus.valueOf(errorResponse.getStatus()));
     }
 }
