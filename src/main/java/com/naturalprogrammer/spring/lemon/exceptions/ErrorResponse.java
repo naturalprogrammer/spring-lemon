@@ -9,7 +9,7 @@ public class ErrorResponse {
 	private String exception;
 	private String error;
 	private String message;
-	private Integer status;
+	private Integer status; // We'd need it as integer in JSON serialization
 	private Collection<FieldError> errors;
 	
 	public boolean incomplete() {
