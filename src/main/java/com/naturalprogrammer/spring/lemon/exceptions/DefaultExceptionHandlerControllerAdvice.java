@@ -10,13 +10,13 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 @RequestMapping(produces = "application/json")
-public class DefaultExceptionHandler<T extends Throwable> {
+public class DefaultExceptionHandlerControllerAdvice<T extends Throwable> {
 	
-	private static final Log log = LogFactory.getLog(DefaultExceptionHandler.class);
+	private static final Log log = LogFactory.getLog(DefaultExceptionHandlerControllerAdvice.class);
 
 	private ErrorResponseComposer<T> errorResponseComposer;
 	
-    public DefaultExceptionHandler(ErrorResponseComposer<T> errorResponseComposer) {
+    public DefaultExceptionHandlerControllerAdvice(ErrorResponseComposer<T> errorResponseComposer) {
 
 		this.errorResponseComposer = errorResponseComposer;
 		log.info("Created");
@@ -33,14 +33,18 @@ public class DefaultExceptionHandler<T extends Throwable> {
     @RequestMapping(produces = "application/json")
     @ExceptionHandler(Throwable.class)
     public ResponseEntity<?> handleException(T ex) throws T {
-    	
+
     	ErrorResponse errorResponse = errorResponseComposer.compose(ex).orElseThrow(() -> ex);
-    	if (errorResponse.getMessage() == null || errorResponse.getStatus() == null)
+    	
+    	// Propogate up if the underlying AbcExceptionHandler wanted to use the message or status of DefaultErrorAttribute 
+    	if (errorResponse.incomplete())
     		throw ex;
     	
     	log.warn("Handling exception", ex);
     	
+    	// We didn't do this in compose because LemonErrorAttributes would do it differently
     	errorResponse.setException(ex.getClass().getSimpleName());
+
         return new ResponseEntity<ErrorResponse>(errorResponse, HttpStatus.valueOf(errorResponse.getStatus()));
     }
 }

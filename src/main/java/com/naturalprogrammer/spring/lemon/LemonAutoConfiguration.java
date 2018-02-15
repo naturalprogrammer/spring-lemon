@@ -41,7 +41,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUserRepository;
 import com.naturalprogrammer.spring.lemon.domain.LemonAuditorAware;
-import com.naturalprogrammer.spring.lemon.exceptions.DefaultExceptionHandler;
+import com.naturalprogrammer.spring.lemon.exceptions.DefaultExceptionHandlerControllerAdvice;
 import com.naturalprogrammer.spring.lemon.exceptions.ErrorResponseComposer;
 import com.naturalprogrammer.spring.lemon.exceptions.LemonErrorAttributes;
 import com.naturalprogrammer.spring.lemon.exceptions.LemonErrorController;
@@ -154,12 +154,12 @@ public class LemonAutoConfiguration {
 	}
 	
 	@Bean
-	@ConditionalOnMissingBean(DefaultExceptionHandler.class)
+	@ConditionalOnMissingBean(DefaultExceptionHandlerControllerAdvice.class)
 	public <T extends Throwable>
-	DefaultExceptionHandler<T> defaultExceptionHandler(ErrorResponseComposer<T> errorResponseComposer) {
+	DefaultExceptionHandlerControllerAdvice<T> defaultExceptionHandlerControllerAdvice(ErrorResponseComposer<T> errorResponseComposer) {
 		
-        log.info("Configuring DefaultExceptionHandler");       
-		return new DefaultExceptionHandler<T>(errorResponseComposer);
+        log.info("Configuring DefaultExceptionHandlerControllerAdvice");       
+		return new DefaultExceptionHandlerControllerAdvice<T>(errorResponseComposer);
 	}
 	
 	@Bean

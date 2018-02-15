@@ -12,6 +12,11 @@ public class ErrorResponse {
 	private Integer status;
 	private Collection<FieldError> errors;
 	
+	public boolean incomplete() {
+		
+		return message == null || status == null;
+	}
+	
 	public String getException() {
 		return exception;
 	}
