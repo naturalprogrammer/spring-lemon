@@ -3,12 +3,15 @@ package com.naturalprogrammer.spring.lemon;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.validation.Validator;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
+import org.springframework.boot.autoconfigure.validation.ValidationAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.servlet.error.ErrorMvcAutoConfiguration;
@@ -36,6 +39,7 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
@@ -61,6 +65,8 @@ import com.naturalprogrammer.spring.lemon.security.LemonUserDetailsService;
 import com.naturalprogrammer.spring.lemon.security.OAuth2AuthenticationSuccessHandler;
 import com.naturalprogrammer.spring.lemon.util.LemonUtils;
 import com.naturalprogrammer.spring.lemon.validation.CaptchaValidator;
+import com.naturalprogrammer.spring.lemon.validation.LemonForm;
+import com.naturalprogrammer.spring.lemon.validation.LemonValidatorFactoryBean;
 import com.naturalprogrammer.spring.lemon.validation.RetypePasswordValidator;
 import com.naturalprogrammer.spring.lemon.validation.UniqueEmailValidator;
 
@@ -76,7 +82,9 @@ import com.naturalprogrammer.spring.lemon.validation.UniqueEmailValidator;
 @EnableJpaAuditing
 @EnableAsync
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-@AutoConfigureBefore({WebMvcAutoConfiguration.class,
+@AutoConfigureBefore({
+	WebMvcAutoConfiguration.class,
+	ValidationAutoConfiguration.class,
 	ErrorMvcAutoConfiguration.class,
 	SecurityAutoConfiguration.class})
 public class LemonAutoConfiguration {
@@ -94,6 +102,17 @@ public class LemonAutoConfiguration {
 		log.info("Created");
 	}
 
+	@Bean
+	@ConditionalOnMissingBean(Validator.class)
+	public <F extends LemonForm> Validator validator(MessageSource messageSource) {
+		
+		LocalValidatorFactoryBean validator = new LemonValidatorFactoryBean<F>();
+		validator.setValidationMessageSource(messageSource);
+		
+		return validator;
+	}
+
+	
 	/**
 	 * Prefixes JSON responses for JSON vulnerability. See for more details:
 	 * 
