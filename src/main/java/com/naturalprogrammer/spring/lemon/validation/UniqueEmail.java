@@ -1,10 +1,7 @@
 package com.naturalprogrammer.spring.lemon.validation;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 
 import javax.validation.Constraint;
 import javax.validation.constraints.Email;
@@ -24,9 +21,7 @@ import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
 @Size(min=AbstractUser.EMAIL_MIN, max=AbstractUser.EMAIL_MAX,
 	message = "{com.naturalprogrammer.spring.invalid.email.size}")
 @Email(message = "{com.naturalprogrammer.spring.invalid.email}")
-@Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD, ElementType.FIELD, ElementType.CONSTRUCTOR, ElementType.PARAMETER, ElementType.ANNOTATION_TYPE})
 @Constraint(validatedBy=UniqueEmailValidator.class)
 public @interface UniqueEmail {
  

@@ -26,17 +26,10 @@ implements ConstraintValidator<UniqueEmail, String> {
 		log.info("Created");
 	}
 
-
-	@Override
-	public void initialize(UniqueEmail constraintAnnotation) {
-		log.debug("UniqueEmailValidator initialized");
-	}
-
 	@Override
 	public boolean isValid(String email, ConstraintValidatorContext context) {
 		
 		log.debug("Validating whether email is unique: " + email);
 		return !userRepository.findByEmail(email).isPresent();
 	}
-
 }

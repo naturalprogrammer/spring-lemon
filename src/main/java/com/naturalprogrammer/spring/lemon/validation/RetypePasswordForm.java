@@ -10,5 +10,4 @@ public interface RetypePasswordForm {
 
 	String getPassword();
 	String getRetypePassword();
-	
 }

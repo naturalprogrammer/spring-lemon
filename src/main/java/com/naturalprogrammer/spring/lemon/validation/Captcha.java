@@ -1,10 +1,7 @@
 package com.naturalprogrammer.spring.lemon.validation;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 
 import javax.validation.Constraint;
 
@@ -18,13 +15,7 @@ import javax.validation.Constraint;
  * @author Sanjay Patel
  *
  */
-@Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD,
-		 ElementType.FIELD,
-		 ElementType.CONSTRUCTOR,
-		 ElementType.PARAMETER,
-		 ElementType.ANNOTATION_TYPE})
 @Constraint(validatedBy=CaptchaValidator.class)
 public @interface Captcha {
  

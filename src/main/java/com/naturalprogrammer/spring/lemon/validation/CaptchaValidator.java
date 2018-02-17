@@ -120,10 +120,4 @@ public class CaptchaValidator implements ConstraintValidator<Captcha, String> {
 			return false;
 		}
 	}
-
-	@Override
-	public void initialize(Captcha constraintAnnotation) {
-		log.debug("Captcha validator initialized.");
-	}
-
 }

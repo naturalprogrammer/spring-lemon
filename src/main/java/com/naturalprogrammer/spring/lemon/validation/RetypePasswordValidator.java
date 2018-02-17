@@ -21,10 +21,6 @@ implements ConstraintValidator<RetypePassword, RetypePasswordForm> {
 	
 	private static final Log log = LogFactory.getLog(RetypePasswordValidator.class);
 
-	public RetypePasswordValidator() {
-		log.info("Created");
-	}
-	
 	@Override
 	public boolean isValid(RetypePasswordForm retypePasswordForm,
 		ConstraintValidatorContext context) {
@@ -48,10 +44,4 @@ implements ConstraintValidator<RetypePassword, RetypePasswordForm> {
 		log.debug("Retype password validation succeeded.");		
 		return true;
 	}
-
-	@Override
-	public void initialize(RetypePassword constraintAnnotation) {
-		log.debug("RetypePasswordValidator initialized.");
-	}
-
 }
