@@ -44,7 +44,7 @@ public class LemonErrorAttributes<T extends Throwable> extends DefaultErrorAttri
 		errorResponseComposer.compose((T)ex).ifPresent(errorResponse -> {
 			
 			// check for null - errorResponse may have left something for the DefaultErrorAttributes
-
+			
 			if (errorResponse.getMessage() != null)
 				errorAttributes.put("message", errorResponse.getMessage());
 			
