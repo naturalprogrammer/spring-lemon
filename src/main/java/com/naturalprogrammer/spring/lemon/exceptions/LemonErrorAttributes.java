@@ -51,7 +51,7 @@ public class LemonErrorAttributes<T extends Throwable> extends DefaultErrorAttri
 			Integer status = errorResponse.getStatus();
 			
 			if (status != null) {
-				errorAttributes.put(HTTP_STATUS_KEY, status);
+				errorAttributes.put(HTTP_STATUS_KEY, status); // a way to pass response status to LemonErrorController
 				errorAttributes.put("status", status);
 				errorAttributes.put("error", errorResponse.getError());
 			}

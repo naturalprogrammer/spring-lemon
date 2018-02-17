@@ -34,12 +34,13 @@ public class LemonErrorController extends BasicErrorController {
 		Map<String, Object> body = getErrorAttributes(request,
 			isIncludeStackTrace(request, MediaType.ALL));
 		
+		// if a status was put in LemonErrorAttributes, fetch that
 		HttpStatus status =	(HttpStatus) body.get(LemonErrorAttributes.HTTP_STATUS_KEY);
-		
-		if (status == null)
-			status = getStatus(request);
+
+		if (status == null)                // if not put,
+			status = getStatus(request);   // let the superclass make the status
 		else
-			body.remove(LemonErrorAttributes.HTTP_STATUS_KEY);
+			body.remove(LemonErrorAttributes.HTTP_STATUS_KEY); // clean the status from the map
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
