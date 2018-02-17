@@ -60,7 +60,7 @@ public class AuthenticationSuccessHandler
     	// get the current-user
     	SpringUser<?> currentUser = LemonUtils.getSpringUser();
 
-    	jwtService.addJwtAuthHeader(response, currentUser.getUsername(), expirationMilli);
+    	jwtService.addAuthHeader(response, currentUser.getUsername(), expirationMilli);
     	
     	// write current-user data to the response  
     	response.getOutputStream().print(

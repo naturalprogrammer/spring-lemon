@@ -5,14 +5,14 @@ import java.io.Serializable;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
 import com.naturalprogrammer.spring.lemon.util.LemonUtils;
-
-import io.jsonwebtoken.JwtException;
+import com.nimbusds.jwt.JWTClaimsSet;
 
 @Component
 public class JwtAuthenticationProvider
@@ -23,9 +23,9 @@ public class JwtAuthenticationProvider
 	private final JwtService jwtService;
 	private LemonUserDetailsService<U, ID> userDetailsService;
 	
-	public JwtAuthenticationProvider(JwtService jwtHelper, LemonUserDetailsService<U, ID> userDetailsService) {
+	public JwtAuthenticationProvider(JwtService jwtService, LemonUserDetailsService<U, ID> userDetailsService) {
 
-		this.jwtService = jwtHelper;
+		this.jwtService = jwtService;
 		this.userDetailsService = userDetailsService;
 		
 		log.debug("Created");
@@ -36,20 +36,22 @@ public class JwtAuthenticationProvider
 		
 		log.debug("Authenticating ...");
 
-		String jwtToken = (String) auth.getCredentials();
+		String token = (String) auth.getCredentials();
 		
-        String username = jwtService.parseAuthSubject(jwtToken);
+		JWTClaimsSet claims = jwtService.parseToken(token);
+		
+        String username = claims.getSubject();
         U user = userDetailsService.findUserByUsername(username)
         		.orElseThrow(() -> new UsernameNotFoundException(username));
 
         log.debug("User found ...");
         
-        if (jwtService.parseIssuedAt(jwtToken).before(user.getCredentialsUpdatedAt()))
-        	throw new JwtException(LemonUtils.getMessage("credentialsChanged"));
+        if (claims.getIssueTime().before(user.getCredentialsUpdatedAt()))
+        	throw new BadCredentialsException(LemonUtils.getMessage("credentialsChanged"));
 
         LemonPrincipal<ID> principal = new LemonPrincipal<ID>(user.toSpringUser());
         		
-        return new JwtAuthenticationToken(principal, jwtToken, principal.getAuthorities());
+        return new JwtAuthenticationToken(principal, token, principal.getAuthorities());
 	}
 
 	@Override

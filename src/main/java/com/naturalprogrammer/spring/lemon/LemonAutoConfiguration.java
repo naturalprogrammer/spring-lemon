@@ -63,6 +63,7 @@ import com.naturalprogrammer.spring.lemon.util.LemonUtils;
 import com.naturalprogrammer.spring.lemon.validation.CaptchaValidator;
 import com.naturalprogrammer.spring.lemon.validation.RetypePasswordValidator;
 import com.naturalprogrammer.spring.lemon.validation.UniqueEmailValidator;
+import com.nimbusds.jose.KeyLengthException;
 
 /**
  * Spring Lemon Auto Configuration
@@ -210,10 +211,10 @@ public class LemonAutoConfiguration {
 	
 	@Bean
 	@ConditionalOnMissingBean(JwtService.class)
-	public JwtService jwtService(LemonProperties properties) {
+	public JwtService jwtService(LemonProperties properties) throws KeyLengthException {
 		
         log.info("Configuring AuthenticationSuccessHandler");       
-		return new JwtService(properties);
+		return new JwtService(properties.getJwt().getSecret());
 	}
 
 	@Bean

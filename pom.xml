@@ -55,13 +55,6 @@
             <artifactId>spring-security-oauth2-jose</artifactId>
         </dependency>
 
-		<!-- https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt -->
-		<dependency>
-		    <groupId>io.jsonwebtoken</groupId>
-		    <artifactId>jjwt</artifactId>
-		    <version>0.9.0</version>
-		</dependency>
-
         <!-- Using AbstractAuditable needed joda time
         <dependency>
             <groupId>joda-time</groupId>

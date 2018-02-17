@@ -725,7 +725,7 @@ public abstract class LemonService
 			if (nonce.getExpirationMilli() == null)
 				nonce.setExpirationMilli(properties.getJwt().getExpirationMilli());
 			
-			jwtService.addJwtAuthHeader(response,
+			jwtService.addAuthHeader(response,
 					user.toSpringUser().getUsername(),
 					nonce.getExpirationMilli());
 
@@ -754,7 +754,7 @@ public abstract class LemonService
 		
 		SpringUser<ID> user = LemonUtils.getSpringUser();
 		
-		jwtService.addJwtAuthHeader(response,
+		jwtService.addAuthHeader(response,
 				user.getUsername(),
 				expirationMillis.orElse(properties.getJwt().getExpirationMilli()));
 		
