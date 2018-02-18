@@ -11,6 +11,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -177,6 +178,12 @@ public class LemonUtils {
 		
 		if (original.getVersion() != updated.getVersion())
 			throw new VersionException(original.getClass().getSimpleName());
+	}
+	
+	public static void validateCredentials(boolean valid, String message) {
+		
+		if (!valid)
+			throw new BadCredentialsException(message);
 	}
 
 	

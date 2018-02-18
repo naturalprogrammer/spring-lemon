@@ -7,6 +7,9 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.security.authentication.BadCredentialsException;
+
+import com.naturalprogrammer.spring.lemon.util.LemonUtils;
 import com.nimbusds.jose.EncryptionMethod;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWEAlgorithm;
@@ -21,7 +24,6 @@ import com.nimbusds.jose.proc.BadJOSEException;
 import com.nimbusds.jose.proc.JWEDecryptionKeySelector;
 import com.nimbusds.jose.proc.JWEKeySelector;
 import com.nimbusds.jose.proc.SimpleSecurityContext;
-import com.nimbusds.jose.util.Base64;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.proc.ConfigurableJWTProcessor;
 import com.nimbusds.jwt.proc.DefaultJWTProcessor;
@@ -36,18 +38,13 @@ import com.nimbusds.jwt.proc.DefaultJWTProcessor;
  */
 public class JwtService {
 	
-	public static enum Audience {
-		
-		AUTH;
-	}
-
     private DirectEncrypter encrypter;
-    private JWEHeader header = new JWEHeader(JWEAlgorithm.DIR, EncryptionMethod.A256CBC_HS512);
+    private JWEHeader header = new JWEHeader(JWEAlgorithm.DIR, EncryptionMethod.A128CBC_HS256);
     private ConfigurableJWTProcessor<SimpleSecurityContext> jwtProcessor;
     
 	public JwtService(String secret) throws KeyLengthException {
 		
-		byte[] secretKey = Base64.encode(secret).decode();
+		byte[] secretKey = secret.getBytes();
 		encrypter = new DirectEncrypter(secretKey);
 		jwtProcessor = new DefaultJWTProcessor<SimpleSecurityContext>();
 		
@@ -56,19 +53,19 @@ public class JwtService {
 
 		// Configure a key selector to handle the decryption phase
 		JWEKeySelector<SimpleSecurityContext> jweKeySelector =
-				new JWEDecryptionKeySelector<SimpleSecurityContext>(JWEAlgorithm.DIR, EncryptionMethod.A256CBC_HS512, jweKeySource);
+				new JWEDecryptionKeySelector<SimpleSecurityContext>(JWEAlgorithm.DIR, EncryptionMethod.A128CBC_HS256, jweKeySource);
 		
 		jwtProcessor.setJWEKeySelector(jweKeySelector);
 	}
 
-	public String createToken(Audience aud, String subject, Long expirationMilli, Map<String, Object> claimMap) {
+	public String createToken(String aud, String subject, Long expirationMilli, Map<String, Object> claimMap) {
 		
 		JWTClaimsSet.Builder builder = new JWTClaimsSet.Builder();
 		
 		builder
     		.issueTime(new Date())
     		.expirationTime(new Date(System.currentTimeMillis() + expirationMilli))
-    		.audience(aud.name())
+    		.audience(aud)
     		.subject(subject);
 		
 		claimMap.forEach(builder::claim);
@@ -94,20 +91,24 @@ public class JwtService {
 	}
 
 
-	public String createToken(Audience auth, String subject, Long expirationMilli) {
+	public String createToken(String audience, String subject, Long expirationMilli) {
 
-		return createToken(auth, subject, expirationMilli, new HashMap<>());
+		return createToken(audience, subject, expirationMilli, new HashMap<>());
 	}
 
-	public JWTClaimsSet parseToken(String token) {
+	public JWTClaimsSet parseToken(String token, String audience) {
 
 		try {
 			
-			return jwtProcessor.process(token, null);
+			JWTClaimsSet claims = jwtProcessor.process(token, null);
+			LemonUtils.validateCredentials(claims.getAudience().contains(audience), "Wrong audience");
+			LemonUtils.validateCredentials(claims.getExpirationTime().after(new Date()), "Token expired");
+			
+			return claims;
 			
 		} catch (ParseException | BadJOSEException | JOSEException e) {
 
-			throw new RuntimeException(e);
+			throw new BadCredentialsException(e.getMessage());
 		}
 	}
 	
@@ -115,6 +116,6 @@ public class JwtService {
 	
 		response.addHeader(LemonSecurityConfig.TOKEN_RESPONSE_HEADER_NAME,
 				LemonSecurityConfig.TOKEN_PREFIX +
-				createToken(Audience.AUTH, username, expirationMilli));
+				createToken(LemonSecurityConfig.AUTH_AUDIENCE, username, expirationMilli));
 	}
 }
