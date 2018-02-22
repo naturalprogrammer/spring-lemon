@@ -9,11 +9,16 @@ import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityFilterAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.servlet.error.ErrorMvcAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.servlet.error.ErrorViewResolver;
+import org.springframework.boot.test.autoconfigure.web.servlet.MockMvcAutoConfiguration;
+import org.springframework.boot.test.autoconfigure.web.servlet.MockMvcWebClientAutoConfiguration;
+import org.springframework.boot.test.autoconfigure.web.servlet.MockMvcWebDriverAutoConfiguration;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.context.ApplicationContext;
@@ -21,6 +26,8 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
@@ -28,6 +35,7 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.security.access.PermissionEvaluator;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
@@ -57,6 +65,7 @@ import com.naturalprogrammer.spring.lemon.security.LemonOAuth2UserService;
 import com.naturalprogrammer.spring.lemon.security.LemonOidcUserService;
 import com.naturalprogrammer.spring.lemon.security.LemonPermissionEvaluator;
 import com.naturalprogrammer.spring.lemon.security.LemonSecurityConfig;
+import com.naturalprogrammer.spring.lemon.security.LemonTokenAuthenticationFilter;
 import com.naturalprogrammer.spring.lemon.security.LemonUserDetailsService;
 import com.naturalprogrammer.spring.lemon.security.OAuth2AuthenticationSuccessHandler;
 import com.naturalprogrammer.spring.lemon.util.LemonUtils;
@@ -77,9 +86,14 @@ import com.nimbusds.jose.KeyLengthException;
 @EnableJpaAuditing
 @EnableAsync
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-@AutoConfigureBefore({WebMvcAutoConfiguration.class,
+@AutoConfigureBefore({
+	MockMvcAutoConfiguration.class,
+	MockMvcWebDriverAutoConfiguration.class,
+	MockMvcWebClientAutoConfiguration.class,
+	WebMvcAutoConfiguration.class,
 	ErrorMvcAutoConfiguration.class,
-	SecurityAutoConfiguration.class})
+	SecurityAutoConfiguration.class,
+	SecurityFilterAutoConfiguration.class})
 public class LemonAutoConfiguration {
 	
 	/**
@@ -264,7 +278,8 @@ public class LemonAutoConfiguration {
 	}
 
 	@Bean
-	@ConditionalOnMissingBean(UserDetailsService.class)
+	@Primary
+	@ConditionalOnMissingBean(LemonUserDetailsService.class)
 	public <U extends AbstractUser<U,ID>, ID extends Serializable>
 	UserDetailsService userDetailService(AbstractUserRepository<U, ID> userRepository) {
 		
@@ -281,18 +296,13 @@ public class LemonAutoConfiguration {
 		return new LemonCorsFilter(properties);		
 	}
 	
-//	@Bean
-//	@ConditionalOnMissingBean(LemonTokenAuthenticationFilter.class)	
-//	public <U extends AbstractUser<U,ID>, ID extends Serializable>
-//		LemonTokenAuthenticationFilter<U,ID> lemonTokenAuthenticationFilter(
-//			PasswordEncoder passwordEncoder,
-//			AbstractUserRepository<U, ID> userRepository,
-//			LemonService<U,ID> lemonService) {
-//		
-//        log.info("Configuring LemonTokenAuthenticationFilter");       
-//		return new LemonTokenAuthenticationFilter<U, ID>
-//			(passwordEncoder, userRepository, lemonService);
-//	}
+	@Bean
+	@ConditionalOnMissingBean(LemonTokenAuthenticationFilter.class)	
+	public LemonTokenAuthenticationFilter lemonTokenAuthenticationFilter() {
+		
+        log.info("Configuring LemonTokenAuthenticationFilter");       
+		return new LemonTokenAuthenticationFilter();
+	}
 	
 	@Bean
 	@ConditionalOnMissingBean(LemonOidcUserService.class)	
@@ -351,5 +361,18 @@ public class LemonAutoConfiguration {
 		
         log.info("Configuring UniqueEmailValidator");       
 		return new UniqueEmailValidator(userRepository);		
+	}
+
+	/**
+	 * Disable auto registration of LemonTokenAuthenticationFilter as a result of it being a component,
+	 * So that we manually add it in the customTokenAuthentication method above
+	 * 
+	 * Refer https://stackoverflow.com/questions/28421966/prevent-spring-boot-from-registering-a-servlet-filter
+	 */
+	@Bean
+	public FilterRegistrationBean<LemonTokenAuthenticationFilter> registration(LemonTokenAuthenticationFilter filter) {
+	    FilterRegistrationBean<LemonTokenAuthenticationFilter> registration = new FilterRegistrationBean<>(filter);
+	    registration.setEnabled(false); // disable
+	    return registration;
 	}
 }
