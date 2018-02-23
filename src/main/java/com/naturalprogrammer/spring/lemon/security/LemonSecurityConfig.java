@@ -3,9 +3,6 @@ package com.naturalprogrammer.spring.lemon.security;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
-import org.springframework.context.annotation.Bean;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -54,7 +51,7 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 	private LemonOidcUserService oidcUserService;
 	private LemonOAuth2UserService<?, ?> oauth2UserService;
 	private OAuth2AuthenticationSuccessHandler<?,?> oauth2AuthenticationSuccessHandler;
-	private LemonTokenAuthenticationFilter lemonTokenAuthenticationFilter;
+	private JwtAuthenticationProvider<?,?> jwtAuthenticationProvider;
 	private PasswordEncoder passwordEncoder;
 	
 	@Autowired
@@ -64,8 +61,9 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 			LemonOidcUserService oidcUserService,
 			LemonOAuth2UserService<?, ?> oauth2UserService,
 			OAuth2AuthenticationSuccessHandler<?,?> oauth2AuthenticationSuccessHandler,
-			LemonTokenAuthenticationFilter lemonTokenAuthenticationFilter,
-			PasswordEncoder passwordEncoder) {
+			JwtAuthenticationProvider<?,?> jwtAuthenticationProvider,
+			PasswordEncoder passwordEncoder
+			) {
 
 		this.userDetailsService = userDetailsService;
 		this.authenticationSuccessHandler = authenticationSuccessHandler;
@@ -74,12 +72,23 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 		this.oidcUserService = oidcUserService;
 		this.oauth2UserService = oauth2UserService;
 		this.oauth2AuthenticationSuccessHandler = oauth2AuthenticationSuccessHandler;
-		this.lemonTokenAuthenticationFilter = lemonTokenAuthenticationFilter;
+		this.jwtAuthenticationProvider = jwtAuthenticationProvider;
 		this.passwordEncoder = passwordEncoder;
 		
 		log.info("Created");
 	}
 	
+
+	/**
+	 * Needed for configuring JwtAuthenticationProvider
+	 */
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+  
+        auth.userDetailsService(userDetailsService)
+        	.passwordEncoder(passwordEncoder).and()
+        	.authenticationProvider(jwtAuthenticationProvider);
+    }
 
 	/**
 	 * Security configuration, calling protected methods
@@ -203,14 +212,9 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 	}
 
 
-	private void customTokenAuthentication(HttpSecurity http) {
+	private void customTokenAuthentication(HttpSecurity http) throws Exception {
 	
-//		AuthenticationManager authenticationManager = http
-//				.getSharedObject(AuthenticationManager.class);
-//		
-//		assert authenticationManager != null;
-//		
-		http.addFilterBefore(lemonTokenAuthenticationFilter,
+		http.addFilterBefore(new LemonTokenAuthenticationFilter(super.authenticationManager()),
 				UsernamePasswordAuthenticationFilter.class);
 	}
 
@@ -262,11 +266,4 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void otherConfigurations(HttpSecurity http)  throws Exception {
 
 	}
-	
-//    @Override
-//    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-//  
-//        auth.userDetailsService(userDetailsService)
-//        	.passwordEncoder(passwordEncoder);
-//    }
 }

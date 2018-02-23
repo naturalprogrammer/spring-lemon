@@ -11,8 +11,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,16 +22,10 @@ public class LemonTokenAuthenticationFilter	extends GenericFilterBean {
 	
 	private AuthenticationManager authenticationManager;
 	
-	public LemonTokenAuthenticationFilter() {
+	public LemonTokenAuthenticationFilter(AuthenticationManager authenticationManager) {
 		
-		log.info("Created");
-	}
-
-	@Autowired
-	@Lazy
-	public void setAuthenticationManager(AuthenticationManager authenticationManager) {
 		this.authenticationManager = authenticationManager;
-		log.info("Authentication manager set");
+		log.info("Created");
 	}
 
 	public static boolean tokenPresent(HttpServletRequest request) {
