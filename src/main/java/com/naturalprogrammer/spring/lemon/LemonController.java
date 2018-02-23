@@ -27,6 +27,7 @@ import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser.SignupInput;
 import com.naturalprogrammer.spring.lemon.domain.ChangePasswordForm;
 import com.naturalprogrammer.spring.lemon.forms.NonceForm;
+import com.naturalprogrammer.spring.lemon.security.JwtService;
 import com.naturalprogrammer.spring.lemon.security.SpringUser;
 import com.naturalprogrammer.spring.lemon.util.LemonUtils;
 
@@ -43,12 +44,20 @@ public abstract class LemonController
 
 	private static final Log log = LogFactory.getLog(LemonController.class);
 
+    private long jwtExpirationMilli;
+    private JwtService jwtService;
 	private LemonService<U, ID> lemonService;
 	
 	@Autowired
-	public void setLemonController(LemonService<U, ID> lemonService) {
+	public void createLemonController(
+			LemonProperties properties,
+			LemonService<U, ID> lemonService,
+			JwtService jwtService) {
 		
+		this.jwtExpirationMilli = properties.getJwt().getExpirationMilli();
 		this.lemonService = lemonService;
+		this.jwtService = jwtService;
+		
 		log.info("Created");
 	}
 
@@ -89,13 +98,16 @@ public abstract class LemonController
 	 */
 	@PostMapping(value = "/users", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@ResponseStatus(HttpStatus.CREATED)
-	public SpringUser<ID> signup(@RequestBody @JsonView(SignupInput.class) U user) {
+	public SpringUser<ID> signup(@RequestBody @JsonView(SignupInput.class) U user,
+			HttpServletResponse response) {
 		
 		log.debug("Signing up: " + user);
 		lemonService.signup(user);
 		log.debug("Signed up: " + user);
 		
-		return LemonUtils.getSpringUser();
+		SpringUser<ID> springUser = LemonUtils.getSpringUser();
+		jwtService.addAuthHeader(response, springUser.getUsername(), jwtExpirationMilli);
+		return springUser;
 	}
 	
 	
@@ -202,10 +214,12 @@ public abstract class LemonController
 	@PostMapping("/users/{id}/change-password")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void changePassword(@PathVariable("id") U user,
-			@RequestBody ChangePasswordForm changePasswordForm) {
+			@RequestBody ChangePasswordForm changePasswordForm,
+			HttpServletResponse response) {
 		
 		log.debug("Changing password ... ");				
-		lemonService.changePassword(user, changePasswordForm);
+		String username = lemonService.changePassword(user, changePasswordForm);
+		jwtService.addAuthHeader(response, username, jwtExpirationMilli);
 	}
 
 
@@ -227,10 +241,12 @@ public abstract class LemonController
 	 */
 	@PostMapping("/users/{changeEmailCode}/change-email")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void changeEmail(@PathVariable String changeEmailCode) {
+	public void changeEmail(@PathVariable String changeEmailCode,
+			HttpServletResponse response) {
 		
 		log.debug("Changing email of user ...");		
-		lemonService.changeEmail(changeEmailCode);
+		String username = lemonService.changeEmail(changeEmailCode);
+		jwtService.addAuthHeader(response, username, jwtExpirationMilli);
 	}
 	
 	/**
@@ -240,7 +256,18 @@ public abstract class LemonController
 	public SpringUser<ID> loginWithNonce(@RequestBody NonceForm<ID> nonce, HttpServletResponse response) {
 		
 		log.debug("Logging in user in exchange of nonce ... ");
-		return lemonService.loginWithNonce(nonce, response);
+		lemonService.loginWithNonce(nonce, response);
+		
+		SpringUser<ID> springUser = LemonUtils.getSpringUser();
+		
+		if (nonce.getExpirationMilli() == null)
+			nonce.setExpirationMilli(jwtExpirationMilli);
+		
+		jwtService.addAuthHeader(response,
+				springUser.getUsername(),
+				nonce.getExpirationMilli());
+
+		return springUser;
 	}
 	
 	/**

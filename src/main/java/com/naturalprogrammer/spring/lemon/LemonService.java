@@ -508,7 +508,7 @@ public abstract class LemonService
 	 */
 	@UserEditPermission
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
-	public void changePassword(U user, @Valid ChangePasswordForm changePasswordForm) {
+	public String changePassword(U user, @Valid ChangePasswordForm changePasswordForm) {
 		
 		log.debug("Changing password for user: " + user);
 
@@ -525,19 +525,20 @@ public abstract class LemonService
 		user.setCredentialsUpdatedAt(new Date());
 		userRepository.save(user);
 		
-		// after successful commit
-		LemonUtils.afterCommit(() -> {
-
-			SpringUser<ID> currentUser = LemonUtils.getSpringUser();
-			
-			if (currentUser.getId().equals(user.getId())) { // if current-user's password changed,
-				
-				log.debug("Logging out ...");
-				LemonUtils.logOut(); // log him out
-			}
-		});
-		
+//		// after successful commit
+//		LemonUtils.afterCommit(() -> {
+//
+//			SpringUser<ID> currentUser = LemonUtils.getSpringUser();
+//			
+////			if (currentUser.getId().equals(user.getId())) { // if current-user's password changed,
+////				
+////				log.debug("Logging out ...");
+////				LemonUtils.logOut(); // log him out
+////			}
+//		});
+//		
 		log.debug("Changed password for user: " + user);
+		return user.toSpringUser().getUsername();
 	}
 
 
@@ -655,7 +656,7 @@ public abstract class LemonService
 	 */
 	@PreAuthorize("isAuthenticated()")
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
-	public void changeEmail(@Valid @NotBlank String changeEmailCode) {
+	public String changeEmail(@Valid @NotBlank String changeEmailCode) {
 		
 		log.debug("Changing email of current user ...");
 
@@ -686,9 +687,10 @@ public abstract class LemonService
 		userRepository.save(user);
 		
 		// logout after successful commit
-		LemonUtils.afterCommit(LemonUtils::logOut);
+		//LemonUtils.afterCommit(LemonUtils::logOut);
 		
-		log.debug("Changed email of user: " + user);		
+		log.debug("Changed email of user: " + user);
+		return user.toSpringUser().getUsername();
 	}
 
 
@@ -711,7 +713,7 @@ public abstract class LemonService
 	}
 
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
-	public SpringUser<ID> loginWithNonce(@Valid NonceForm<ID> nonce, HttpServletResponse response) {
+	public void loginWithNonce(@Valid NonceForm<ID> nonce, HttpServletResponse response) {
 		
 		U user = userRepository.findById(nonce.getUserId())
 			.orElseThrow(MultiErrorException.supplier(
@@ -721,18 +723,9 @@ public abstract class LemonService
 			
 			user.setNonce(null);
 			userRepository.save(user);
-			
-			if (nonce.getExpirationMilli() == null)
-				nonce.setExpirationMilli(properties.getJwt().getExpirationMilli());
-			
-			jwtService.addAuthHeader(response,
-					user.toSpringUser().getUsername(),
-					nonce.getExpirationMilli());
-
-			return user.toSpringUser();
-		}
-		
-		throw MultiErrorException.supplier("com.naturalprogrammer.spring.invalidNonce").get();
+			LemonUtils.logIn(user);
+		} else	
+			throw MultiErrorException.supplier("com.naturalprogrammer.spring.invalidNonce").get();
 	}
 
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
@@ -752,12 +745,12 @@ public abstract class LemonService
 	@PreAuthorize("isAuthenticated()")
 	public SpringUser<ID> fetchNewToken(Optional<Long> expirationMillis, HttpServletResponse response) {
 		
-		SpringUser<ID> user = LemonUtils.getSpringUser();
+		SpringUser<ID> springUser = LemonUtils.getSpringUser();
 		
 		jwtService.addAuthHeader(response,
-				user.getUsername(),
+				springUser.getUsername(),
 				expirationMillis.orElse(properties.getJwt().getExpirationMilli()));
 		
-		return user;
+		return springUser;
 	}
 }

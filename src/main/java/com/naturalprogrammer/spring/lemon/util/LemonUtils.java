@@ -160,13 +160,13 @@ public class LemonUtils {
 	    principal.eraseCredentials();
 	}
 	
-
-	/**
-	 * Signs a user out
-	 */
-	public static void logOut() {
-		SecurityContextHolder.getContext().setAuthentication(null); // set the authentication to null
-	}
+//
+//	/**
+//	 * Signs a user out
+//	 */
+//	public static void logOut() {
+//		SecurityContextHolder.getContext().setAuthentication(null); // set the authentication to null
+//	}
 
 
 	/**
