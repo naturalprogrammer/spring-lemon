@@ -19,8 +19,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.support.TransactionSynchronizationAdapter;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.TreeNode;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.fge.jsonpatch.JsonPatch;
@@ -155,6 +157,7 @@ public class LemonUtils {
 	    	new UsernamePasswordAuthenticationToken(principal, null, principal.getAuthorities());
 
 	    SecurityContextHolder.getContext().setAuthentication(authentication); // put that in the security context
+	    principal.eraseCredentials();
 	}
 	
 
@@ -258,5 +261,16 @@ public class LemonUtils {
 
         // Convert the patched node to an updated obj
         return objectMapper.treeToValue(patchedObjNode, (Class<T>) originalObj.getClass());
-    }	
+    }
+    
+	public static <T> String toJson(T obj) throws JsonProcessingException {
+
+		return objectMapper.writeValueAsString(obj);
+	}
+	
+	public static <T> T fromJson(String json, Class<T> clazz)
+			throws JsonParseException, JsonMappingException, IOException {
+
+		return objectMapper.readValue(json, clazz);
+	}
 }

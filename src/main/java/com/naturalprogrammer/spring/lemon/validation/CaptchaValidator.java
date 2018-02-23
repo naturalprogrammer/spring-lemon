@@ -80,7 +80,7 @@ public class CaptchaValidator implements ConstraintValidator<Captcha, String> {
 		// If reCAPTCHA site key is not given as a property,
 		// e.g. while testing or getting started,
 		// no need to validate.
-		if (properties.getRecaptcha().getSitekey() == null) { // 
+		if (StringUtils.isBlank(properties.getRecaptcha().getSitekey())) { // 
 			log.debug("Captcha validation not done, as it is disabled in application properties.");
 			return true;
 		}
