@@ -94,10 +94,10 @@ extends VersionedEntity<U, ID> {
 //	@Column(length = UUID_LENGTH, unique=true)
 //	protected String verificationCode;
 	
-	// forgot password code
-	@Column(length = UUID_LENGTH, unique=true)
-	protected String forgotPasswordCode;
-	
+//	// forgot password code
+//	@Column(length = UUID_LENGTH, unique=true)
+//	protected String forgotPasswordCode;
+//	
 	// in the email-change process, temporarily stores the new email
 	@UniqueEmail(groups = {ChangeEmailValidation.class})
 	@Column(length = EMAIL_MAX)
@@ -130,14 +130,14 @@ extends VersionedEntity<U, ID> {
 //		this.verificationCode = verificationCode;
 //	}
 
-	public String getForgotPasswordCode() {
-		return forgotPasswordCode;
-	}
-
-	public void setForgotPasswordCode(String forgotPasswordCode) {
-		this.forgotPasswordCode = forgotPasswordCode;
-	}
-	
+//	public String getForgotPasswordCode() {
+//		return forgotPasswordCode;
+//	}
+//
+//	public void setForgotPasswordCode(String forgotPasswordCode) {
+//		this.forgotPasswordCode = forgotPasswordCode;
+//	}
+//	
 	public String getNewEmail() {
 		return newEmail;
 	}
@@ -198,7 +198,7 @@ extends VersionedEntity<U, ID> {
 		
 		password = null;
 		//verificationCode = null;
-		forgotPasswordCode = null;
+		//forgotPasswordCode = null;
 		
 		if (!hasPermission(LemonUtils.getSpringUser(), Permission.EDIT))
 			email = null;

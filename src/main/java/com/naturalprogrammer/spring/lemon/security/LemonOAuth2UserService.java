@@ -3,6 +3,9 @@ package com.naturalprogrammer.spring.lemon.security;
 import java.io.Serializable;
 import java.util.Map;
 
+import javax.mail.MessagingException;
+
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -59,7 +62,17 @@ public class LemonOAuth2UserService<U extends AbstractUser<U,ID>, ID extends Ser
 			newUser.setPassword(passwordEncoder.encode(LemonUtils.uid()));
 			
 			lemonService.fillAdditionalFields(registrationId, newUser, attributes);
-			lemonService.forgotPassword(newUser);
+			lemonService.save(newUser);
+			
+			try {
+				
+				lemonService.mailForgotPasswordLink(newUser);
+				
+			} catch (MessagingException e) {
+				
+				// In case of exception, just log the error and keep silent			
+				log.error(ExceptionUtils.getStackTrace(e));
+			}
 			
 			return newUser;
     	});

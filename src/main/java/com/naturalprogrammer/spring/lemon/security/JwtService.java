@@ -40,6 +40,7 @@ public class JwtService {
 	
     public static final String AUTH_AUDIENCE = "auth";
     public static final String VERIFY_AUDIENCE = "verify";
+    public static final String FORGOT_PASSWORD_AUDIENCE = "forgot";
 	
     private DirectEncrypter encrypter;
     private JWEHeader header = new JWEHeader(JWEAlgorithm.DIR, EncryptionMethod.A128CBC_HS256);

@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.util.Map;
 import java.util.Optional;
 
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
@@ -141,10 +142,11 @@ public abstract class LemonController
 
 	/**
 	 * The forgot Password feature.
+	 * @throws MessagingException 
 	 */
 	@PostMapping("/forgot-password")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void forgotPassword(@RequestParam String email) {
+	public void forgotPassword(@RequestParam String email) throws MessagingException {
 		
 		log.debug("Received forgot password request for: " + email);				
 		lemonService.forgotPassword(email);
@@ -154,13 +156,14 @@ public abstract class LemonController
 	/**
 	 * Resets password after it is forgotten.
 	 */
-	@PostMapping("/users/{forgotPasswordCode}/reset-password")
+	@PostMapping("/users/{userId}/reset-password")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void resetPassword(@PathVariable String forgotPasswordCode,
+	public void resetPassword(@PathVariable ID userId,
+							  @RequestParam String code,
 							  @RequestParam String newPassword) {
 		
 		log.debug("Resetting password ... ");				
-		lemonService.resetPassword(forgotPasswordCode, newPassword);
+		lemonService.resetPassword(userId, code, newPassword);
 	}
 
 

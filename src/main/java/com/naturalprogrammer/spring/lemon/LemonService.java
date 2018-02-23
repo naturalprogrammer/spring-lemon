@@ -385,9 +385,10 @@ public abstract class LemonService
 	 * Forgot password.
 	 * 
 	 * @param email	the email of the user who forgot his password
+	 * @throws MessagingException 
 	 */
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
-	public void forgotPassword(@Valid @Email @NotBlank String email) {
+	public void forgotPassword(@Valid @Email @NotBlank String email) throws MessagingException {
 		
 		log.debug("Processing forgot password for email: " + email);
 		
@@ -396,62 +397,83 @@ public abstract class LemonService
 				.orElseThrow(MultiErrorException.supplier(
 					"com.naturalprogrammer.spring.userNotFound"));
 
-		// set a forgot password code
-		user.setForgotPasswordCode(LemonUtils.uid());
-		userRepository.save(user);
-
-		// after successful commit, mail him a link to reset his password
-		LemonUtils.afterCommit(() -> mailForgotPasswordLink(user));
+		mailForgotPasswordLink(user);
+//		
+//		// set a forgot password code
+//		user.setForgotPasswordCode(LemonUtils.uid());
+//		userRepository.save(user);
+//
+//		// after successful commit, mail him a link to reset his password
+//		LemonUtils.afterCommit(() -> mailForgotPasswordLink(user));
 	}
 	
 	
-	/**
-	 * Forgot password.
-	 * 
-	 * @param email	the email of the user who forgot his password
-	 */
-	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
-	public void forgotPassword(U user) {
-		
-		log.debug("Processing forgot password for user: " + user);
-		
-		// set a forgot password code
-		user.setForgotPasswordCode(LemonUtils.uid());
-		userRepository.save(user);
-
-		// after successful commit, mail him a link to reset his password
-		LemonUtils.afterCommit(() -> mailForgotPasswordLink(user));
-	}
-	
-	
+//	/**
+//	 * Forgot password.
+//	 * 
+//	 * @param email	the email of the user who forgot his password
+//	 */
+//	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
+//	public void forgotPassword(U user) {
+//		
+//		log.debug("Processing forgot password for user: " + user);
+//		
+//		// set a forgot password code
+//		user.setForgotPasswordCode(LemonUtils.uid());
+//		userRepository.save(user);
+//
+//		// after successful commit, mail him a link to reset his password
+//		LemonUtils.afterCommit(() -> mailForgotPasswordLink(user));
+//	}
+//	
+//	
 	/**
 	 * Mails the forgot password link.
 	 * 
 	 * @param user
+	 * @throws MessagingException 
 	 */
-	protected void mailForgotPasswordLink(U user) {
+	public void mailForgotPasswordLink(U user) throws MessagingException {
 		
-		try {
+		log.debug("Mailing forgot password link to user: " + user);
 
-			log.debug("Mailing forgot password link to user: " + user);
+		String forgotPasswordCode = jwtService.createToken(JwtService.FORGOT_PASSWORD_AUDIENCE,
+				user.getId().toString(), properties.getJwt().getExpirationMilli(),
+				LemonUtils.mapOf("email", user.getEmail()));
 
-			// make the link
-			String forgotPasswordLink =	properties.getApplicationUrl()
-				    + "/users/" + user.getForgotPasswordCode()
-					+ "/reset-password";
-			
-			// send the mail
-			mailSender.send(user.getEmail(),
-					LemonUtils.getMessage("com.naturalprogrammer.spring.forgotPasswordSubject"),
-					LemonUtils.getMessage("com.naturalprogrammer.spring.forgotPasswordEmail",
-						forgotPasswordLink));
-			
-			log.debug("Forgot password link mail queued.");
-			
-		} catch (MessagingException e) {
-			// In case of exception, just log the error and keep silent			
-			log.error(ExceptionUtils.getStackTrace(e));
-		}
+		// make the link
+		String forgotPasswordLink =	properties.getApplicationUrl()
+			    + "/users/" + user.getId()
+				+ "/reset-password?code=" + forgotPasswordCode;
+		
+		// send the mail
+		mailSender.send(user.getEmail(),
+				LemonUtils.getMessage("com.naturalprogrammer.spring.forgotPasswordSubject"),
+				LemonUtils.getMessage("com.naturalprogrammer.spring.forgotPasswordEmail",
+					forgotPasswordLink));
+		
+		log.debug("Forgot password link mail queued.");
+//
+//		try {
+//
+//			
+//			// make the link
+//			String forgotPasswordLink =	properties.getApplicationUrl()
+//				    + "/users/" + user.getForgotPasswordCode()
+//					+ "/reset-password";
+//			
+//			// send the mail
+//			mailSender.send(user.getEmail(),
+//					LemonUtils.getMessage("com.naturalprogrammer.spring.forgotPasswordSubject"),
+//					LemonUtils.getMessage("com.naturalprogrammer.spring.forgotPasswordEmail",
+//						forgotPasswordLink));
+//			
+//			log.debug("Forgot password link mail queued.");
+//			
+//		} catch (MessagingException e) {
+//			// In case of exception, just log the error and keep silent			
+//			log.error(ExceptionUtils.getStackTrace(e));
+//		}
 	}
 
 	
@@ -462,25 +484,32 @@ public abstract class LemonService
 	 * @param newPassword
 	 */
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
-	public void resetPassword(@Valid @NotBlank String forgotPasswordCode,
-							  @Valid @Password String newPassword) {
+	public void resetPassword(ID userId,
+			@Valid @NotBlank String forgotPasswordCode,
+			@Valid @Password String newPassword) {
 		
 		log.debug("Resetting password ...");
 
 		// fetch the user
-		U user = userRepository
-			.findByForgotPasswordCode(forgotPasswordCode)
-			.orElseThrow(MultiErrorException.supplier(
-				"com.naturalprogrammer.spring.invalidLink"));
+		U user = userRepository.getOne(userId);
+		LemonUtils.check(user != null, "com.naturalprogrammer.spring.invalidLink").go();
+		
+		JWTClaimsSet claims = jwtService.parseToken(forgotPasswordCode,
+				JwtService.FORGOT_PASSWORD_AUDIENCE,
+				user.getCredentialsUpdatedAt());
+		
+		LemonUtils.check(
+				claims.getSubject().equals(user.getId().toString()) &&
+				claims.getClaim("email").equals(user.getEmail()),
+				"com.naturalprogrammer.spring.invalidLink").go();
 		
 		// sets the password
 		user.setPassword(passwordEncoder.encode(newPassword));
-		user.setForgotPasswordCode(null);
+		user.setCredentialsUpdatedAt(new Date());
+		//user.setForgotPasswordCode(null);
 		
-		userRepository.save(user);
-		
-		log.debug("Password reset.");	
-		
+		userRepository.save(user);	
+		log.debug("Password reset.");		
 	}
 
 	
@@ -759,5 +788,11 @@ public abstract class LemonService
 				expirationMillis.orElse(properties.getJwt().getExpirationMilli()));
 		
 		return springUser;
+	}
+
+	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
+	public void save(U user) {
+		
+		userRepository.save(user);
 	}
 }
