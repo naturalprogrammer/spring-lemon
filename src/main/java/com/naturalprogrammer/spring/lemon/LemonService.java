@@ -41,6 +41,7 @@ import com.naturalprogrammer.spring.lemon.security.JwtService;
 import com.naturalprogrammer.spring.lemon.security.SpringUser;
 import com.naturalprogrammer.spring.lemon.util.LemonUtils;
 import com.naturalprogrammer.spring.lemon.validation.Password;
+import com.nimbusds.jwt.JWTClaimsSet;
 
 /**
  * The Lemon Service class
@@ -226,7 +227,8 @@ public abstract class LemonService
 	 */
 	protected void makeUnverified(U user) {
 		user.getRoles().add(Role.UNVERIFIED);
-		user.setVerificationCode(LemonUtils.uid());
+		user.setCredentialsUpdatedAt(new Date());
+		//user.setVerificationCode(LemonUtils.uid());
 	}
 	
 	
@@ -236,7 +238,8 @@ public abstract class LemonService
 	 */
 	protected void makeVerified(U user) {
 		user.getRoles().remove(Role.UNVERIFIED);
-		user.setVerificationCode(null);
+		user.setCredentialsUpdatedAt(new Date());
+		//user.setVerificationCode(null);
 	}
 	
 	
@@ -249,10 +252,14 @@ public abstract class LemonService
 		try {
 			
 			log.debug("Sending verification mail to: " + user);
+			
+			String verificationCode = jwtService.createToken(JwtService.VERIFY_AUDIENCE,
+					user.getId().toString(), properties.getJwt().getExpirationMilli(),
+					LemonUtils.mapOf("email", user.getEmail()));
 
 			// make the link
 			String verifyLink = properties.getApplicationUrl()
-				+ "/users/" + user.getVerificationCode() + "/verify";
+				+ "/users/" + user.getId() + "/verification?code=" + verificationCode;
 			
 			// send the mail
 			mailSender.send(user.getEmail(),
@@ -340,21 +347,22 @@ public abstract class LemonService
 	 *  
 	 * @param verificationCode
 	 */
-	@PreAuthorize("isAuthenticated()")
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
-	public void verifyUser(@Valid @NotBlank String verificationCode) {
+	public void verifyUser(ID userId, String verificationCode) {
 		
 		log.debug("Verifying user ...");
 
-		// fetch a fresh copy from the database
-		U user = userRepository.getOne((ID) LemonUtils.getSpringUser().getId());
+		U user = userRepository.getOne(userId);
 		
 		// ensure that he is unverified
-		LemonUtils.check(user.hasRole(Role.UNVERIFIED),
+		LemonUtils.check(user != null && user.hasRole(Role.UNVERIFIED),
 				"com.naturalprogrammer.spring.alreadyVerified").go();	
 		
-		// ensure that the verification code of the user matches with the given one
-		LemonUtils.check(verificationCode.equals(user.getVerificationCode()),
+		JWTClaimsSet claims = jwtService.parseToken(verificationCode, JwtService.VERIFY_AUDIENCE, user.getCredentialsUpdatedAt());
+		
+		LemonUtils.check(
+				claims.getSubject().equals(user.getId().toString()) &&
+				claims.getClaim("email").equals(user.getEmail()),
 				"com.naturalprogrammer.spring.wrong.verificationCode").go();
 		
 		makeVerified(user); // make him verified
@@ -737,7 +745,6 @@ public abstract class LemonService
 		
 		return nonce;
 	}
-
 
 	/**
 	 * Fetches a new token - for session scrolling etc.

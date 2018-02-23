@@ -127,11 +127,13 @@ public abstract class LemonController
 	/**
 	 * Verifies current-user.
 	 */
-	@PostMapping(value = "/users/{verificationCode}/verify", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public SpringUser<ID> verifyUser(@PathVariable String verificationCode) {
+	@PostMapping(value = "/users/{userId}/verification", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public SpringUser<ID> verifyUser(
+			@PathVariable ID userId,
+			@RequestParam String code) {
 		
 		log.debug("Verifying user ...");		
-		lemonService.verifyUser(verificationCode);
+		lemonService.verifyUser(userId, code);
 		
 		return LemonUtils.getSpringUser();
 	}

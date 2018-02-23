@@ -38,6 +38,9 @@ import com.nimbusds.jwt.proc.DefaultJWTProcessor;
  */
 public class JwtService {
 	
+    public static final String AUTH_AUDIENCE = "auth";
+    public static final String VERIFY_AUDIENCE = "verify";
+	
     private DirectEncrypter encrypter;
     private JWEHeader header = new JWEHeader(JWEAlgorithm.DIR, EncryptionMethod.A128CBC_HS256);
     private ConfigurableJWTProcessor<SimpleSecurityContext> jwtProcessor;
@@ -112,10 +115,17 @@ public class JwtService {
 		}
 	}
 	
+	public JWTClaimsSet parseToken(String token, String audience, Date cutoffDate) {
+		
+		JWTClaimsSet claims = parseToken(token, JwtService.AUTH_AUDIENCE);
+		LemonUtils.check(claims.getIssueTime().after(cutoffDate), "obsoleteToken").go();		
+		return claims;
+	}	
+	
 	public void addAuthHeader(HttpServletResponse response, String username, Long expirationMilli) {
 	
 		response.addHeader(LemonSecurityConfig.TOKEN_RESPONSE_HEADER_NAME,
 				LemonSecurityConfig.TOKEN_PREFIX +
-				createToken(LemonSecurityConfig.AUTH_AUDIENCE, username, expirationMilli));
+				createToken(AUTH_AUDIENCE, username, expirationMilli));
 	}
 }

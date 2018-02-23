@@ -36,7 +36,7 @@ public class JwtAuthenticationProvider
 
 		String token = (String) auth.getCredentials();
 		
-		JWTClaimsSet claims = jwtService.parseToken(token, LemonSecurityConfig.AUTH_AUDIENCE);
+		JWTClaimsSet claims = jwtService.parseToken(token, JwtService.AUTH_AUDIENCE);
 		
         String username = claims.getSubject();
         U user = userDetailsService.findUserByUsername(username)

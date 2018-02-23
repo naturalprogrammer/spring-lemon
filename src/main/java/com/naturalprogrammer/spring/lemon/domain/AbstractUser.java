@@ -90,9 +90,9 @@ extends VersionedEntity<U, ID> {
     @Column(name="role")
 	private Set<String> roles = new HashSet<>();
 	
-	// verification code
-	@Column(length = UUID_LENGTH, unique=true)
-	protected String verificationCode;
+//	// verification code
+//	@Column(length = UUID_LENGTH, unique=true)
+//	protected String verificationCode;
 	
 	// forgot password code
 	@Column(length = UUID_LENGTH, unique=true)
@@ -122,13 +122,13 @@ extends VersionedEntity<U, ID> {
 	
 	// getters and setters
 	
-	public String getVerificationCode() {
-		return verificationCode;
-	}
-
-	public void setVerificationCode(String verificationCode) {
-		this.verificationCode = verificationCode;
-	}
+//	public String getVerificationCode() {
+//		return verificationCode;
+//	}
+//
+//	public void setVerificationCode(String verificationCode) {
+//		this.verificationCode = verificationCode;
+//	}
 
 	public String getForgotPasswordCode() {
 		return forgotPasswordCode;
@@ -197,7 +197,7 @@ extends VersionedEntity<U, ID> {
 	public void hideConfidentialFields() {
 		
 		password = null;
-		verificationCode = null;
+		//verificationCode = null;
 		forgotPasswordCode = null;
 		
 		if (!hasPermission(LemonUtils.getSpringUser(), Permission.EDIT))
