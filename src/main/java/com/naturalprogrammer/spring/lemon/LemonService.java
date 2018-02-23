@@ -232,15 +232,15 @@ public abstract class LemonService
 	}
 	
 	
-	/***
-	 * Makes a user verified
-	 * @param user
-	 */
-	protected void makeVerified(U user) {
-		user.getRoles().remove(Role.UNVERIFIED);
-		user.setCredentialsUpdatedAt(new Date());
-		//user.setVerificationCode(null);
-	}
+//	/***
+//	 * Makes a user verified
+//	 * @param user
+//	 */
+//	protected void makeVerified(U user) {
+//		user.getRoles().remove(Role.UNVERIFIED);
+//		user.setCredentialsUpdatedAt(new Date());
+//		//user.setVerificationCode(null);
+//	}
 	
 	
 	/**
@@ -365,7 +365,8 @@ public abstract class LemonService
 				claims.getClaim("email").equals(user.getEmail()),
 				"com.naturalprogrammer.spring.wrong.verificationCode").go();
 		
-		makeVerified(user); // make him verified
+		user.getRoles().remove(Role.UNVERIFIED); // make him verified
+		user.setCredentialsUpdatedAt(new Date());
 		userRepository.save(user);
 		
 		// after successful commit,
@@ -373,7 +374,6 @@ public abstract class LemonService
 			
 			// Re-login the user, so that the UNVERIFIED role is removed
 			LemonUtils.logIn(user);
-			
 			log.debug("Re-logged-in the user for removing UNVERIFIED role.");		
 		});
 		
@@ -508,7 +508,15 @@ public abstract class LemonService
 		user.setCredentialsUpdatedAt(new Date());
 		//user.setForgotPasswordCode(null);
 		
-		userRepository.save(user);	
+		userRepository.save(user);
+		
+		// after successful commit,
+		LemonUtils.afterCommit(() -> {
+			
+			// Login the user
+			LemonUtils.logIn(user);
+		});
+		
 		log.debug("Password reset.");		
 	}
 
@@ -533,6 +541,13 @@ public abstract class LemonService
 		updateUserFields(user, updatedUser, LemonUtils.getSpringUser());
 		userRepository.save(user);
 		
+		// after successful commit,
+		LemonUtils.afterCommit(() -> {
+			
+			// Login the user
+			LemonUtils.logIn(user);
+		});
+
 		log.debug("Updated user: " + user);		
 	}
 	
@@ -611,10 +626,11 @@ public abstract class LemonService
 			} else {
 				
 				if (user.hasRole(Role.UNVERIFIED))
-					makeVerified(user); // make user verified
+					user.getRoles().remove(Role.UNVERIFIED); // make user verified
 			}
 			
 			user.setRoles(updatedUser.getRoles());
+			user.setCredentialsUpdatedAt(new Date());
 		}
 	}
 
@@ -697,7 +713,7 @@ public abstract class LemonService
 	 */
 	@PreAuthorize("isAuthenticated()")
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
-	public String changeEmail(ID userId, @Valid @NotBlank String changeEmailCode) {
+	public void changeEmail(ID userId, @Valid @NotBlank String changeEmailCode) {
 		
 		log.debug("Changing email of current user ...");
 
@@ -735,15 +751,20 @@ public abstract class LemonService
 		
 		// make the user verified if he is not
 		if (user.hasRole(Role.UNVERIFIED))
-			makeVerified(user);
+			user.getRoles().remove(Role.UNVERIFIED);
 		
 		userRepository.save(user);
 		
+		// after successful commit,
+		LemonUtils.afterCommit(() -> {
+			
+			// Login the user
+			LemonUtils.logIn(user);
+		});
 		// logout after successful commit
 		//LemonUtils.afterCommit(LemonUtils::logOut);
 		
 		log.debug("Changed email of user: " + user);
-		return user.toSpringUser().getUsername();
 	}
 
 

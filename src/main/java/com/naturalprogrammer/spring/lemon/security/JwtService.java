@@ -120,7 +120,7 @@ public class JwtService {
 	public JWTClaimsSet parseToken(String token, String audience, Date cutoffDate) {
 		
 		JWTClaimsSet claims = parseToken(token, JwtService.AUTH_AUDIENCE);
-		LemonUtils.check(claims.getIssueTime().after(cutoffDate), "obsoleteToken").go();		
+		LemonUtils.check(!claims.getIssueTime().before(cutoffDate), "obsoleteToken").go();		
 		return claims;
 	}	
 	

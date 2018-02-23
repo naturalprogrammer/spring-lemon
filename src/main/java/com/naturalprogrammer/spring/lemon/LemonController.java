@@ -105,10 +105,8 @@ public abstract class LemonController
 		log.debug("Signing up: " + user);
 		lemonService.signup(user);
 		log.debug("Signed up: " + user);
-		
-		SpringUser<ID> springUser = LemonUtils.getSpringUser();
-		jwtService.addAuthHeader(response, springUser.getUsername(), jwtExpirationMilli);
-		return springUser;
+
+		return springUserWithToken(response);
 	}
 	
 	
@@ -131,12 +129,13 @@ public abstract class LemonController
 	@PostMapping(value = "/users/{userId}/verification", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public SpringUser<ID> verifyUser(
 			@PathVariable ID userId,
-			@RequestParam String code) {
+			@RequestParam String code,
+			HttpServletResponse response) {
 		
 		log.debug("Verifying user ...");		
 		lemonService.verifyUser(userId, code);
 		
-		return LemonUtils.getSpringUser();
+		return springUserWithToken(response);
 	}
 	
 
@@ -155,15 +154,19 @@ public abstract class LemonController
 
 	/**
 	 * Resets password after it is forgotten.
+	 * @return 
 	 */
 	@PostMapping("/users/{userId}/reset-password")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void resetPassword(@PathVariable ID userId,
+	public SpringUser<ID> resetPassword(@PathVariable ID userId,
 							  @RequestParam String code,
-							  @RequestParam String newPassword) {
+							  @RequestParam String newPassword,
+							  HttpServletResponse response) {
 		
 		log.debug("Resetting password ... ");				
 		lemonService.resetPassword(userId, code, newPassword);
+		
+		return springUserWithToken(response);
 	}
 
 
@@ -196,7 +199,10 @@ public abstract class LemonController
 	 * @throws JsonProcessingException 
 	 */
 	@PatchMapping(value = "/users/{id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public SpringUser<ID> updateUser(@PathVariable("id") U user, @RequestBody String patch)
+	public SpringUser<ID> updateUser(
+			@PathVariable("id") U user,
+			@RequestBody String patch,
+			HttpServletResponse response)
 			throws JsonProcessingException, IOException, JsonPatchException {
 		
 		log.debug("Updating user ... ");
@@ -209,7 +215,7 @@ public abstract class LemonController
 		lemonService.updateUser(user, updatedUser);
 		
 		// return the currently logged in user data (in case updated)
-		return LemonUtils.getSpringUser();		
+		return springUserWithToken(response);		
 	}
 	
 	
@@ -224,6 +230,7 @@ public abstract class LemonController
 		
 		log.debug("Changing password ... ");				
 		String username = lemonService.changePassword(user, changePasswordForm);
+		
 		jwtService.addAuthHeader(response, username, jwtExpirationMilli);
 	}
 
@@ -243,17 +250,20 @@ public abstract class LemonController
 
 	/**
 	 * Changes the email.
+	 * @return 
 	 */
 	@PostMapping("/users/{userId}/change-email")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void changeEmail(
+	public SpringUser<ID> changeEmail(
 			@PathVariable ID userId,
 			@RequestParam String code,
 			HttpServletResponse response) {
 		
 		log.debug("Changing email of user ...");		
-		String username = lemonService.changeEmail(userId, code);
-		jwtService.addAuthHeader(response, username, jwtExpirationMilli);
+		lemonService.changeEmail(userId, code);
+		
+		// return the currently logged in user with new email
+		return springUserWithToken(response);		
 	}
 	
 	/**
@@ -285,5 +295,13 @@ public abstract class LemonController
 		
 		log.debug("Logging in user in exchange of nonce ... ");
 		return lemonService.fetchNewToken(expirationMillis, response);
-	}	
+	}
+
+	
+	protected SpringUser<ID> springUserWithToken(HttpServletResponse response) {
+		
+		SpringUser<ID> springUser = LemonUtils.getSpringUser();
+		jwtService.addAuthHeader(response, springUser.getUsername(), jwtExpirationMilli);
+		return springUser;
+	}
 }
