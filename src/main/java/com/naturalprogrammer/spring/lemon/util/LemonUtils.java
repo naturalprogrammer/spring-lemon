@@ -11,6 +11,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -218,6 +219,14 @@ public class LemonUtils {
 		return new MultiErrorException().check(fieldName, valid, messageKey, args);
 	}
 
+	public static <T> void validateFound(T entity) {
+		
+		LemonUtils.check("id", entity != null,
+				"com.naturalprogrammer.spring.notFound")
+				.httpStatus(HttpStatus.NOT_FOUND).go();
+	}
+	
+	
 	
 	/**
 	 * A convenient method for running code

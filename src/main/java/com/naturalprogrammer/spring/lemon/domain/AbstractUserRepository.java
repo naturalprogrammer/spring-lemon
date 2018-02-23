@@ -21,5 +21,5 @@ public interface AbstractUserRepository
 extends JpaRepository<U, ID> {
 	
 	Optional<U> findByEmail(String email);
-	Optional<U> findByForgotPasswordCode(String forgotPasswordCode);
+	//Optional<U> findByForgotPasswordCode(String forgotPasswordCode);
 }

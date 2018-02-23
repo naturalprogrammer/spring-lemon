@@ -285,8 +285,7 @@ public abstract class LemonService
 	public void resendVerificationMail(U user) {
 
 		// The user must exist
-		LemonUtils.check("id", user != null,
-				"com.naturalprogrammer.spring.userNotFound").go();
+		LemonUtils.validateFound(user);
 		
 		// must be unverified
 		LemonUtils.check(user.getRoles().contains(Role.UNVERIFIED),
@@ -309,8 +308,7 @@ public abstract class LemonService
 
 		// fetch the user
 		U user = userRepository.findByEmail(email)
-			.orElseThrow(MultiErrorException.supplier("email",
-				"com.naturalprogrammer.spring.userNotFound"));
+			.orElseThrow(MultiErrorException.notFoundSupplier());
 
 		// hide confidential fields
 		user.hideConfidentialFields();
@@ -332,8 +330,7 @@ public abstract class LemonService
 		log.debug("Fetching user: " + user);
 
 		// ensure that the user exists
-		LemonUtils.check("id", user != null,
-			"com.naturalprogrammer.spring.userNotFound").go();
+		LemonUtils.validateFound(user);
 		
 		// hide confidential fields
 		user.hideConfidentialFields();
@@ -394,8 +391,7 @@ public abstract class LemonService
 		
 		// fetch the user record from database
 		U user = userRepository.findByEmail(email)
-				.orElseThrow(MultiErrorException.supplier(
-					"com.naturalprogrammer.spring.userNotFound"));
+				.orElseThrow(MultiErrorException.notFoundSupplier());
 
 		mailForgotPasswordLink(user);
 //		
@@ -565,8 +561,7 @@ public abstract class LemonService
 		log.debug("Changing password for user: " + user);
 
 		// checks
-		LemonUtils.check("id", user != null,
-			"com.naturalprogrammer.spring.userNotFound").go();
+		LemonUtils.validateFound(user);
 		LemonUtils.check("changePasswordForm.oldPassword",
 			passwordEncoder.matches(changePasswordForm.getOldPassword(),
 									user.getPassword()),
@@ -649,9 +644,7 @@ public abstract class LemonService
 		log.debug("Requesting email change: " + user);
 
 		// checks
-		LemonUtils.check("id", user != null,
-			"com.naturalprogrammer.spring.userNotFound").go();
-	
+		LemonUtils.validateFound(user);	
 		LemonUtils.check("updatedUser.password",
 			passwordEncoder.matches(updatedUser.getPassword(),
 									user.getPassword()),
@@ -790,8 +783,7 @@ public abstract class LemonService
 	public void loginWithNonce(@Valid NonceForm<ID> nonce, HttpServletResponse response) {
 		
 		U user = userRepository.findById(nonce.getUserId())
-			.orElseThrow(MultiErrorException.supplier(
-				"com.naturalprogrammer.spring.userNotFound"));
+			.orElseThrow(MultiErrorException.notFoundSupplier());
 
 		if (user.getNonce().equals(nonce.getNonce())) {
 			
@@ -799,7 +791,7 @@ public abstract class LemonService
 			userRepository.save(user);
 			LemonUtils.logIn(user);
 		} else	
-			throw MultiErrorException.supplier("com.naturalprogrammer.spring.invalidNonce").get();
+			throw MultiErrorException.notFoundSupplier().get();
 	}
 
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)

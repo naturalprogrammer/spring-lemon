@@ -208,9 +208,7 @@ public abstract class LemonController
 		log.debug("Updating user ... ");
 		
 		// ensure that the user exists
-		LemonUtils.check("id", user != null,
-			"com.naturalprogrammer.spring.userNotFound").go();
-		
+		LemonUtils.validateFound(user);
 		U updatedUser = LemonUtils.applyPatch(user, patch); // create a patched form
 		lemonService.updateUser(user, updatedUser);
 		

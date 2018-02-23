@@ -103,14 +103,18 @@ public class MultiErrorException extends RuntimeException {
 	 * 
 	 * @return				the exception object
 	 */
-	public static Supplier<MultiErrorException> supplier(String fieldName, 
-			String messageKey, Object... args) {
+	public static Supplier<MultiErrorException> fieldSupplier(HttpStatus status,
+			String fieldName, String messageKey, Object... args) {
 		
-		MultiErrorException exception = new MultiErrorException();
-		exception.errors.add(new FieldError(fieldName, messageKey,
-				LemonUtils.getMessage(messageKey, args)));
-		
-		return () -> exception;
+		return () -> {
+			
+			MultiErrorException exception = new MultiErrorException();
+			exception.errors.add(new FieldError(fieldName, messageKey,
+					LemonUtils.getMessage(messageKey, args)));
+			exception.httpStatus(status);
+			
+			return exception;
+		};
 	}
 	
 	
@@ -122,11 +126,17 @@ public class MultiErrorException extends RuntimeException {
 	 * 
 	 * @return				the exception object
 	 */
-	public static Supplier<MultiErrorException> supplier(String messageKey, Object... args) {
+	public static Supplier<MultiErrorException> supplier(HttpStatus status, String messageKey, Object... args) {
 		
-		return MultiErrorException.supplier(null, messageKey, args);
+		return MultiErrorException.fieldSupplier(status, null, messageKey, args);
 	}
 	
+	public static Supplier<MultiErrorException> notFoundSupplier() {
+	
+		return MultiErrorException.supplier(HttpStatus.NOT_FOUND,
+				"com.naturalprogrammer.spring.notFound");
+
+	}
 	
 	/**
 	 * Throws the exception, if there are accumulated errors

@@ -21,6 +21,11 @@ public class MultiErrorExceptionHandler extends AbstractExceptionHandler<MultiEr
 	}
 	
 	@Override
+	public String getMessage(MultiErrorException ex) {
+		return ex.getMessage();
+	}
+
+	@Override
 	public HttpStatus getStatus(MultiErrorException ex) {
 		return ex.getStatus();
 	}

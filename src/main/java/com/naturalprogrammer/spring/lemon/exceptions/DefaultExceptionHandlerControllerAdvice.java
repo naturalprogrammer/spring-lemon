@@ -36,7 +36,7 @@ public class DefaultExceptionHandlerControllerAdvice<T extends Throwable> {
 
     	ErrorResponse errorResponse = errorResponseComposer.compose(ex).orElseThrow(() -> ex);
     	
-    	// Propogate up if the underlying AbcExceptionHandler wanted to use the message or status of DefaultErrorAttribute 
+    	// Propogate up if message or status is null 
     	if (errorResponse.incomplete())
     		throw ex;
     	
