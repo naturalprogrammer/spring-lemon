@@ -39,6 +39,9 @@ public class LemonErrorAttributes<T extends Throwable> extends DefaultErrorAttri
 		
 		Throwable ex = getError(request);
 		
+		if (ex == null) // sometimes getError may return null,
+			return;     // in which case, we can't add any more details
+		
 		errorAttributes.put("exception", ex.getClass().getSimpleName());
 		
 		errorResponseComposer.compose((T)ex).ifPresent(errorResponse -> {
