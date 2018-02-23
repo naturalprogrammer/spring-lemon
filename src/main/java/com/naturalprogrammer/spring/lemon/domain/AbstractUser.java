@@ -103,9 +103,9 @@ extends VersionedEntity<U, ID> {
 	@Column(length = EMAIL_MAX)
 	protected String newEmail;
 
-	// change email code
-	@Column(length = UUID_LENGTH, unique=true)
-	protected String changeEmailCode;
+//	// change email code
+//	@Column(length = UUID_LENGTH, unique=true)
+//	protected String changeEmailCode;
 	
 	// One time token
 	private String nonce;
@@ -146,14 +146,14 @@ extends VersionedEntity<U, ID> {
 		this.newEmail = newEmail;
 	}
 
-	public String getChangeEmailCode() {
-		return changeEmailCode;
-	}
-
-	public void setChangeEmailCode(String changeEmailCode) {
-		this.changeEmailCode = changeEmailCode;
-	}
-
+//	public String getChangeEmailCode() {
+//		return changeEmailCode;
+//	}
+//
+//	public void setChangeEmailCode(String changeEmailCode) {
+//		this.changeEmailCode = changeEmailCode;
+//	}
+//
 	public String getCaptchaResponse() {
 		return captchaResponse;
 	}

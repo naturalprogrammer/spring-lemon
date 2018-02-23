@@ -643,7 +643,7 @@ public abstract class LemonService
 
 		// preserves the new email id
 		user.setNewEmail(updatedUser.getNewEmail());
-		user.setChangeEmailCode(LemonUtils.uid());
+		//user.setChangeEmailCode(LemonUtils.uid());
 		userRepository.save(user);
 		
 		// after successful commit, mails a link to the user
@@ -660,14 +660,18 @@ public abstract class LemonService
 	 */
 	protected void mailChangeEmailLink(U user) {
 		
+		String changeEmailCode = jwtService.createToken(JwtService.CHANGE_EMAIL_AUDIENCE,
+				user.getId().toString(), properties.getJwt().getExpirationMilli(),
+				LemonUtils.mapOf("email", user.getNewEmail()));
+		
 		try {
 			
 			log.debug("Mailing change email link to user: " + user);
 
 			// make the link
 			String changeEmailLink = properties.getApplicationUrl()
-				    + "/users/" + user.getChangeEmailCode()
-					+ "/change-email";
+				    + "/users/" + user.getId()
+					+ "/change-email?code=" + changeEmailCode;
 			
 			// mail it
 			mailSender.send(user.getEmail(),
@@ -693,17 +697,29 @@ public abstract class LemonService
 	 */
 	@PreAuthorize("isAuthenticated()")
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
-	public String changeEmail(@Valid @NotBlank String changeEmailCode) {
+	public String changeEmail(ID userId, @Valid @NotBlank String changeEmailCode) {
 		
 		log.debug("Changing email of current user ...");
 
 		// fetch the current-user
 		SpringUser<ID> currentUser = LemonUtils.getSpringUser();
+		
+		LemonUtils.check(userId.equals(currentUser.getId()),
+			"com.naturalprogrammer.spring.wrong.login").go();
+		
 		U user = userRepository.getOne(currentUser.getId());
 		
 		// checks
 		
-		LemonUtils.check(changeEmailCode.equals(user.getChangeEmailCode()),
+		LemonUtils.check(user != null, "com.naturalprogrammer.spring.invalidLink").go();
+		
+		JWTClaimsSet claims = jwtService.parseToken(changeEmailCode,
+				JwtService.CHANGE_EMAIL_AUDIENCE,
+				user.getCredentialsUpdatedAt());
+		
+		LemonUtils.check(
+				claims.getSubject().equals(user.getId().toString()) &&
+				claims.getClaim("email").equals(user.getNewEmail()),
 				"com.naturalprogrammer.spring.wrong.changeEmailCode").go();
 		
 		// Ensure that the email would be unique 
@@ -714,7 +730,7 @@ public abstract class LemonService
 		// update the fields
 		user.setEmail(user.getNewEmail());
 		user.setNewEmail(null);
-		user.setChangeEmailCode(null);
+		//user.setChangeEmailCode(null);
 		user.setCredentialsUpdatedAt(new Date());
 		
 		// make the user verified if he is not

@@ -244,13 +244,15 @@ public abstract class LemonController
 	/**
 	 * Changes the email.
 	 */
-	@PostMapping("/users/{changeEmailCode}/change-email")
+	@PostMapping("/users/{userId}/change-email")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void changeEmail(@PathVariable String changeEmailCode,
+	public void changeEmail(
+			@PathVariable ID userId,
+			@RequestParam String code,
 			HttpServletResponse response) {
 		
 		log.debug("Changing email of user ...");		
-		String username = lemonService.changeEmail(changeEmailCode);
+		String username = lemonService.changeEmail(userId, code);
 		jwtService.addAuthHeader(response, username, jwtExpirationMilli);
 	}
 	
