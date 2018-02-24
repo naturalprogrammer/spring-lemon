@@ -286,13 +286,16 @@ public abstract class LemonController
 	}
 	
 	/**
-	 * Fetch a new token - for session scrolling etc.
+	 * Fetch a new token - for session scrolling, switch user etc.
 	 */
 	@PostMapping("/fetch-new-token")
-	public SpringUser<ID> fetchNewToken(@RequestParam Optional<Long> expirationMillis, HttpServletResponse response) {
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void fetchNewToken(@RequestParam Optional<Long> expirationMillis,
+			@RequestParam Optional<String> username,
+			HttpServletResponse response) {
 		
 		log.debug("Logging in user in exchange of nonce ... ");
-		return lemonService.fetchNewToken(expirationMillis, response);
+		lemonService.fetchNewToken(expirationMillis, username, response);
 	}
 
 	

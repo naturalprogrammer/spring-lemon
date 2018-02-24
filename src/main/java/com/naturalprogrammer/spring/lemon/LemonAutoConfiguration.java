@@ -38,7 +38,6 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
-import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -57,7 +56,6 @@ import com.naturalprogrammer.spring.lemon.security.AuthenticationSuccessHandler;
 import com.naturalprogrammer.spring.lemon.security.JwtAuthenticationProvider;
 import com.naturalprogrammer.spring.lemon.security.JwtService;
 import com.naturalprogrammer.spring.lemon.security.LemonCorsFilter;
-import com.naturalprogrammer.spring.lemon.security.LemonLogoutSuccessHandler;
 import com.naturalprogrammer.spring.lemon.security.LemonOAuth2UserService;
 import com.naturalprogrammer.spring.lemon.security.LemonOidcUserService;
 import com.naturalprogrammer.spring.lemon.security.LemonPermissionEvaluator;
@@ -257,14 +255,14 @@ public class LemonAutoConfiguration {
     	return new SimpleUrlAuthenticationFailureHandler();
     }	
 
-	@Bean
-	@ConditionalOnMissingBean(LogoutSuccessHandler.class)
-	public LogoutSuccessHandler logoutSuccessHandler() {
-		
-        log.info("Configuring LemonLogoutSuccessHandler");       
-		return new LemonLogoutSuccessHandler();
-	}
-	
+//	@Bean
+//	@ConditionalOnMissingBean(LogoutSuccessHandler.class)
+//	public LogoutSuccessHandler logoutSuccessHandler() {
+//		
+//        log.info("Configuring LemonLogoutSuccessHandler");       
+//		return new LemonLogoutSuccessHandler();
+//	}
+//	
 	@Bean
 	@ConditionalOnMissingBean(PermissionEvaluator.class)
 	public PermissionEvaluator permissionEvaluator() {

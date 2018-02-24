@@ -808,15 +808,18 @@ public abstract class LemonService
 	 * Fetches a new token - for session scrolling etc.
 	 */
 	@PreAuthorize("isAuthenticated()")
-	public SpringUser<ID> fetchNewToken(Optional<Long> expirationMillis, HttpServletResponse response) {
+	public void fetchNewToken(Optional<Long> expirationMillis,
+			Optional<String> optionalUsername,
+			HttpServletResponse response) {
 		
 		SpringUser<ID> springUser = LemonUtils.getSpringUser();
+		String username = optionalUsername.orElse(springUser.getUsername());
 		
-		jwtService.addAuthHeader(response,
-				springUser.getUsername(),
+		LemonUtils.validateAuthority(springUser.getUsername().equals(username) ||
+				springUser.isGoodAdmin(), "com.naturalprogrammer.spring.notGoodAdminOrSameUser");
+		
+		jwtService.addAuthHeader(response, username,
 				expirationMillis.orElse(properties.getJwt().getExpirationMilli()));
-		
-		return springUser;
 	}
 
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)

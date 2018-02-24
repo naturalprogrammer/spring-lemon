@@ -12,6 +12,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -184,12 +185,17 @@ public class LemonUtils {
 			throw new VersionException(original.getClass().getSimpleName());
 	}
 	
-	public static void validateCredentials(boolean valid, String message) {
+	public static void validateCredentials(boolean valid, String messageKey) {
 		
 		if (!valid)
-			throw new BadCredentialsException(message);
+			throw new BadCredentialsException(getMessage(messageKey));
 	}
 
+	public static void validateAuthority(boolean authorized, String messageKey) {
+		
+		if (!authorized)
+			throw new AccessDeniedException(getMessage(messageKey));
+	}
 	
 	/**
 	 * Creates a MultiErrorException out of the given parameters

@@ -9,12 +9,9 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
-import org.springframework.security.web.authentication.switchuser.SwitchUserFilter;
 
 import com.naturalprogrammer.spring.lemon.LemonProperties;
 
@@ -45,7 +42,7 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 	private UserDetailsService userDetailsService;
 	private AuthenticationSuccessHandler authenticationSuccessHandler;
 	private AuthenticationFailureHandler authenticationFailureHandler;
-	private LogoutSuccessHandler logoutSuccessHandler;
+	//private LogoutSuccessHandler logoutSuccessHandler;
 	private LemonOidcUserService oidcUserService;
 	private LemonOAuth2UserService<?, ?> oauth2UserService;
 	private OAuth2AuthenticationSuccessHandler<?,?> oauth2AuthenticationSuccessHandler;
@@ -55,7 +52,7 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	public void createLemonSecurityConfig(LemonProperties properties, UserDetailsService userDetailsService,
 			AuthenticationSuccessHandler authenticationSuccessHandler, AuthenticationFailureHandler authenticationFailureHandler,
-			LogoutSuccessHandler logoutSuccessHandler,
+			//LogoutSuccessHandler logoutSuccessHandler,
 			LemonOidcUserService oidcUserService,
 			LemonOAuth2UserService<?, ?> oauth2UserService,
 			OAuth2AuthenticationSuccessHandler<?,?> oauth2AuthenticationSuccessHandler,
@@ -66,7 +63,7 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 		this.userDetailsService = userDetailsService;
 		this.authenticationSuccessHandler = authenticationSuccessHandler;
 		this.authenticationFailureHandler = authenticationFailureHandler;
-		this.logoutSuccessHandler = logoutSuccessHandler;
+		//this.logoutSuccessHandler = logoutSuccessHandler;
 		this.oidcUserService = oidcUserService;
 		this.oauth2UserService = oauth2UserService;
 		this.oauth2AuthenticationSuccessHandler = oauth2AuthenticationSuccessHandler;
@@ -99,7 +96,7 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 		logout(http); // logout related configuration
 		exceptionHandling(http); // exception handling
 		csrf(http); // csrf configuration
-		switchUser(http); // switch-user configuration
+		//switchUser(http); // switch-user configuration
 		customTokenAuthentication(http); // API key authentication
 		oauth2Client(http);
 		authorizeRequests(http); // authorize requests
@@ -156,13 +153,13 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void logout(HttpSecurity http) throws Exception {
 		
 		http
-		.logout()
+		.logout().disable(); // we are stateless; so /logout endpoint not needed
 			
-			/************************************************
-			 * To prevent redirection to home page, we need to
-			 * have this custom logoutSuccessHandler
-			 ***********************************************/
-			.logoutSuccessHandler(logoutSuccessHandler);
+//			/************************************************
+//			 * To prevent redirection to home page, we need to
+//			 * have this custom logoutSuccessHandler
+//			 ***********************************************/
+//			.logoutSuccessHandler(logoutSuccessHandler);
 	}
 
 	
@@ -198,18 +195,18 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 	}
 
 	
-	/**
-	 * Adds switch-user filter
-	 * 
-	 * @param http
-	 */
-	protected void switchUser(HttpSecurity http) {
-		
-		http
-			.addFilterAfter(switchUserFilter(), FilterSecurityInterceptor.class);
-	}
-
-
+//	/**
+//	 * Adds switch-user filter
+//	 * 
+//	 * @param http
+//	 */
+//	protected void switchUser(HttpSecurity http) {
+//		
+//		http
+//			.addFilterAfter(switchUserFilter(), FilterSecurityInterceptor.class);
+//	}
+//
+//
 	private void customTokenAuthentication(HttpSecurity http) throws Exception {
 	
 		http.addFilterBefore(new LemonTokenAuthenticationFilter(super.authenticationManager()),
@@ -240,19 +237,19 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 			.mvcMatchers("/**").permitAll();                  
 	}
 	
-	/**
-	 * Returns switch-user filter
-	 * 
-	 * @return
-	 */
-	protected SwitchUserFilter switchUserFilter() {
-		
-		SwitchUserFilter filter = new SwitchUserFilter();
-		filter.setUserDetailsService(userDetailsService);
-		filter.setSuccessHandler(authenticationSuccessHandler);
-		filter.setFailureHandler(authenticationFailureHandler);
-		return filter;
-	}	
+//	/**
+//	 * Returns switch-user filter
+//	 * 
+//	 * @return
+//	 */
+//	protected SwitchUserFilter switchUserFilter() {
+//		
+//		SwitchUserFilter filter = new SwitchUserFilter();
+//		filter.setUserDetailsService(userDetailsService);
+//		filter.setSuccessHandler(authenticationSuccessHandler);
+//		filter.setFailureHandler(authenticationFailureHandler);
+//		return filter;
+//	}	
 	
 	/**
 	 * Override this to add more http configurations,

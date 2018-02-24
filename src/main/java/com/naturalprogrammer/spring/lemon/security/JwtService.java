@@ -106,8 +106,11 @@ public class JwtService {
 		try {
 			
 			JWTClaimsSet claims = jwtProcessor.process(token, null);
-			LemonUtils.validateCredentials(claims.getAudience().contains(audience), "Wrong audience");
-			LemonUtils.validateCredentials(claims.getExpirationTime().after(new Date()), "Token expired");
+			LemonUtils.validateCredentials(claims.getAudience().contains(audience),
+					"com.naturalprogrammer.spring.wrong.audience");
+			
+			LemonUtils.validateCredentials(claims.getExpirationTime().after(new Date()),
+					"com.naturalprogrammer.spring.expiredToken");
 			
 			return claims;
 			
