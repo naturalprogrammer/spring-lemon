@@ -187,7 +187,7 @@ public abstract class LemonService
 	 * 
 	 * @param user	data fed by the user
 	 */
-	@PreAuthorize("isAnonymous()")
+	//@PreAuthorize("isAnonymous()")
 	@Validated(SignUpValidation.class)
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
 	public void signup(@Valid U user) {
@@ -349,10 +349,10 @@ public abstract class LemonService
 		
 		log.debug("Verifying user ...");
 
-		U user = userRepository.getOne(userId);
+		U user = userRepository.findById(userId).orElseThrow(MultiErrorException.notFoundSupplier());
 		
 		// ensure that he is unverified
-		LemonUtils.check(user != null && user.hasRole(Role.UNVERIFIED),
+		LemonUtils.check(user.hasRole(Role.UNVERIFIED),
 				"com.naturalprogrammer.spring.alreadyVerified").go();	
 		
 		JWTClaimsSet claims = jwtService.parseToken(verificationCode, JwtService.VERIFY_AUDIENCE, user.getCredentialsUpdatedAt());
@@ -487,8 +487,7 @@ public abstract class LemonService
 		log.debug("Resetting password ...");
 
 		// fetch the user
-		U user = userRepository.getOne(userId);
-		LemonUtils.check(user != null, "com.naturalprogrammer.spring.invalidLink").go();
+		U user = userRepository.findById(userId).orElseThrow(MultiErrorException.notFoundSupplier());
 		
 		JWTClaimsSet claims = jwtService.parseToken(forgotPasswordCode,
 				JwtService.FORGOT_PASSWORD_AUDIENCE,
@@ -716,11 +715,7 @@ public abstract class LemonService
 		LemonUtils.check(userId.equals(currentUser.getId()),
 			"com.naturalprogrammer.spring.wrong.login").go();
 		
-		U user = userRepository.getOne(currentUser.getId());
-		
-		// checks
-		
-		LemonUtils.check(user != null, "com.naturalprogrammer.spring.invalidLink").go();
+		U user = userRepository.findById(userId).orElseThrow(MultiErrorException.notFoundSupplier());
 		
 		JWTClaimsSet claims = jwtService.parseToken(changeEmailCode,
 				JwtService.CHANGE_EMAIL_AUDIENCE,
