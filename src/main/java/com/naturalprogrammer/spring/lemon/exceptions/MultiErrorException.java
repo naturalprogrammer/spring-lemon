@@ -2,7 +2,6 @@ package com.naturalprogrammer.spring.lemon.exceptions;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
 
 import org.springframework.http.HttpStatus;
 
@@ -55,7 +54,6 @@ public class MultiErrorException extends RuntimeException {
 		return errors.get(0).getMessage();
 	}
 	
-	
 	/**
 	 * Adds a global-error if the given condition isn't true
 	 * 
@@ -65,13 +63,12 @@ public class MultiErrorException extends RuntimeException {
 	 * 
 	 * @return				the exception object
 	 */
-	public MultiErrorException check(boolean valid,
+	public MultiErrorException validate(boolean valid,
 			String messageKey, Object... args) {
 		
 		// delegate
-		return check(null, valid, messageKey, args);
+		return validate(null, valid, messageKey, args);
 	}
-
 
 	/**
 	 * Adds a field-error if the given condition isn't true
@@ -83,7 +80,7 @@ public class MultiErrorException extends RuntimeException {
 	 * 
 	 * @return				the exception object
 	 */
-	public MultiErrorException check(String fieldName, boolean valid,
+	public MultiErrorException validate(String fieldName, boolean valid,
 			String messageKey, Object... args) {
 		
 		if (!valid)
@@ -92,52 +89,7 @@ public class MultiErrorException extends RuntimeException {
 			
 		return this;
 	}
-	
-	
-	/**
-	 * Factory method for a field-level error
-	 * 
-	 * @param fieldName		the name of the associated field
-	 * @param messageKey	message key
-	 * @param args			optional message arguments
-	 * 
-	 * @return				the exception object
-	 */
-	public static Supplier<MultiErrorException> fieldSupplier(HttpStatus status,
-			String fieldName, String messageKey, Object... args) {
-		
-		return () -> {
-			
-			MultiErrorException exception = new MultiErrorException();
-			exception.errors.add(new FieldError(fieldName, messageKey,
-					LemonUtils.getMessage(messageKey, args)));
-			exception.httpStatus(status);
-			
-			return exception;
-		};
-	}
-	
-	
-	/**
-	 * Factory method for a global-level error
-	 * 
-	 * @param messageKey	message key
-	 * @param args			optional message arguments
-	 * 
-	 * @return				the exception object
-	 */
-	public static Supplier<MultiErrorException> supplier(HttpStatus status, String messageKey, Object... args) {
-		
-		return MultiErrorException.fieldSupplier(status, null, messageKey, args);
-	}
-	
-	public static Supplier<MultiErrorException> notFoundSupplier() {
-	
-		return MultiErrorException.supplier(HttpStatus.NOT_FOUND,
-				"com.naturalprogrammer.spring.notFound");
 
-	}
-	
 	/**
 	 * Throws the exception, if there are accumulated errors
 	 */
@@ -145,4 +97,48 @@ public class MultiErrorException extends RuntimeException {
 		if (errors.size() > 0)
 			throw this;
 	}
+//
+//	/**
+//	 * Factory method for a field-level error
+//	 * 
+//	 * @param fieldName		the name of the associated field
+//	 * @param messageKey	message key
+//	 * @param args			optional message arguments
+//	 * 
+//	 * @return				the exception object
+//	 */
+//	public static Supplier<MultiErrorException> fieldSupplier(HttpStatus status,
+//			String fieldName, String messageKey, Object... args) {
+//		
+//		return () -> {
+//			
+//			MultiErrorException exception = new MultiErrorException();
+//			exception.errors.add(new FieldError(fieldName, messageKey,
+//					LemonUtils.getMessage(messageKey, args)));
+//			exception.httpStatus(status);
+//			
+//			return exception;
+//		};
+//	}
+//	
+//	
+//	/**
+//	 * Factory method for a global-level error
+//	 * 
+//	 * @param messageKey	message key
+//	 * @param args			optional message arguments
+//	 * 
+//	 * @return				the exception object
+//	 */
+//	public static Supplier<MultiErrorException> supplier(HttpStatus status, String messageKey, Object... args) {
+//		
+//		return MultiErrorException.fieldSupplier(status, null, messageKey, args);
+//	}
+//	
+//	public static Supplier<MultiErrorException> notFoundSupplier() {
+//	
+//		return MultiErrorException.supplier(HttpStatus.NOT_FOUND,
+//				"com.naturalprogrammer.spring.notFound");
+//
+//	}
 }

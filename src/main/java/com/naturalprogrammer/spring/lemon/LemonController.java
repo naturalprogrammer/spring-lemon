@@ -208,7 +208,7 @@ public abstract class LemonController
 		log.debug("Updating user ... ");
 		
 		// ensure that the user exists
-		LemonUtils.validateFound(user);
+		LemonUtils.ensureFound(user);
 		U updatedUser = LemonUtils.applyPatch(user, patch); // create a patched form
 		lemonService.updateUser(user, updatedUser);
 		

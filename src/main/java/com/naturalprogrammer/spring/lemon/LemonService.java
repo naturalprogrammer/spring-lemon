@@ -33,7 +33,6 @@ import com.naturalprogrammer.spring.lemon.domain.AbstractUser.Role;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser.SignUpValidation;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUserRepository;
 import com.naturalprogrammer.spring.lemon.domain.ChangePasswordForm;
-import com.naturalprogrammer.spring.lemon.exceptions.MultiErrorException;
 import com.naturalprogrammer.spring.lemon.forms.NonceForm;
 import com.naturalprogrammer.spring.lemon.mail.MailSender;
 import com.naturalprogrammer.spring.lemon.permissions.UserEditPermission;
@@ -200,7 +199,7 @@ public abstract class LemonService
 		// if successfully committed
 		LemonUtils.afterCommit(() -> {
 		
-			LemonUtils.logIn(user); // log the user in
+			LemonUtils.login(user); // log the user in
 			sendVerificationMail(user); // send verification mail
 			log.debug("Signed up user: " + user);
 		});
@@ -285,10 +284,10 @@ public abstract class LemonService
 	public void resendVerificationMail(U user) {
 
 		// The user must exist
-		LemonUtils.validateFound(user);
+		LemonUtils.ensureFound(user);
 		
 		// must be unverified
-		LemonUtils.check(user.getRoles().contains(Role.UNVERIFIED),
+		LemonUtils.validate(user.getRoles().contains(Role.UNVERIFIED),
 				"com.naturalprogrammer.spring.alreadyVerified").go();	
 
 		// send the verification mail
@@ -308,7 +307,7 @@ public abstract class LemonService
 
 		// fetch the user
 		U user = userRepository.findByEmail(email)
-			.orElseThrow(MultiErrorException.notFoundSupplier());
+			.orElseThrow(LemonUtils.notFoundSupplier());
 
 		// hide confidential fields
 		user.hideConfidentialFields();
@@ -330,7 +329,7 @@ public abstract class LemonService
 		log.debug("Fetching user: " + user);
 
 		// ensure that the user exists
-		LemonUtils.validateFound(user);
+		LemonUtils.ensureFound(user);
 		
 		// hide confidential fields
 		user.hideConfidentialFields();
@@ -349,15 +348,15 @@ public abstract class LemonService
 		
 		log.debug("Verifying user ...");
 
-		U user = userRepository.findById(userId).orElseThrow(MultiErrorException.notFoundSupplier());
+		U user = userRepository.findById(userId).orElseThrow(LemonUtils.notFoundSupplier());
 		
 		// ensure that he is unverified
-		LemonUtils.check(user.hasRole(Role.UNVERIFIED),
+		LemonUtils.validate(user.hasRole(Role.UNVERIFIED),
 				"com.naturalprogrammer.spring.alreadyVerified").go();	
 		
 		JWTClaimsSet claims = jwtService.parseToken(verificationCode, JwtService.VERIFY_AUDIENCE, user.getCredentialsUpdatedAt());
 		
-		LemonUtils.check(
+		LemonUtils.validate(
 				claims.getSubject().equals(user.getId().toString()) &&
 				claims.getClaim("email").equals(user.getEmail()),
 				"com.naturalprogrammer.spring.wrong.verificationCode").go();
@@ -370,7 +369,7 @@ public abstract class LemonService
 		LemonUtils.afterCommit(() -> {
 			
 			// Re-login the user, so that the UNVERIFIED role is removed
-			LemonUtils.logIn(user);
+			LemonUtils.login(user);
 			log.debug("Re-logged-in the user for removing UNVERIFIED role.");		
 		});
 		
@@ -391,7 +390,7 @@ public abstract class LemonService
 		
 		// fetch the user record from database
 		U user = userRepository.findByEmail(email)
-				.orElseThrow(MultiErrorException.notFoundSupplier());
+				.orElseThrow(LemonUtils.notFoundSupplier());
 
 		mailForgotPasswordLink(user);
 //		
@@ -487,13 +486,13 @@ public abstract class LemonService
 		log.debug("Resetting password ...");
 
 		// fetch the user
-		U user = userRepository.findById(userId).orElseThrow(MultiErrorException.notFoundSupplier());
+		U user = userRepository.findById(userId).orElseThrow(LemonUtils.notFoundSupplier());
 		
 		JWTClaimsSet claims = jwtService.parseToken(forgotPasswordCode,
 				JwtService.FORGOT_PASSWORD_AUDIENCE,
 				user.getCredentialsUpdatedAt());
 		
-		LemonUtils.check(
+		LemonUtils.validate(
 				claims.getSubject().equals(user.getId().toString()) &&
 				claims.getClaim("email").equals(user.getEmail()),
 				"com.naturalprogrammer.spring.invalidLink").go();
@@ -509,7 +508,7 @@ public abstract class LemonService
 		LemonUtils.afterCommit(() -> {
 			
 			// Login the user
-			LemonUtils.logIn(user);
+			LemonUtils.login(user);
 		});
 		
 		log.debug("Password reset.");		
@@ -530,7 +529,7 @@ public abstract class LemonService
 		log.debug("Updating user: " + user);
 
 		// checks
-		LemonUtils.validateVersion(user, updatedUser);
+		LemonUtils.ensureCorrectVersion(user, updatedUser);
 
 		// delegates to updateUserFields
 		updateUserFields(user, updatedUser, LemonUtils.getSpringUser());
@@ -540,7 +539,7 @@ public abstract class LemonService
 		LemonUtils.afterCommit(() -> {
 			
 			// Login the user
-			LemonUtils.logIn(user);
+			LemonUtils.login(user);
 		});
 
 		log.debug("Updated user: " + user);		
@@ -560,8 +559,8 @@ public abstract class LemonService
 		log.debug("Changing password for user: " + user);
 
 		// checks
-		LemonUtils.validateFound(user);
-		LemonUtils.check("changePasswordForm.oldPassword",
+		LemonUtils.ensureFound(user);
+		LemonUtils.validate("changePasswordForm.oldPassword",
 			passwordEncoder.matches(changePasswordForm.getOldPassword(),
 									user.getPassword()),
 			"com.naturalprogrammer.spring.wrong.password").go();
@@ -643,8 +642,8 @@ public abstract class LemonService
 		log.debug("Requesting email change: " + user);
 
 		// checks
-		LemonUtils.validateFound(user);	
-		LemonUtils.check("updatedUser.password",
+		LemonUtils.ensureFound(user);	
+		LemonUtils.validate("updatedUser.password",
 			passwordEncoder.matches(updatedUser.getPassword(),
 									user.getPassword()),
 			"com.naturalprogrammer.spring.wrong.password").go();
@@ -712,22 +711,22 @@ public abstract class LemonService
 		// fetch the current-user
 		SpringUser<ID> currentUser = LemonUtils.getSpringUser();
 		
-		LemonUtils.check(userId.equals(currentUser.getId()),
+		LemonUtils.validate(userId.equals(currentUser.getId()),
 			"com.naturalprogrammer.spring.wrong.login").go();
 		
-		U user = userRepository.findById(userId).orElseThrow(MultiErrorException.notFoundSupplier());
+		U user = userRepository.findById(userId).orElseThrow(LemonUtils.notFoundSupplier());
 		
 		JWTClaimsSet claims = jwtService.parseToken(changeEmailCode,
 				JwtService.CHANGE_EMAIL_AUDIENCE,
 				user.getCredentialsUpdatedAt());
 		
-		LemonUtils.check(
+		LemonUtils.validate(
 				claims.getSubject().equals(user.getId().toString()) &&
 				claims.getClaim("email").equals(user.getNewEmail()),
 				"com.naturalprogrammer.spring.wrong.changeEmailCode").go();
 		
 		// Ensure that the email would be unique 
-		LemonUtils.check(
+		LemonUtils.validate(
 				!userRepository.findByEmail(user.getNewEmail()).isPresent(),
 				"com.naturalprogrammer.spring.duplicate.email").go();	
 		
@@ -747,7 +746,7 @@ public abstract class LemonService
 		LemonUtils.afterCommit(() -> {
 			
 			// Login the user
-			LemonUtils.logIn(user);
+			LemonUtils.login(user);
 		});
 		// logout after successful commit
 		//LemonUtils.afterCommit(LemonUtils::logOut);
@@ -778,15 +777,15 @@ public abstract class LemonService
 	public void loginWithNonce(@Valid NonceForm<ID> nonce, HttpServletResponse response) {
 		
 		U user = userRepository.findById(nonce.getUserId())
-			.orElseThrow(MultiErrorException.notFoundSupplier());
+			.orElseThrow(LemonUtils.notFoundSupplier());
 
 		if (user.getNonce().equals(nonce.getNonce())) {
 			
 			user.setNonce(null);
 			userRepository.save(user);
-			LemonUtils.logIn(user);
+			LemonUtils.login(user);
 		} else	
-			throw MultiErrorException.notFoundSupplier().get();
+			throw LemonUtils.NOT_FOUND_EXCEPTION;
 	}
 
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
@@ -810,7 +809,7 @@ public abstract class LemonService
 		SpringUser<ID> springUser = LemonUtils.getSpringUser();
 		String username = optionalUsername.orElse(springUser.getUsername());
 		
-		LemonUtils.validateAuthority(springUser.getUsername().equals(username) ||
+		LemonUtils.ensureAuthority(springUser.getUsername().equals(username) ||
 				springUser.isGoodAdmin(), "com.naturalprogrammer.spring.notGoodAdminOrSameUser");
 		
 		jwtService.addAuthHeader(response, username,

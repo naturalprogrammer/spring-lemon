@@ -5,6 +5,9 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.Supplier;
+
+import javax.annotation.PostConstruct;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -35,6 +38,7 @@ import com.naturalprogrammer.spring.lemon.exceptions.MultiErrorException;
 import com.naturalprogrammer.spring.lemon.exceptions.VersionException;
 import com.naturalprogrammer.spring.lemon.security.LemonPrincipal;
 import com.naturalprogrammer.spring.lemon.security.SpringUser;
+import com.naturalprogrammer.spring.lemon.validation.FieldError;
 
 /**
  * Useful static methods
@@ -50,6 +54,7 @@ public class LemonUtils {
 	private static ApplicationContext applicationContext;
 	private static MessageSource messageSource;
 	private static ObjectMapper objectMapper;
+	public static final MultiErrorException NOT_FOUND_EXCEPTION = new MultiErrorException();
 	
 	public LemonUtils(ApplicationContext applicationContext,
 		MessageSource messageSource,
@@ -58,7 +63,20 @@ public class LemonUtils {
 		LemonUtils.applicationContext = applicationContext;
 		LemonUtils.messageSource = messageSource;
 		LemonUtils.objectMapper = objectMapper;
+		
 		log.info("Created");
+	}
+	
+	@PostConstruct
+	public void postConstruct() {
+		
+		NOT_FOUND_EXCEPTION.getErrors().add(
+				new FieldError(null, "com.naturalprogrammer.spring.notFound",
+				getMessage("com.naturalprogrammer.spring.notFound")));
+		
+		NOT_FOUND_EXCEPTION.httpStatus(HttpStatus.NOT_FOUND);
+		
+		log.info("NOT_FOUND_EXCEPTION built");		
 	}
 
 
@@ -151,7 +169,7 @@ public class LemonUtils {
 	 * @param user
 	 */
 	public static <U extends AbstractUser<U,ID>, ID extends Serializable>
-	void logIn(U user) {
+	void login(U user) {
 		
 		LemonPrincipal<ID> principal = new LemonPrincipal<>(user.toSpringUser());
 
@@ -179,19 +197,19 @@ public class LemonUtils {
 	 * @param updated
 	 */
 	public static <U extends AbstractUser<U,ID>, ID extends Serializable>
-	void validateVersion(VersionedEntity<U,ID> original, VersionedEntity<U,ID> updated) {
+	void ensureCorrectVersion(VersionedEntity<U,ID> original, VersionedEntity<U,ID> updated) {
 		
 		if (original.getVersion() != updated.getVersion())
 			throw new VersionException(original.getClass().getSimpleName());
 	}
 	
-	public static void validateCredentials(boolean valid, String messageKey) {
+	public static void ensureCredentials(boolean valid, String messageKey) {
 		
 		if (!valid)
 			throw new BadCredentialsException(getMessage(messageKey));
 	}
 
-	public static void validateAuthority(boolean authorized, String messageKey) {
+	public static void ensureAuthority(boolean authorized, String messageKey) {
 		
 		if (!authorized)
 			throw new AccessDeniedException(getMessage(messageKey));
@@ -204,10 +222,10 @@ public class LemonUtils {
 	 * @param messageKey	key of the error message
 	 * @param args			any message arguments
 	 */
-	public static MultiErrorException check(
+	public static MultiErrorException validate(
 			boolean valid, String messageKey, Object... args) {
 		
-		return LemonUtils.check(null, valid, messageKey, args);
+		return LemonUtils.validate(null, valid, messageKey, args);
 	}
 
 	
@@ -219,20 +237,23 @@ public class LemonUtils {
 	 * @param messageKey	key of the error message
 	 * @param args			any message arguments
 	 */
-	public static MultiErrorException check(
+	public static MultiErrorException validate(
 			String fieldName, boolean valid, String messageKey, Object... args) {
 		
-		return new MultiErrorException().check(fieldName, valid, messageKey, args);
+		return new MultiErrorException().validate(fieldName, valid, messageKey, args);
 	}
 
-	public static <T> void validateFound(T entity) {
+	public static <T> void ensureFound(T entity) {
 		
-		LemonUtils.check("id", entity != null,
+		LemonUtils.validate("id", entity != null,
 				"com.naturalprogrammer.spring.notFound")
 				.httpStatus(HttpStatus.NOT_FOUND).go();
 	}
 	
-	
+	public static Supplier<MultiErrorException> notFoundSupplier() {
+		
+		return () -> NOT_FOUND_EXCEPTION;
+	}	
 	
 	/**
 	 * A convenient method for running code

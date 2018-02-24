@@ -106,10 +106,10 @@ public class JwtService {
 		try {
 			
 			JWTClaimsSet claims = jwtProcessor.process(token, null);
-			LemonUtils.validateCredentials(claims.getAudience().contains(audience),
+			LemonUtils.ensureCredentials(claims.getAudience().contains(audience),
 					"com.naturalprogrammer.spring.wrong.audience");
 			
-			LemonUtils.validateCredentials(claims.getExpirationTime().after(new Date()),
+			LemonUtils.ensureCredentials(claims.getExpirationTime().after(new Date()),
 					"com.naturalprogrammer.spring.expiredToken");
 			
 			return claims;
@@ -123,7 +123,7 @@ public class JwtService {
 	public JWTClaimsSet parseToken(String token, String audience, Date cutoffDate) {
 		
 		JWTClaimsSet claims = parseToken(token, JwtService.AUTH_AUDIENCE);
-		LemonUtils.check(!claims.getIssueTime().before(cutoffDate), "obsoleteToken").go();		
+		LemonUtils.validate(!claims.getIssueTime().before(cutoffDate), "obsoleteToken").go();		
 		return claims;
 	}	
 	
