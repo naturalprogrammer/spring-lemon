@@ -112,7 +112,7 @@ public abstract class LemonController
 	/**
 	 * Resends verification mail. 
 	 */
-	@GetMapping("/users/{id}/resend-verification-mail")
+	@PostMapping("/users/{id}/resend-verification-mail")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void resendVerificationMail(@PathVariable("id") U user) {
 		
@@ -125,14 +125,14 @@ public abstract class LemonController
 	/**
 	 * Verifies current-user.
 	 */
-	@PostMapping(value = "/users/{userId}/verification")
+	@PostMapping(value = "/users/{id}/verification")
 	public SpringUser<ID> verifyUser(
-			@PathVariable ID userId,
+			@PathVariable ID id,
 			@RequestParam String code,
 			HttpServletResponse response) {
 		
 		log.debug("Verifying user ...");		
-		lemonService.verifyUser(userId, code);
+		lemonService.verifyUser(id, code);
 		
 		return springUserWithToken(response);
 	}
@@ -155,12 +155,12 @@ public abstract class LemonController
 	 * Resets password after it is forgotten.
 	 * @return 
 	 */
-	@PostMapping("/users/na/reset-password")
+	@PostMapping("/reset-password")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public SpringUser<ID> resetPassword(
-							  @RequestParam String code,
-							  @RequestParam String newPassword,
-							  HttpServletResponse response) {
+			@RequestParam String code,
+		    @RequestParam String newPassword,
+			HttpServletResponse response) {
 		
 		log.debug("Resetting password ... ");				
 		lemonService.resetPassword(code, newPassword);

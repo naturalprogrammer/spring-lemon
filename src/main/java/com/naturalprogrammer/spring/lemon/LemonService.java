@@ -437,7 +437,7 @@ public abstract class LemonService
 
 		// make the link
 		String forgotPasswordLink =	properties.getApplicationUrl()
-			    + "/users/na/reset-password?code=" + forgotPasswordCode;
+			    + "/reset-password?code=" + forgotPasswordCode;
 		
 		// send the mail
 		mailSender.send(user.getEmail(),
