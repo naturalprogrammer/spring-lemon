@@ -24,7 +24,7 @@ public abstract class AbstractExceptionHandler<T extends Throwable> {
 	}
 	
 	protected String getMessage(T ex) {
-		return null;
+		return ex.getMessage();
 	}
 	
 	protected HttpStatus getStatus(T ex) {
