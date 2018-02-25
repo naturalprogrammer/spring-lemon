@@ -62,8 +62,7 @@ public class LemonOAuth2UserService<U extends AbstractUser<U,ID>, ID extends Ser
 			newUser.setPassword(passwordEncoder.encode(LemonUtils.uid()));
 			
 			lemonService.fillAdditionalFields(registrationId, newUser, attributes);
-			lemonService.save(newUser);
-			
+
 			try {
 				
 				lemonService.mailForgotPasswordLink(newUser);
@@ -77,8 +76,11 @@ public class LemonOAuth2UserService<U extends AbstractUser<U,ID>, ID extends Ser
 			return newUser;
     	});
     	
+    	user.setNonce(LemonUtils.uid());
+    	lemonService.save(user);
+    	
     	SpringUser<ID> springUser = user.toSpringUser();
-    	springUser.setNonce(lemonService.addNonce(user));
+    	springUser.setNonce(user.getNonce());
     	
 		LemonPrincipal<ID> principal = new LemonPrincipal<>(springUser);
 		principal.setAttributes(attributes);

@@ -433,13 +433,11 @@ public abstract class LemonService
 		log.debug("Mailing forgot password link to user: " + user);
 
 		String forgotPasswordCode = jwtService.createToken(JwtService.FORGOT_PASSWORD_AUDIENCE,
-				user.getId().toString(), properties.getJwt().getExpirationMilli(),
-				LemonUtils.mapOf("email", user.getEmail()));
+				user.getEmail(), properties.getJwt().getExpirationMilli());
 
 		// make the link
 		String forgotPasswordLink =	properties.getApplicationUrl()
-			    + "/users/" + user.getId()
-				+ "/reset-password?code=" + forgotPasswordCode;
+			    + "/users/na/reset-password?code=" + forgotPasswordCode;
 		
 		// send the mail
 		mailSender.send(user.getEmail(),
@@ -479,23 +477,20 @@ public abstract class LemonService
 	 * @param newPassword
 	 */
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
-	public void resetPassword(ID userId,
+	public void resetPassword(
 			@Valid @NotBlank String forgotPasswordCode,
 			@Valid @Password String newPassword) {
 		
 		log.debug("Resetting password ...");
 
-		// fetch the user
-		U user = userRepository.findById(userId).orElseThrow(LemonUtils.notFoundSupplier());
-		
 		JWTClaimsSet claims = jwtService.parseToken(forgotPasswordCode,
-				JwtService.FORGOT_PASSWORD_AUDIENCE,
-				user.getCredentialsUpdatedAt());
+				JwtService.FORGOT_PASSWORD_AUDIENCE);
 		
-		LemonUtils.validate(
-				claims.getSubject().equals(user.getId().toString()) &&
-				claims.getClaim("email").equals(user.getEmail()),
-				"com.naturalprogrammer.spring.invalidLink").go();
+		String email = claims.getSubject();
+		
+		// fetch the user
+		U user = userRepository.findByEmail(email).orElseThrow(LemonUtils.notFoundSupplier());
+		LemonUtils.ensureUpToDate(claims, user);
 		
 		// sets the password
 		user.setPassword(passwordEncoder.encode(newPassword));
@@ -788,16 +783,16 @@ public abstract class LemonService
 			throw LemonUtils.NOT_FOUND_EXCEPTION;
 	}
 
-	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
-	public String addNonce(U user) {
-		
-		String nonce = LemonUtils.uid();
-		user.setNonce(nonce);
-		userRepository.save(user);
-		
-		return nonce;
-	}
-
+//	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
+//	public String addNonce(U user) {
+//		
+//		String nonce = LemonUtils.uid();
+//		user.setNonce(nonce);
+//		userRepository.save(user);
+//		
+//		return nonce;
+//	}
+//
 	/**
 	 * Fetches a new token - for session scrolling etc.
 	 */

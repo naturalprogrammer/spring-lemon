@@ -26,7 +26,7 @@ public class JwtServiceTests {
 	}
 	
 	@Test
-	public void testJwtValidToken() {
+	public void testJwtParseToken() {
 		
 		String token = service1.createToken("auth", "subject", 5000L,
 				LemonUtils.mapOf("username", "abc@example.com"));
@@ -37,14 +37,14 @@ public class JwtServiceTests {
 	}
 
 	@Test(expected = BadCredentialsException.class)
-	public void testJwtWrongAudience() {
+	public void testJwtParseTokenWrongAudience() {
 		
 		String token = service1.createToken("auth", "subject", 5000L);
 		service1.parseToken(token, "auth2");
 	}
 	
 	@Test(expected = BadCredentialsException.class)
-	public void testJwtExpired() throws InterruptedException {
+	public void testJwtParseTokenExpired() throws InterruptedException {
 		
 		String token = service1.createToken("auth", "subject", 1L);
 		Thread.sleep(10L);
@@ -52,21 +52,17 @@ public class JwtServiceTests {
 	}
 	
 	@Test(expected = BadCredentialsException.class)
-	public void testJwtWrongSecret() {
+	public void testJwtParseTokenWrongSecret() {
 		
 		String token = service1.createToken("auth", "subject", 5000L);
 		service2.parseToken(token, "auth");
 	}
 
-	@Test
-	public void testJwtIssueTime() throws InterruptedException {
-		
+	@Test(expected = BadCredentialsException.class)
+	public void testParseTokenCutoffTime() throws InterruptedException {
+
 		String token = service1.createToken("auth", "subject", 5000L);
-		JWTClaimsSet claims = service1.parseToken(token, "auth");
-		
-		Date issueTime = claims.getIssueTime();
-		Assert.assertNotNull(issueTime);
-		Thread.sleep(5L);
-		Assert.assertTrue(issueTime.before(new Date()));
+		Thread.sleep(5L);				
+		service1.parseToken(token, "auth", new Date());
 	}
 }

@@ -123,7 +123,9 @@ public class JwtService {
 	public JWTClaimsSet parseToken(String token, String audience, Date cutoffDate) {
 		
 		JWTClaimsSet claims = parseToken(token, audience);
-		LemonUtils.validate(!claims.getIssueTime().before(cutoffDate), "com.naturalprogrammer.spring.obsoleteToken").go();		
+		LemonUtils.ensureCredentials(claims.getIssueTime().after(cutoffDate),
+				"com.naturalprogrammer.spring.obsoleteToken");
+
 		return claims;
 	}	
 	

@@ -39,6 +39,7 @@ import com.naturalprogrammer.spring.lemon.exceptions.VersionException;
 import com.naturalprogrammer.spring.lemon.security.LemonPrincipal;
 import com.naturalprogrammer.spring.lemon.security.SpringUser;
 import com.naturalprogrammer.spring.lemon.validation.FieldError;
+import com.nimbusds.jwt.JWTClaimsSet;
 
 /**
  * Useful static methods
@@ -102,6 +103,9 @@ public class LemonUtils {
 	 * @param args			any arguments
 	 */
 	public static String getMessage(String messageKey, Object... args) {
+		
+		if (messageSource == null)
+			return "ApplicationContext unavailable, probably unit going on";
 		
 		// http://stackoverflow.com/questions/10792551/how-to-obtain-a-current-user-locale-from-spring-without-passing-it-as-a-paramete
 		return messageSource.getMessage(messageKey, args,
@@ -308,5 +312,12 @@ public class LemonUtils {
 			throws JsonParseException, JsonMappingException, IOException {
 
 		return objectMapper.readValue(json, clazz);
+	}
+
+	public static <U extends AbstractUser<U,ID>, ID extends Serializable>
+	void ensureUpToDate(JWTClaimsSet claims, U user) {
+		
+		ensureCredentials(claims.getIssueTime().after(user.getCredentialsUpdatedAt()),
+				"com.naturalprogrammer.spring.obsoleteToken");
 	}
 }

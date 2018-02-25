@@ -5,7 +5,6 @@ import java.io.Serializable;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
@@ -43,10 +42,8 @@ public class JwtAuthenticationProvider
         		.orElseThrow(() -> new UsernameNotFoundException(username));
 
         log.debug("User found ...");
-        
-        if (claims.getIssueTime().before(user.getCredentialsUpdatedAt()))
-        	throw new BadCredentialsException(LemonUtils.getMessage("credentialsChanged"));
 
+        LemonUtils.ensureUpToDate(claims, user);
         LemonPrincipal<ID> principal = new LemonPrincipal<ID>(user.toSpringUser());
         		
         return new JwtAuthenticationToken(principal, token, principal.getAuthorities());

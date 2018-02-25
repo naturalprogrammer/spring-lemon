@@ -155,15 +155,15 @@ public abstract class LemonController
 	 * Resets password after it is forgotten.
 	 * @return 
 	 */
-	@PostMapping("/users/{userId}/reset-password")
+	@PostMapping("/users/na/reset-password")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public SpringUser<ID> resetPassword(@PathVariable ID userId,
+	public SpringUser<ID> resetPassword(
 							  @RequestParam String code,
 							  @RequestParam String newPassword,
 							  HttpServletResponse response) {
 		
 		log.debug("Resetting password ... ");				
-		lemonService.resetPassword(userId, code, newPassword);
+		lemonService.resetPassword(code, newPassword);
 		
 		return springUserWithToken(response);
 	}
