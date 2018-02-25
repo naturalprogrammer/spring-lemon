@@ -16,6 +16,7 @@ import javax.persistence.Transient;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.naturalprogrammer.spring.lemon.security.SpringUser;
 import com.naturalprogrammer.spring.lemon.util.LemonUtils;
@@ -108,10 +109,12 @@ extends VersionedEntity<U, ID> {
 //	protected String changeEmailCode;
 	
 	// One time token
+	@JsonIgnore
 	private String nonce;
 	
 	// A JWT after before this won't be valid
 	@Column(nullable = false)
+	@JsonIgnore
 	private Date credentialsUpdatedAt = new Date();
 
 	// holds reCAPTCHA response while signing up
@@ -196,7 +199,7 @@ extends VersionedEntity<U, ID> {
 	 */
 	public void hideConfidentialFields() {
 		
-		password = null;
+		password = null; // JsonIgnore didn't work because of JsonIgnore
 		//verificationCode = null;
 		//forgotPasswordCode = null;
 		

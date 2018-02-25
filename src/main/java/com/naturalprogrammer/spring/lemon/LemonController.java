@@ -171,7 +171,7 @@ public abstract class LemonController
 	/**
 	 * Fetches a user by email.
 	 */
-	@GetMapping(value = "/users/fetch-by-email")
+	@PostMapping(value = "/users/fetch-by-email")
 	public U fetchUserByEmail(@RequestParam String email) {
 		
 		log.debug("Fetching user by email: " + email);						

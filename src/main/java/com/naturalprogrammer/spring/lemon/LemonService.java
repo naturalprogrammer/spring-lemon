@@ -304,17 +304,7 @@ public abstract class LemonService
 	public U fetchUserByEmail(@Valid @Email @NotBlank String email) {
 		
 		log.debug("Fetching user by email: " + email);
-
-		// fetch the user
-		U user = userRepository.findByEmail(email)
-			.orElseThrow(LemonUtils.notFoundSupplier());
-
-		// hide confidential fields
-		user.hideConfidentialFields();
-		
-		log.debug("Returning user: " + user);		
-
-		return user;
+		return processUser(userRepository.findByEmail(email).orElse(null));
 	}
 
 	
