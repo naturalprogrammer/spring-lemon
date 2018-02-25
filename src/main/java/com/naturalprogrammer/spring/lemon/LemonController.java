@@ -156,7 +156,6 @@ public abstract class LemonController
 	 * @return 
 	 */
 	@PostMapping("/reset-password")
-	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public SpringUser<ID> resetPassword(
 			@RequestParam String code,
 		    @RequestParam String newPassword,

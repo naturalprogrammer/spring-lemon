@@ -31,11 +31,14 @@ implements ConstraintValidator<RetypePassword, RetypePasswordForm> {
 			log.debug("Retype password validation failed.");
 			
 			// Moving the error from form-level to
-			// field-level property: retypePassword
+			// field-level properties: password, retypePassword
 			context.disableDefaultConstraintViolation();
 			context.buildConstraintViolationWithTemplate(
-				"{com.naturalprogrammer.spring.different.passwords}")
-				.addPropertyNode("retypePassword").addConstraintViolation();
+						"{com.naturalprogrammer.spring.different.passwords}")
+						.addPropertyNode("password").addConstraintViolation()
+				   .buildConstraintViolationWithTemplate(
+						"{com.naturalprogrammer.spring.different.passwords}")
+						.addPropertyNode("retypePassword").addConstraintViolation();
 			
 			return false;
 			
