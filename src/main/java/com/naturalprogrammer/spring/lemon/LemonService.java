@@ -200,7 +200,6 @@ public abstract class LemonService
 		LemonUtils.afterCommit(() -> {
 		
 			LemonUtils.login(user); // log the user in
-			sendVerificationMail(user); // send verification mail
 			log.debug("Signed up user: " + user);
 		});
 	}
@@ -225,11 +224,11 @@ public abstract class LemonService
 	 * @param user
 	 */
 	protected void makeUnverified(U user) {
+		
 		user.getRoles().add(Role.UNVERIFIED);
 		user.setCredentialsUpdatedAt(new Date());
-		//user.setVerificationCode(LemonUtils.uid());
+		LemonUtils.afterCommit(() -> sendVerificationMail(user)); // send a verification mail to the user
 	}
-	
 	
 //	/***
 //	 * Makes a user verified
@@ -599,7 +598,6 @@ public abstract class LemonService
 				if (!user.hasRole(Role.UNVERIFIED)) {
 
 					makeUnverified(user); // make user unverified
-					LemonUtils.afterCommit(() -> sendVerificationMail(user)); // send a verification mail to the user
 				}
 			} else {
 				
