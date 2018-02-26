@@ -2,8 +2,10 @@ package com.naturalprogrammer.spring.lemon.util;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.UUID;
 import java.util.function.Supplier;
 
@@ -14,6 +16,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -319,5 +322,15 @@ public class LemonUtils {
 		
 		ensureCredentials(claims.getIssueTime().after(user.getCredentialsUpdatedAt()),
 				"com.naturalprogrammer.spring.obsoleteToken");
+	}
+	
+	public static String toString(Resource resource) throws IOException {
+		
+		String text = null;
+	    try (Scanner scanner = new Scanner(resource.getInputStream(), StandardCharsets.UTF_8.name())) {
+	        text = scanner.useDelimiter("\\A").next();
+	    }
+	    
+	    return text;
 	}
 }
