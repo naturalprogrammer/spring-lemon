@@ -541,12 +541,17 @@ public abstract class LemonService
 	public String changePassword(U user, @Valid ChangePasswordForm changePasswordForm) {
 		
 		log.debug("Changing password for user: " + user);
+		
+		// Get the old password of the logged in user (logged in user may be an ADMIN)
+		SpringUser<ID> springUser = LemonUtils.getSpringUser();
+		U loggedIn = userRepository.findById(springUser.getId()).get();
+		String oldPassword = loggedIn.getPassword();
 
 		// checks
 		LemonUtils.ensureFound(user);
 		LemonUtils.validate("changePasswordForm.oldPassword",
 			passwordEncoder.matches(changePasswordForm.getOldPassword(),
-									user.getPassword()),
+					oldPassword),
 			"com.naturalprogrammer.spring.wrong.password").go();
 		
 		// sets the password

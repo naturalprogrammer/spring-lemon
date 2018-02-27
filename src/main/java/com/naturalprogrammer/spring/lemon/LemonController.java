@@ -218,7 +218,7 @@ public abstract class LemonController
 	/**
 	 * Changes password.
 	 */
-	@PostMapping("/users/{id}/change-password")
+	@PostMapping("/users/{id}/password")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void changePassword(@PathVariable("id") U user,
 			@RequestBody ChangePasswordForm changePasswordForm,
