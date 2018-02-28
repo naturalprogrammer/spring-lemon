@@ -19,7 +19,6 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -210,11 +209,11 @@ public class LemonUtils {
 			throw new VersionException(original.getClass().getSimpleName());
 	}
 	
-	public static void ensureCredentials(boolean valid, String messageKey) {
-		
-		if (!valid)
-			throw new BadCredentialsException(getMessage(messageKey));
-	}
+//	public static void ensureCredentials(boolean valid, String messageKey) {
+//		
+//		if (!valid)
+//			throw new BadCredentialsException(getMessage(messageKey));
+//	}
 
 	public static void ensureAuthority(boolean authorized, String messageKey) {
 		
@@ -320,7 +319,7 @@ public class LemonUtils {
 	public static <U extends AbstractUser<U,ID>, ID extends Serializable>
 	void ensureUpToDate(JWTClaimsSet claims, U user) {
 		
-		ensureCredentials(claims.getIssueTime().after(user.getCredentialsUpdatedAt()),
+		ensureAuthority(!claims.getIssueTime().before(user.getCredentialsUpdatedAt()),
 				"com.naturalprogrammer.spring.obsoleteToken");
 	}
 	

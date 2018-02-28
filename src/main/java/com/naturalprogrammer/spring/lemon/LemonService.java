@@ -12,6 +12,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -345,10 +346,10 @@ public abstract class LemonService
 		
 		JWTClaimsSet claims = jwtService.parseToken(verificationCode, JwtService.VERIFY_AUDIENCE, user.getCredentialsUpdatedAt());
 		
-		LemonUtils.validate(
+		LemonUtils.ensureAuthority(
 				claims.getSubject().equals(user.getId().toString()) &&
 				claims.getClaim("email").equals(user.getEmail()),
-				"com.naturalprogrammer.spring.wrong.verificationCode").go();
+				"com.naturalprogrammer.spring.wrong.verificationCode");
 		
 		user.getRoles().remove(Role.UNVERIFIED); // make him verified
 		user.setCredentialsUpdatedAt(new Date());
@@ -598,6 +599,9 @@ public abstract class LemonService
 
 			// update the roles
 			
+			if (user.getRoles().equals(updatedUser.getRoles())) // roles are same
+				return;
+			
 			if (updatedUser.hasRole(Role.UNVERIFIED)) {
 				
 				if (!user.hasRole(Role.UNVERIFIED)) {
@@ -657,7 +661,7 @@ public abstract class LemonService
 		
 		String changeEmailCode = jwtService.createToken(JwtService.CHANGE_EMAIL_AUDIENCE,
 				user.getId().toString(), properties.getJwt().getExpirationMilli(),
-				LemonUtils.mapOf("email", user.getNewEmail()));
+				LemonUtils.mapOf("newEmail", user.getNewEmail()));
 		
 		try {
 			
@@ -704,14 +708,17 @@ public abstract class LemonService
 		
 		U user = userRepository.findById(userId).orElseThrow(LemonUtils.notFoundSupplier());
 		
+		LemonUtils.validate(StringUtils.isNotBlank(user.getNewEmail()),
+				"com.naturalprogrammer.spring.blank.newEmail").go();
+		
 		JWTClaimsSet claims = jwtService.parseToken(changeEmailCode,
 				JwtService.CHANGE_EMAIL_AUDIENCE,
 				user.getCredentialsUpdatedAt());
 		
-		LemonUtils.validate(
+		LemonUtils.ensureAuthority(
 				claims.getSubject().equals(user.getId().toString()) &&
-				claims.getClaim("email").equals(user.getNewEmail()),
-				"com.naturalprogrammer.spring.wrong.changeEmailCode").go();
+				claims.getClaim("newEmail").equals(user.getNewEmail()),
+				"com.naturalprogrammer.spring.wrong.changeEmailCode");
 		
 		// Ensure that the email would be unique 
 		LemonUtils.validate(

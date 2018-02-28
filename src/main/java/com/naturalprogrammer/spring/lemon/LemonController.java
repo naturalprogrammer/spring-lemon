@@ -234,7 +234,7 @@ public abstract class LemonController
 	/**
 	 * Requests for changing email.
 	 */
-	@PostMapping("/users/{id}/request-email-change")
+	@PostMapping("/users/{id}/email-change-request")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void requestEmailChange(@PathVariable("id") U user,
 								   @RequestBody U updatedUser) {
@@ -248,8 +248,7 @@ public abstract class LemonController
 	 * Changes the email.
 	 * @return 
 	 */
-	@PostMapping("/users/{userId}/change-email")
-	@ResponseStatus(HttpStatus.NO_CONTENT)
+	@PostMapping("/users/{userId}/email")
 	public SpringUser<ID> changeEmail(
 			@PathVariable ID userId,
 			@RequestParam String code,
@@ -261,6 +260,7 @@ public abstract class LemonController
 		// return the currently logged in user with new email
 		return springUserWithToken(response);		
 	}
+
 	
 	/**
 	 * Login with nonce - used after a user social logs in
@@ -296,7 +296,6 @@ public abstract class LemonController
 		lemonService.fetchNewToken(expirationMillis, username, response);
 	}
 
-	
 	protected SpringUser<ID> springUserWithToken(HttpServletResponse response) {
 		
 		SpringUser<ID> springUser = LemonUtils.getSpringUser();
