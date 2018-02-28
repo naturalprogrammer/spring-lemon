@@ -774,13 +774,12 @@ public abstract class LemonService
 		U user = userRepository.findById(nonce.getUserId())
 			.orElseThrow(LemonUtils.notFoundSupplier());
 
-		if (user.getNonce().equals(nonce.getNonce())) {
-			
-			user.setNonce(null);
-			userRepository.save(user);
-			LemonUtils.login(user);
-		} else	
-			throw LemonUtils.NOT_FOUND_EXCEPTION;
+		LemonUtils.ensureCredentials(nonce.getNonce().equals(user.getNonce()),
+			"com.naturalprogrammer.spring.invalidNonce");
+
+		user.setNonce(null);
+		userRepository.save(user);
+		LemonUtils.login(user);
 	}
 
 //	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
