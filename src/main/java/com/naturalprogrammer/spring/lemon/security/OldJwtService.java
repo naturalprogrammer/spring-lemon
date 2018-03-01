@@ -25,19 +25,19 @@
 //	}
 //
 //
-//    public String getAuthToken(String username, Long expirationMilli) {
+//    public String getAuthToken(String username, Long expirationMillis) {
 //		
 //		return Jwts.builder()
 //	        .setSubject(username)
 //	        .setAudience(Audience.AUTH.name())
-//	        .setExpiration(new Date(System.currentTimeMillis() + expirationMilli))
+//	        .setExpiration(new Date(System.currentTimeMillis() + expirationMillis))
 //	        .signWith(SignatureAlgorithm.HS256, secretKey)
 //	        .compact();
 //	}
 //    
-//	public void addJwtAuthHeader(HttpServletResponse response, String username, Long expirationMilli) {
+//	public void addJwtAuthHeader(HttpServletResponse response, String username, Long expirationMillis) {
 //		
-//        response.addHeader(LemonSecurityConfig.TOKEN_RESPONSE_HEADER_NAME, LemonSecurityConfig.TOKEN_PREFIX + getAuthToken(username, expirationMilli));
+//        response.addHeader(LemonSecurityConfig.TOKEN_RESPONSE_HEADER_NAME, LemonSecurityConfig.TOKEN_PREFIX + getAuthToken(username, expirationMillis));
 //	}
 //
 //	public String parseAuthSubject(String token) {

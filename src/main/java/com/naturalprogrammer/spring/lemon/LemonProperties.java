@@ -308,7 +308,7 @@ public class LemonProperties {
 		/**
 		 * Default expiration milli seconds
 		 */
-		private long expirationMilli = 864000000L; // 10 days
+		private long expirationMillis = 864000000L; // 10 days
 		
 		public String getSecret() {
 			return secret;
@@ -318,12 +318,12 @@ public class LemonProperties {
 			this.secret = secret;
 		}
 		
-		public long getExpirationMilli() {
-			return expirationMilli;
+		public long getExpirationMillis() {
+			return expirationMillis;
 		}
 		
-		public void setExpirationMilli(long expirationMilli) {
-			this.expirationMilli = expirationMilli;
+		public void setExpirationMillis(long expirationMillis) {
+			this.expirationMillis = expirationMillis;
 		}		
 	}	
 }

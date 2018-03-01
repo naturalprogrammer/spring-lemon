@@ -14,9 +14,6 @@ import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.servlet.error.ErrorMvcAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.servlet.error.ErrorViewResolver;
-import org.springframework.boot.test.autoconfigure.web.servlet.MockMvcAutoConfiguration;
-import org.springframework.boot.test.autoconfigure.web.servlet.MockMvcWebClientAutoConfiguration;
-import org.springframework.boot.test.autoconfigure.web.servlet.MockMvcWebDriverAutoConfiguration;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.boot.web.servlet.error.ErrorController;
@@ -81,9 +78,6 @@ import com.nimbusds.jose.KeyLengthException;
 @EnableAsync
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @AutoConfigureBefore({
-	MockMvcAutoConfiguration.class,
-	MockMvcWebDriverAutoConfiguration.class,
-	MockMvcWebClientAutoConfiguration.class,
 	WebMvcAutoConfiguration.class,
 	ErrorMvcAutoConfiguration.class,
 	SecurityAutoConfiguration.class,

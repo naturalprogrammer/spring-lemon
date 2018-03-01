@@ -63,13 +63,13 @@ public class JwtService {
 		jwtProcessor.setJWEKeySelector(jweKeySelector);
 	}
 
-	public String createToken(String aud, String subject, Long expirationMilli, Map<String, Object> claimMap) {
+	public String createToken(String aud, String subject, Long expirationMillis, Map<String, Object> claimMap) {
 		
 		JWTClaimsSet.Builder builder = new JWTClaimsSet.Builder();
 		
 		builder
     		.issueTime(new Date())
-    		.expirationTime(new Date(System.currentTimeMillis() + expirationMilli))
+    		.expirationTime(new Date(System.currentTimeMillis() + expirationMillis))
     		.audience(aud)
     		.subject(subject);
 		
@@ -96,9 +96,9 @@ public class JwtService {
 	}
 
 
-	public String createToken(String audience, String subject, Long expirationMilli) {
+	public String createToken(String audience, String subject, Long expirationMillis) {
 
-		return createToken(audience, subject, expirationMilli, new HashMap<>());
+		return createToken(audience, subject, expirationMillis, new HashMap<>());
 	}
 
 	public JWTClaimsSet parseToken(String token, String audience) {
@@ -124,16 +124,18 @@ public class JwtService {
 	public JWTClaimsSet parseToken(String token, String audience, Date cutoffDate) {
 		
 		JWTClaimsSet claims = parseToken(token, audience);
-		LemonUtils.ensureAuthority(!claims.getIssueTime().before(cutoffDate),
+		
+		Date issueTime = claims.getIssueTime();
+		LemonUtils.ensureAuthority(LemonUtils.onOrAfter(issueTime, cutoffDate),
 				"com.naturalprogrammer.spring.obsoleteToken");
 
 		return claims;
 	}	
 	
-	public void addAuthHeader(HttpServletResponse response, String username, Long expirationMilli) {
+	public void addAuthHeader(HttpServletResponse response, String username, Long expirationMillis) {
 	
 		response.addHeader(LemonSecurityConfig.TOKEN_RESPONSE_HEADER_NAME,
 				LemonSecurityConfig.TOKEN_PREFIX +
-				createToken(AUTH_AUDIENCE, username, expirationMilli));
+				createToken(AUTH_AUDIENCE, username, expirationMillis));
 	}
 }

@@ -253,7 +253,7 @@ public abstract class LemonService
 			log.debug("Sending verification mail to: " + user);
 			
 			String verificationCode = jwtService.createToken(JwtService.VERIFY_AUDIENCE,
-					user.getId().toString(), properties.getJwt().getExpirationMilli(),
+					user.getId().toString(), properties.getJwt().getExpirationMillis(),
 					LemonUtils.mapOf("email", user.getEmail()));
 
 			// make the link
@@ -423,7 +423,7 @@ public abstract class LemonService
 		log.debug("Mailing forgot password link to user: " + user);
 
 		String forgotPasswordCode = jwtService.createToken(JwtService.FORGOT_PASSWORD_AUDIENCE,
-				user.getEmail(), properties.getJwt().getExpirationMilli());
+				user.getEmail(), properties.getJwt().getExpirationMillis());
 
 		// make the link
 		String forgotPasswordLink =	properties.getApplicationUrl()
@@ -660,7 +660,7 @@ public abstract class LemonService
 	protected void mailChangeEmailLink(U user) {
 		
 		String changeEmailCode = jwtService.createToken(JwtService.CHANGE_EMAIL_AUDIENCE,
-				user.getId().toString(), properties.getJwt().getExpirationMilli(),
+				user.getId().toString(), properties.getJwt().getExpirationMillis(),
 				LemonUtils.mapOf("newEmail", user.getNewEmail()));
 		
 		try {
@@ -807,7 +807,7 @@ public abstract class LemonService
 				springUser.isGoodAdmin(), "com.naturalprogrammer.spring.notGoodAdminOrSameUser");
 		
 		jwtService.addAuthHeader(response, username,
-				expirationMillis.orElse(properties.getJwt().getExpirationMilli()));
+				expirationMillis.orElse(properties.getJwt().getExpirationMillis()));
 	}
 
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)

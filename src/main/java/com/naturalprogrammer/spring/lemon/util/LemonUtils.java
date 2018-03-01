@@ -3,6 +3,7 @@ package com.naturalprogrammer.spring.lemon.util;
 import java.io.IOException;
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -320,7 +321,7 @@ public class LemonUtils {
 	public static <U extends AbstractUser<U,ID>, ID extends Serializable>
 	void ensureUpToDate(JWTClaimsSet claims, U user) {
 		
-		ensureAuthority(!claims.getIssueTime().before(user.getCredentialsUpdatedAt()),
+		ensureAuthority(LemonUtils.onOrAfter(claims.getIssueTime(), user.getCredentialsUpdatedAt()),
 				"com.naturalprogrammer.spring.obsoleteToken");
 	}
 	
@@ -332,5 +333,10 @@ public class LemonUtils {
 	    }
 	    
 	    return text;
+	}
+	
+	public static boolean onOrAfter(Date after, Date before) {
+		
+		return after.toInstant().toEpochMilli() >= before.toInstant().toEpochMilli();
 	}
 }

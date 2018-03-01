@@ -44,7 +44,7 @@ public abstract class LemonController
 
 	private static final Log log = LogFactory.getLog(LemonController.class);
 
-    private long jwtExpirationMilli;
+    private long jwtexpirationMillis;
     private JwtService jwtService;
 	private LemonService<U, ID> lemonService;
 	
@@ -54,7 +54,7 @@ public abstract class LemonController
 			LemonService<U, ID> lemonService,
 			JwtService jwtService) {
 		
-		this.jwtExpirationMilli = properties.getJwt().getExpirationMilli();
+		this.jwtexpirationMillis = properties.getJwt().getExpirationMillis();
 		this.lemonService = lemonService;
 		this.jwtService = jwtService;
 		
@@ -227,7 +227,7 @@ public abstract class LemonController
 		log.debug("Changing password ... ");				
 		String username = lemonService.changePassword(user, changePasswordForm);
 		
-		jwtService.addAuthHeader(response, username, jwtExpirationMilli);
+		jwtService.addAuthHeader(response, username, jwtexpirationMillis);
 	}
 
 
@@ -273,12 +273,12 @@ public abstract class LemonController
 		
 		SpringUser<ID> springUser = LemonUtils.getSpringUser();
 		
-		if (nonce.getExpirationMilli() == null)
-			nonce.setExpirationMilli(jwtExpirationMilli);
+		if (nonce.getexpirationMillis() == null)
+			nonce.setexpirationMillis(jwtexpirationMillis);
 		
 		jwtService.addAuthHeader(response,
 				springUser.getUsername(),
-				nonce.getExpirationMilli());
+				nonce.getexpirationMillis());
 
 		return springUser;
 	}
@@ -288,7 +288,8 @@ public abstract class LemonController
 	 */
 	@PostMapping("/fetch-new-token")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void fetchNewToken(@RequestParam Optional<Long> expirationMillis,
+	public void fetchNewToken(
+			@RequestParam Optional<Long> expirationMillis,
 			@RequestParam Optional<String> username,
 			HttpServletResponse response) {
 		
@@ -299,7 +300,7 @@ public abstract class LemonController
 	protected SpringUser<ID> springUserWithToken(HttpServletResponse response) {
 		
 		SpringUser<ID> springUser = LemonUtils.getSpringUser();
-		jwtService.addAuthHeader(response, springUser.getUsername(), jwtExpirationMilli);
+		jwtService.addAuthHeader(response, springUser.getUsername(), jwtexpirationMillis);
 		return springUser;
 	}
 }
