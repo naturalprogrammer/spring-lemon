@@ -319,9 +319,9 @@ public class LemonUtils {
 	}
 
 	public static <U extends AbstractUser<U,ID>, ID extends Serializable>
-	void ensureUpToDate(JWTClaimsSet claims, U user) {
+	void ensureCredentialsUpToDate(JWTClaimsSet claims, U user) {
 		
-		ensureAuthority(LemonUtils.onOrAfter(claims.getIssueTime(), user.getCredentialsUpdatedAt()),
+		ensureCredentials(LemonUtils.onOrAfter(claims.getIssueTime(), user.getCredentialsUpdatedAt()),
 				"com.naturalprogrammer.spring.obsoleteToken");
 	}
 	
@@ -335,8 +335,8 @@ public class LemonUtils {
 	    return text;
 	}
 	
-	public static boolean onOrAfter(Date after, Date before) {
+	public static boolean onOrAfter(Date issueTime, Date credentialsUpdatedAt) {
 		
-		return after.toInstant().toEpochMilli() >= before.toInstant().toEpochMilli();
+		return issueTime.toInstant().getEpochSecond() >= credentialsUpdatedAt.toInstant().getEpochSecond();
 	}
 }

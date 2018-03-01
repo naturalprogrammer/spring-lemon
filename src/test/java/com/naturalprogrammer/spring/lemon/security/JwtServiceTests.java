@@ -48,7 +48,7 @@ public class JwtServiceTests {
 	public void testJwtParseTokenExpired() throws InterruptedException {
 		
 		String token = service1.createToken("auth", "subject", 1L);
-		Thread.sleep(1001L);
+		Thread.sleep(1L);
 		service1.parseToken(token, "auth");
 	}
 	

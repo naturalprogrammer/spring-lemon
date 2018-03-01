@@ -43,7 +43,7 @@ public class JwtAuthenticationProvider
 
         log.debug("User found ...");
 
-        LemonUtils.ensureUpToDate(claims, user);
+        LemonUtils.ensureCredentialsUpToDate(claims, user);
         LemonPrincipal<ID> principal = new LemonPrincipal<ID>(user.toSpringUser());
         		
         return new JwtAuthenticationToken(principal, token, principal.getAuthorities());

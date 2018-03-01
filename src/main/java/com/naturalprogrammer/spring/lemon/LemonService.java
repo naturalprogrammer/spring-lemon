@@ -480,7 +480,7 @@ public abstract class LemonService
 		
 		// fetch the user
 		U user = userRepository.findByEmail(email).orElseThrow(LemonUtils.notFoundSupplier());
-		LemonUtils.ensureUpToDate(claims, user);
+		LemonUtils.ensureCredentialsUpToDate(claims, user);
 		
 		// sets the password
 		user.setPassword(passwordEncoder.encode(newPassword));
