@@ -44,7 +44,7 @@ public abstract class LemonController
 
 	private static final Log log = LogFactory.getLog(LemonController.class);
 
-    private long jwtexpirationMillis;
+    private long jwtExpirationMillis;
     private JwtService jwtService;
 	private LemonService<U, ID> lemonService;
 	
@@ -54,7 +54,7 @@ public abstract class LemonController
 			LemonService<U, ID> lemonService,
 			JwtService jwtService) {
 		
-		this.jwtexpirationMillis = properties.getJwt().getExpirationMillis();
+		this.jwtExpirationMillis = properties.getJwt().getExpirationMillis();
 		this.lemonService = lemonService;
 		this.jwtService = jwtService;
 		
@@ -227,7 +227,7 @@ public abstract class LemonController
 		log.debug("Changing password ... ");				
 		String username = lemonService.changePassword(user, changePasswordForm);
 		
-		jwtService.addAuthHeader(response, username, jwtexpirationMillis);
+		jwtService.addAuthHeader(response, username, jwtExpirationMillis);
 	}
 
 
@@ -273,12 +273,12 @@ public abstract class LemonController
 		
 		SpringUser<ID> springUser = LemonUtils.getSpringUser();
 		
-		if (nonce.getexpirationMillis() == null)
-			nonce.setexpirationMillis(jwtexpirationMillis);
+		if (nonce.getExpirationMillis() == null)
+			nonce.setExpirationMillis(jwtExpirationMillis);
 		
 		jwtService.addAuthHeader(response,
 				springUser.getUsername(),
-				nonce.getexpirationMillis());
+				nonce.getExpirationMillis());
 
 		return springUser;
 	}
@@ -300,7 +300,7 @@ public abstract class LemonController
 	protected SpringUser<ID> springUserWithToken(HttpServletResponse response) {
 		
 		SpringUser<ID> springUser = LemonUtils.getSpringUser();
-		jwtService.addAuthHeader(response, springUser.getUsername(), jwtexpirationMillis);
+		jwtService.addAuthHeader(response, springUser.getUsername(), jwtExpirationMillis);
 		return springUser;
 	}
 }

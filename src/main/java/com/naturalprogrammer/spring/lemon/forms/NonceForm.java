@@ -25,10 +25,10 @@ public class NonceForm<ID> {
 	public void setNonce(String nonce) {
 		this.nonce = nonce;
 	}
-	public Long getexpirationMillis() {
+	public Long getExpirationMillis() {
 		return expirationMillis;
 	}
-	public void setexpirationMillis(Long expirationMillis) {
+	public void setExpirationMillis(Long expirationMillis) {
 		this.expirationMillis = expirationMillis;
 	}
 }

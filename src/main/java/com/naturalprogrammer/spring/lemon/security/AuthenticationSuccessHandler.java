@@ -30,13 +30,13 @@ public class AuthenticationSuccessHandler
 	
     private ObjectMapper objectMapper;    
     private JwtService jwtService;
-    private long defaultexpirationMillis;
+    private long defaultExpirationMillis;
     
 	public AuthenticationSuccessHandler(ObjectMapper objectMapper, JwtService jwtService, LemonProperties properties) {
 		
 		this.objectMapper = objectMapper;
 		this.jwtService = jwtService;
-		this.defaultexpirationMillis = properties.getJwt().getExpirationMillis();
+		this.defaultExpirationMillis = properties.getJwt().getExpirationMillis();
 		
 		log.info("Created");
 	}
@@ -55,7 +55,7 @@ public class AuthenticationSuccessHandler
 
     	String expirationMillisStr = request.getParameter("expirationMillis");
     	long expirationMillis = expirationMillisStr == null ?
-    			defaultexpirationMillis : Long.valueOf(expirationMillisStr);
+    			defaultExpirationMillis : Long.valueOf(expirationMillisStr);
  
     	// get the current-user
     	SpringUser<?> currentUser = LemonUtils.getSpringUser();

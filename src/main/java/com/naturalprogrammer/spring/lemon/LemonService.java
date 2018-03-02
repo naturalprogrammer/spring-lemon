@@ -672,7 +672,7 @@ public abstract class LemonService
 					+ "/change-email?code=" + changeEmailCode;
 			
 			// mail it
-			mailSender.send(user.getEmail(),
+			mailSender.send(user.getNewEmail(),
 				LemonUtils.getMessage(
 					"com.naturalprogrammer.spring.changeEmailSubject"),
 				LemonUtils.getMessage(
