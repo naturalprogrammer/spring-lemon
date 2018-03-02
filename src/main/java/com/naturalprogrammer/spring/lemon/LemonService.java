@@ -1,7 +1,6 @@
 package com.naturalprogrammer.spring.lemon;
 
 import java.io.Serializable;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -227,7 +226,7 @@ public abstract class LemonService
 	protected void makeUnverified(U user) {
 		
 		user.getRoles().add(Role.UNVERIFIED);
-		user.setCredentialsUpdatedAt(new Date());
+		user.setCredentialsUpdatedMillis(System.currentTimeMillis());
 		LemonUtils.afterCommit(() -> sendVerificationMail(user)); // send a verification mail to the user
 	}
 	
@@ -344,7 +343,7 @@ public abstract class LemonService
 		LemonUtils.validate(user.hasRole(Role.UNVERIFIED),
 				"com.naturalprogrammer.spring.alreadyVerified").go();	
 		
-		JWTClaimsSet claims = jwtService.parseToken(verificationCode, JwtService.VERIFY_AUDIENCE, user.getCredentialsUpdatedAt());
+		JWTClaimsSet claims = jwtService.parseToken(verificationCode, JwtService.VERIFY_AUDIENCE, user.getCredentialsUpdatedMillis());
 		
 		LemonUtils.ensureAuthority(
 				claims.getSubject().equals(user.getId().toString()) &&
@@ -352,7 +351,7 @@ public abstract class LemonService
 				"com.naturalprogrammer.spring.wrong.verificationCode");
 		
 		user.getRoles().remove(Role.UNVERIFIED); // make him verified
-		user.setCredentialsUpdatedAt(new Date());
+		user.setCredentialsUpdatedMillis(System.currentTimeMillis());
 		userRepository.save(user);
 		
 		// after successful commit,
@@ -484,7 +483,7 @@ public abstract class LemonService
 		
 		// sets the password
 		user.setPassword(passwordEncoder.encode(newPassword));
-		user.setCredentialsUpdatedAt(new Date());
+		user.setCredentialsUpdatedMillis(System.currentTimeMillis());
 		//user.setForgotPasswordCode(null);
 		
 		userRepository.save(user);
@@ -557,7 +556,7 @@ public abstract class LemonService
 		
 		// sets the password
 		user.setPassword(passwordEncoder.encode(changePasswordForm.getPassword()));
-		user.setCredentialsUpdatedAt(new Date());
+		user.setCredentialsUpdatedMillis(System.currentTimeMillis());
 		userRepository.save(user);
 		
 //		// after successful commit
@@ -615,7 +614,7 @@ public abstract class LemonService
 			}
 			
 			user.setRoles(updatedUser.getRoles());
-			user.setCredentialsUpdatedAt(new Date());
+			user.setCredentialsUpdatedMillis(System.currentTimeMillis());
 		}
 	}
 
@@ -713,7 +712,7 @@ public abstract class LemonService
 		
 		JWTClaimsSet claims = jwtService.parseToken(changeEmailCode,
 				JwtService.CHANGE_EMAIL_AUDIENCE,
-				user.getCredentialsUpdatedAt());
+				user.getCredentialsUpdatedMillis());
 		
 		LemonUtils.ensureAuthority(
 				claims.getSubject().equals(user.getId().toString()) &&
@@ -729,7 +728,7 @@ public abstract class LemonService
 		user.setEmail(user.getNewEmail());
 		user.setNewEmail(null);
 		//user.setChangeEmailCode(null);
-		user.setCredentialsUpdatedAt(new Date());
+		user.setCredentialsUpdatedMillis(System.currentTimeMillis());
 		
 		// make the user verified if he is not
 		if (user.hasRole(Role.UNVERIFIED))

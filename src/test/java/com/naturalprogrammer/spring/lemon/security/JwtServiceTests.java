@@ -1,7 +1,5 @@
 package com.naturalprogrammer.spring.lemon.security;
 
-import java.util.Date;
-
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.security.access.AccessDeniedException;
@@ -64,6 +62,6 @@ public class JwtServiceTests {
 
 		String token = service1.createToken("auth", "subject", 5000L);
 		Thread.sleep(1001L);				
-		service1.parseToken(token, "auth", new Date());
+		service1.parseToken(token, "auth", System.currentTimeMillis());
 	}
 }

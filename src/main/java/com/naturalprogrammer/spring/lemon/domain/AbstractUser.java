@@ -1,7 +1,6 @@
 package com.naturalprogrammer.spring.lemon.domain;
 
 import java.io.Serializable;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -115,7 +114,7 @@ extends VersionedEntity<U, ID> {
 	// A JWT after before this won't be valid
 	@Column(nullable = false)
 	@JsonIgnore
-	private Date credentialsUpdatedAt = new Date();
+	private long credentialsUpdatedMillis = System.currentTimeMillis();
 
 	// holds reCAPTCHA response while signing up
 	@Transient
@@ -217,12 +216,12 @@ extends VersionedEntity<U, ID> {
 		this.nonce = nonce;
 	}
 
-	public Date getCredentialsUpdatedAt() {
-		return credentialsUpdatedAt;
+	public long getCredentialsUpdatedMillis() {
+		return credentialsUpdatedMillis;
 	}
 
-	public void setCredentialsUpdatedAt(Date credentialsUpdatedAt) {
-		this.credentialsUpdatedAt = credentialsUpdatedAt;
+	public void setCredentialsUpdatedMillis(long credentialsUpdatedMillis) {
+		this.credentialsUpdatedMillis = credentialsUpdatedMillis;
 	}
 
 	/**

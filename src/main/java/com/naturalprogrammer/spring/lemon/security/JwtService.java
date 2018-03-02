@@ -38,6 +38,7 @@ import com.nimbusds.jwt.proc.DefaultJWTProcessor;
  */
 public class JwtService {
 	
+	public static final String LEMON_IAT = "lemon-iat";
     public static final String AUTH_AUDIENCE = "auth";
     public static final String VERIFY_AUDIENCE = "verify";
     public static final String FORGOT_PASSWORD_AUDIENCE = "forgot-password";
@@ -68,11 +69,13 @@ public class JwtService {
 		JWTClaimsSet.Builder builder = new JWTClaimsSet.Builder();
 		
 		builder
-    		.issueTime(new Date())
+    		//.issueTime(new Date())
     		.expirationTime(new Date(System.currentTimeMillis() + expirationMillis))
     		.audience(aud)
-    		.subject(subject);
+    		.subject(subject)
+    		.claim(LEMON_IAT, System.currentTimeMillis());
 		
+		//claimMap.put("iat", new Date());
 		claimMap.forEach(builder::claim);
 		
 		JWTClaimsSet claims = builder.build();
@@ -121,12 +124,12 @@ public class JwtService {
 		}
 	}
 	
-	public JWTClaimsSet parseToken(String token, String audience, Date cutoffDate) {
+	public JWTClaimsSet parseToken(String token, String audience, long issuedAfter) {
 		
 		JWTClaimsSet claims = parseToken(token, audience);
 		
-		Date issueTime = claims.getIssueTime();
-		LemonUtils.ensureAuthority(LemonUtils.onOrAfter(issueTime, cutoffDate),
+		long issueTime = (long) claims.getClaim(LEMON_IAT);
+		LemonUtils.ensureAuthority(issueTime >= issuedAfter,
 				"com.naturalprogrammer.spring.obsoleteToken");
 
 		return claims;

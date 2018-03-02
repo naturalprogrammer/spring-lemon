@@ -3,7 +3,6 @@ package com.naturalprogrammer.spring.lemon.util;
 import java.io.IOException;
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -40,6 +39,7 @@ import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
 import com.naturalprogrammer.spring.lemon.domain.VersionedEntity;
 import com.naturalprogrammer.spring.lemon.exceptions.MultiErrorException;
 import com.naturalprogrammer.spring.lemon.exceptions.VersionException;
+import com.naturalprogrammer.spring.lemon.security.JwtService;
 import com.naturalprogrammer.spring.lemon.security.LemonPrincipal;
 import com.naturalprogrammer.spring.lemon.security.SpringUser;
 import com.naturalprogrammer.spring.lemon.validation.FieldError;
@@ -109,7 +109,7 @@ public class LemonUtils {
 	public static String getMessage(String messageKey, Object... args) {
 		
 		if (messageSource == null)
-			return "ApplicationContext unavailable, probably unit going on";
+			return "ApplicationContext unavailable, probably unit test going on";
 		
 		// http://stackoverflow.com/questions/10792551/how-to-obtain-a-current-user-locale-from-spring-without-passing-it-as-a-paramete
 		return messageSource.getMessage(messageKey, args,
@@ -321,7 +321,9 @@ public class LemonUtils {
 	public static <U extends AbstractUser<U,ID>, ID extends Serializable>
 	void ensureCredentialsUpToDate(JWTClaimsSet claims, U user) {
 		
-		ensureCredentials(LemonUtils.onOrAfter(claims.getIssueTime(), user.getCredentialsUpdatedAt()),
+		long issueTime = (long) claims.getClaim(JwtService.LEMON_IAT);
+
+		ensureCredentials(issueTime >= user.getCredentialsUpdatedMillis(),
 				"com.naturalprogrammer.spring.obsoleteToken");
 	}
 	
@@ -335,8 +337,8 @@ public class LemonUtils {
 	    return text;
 	}
 	
-	public static boolean onOrAfter(Date issueTime, Date credentialsUpdatedAt) {
-		
-		return issueTime.toInstant().getEpochSecond() >= credentialsUpdatedAt.toInstant().getEpochSecond();
-	}
+//	public static boolean onOrAfter(Date issueTime, Date credentialsUpdatedAt) {
+//		
+//		return issueTime.toInstant().getEpochSecond() >= credentialsUpdatedAt.toInstant().getEpochSecond();
+//	}
 }
