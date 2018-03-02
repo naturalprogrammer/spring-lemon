@@ -61,7 +61,7 @@ public class JwtServiceTests {
 	public void testParseTokenCutoffTime() throws InterruptedException {
 
 		String token = service1.createToken("auth", "subject", 5000L);
-		Thread.sleep(1001L);				
+		Thread.sleep(1L);				
 		service1.parseToken(token, "auth", System.currentTimeMillis());
 	}
 }
