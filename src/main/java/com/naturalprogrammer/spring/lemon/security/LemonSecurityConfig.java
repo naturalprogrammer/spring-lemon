@@ -3,6 +3,8 @@ package com.naturalprogrammer.spring.lemon.security;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -11,7 +13,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.naturalprogrammer.spring.lemon.LemonProperties;
 
@@ -72,18 +73,6 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 		
 		log.info("Created");
 	}
-	
-
-	/**
-	 * Needed for configuring JwtAuthenticationProvider
-	 */
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-  
-        auth.userDetailsService(userDetailsService)
-        	.passwordEncoder(passwordEncoder).and()
-        	.authenticationProvider(jwtAuthenticationProvider);
-    }
 
 	/**
 	 * Security configuration, calling protected methods
@@ -97,12 +86,11 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 		exceptionHandling(http); // exception handling
 		csrf(http); // csrf configuration
 		//switchUser(http); // switch-user configuration
-		customTokenAuthentication(http); // API key authentication
+		//customTokenAuthentication(http); // API key authentication
 		oauth2Client(http);
 		authorizeRequests(http); // authorize requests
 		otherConfigurations(http); // override this to add more configurations
 	}
-
 
 	/**
 	 * Configuring Session creation policy
@@ -207,12 +195,12 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 //	}
 //
 //
-	private void customTokenAuthentication(HttpSecurity http) throws Exception {
+//	private void customTokenAuthentication(HttpSecurity http) throws Exception {
+//	
+//		http.addFilterBefore(lemonTokenAuthenticationFilter(),
+//				UsernamePasswordAuthenticationFilter.class);
+//	}
 	
-		http.addFilterBefore(new LemonTokenAuthenticationFilter(super.authenticationManager()),
-				UsernamePasswordAuthenticationFilter.class);
-	}
-
 	private void oauth2Client(HttpSecurity http) throws Exception {
 		
 		http.oauth2Login()
@@ -260,5 +248,23 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 	 */
 	protected void otherConfigurations(HttpSecurity http)  throws Exception {
 
+	}
+
+	/**
+	 * Needed for configuring JwtAuthenticationProvider
+	 */
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+  
+        auth.userDetailsService(userDetailsService)
+        	.passwordEncoder(passwordEncoder).and()
+        	.authenticationProvider(jwtAuthenticationProvider);
+    }
+
+	@Bean
+	@ConditionalOnMissingBean(LemonTokenAuthenticationFilter.class)
+	public LemonTokenAuthenticationFilter lemonTokenAuthenticationFilter() throws Exception {
+		
+		return new LemonTokenAuthenticationFilter(super.authenticationManager());
 	}
 }
