@@ -305,9 +305,14 @@ public class LemonProperties {
 		private String secret;
 		
 		/**
-		 * Default expiration milli seconds
+		 * Default expiration milliseconds
 		 */
 		private long expirationMillis = 864000000L; // 10 days
+		
+		/**
+		 * Expiration milliseconds for short-lived tokens and cookies
+		 */
+		private int shortLivedMillis = 60000; // One minute
 		
 		public String getSecret() {
 			return secret;
@@ -323,6 +328,14 @@ public class LemonProperties {
 		
 		public void setExpirationMillis(long expirationMillis) {
 			this.expirationMillis = expirationMillis;
-		}		
+		}
+
+		public int getShortLivedMillis() {
+			return shortLivedMillis;
+		}
+
+		public void setShortLivedMillis(int shortLivedMillis) {
+			this.shortLivedMillis = shortLivedMillis;
+		}
 	}	
 }

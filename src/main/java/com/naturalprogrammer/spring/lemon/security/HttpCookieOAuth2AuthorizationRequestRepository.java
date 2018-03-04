@@ -12,9 +12,18 @@ import org.springframework.security.oauth2.client.web.AuthorizationRequestReposi
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
 import org.springframework.util.Assert;
 
+import com.naturalprogrammer.spring.lemon.LemonProperties;
+
 public class HttpCookieOAuth2AuthorizationRequestRepository implements AuthorizationRequestRepository<OAuth2AuthorizationRequest> {
 	
 	private static final String COOKIE_NAME = "SpringLemonOAuth2AuthorizationRequest";
+	
+	private int cookieExpiry;
+	
+	public HttpCookieOAuth2AuthorizationRequestRepository(LemonProperties properties) {
+
+		cookieExpiry = properties.getJwt().getShortLivedMillis() / 1000;
+	}
 
 	@Override
 	public OAuth2AuthorizationRequest loadAuthorizationRequest(HttpServletRequest request) {
@@ -42,9 +51,15 @@ public class HttpCookieOAuth2AuthorizationRequestRepository implements Authoriza
 		Cookie cookie = new Cookie(COOKIE_NAME, fromAuthorizationRequest(authorizationRequest));
 		cookie.setPath("/");
 		cookie.setHttpOnly(true);
+		cookie.setMaxAge(cookieExpiry);
 		response.addCookie(cookie);
 	}
 
+	@Override
+	public OAuth2AuthorizationRequest removeAuthorizationRequest(HttpServletRequest request) {
+		
+		return loadAuthorizationRequest(request);
+	}
 	
 	private String fromAuthorizationRequest(OAuth2AuthorizationRequest authorizationRequest) {
 		
@@ -63,12 +78,6 @@ public class HttpCookieOAuth2AuthorizationRequestRepository implements Authoriza
 		});
 	}
 
-	@Override
-	public OAuth2AuthorizationRequest removeAuthorizationRequest(HttpServletRequest request) {
-		
-		return loadAuthorizationRequest(request);
-	}
-	
 	private Optional<Cookie> fetchCookie(HttpServletRequest request) {
 		
 		Cookie[] cookies = request.getCookies();

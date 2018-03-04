@@ -40,6 +40,7 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
     public static final String TOKEN_REQUEST_HEADER_NAME = "Authorization";
     public static final String TOKEN_RESPONSE_HEADER_NAME = "Lemon-Authorization";
     
+    private LemonProperties properties;
 	private UserDetailsService userDetailsService;
 	private AuthenticationSuccessHandler authenticationSuccessHandler;
 	private AuthenticationFailureHandler authenticationFailureHandler;
@@ -61,6 +62,7 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 			PasswordEncoder passwordEncoder
 			) {
 
+		this.properties = properties;
 		this.userDetailsService = userDetailsService;
 		this.authenticationSuccessHandler = authenticationSuccessHandler;
 		this.authenticationFailureHandler = authenticationFailureHandler;
@@ -205,7 +207,7 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 		
 		http.oauth2Login()
 			.authorizationEndpoint()
-				.authorizationRequestRepository(new HttpCookieOAuth2AuthorizationRequestRepository()).and()
+				.authorizationRequestRepository(new HttpCookieOAuth2AuthorizationRequestRepository(properties)).and()
 			.successHandler(oauth2AuthenticationSuccessHandler)
 			.userInfoEndpoint()
 				.oidcUserService(oidcUserService)
