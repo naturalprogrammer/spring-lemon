@@ -33,7 +33,6 @@ import com.naturalprogrammer.spring.lemon.domain.AbstractUser.Role;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser.SignUpValidation;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUserRepository;
 import com.naturalprogrammer.spring.lemon.domain.ChangePasswordForm;
-import com.naturalprogrammer.spring.lemon.forms.NonceForm;
 import com.naturalprogrammer.spring.lemon.mail.MailSender;
 import com.naturalprogrammer.spring.lemon.permissions.UserEditPermission;
 import com.naturalprogrammer.spring.lemon.security.JwtService;
@@ -767,19 +766,19 @@ public abstract class LemonService
 		return (boolean) verified;
 	}
 
-	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
-	public void loginWithNonce(@Valid NonceForm<ID> nonce, HttpServletResponse response) {
-		
-		U user = userRepository.findById(nonce.getUserId())
-			.orElseThrow(LemonUtils.notFoundSupplier());
-
-		LemonUtils.ensureCredentials(nonce.getNonce().equals(user.getNonce()),
-			"com.naturalprogrammer.spring.invalidNonce");
-
-		user.setNonce(null);
-		userRepository.save(user);
-		LemonUtils.login(user);
-	}
+//	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
+//	public void loginWithNonce(@Valid NonceForm<ID> nonce, HttpServletResponse response) {
+//		
+//		U user = userRepository.findById(nonce.getUserId())
+//			.orElseThrow(LemonUtils.notFoundSupplier());
+//
+//		LemonUtils.ensureCredentials(nonce.getNonce().equals(user.getNonce()),
+//			"com.naturalprogrammer.spring.invalidNonce");
+//
+//		user.setNonce(null);
+//		userRepository.save(user);
+//		LemonUtils.login(user);
+//	}
 
 //	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
 //	public String addNonce(U user) {
@@ -793,9 +792,10 @@ public abstract class LemonService
 //
 	/**
 	 * Fetches a new token - for session scrolling etc.
+	 * @return 
 	 */
 	@PreAuthorize("isAuthenticated()")
-	public void fetchNewToken(Optional<Long> expirationMillis,
+	public SpringUser<ID> fetchNewToken(Optional<Long> expirationMillis,
 			Optional<String> optionalUsername,
 			HttpServletResponse response) {
 		
@@ -807,6 +807,8 @@ public abstract class LemonService
 		
 		jwtService.addAuthHeader(response, username,
 				expirationMillis.orElse(properties.getJwt().getExpirationMillis()));
+		
+		return springUser;
 	}
 
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)

@@ -231,10 +231,10 @@ public class LemonAutoConfiguration {
 	@Bean
 	@ConditionalOnMissingBean(OAuth2AuthenticationSuccessHandler.class)
 	public OAuth2AuthenticationSuccessHandler<?,?> oauth2AuthenticationSuccessHandler(
-			LemonProperties properties) {
+			LemonProperties properties, JwtService jwtService) {
 		
         log.info("Configuring OAuth2AuthenticationSuccessHandler");       
-		return new OAuth2AuthenticationSuccessHandler<>(properties);
+		return new OAuth2AuthenticationSuccessHandler<>(properties, jwtService);
 	}
 
 	/**

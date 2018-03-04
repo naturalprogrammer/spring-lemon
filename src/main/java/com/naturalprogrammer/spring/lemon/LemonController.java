@@ -26,7 +26,6 @@ import com.github.fge.jsonpatch.JsonPatchException;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser.SignupInput;
 import com.naturalprogrammer.spring.lemon.domain.ChangePasswordForm;
-import com.naturalprogrammer.spring.lemon.forms.NonceForm;
 import com.naturalprogrammer.spring.lemon.security.JwtService;
 import com.naturalprogrammer.spring.lemon.security.SpringUser;
 import com.naturalprogrammer.spring.lemon.util.LemonUtils;
@@ -262,39 +261,39 @@ public abstract class LemonController
 	}
 
 	
-	/**
-	 * Login with nonce - used after a user social logs in
-	 */
-	@PostMapping("/login-with-nonce")
-	public SpringUser<ID> loginWithNonce(@RequestBody NonceForm<ID> nonce, HttpServletResponse response) {
-		
-		log.debug("Logging in user in exchange of nonce ... ");
-		lemonService.loginWithNonce(nonce, response);
-		
-		SpringUser<ID> springUser = LemonUtils.getSpringUser();
-		
-		if (nonce.getExpirationMillis() == null)
-			nonce.setExpirationMillis(jwtExpirationMillis);
-		
-		jwtService.addAuthHeader(response,
-				springUser.getUsername(),
-				nonce.getExpirationMillis());
-
-		return springUser;
-	}
-	
+//	/**
+//	 * Login with nonce - used after a user social logs in
+//	 */
+//	@PostMapping("/login-with-nonce")
+//	public SpringUser<ID> loginWithNonce(@RequestBody NonceForm<ID> nonce, HttpServletResponse response) {
+//		
+//		log.debug("Logging in user in exchange of nonce ... ");
+//		lemonService.loginWithNonce(nonce, response);
+//		
+//		SpringUser<ID> springUser = LemonUtils.getSpringUser();
+//		
+//		if (nonce.getExpirationMillis() == null)
+//			nonce.setExpirationMillis(jwtExpirationMillis);
+//		
+//		jwtService.addAuthHeader(response,
+//				springUser.getUsername(),
+//				nonce.getExpirationMillis());
+//
+//		return springUser;
+//	}
+//	
 	/**
 	 * Fetch a new token - for session scrolling, switch user etc.
+	 * @return 
 	 */
 	@PostMapping("/fetch-new-token")
-	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void fetchNewToken(
+	public SpringUser<ID> fetchNewToken(
 			@RequestParam Optional<Long> expirationMillis,
 			@RequestParam Optional<String> username,
 			HttpServletResponse response) {
 		
-		log.debug("Logging in user in exchange of nonce ... ");
-		lemonService.fetchNewToken(expirationMillis, username, response);
+		log.debug("Fetching a new token ... ");
+		return lemonService.fetchNewToken(expirationMillis, username, response);
 	}
 
 	protected SpringUser<ID> springUserWithToken(HttpServletResponse response) {

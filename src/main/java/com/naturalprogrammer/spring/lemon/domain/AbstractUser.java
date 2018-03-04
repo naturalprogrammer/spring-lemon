@@ -108,8 +108,8 @@ extends VersionedEntity<U, ID> {
 //	protected String changeEmailCode;
 	
 	// One time token
-	@JsonIgnore
-	private String nonce;
+//	@JsonIgnore
+//	private String nonce;
 	
 	// A JWT after before this won't be valid
 	@Column(nullable = false)
@@ -208,14 +208,14 @@ extends VersionedEntity<U, ID> {
 		log.debug("Hid confidential fields for user: " + this);
 	}
 	
-	public String getNonce() {
-		return nonce;
-	}
-
-	public void setNonce(String nonce) {
-		this.nonce = nonce;
-	}
-
+//	public String getNonce() {
+//		return nonce;
+//	}
+//
+//	public void setNonce(String nonce) {
+//		this.nonce = nonce;
+//	}
+//
 	public long getCredentialsUpdatedMillis() {
 		return credentialsUpdatedMillis;
 	}

@@ -15,7 +15,7 @@ import com.naturalprogrammer.spring.lemon.util.LemonUtils;
 
 /**
  * Authentication success handler for redirecting the
- * OAuth2 signed in user to a nonce-contained URL
+ * OAuth2 signed in user to a URL with a short lived auth token
  * 
  * @author Sanjay Patel
  */
@@ -26,10 +26,12 @@ public class OAuth2AuthenticationSuccessHandler
 	private static final Log log = LogFactory.getLog(OAuth2AuthenticationSuccessHandler.class);
 
 	private LemonProperties properties;
+	private JwtService jwtService;
 
-	public OAuth2AuthenticationSuccessHandler(LemonProperties properties) {
+	public OAuth2AuthenticationSuccessHandler(LemonProperties properties, JwtService jwtService) {
 
 		this.properties = properties;
+		this.jwtService = jwtService;
 
 		log.info("Created");
 	}
@@ -39,9 +41,18 @@ public class OAuth2AuthenticationSuccessHandler
 			HttpServletResponse response) {
 		
 		SpringUser<ID> springUser = LemonUtils.getSpringUser();
-				
+		
+		String shortLivedAuthToken = jwtService.createToken(
+				JwtService.AUTH_AUDIENCE,
+				springUser.getUsername(),
+				(long) properties.getJwt().getShortLivedMillis());
+
 		return properties.getApplicationUrl()
-			+ "/users/" + springUser.getId()
-			+ "/social-login-success/" + springUser.getNonce();
+				+ "/social-login-success?token="
+				+ shortLivedAuthToken;
+		
+//		return properties.getApplicationUrl()
+//			+ "/users/" + springUser.getId()
+//			+ "/social-login-success/" + springUser.getNonce();
 	}
 }

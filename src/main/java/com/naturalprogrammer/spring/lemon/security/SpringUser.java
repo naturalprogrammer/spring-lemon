@@ -11,7 +11,7 @@ public class SpringUser<ID extends Serializable> {
 	private String password;
 	private Set<String> roles = new HashSet<String>();
 	private Serializable tag;
-	private String nonce;
+	//private String nonce;
 	
 	private boolean unverified = false;
 	private boolean blocked = false;
@@ -79,10 +79,10 @@ public class SpringUser<ID extends Serializable> {
 	public void setRoles(Set<String> roles) {
 		this.roles = roles;
 	}
-	public String getNonce() {
-		return nonce;
-	}
-	public void setNonce(String nonce) {
-		this.nonce = nonce;
-	}
+//	public String getNonce() {
+//		return nonce;
+//	}
+//	public void setNonce(String nonce) {
+//		this.nonce = nonce;
+//	}
 }
