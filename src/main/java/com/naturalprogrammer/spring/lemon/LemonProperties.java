@@ -183,8 +183,7 @@ public class LemonProperties {
 				"Referer",
 				"User-Agent",
 				"x-requested-with",
-				LemonSecurityConfig.XSRF_TOKEN_HEADER_NAME,
-				LemonSecurityConfig.TOKEN_RESPONSE_HEADER_NAME};
+				LemonSecurityConfig.TOKEN_REQUEST_HEADER_NAME};
 		
 		/**
 		 * Response headers that you want to expose to the client JavaScript programmer, e.g. "X-XSRF-TOKEN".
@@ -209,7 +208,7 @@ public class LemonProperties {
 				"X-XSS-Protection",
 				"X-Frame-Options",
 				"X-Application-Context",
-				LemonSecurityConfig.XSRF_TOKEN_HEADER_NAME};
+				LemonSecurityConfig.TOKEN_RESPONSE_HEADER_NAME};
 		
 		/**
 		 * CORS <code>maxAge</code> long property

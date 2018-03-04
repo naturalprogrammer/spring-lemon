@@ -30,7 +30,7 @@ public class LemonTokenAuthenticationFilter	extends GenericFilterBean {
 
 	public static boolean tokenPresent(HttpServletRequest request) {
 		
-		String header = request.getHeader(LemonSecurityConfig.TOKEN_REQUEST_HEADER);		
+		String header = request.getHeader(LemonSecurityConfig.TOKEN_REQUEST_HEADER_NAME);		
 		return header != null && header.startsWith(LemonSecurityConfig.TOKEN_PREFIX);
 	}	
 
@@ -47,7 +47,7 @@ public class LemonTokenAuthenticationFilter	extends GenericFilterBean {
 			
 			log.debug("Found a token");
 			
-		    String token = req.getHeader(LemonSecurityConfig.TOKEN_REQUEST_HEADER).substring(7);
+		    String token = req.getHeader(LemonSecurityConfig.TOKEN_REQUEST_HEADER_NAME).substring(7);
 		    JwtAuthenticationToken authRequest = new JwtAuthenticationToken(token);
 		    
 		    try {
