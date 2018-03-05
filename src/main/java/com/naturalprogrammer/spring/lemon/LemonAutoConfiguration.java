@@ -58,6 +58,7 @@ import com.naturalprogrammer.spring.lemon.security.LemonOidcUserService;
 import com.naturalprogrammer.spring.lemon.security.LemonPermissionEvaluator;
 import com.naturalprogrammer.spring.lemon.security.LemonSecurityConfig;
 import com.naturalprogrammer.spring.lemon.security.LemonUserDetailsService;
+import com.naturalprogrammer.spring.lemon.security.OAuth2AuthenticationFailureHandler;
 import com.naturalprogrammer.spring.lemon.security.OAuth2AuthenticationSuccessHandler;
 import com.naturalprogrammer.spring.lemon.util.LemonUtils;
 import com.naturalprogrammer.spring.lemon.validation.CaptchaValidator;
@@ -230,11 +231,19 @@ public class LemonAutoConfiguration {
 	
 	@Bean
 	@ConditionalOnMissingBean(OAuth2AuthenticationSuccessHandler.class)
-	public OAuth2AuthenticationSuccessHandler<?,?> oauth2AuthenticationSuccessHandler(
+	public OAuth2AuthenticationSuccessHandler<?> oauth2AuthenticationSuccessHandler(
 			LemonProperties properties, JwtService jwtService) {
 		
         log.info("Configuring OAuth2AuthenticationSuccessHandler");       
 		return new OAuth2AuthenticationSuccessHandler<>(properties, jwtService);
+	}
+	
+	@Bean
+	@ConditionalOnMissingBean(OAuth2AuthenticationFailureHandler.class)
+	public OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler() {
+		
+        log.info("Configuring OAuth2AuthenticationFailureHandler");       
+		return new OAuth2AuthenticationFailureHandler();
 	}
 
 	/**

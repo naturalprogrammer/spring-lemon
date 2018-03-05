@@ -2,6 +2,7 @@ package com.naturalprogrammer.spring.lemon.security;
 
 import java.io.Serializable;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -10,7 +11,6 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 
 import com.naturalprogrammer.spring.lemon.LemonProperties;
-import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
 import com.naturalprogrammer.spring.lemon.util.LemonUtils;
 
 /**
@@ -19,8 +19,7 @@ import com.naturalprogrammer.spring.lemon.util.LemonUtils;
  * 
  * @author Sanjay Patel
  */
-public class OAuth2AuthenticationSuccessHandler
-<U extends AbstractUser<U,ID>, ID extends Serializable>
+public class OAuth2AuthenticationSuccessHandler<ID extends Serializable>
 	extends SimpleUrlAuthenticationSuccessHandler {
 	
 	private static final Log log = LogFactory.getLog(OAuth2AuthenticationSuccessHandler.class);
@@ -47,12 +46,16 @@ public class OAuth2AuthenticationSuccessHandler
 				springUser.getUsername(),
 				(long) properties.getJwt().getShortLivedMillis());
 
-		return properties.getApplicationUrl()
-				+ "/social-login-success?token="
-				+ shortLivedAuthToken;
+		String targetUrl = LemonUtils.fetchCookie(request,
+				HttpCookieOAuth2AuthorizationRequestRepository.LEMON_REDIRECT_URI_COOKIE_PARAM_NAME)
+				.map(Cookie::getValue)
+				.orElse(properties.getApplicationUrl() + "/social-login-success");
 		
+		HttpCookieOAuth2AuthorizationRequestRepository.deleteCookies(request, response);
+		return targetUrl + "?token=" + shortLivedAuthToken;
+//				
 //		return properties.getApplicationUrl()
-//			+ "/users/" + springUser.getId()
-//			+ "/social-login-success/" + springUser.getNonce();
+//				+ "/social-login-success?token="
+//				+ shortLivedAuthToken;
 	}
 }

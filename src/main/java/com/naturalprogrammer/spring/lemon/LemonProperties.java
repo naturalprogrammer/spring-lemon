@@ -312,7 +312,7 @@ public class LemonProperties {
 		/**
 		 * Expiration milliseconds for short-lived tokens and cookies
 		 */
-		private int shortLivedMillis = 60000; // One minute
+		private int shortLivedMillis = 120000; // Two minutes
 		
 		public String getSecret() {
 			return secret;

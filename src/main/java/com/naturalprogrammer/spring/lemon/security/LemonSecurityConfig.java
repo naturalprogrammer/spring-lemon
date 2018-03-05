@@ -47,7 +47,8 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 	//private LogoutSuccessHandler logoutSuccessHandler;
 	private LemonOidcUserService oidcUserService;
 	private LemonOAuth2UserService<?, ?> oauth2UserService;
-	private OAuth2AuthenticationSuccessHandler<?,?> oauth2AuthenticationSuccessHandler;
+	private OAuth2AuthenticationSuccessHandler<?> oauth2AuthenticationSuccessHandler;
+	private OAuth2AuthenticationFailureHandler oauth2AuthenticationFailureHandler;
 	private JwtAuthenticationProvider<?,?> jwtAuthenticationProvider;
 	private PasswordEncoder passwordEncoder;
 	
@@ -57,7 +58,8 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 			//LogoutSuccessHandler logoutSuccessHandler,
 			LemonOidcUserService oidcUserService,
 			LemonOAuth2UserService<?, ?> oauth2UserService,
-			OAuth2AuthenticationSuccessHandler<?,?> oauth2AuthenticationSuccessHandler,
+			OAuth2AuthenticationSuccessHandler<?> oauth2AuthenticationSuccessHandler,
+			OAuth2AuthenticationFailureHandler oauth2AuthenticationFailureHandler,
 			JwtAuthenticationProvider<?,?> jwtAuthenticationProvider,
 			PasswordEncoder passwordEncoder
 			) {
@@ -70,6 +72,7 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 		this.oidcUserService = oidcUserService;
 		this.oauth2UserService = oauth2UserService;
 		this.oauth2AuthenticationSuccessHandler = oauth2AuthenticationSuccessHandler;
+		this.oauth2AuthenticationFailureHandler = oauth2AuthenticationFailureHandler;
 		this.jwtAuthenticationProvider = jwtAuthenticationProvider;
 		this.passwordEncoder = passwordEncoder;
 		
@@ -209,6 +212,7 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 			.authorizationEndpoint()
 				.authorizationRequestRepository(new HttpCookieOAuth2AuthorizationRequestRepository(properties)).and()
 			.successHandler(oauth2AuthenticationSuccessHandler)
+			.failureHandler(oauth2AuthenticationFailureHandler)
 			.userInfoEndpoint()
 				.oidcUserService(oidcUserService)
 				.userService(oauth2UserService);

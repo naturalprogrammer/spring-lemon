@@ -5,11 +5,14 @@ import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Scanner;
 import java.util.UUID;
 import java.util.function.Supplier;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -337,8 +340,15 @@ public class LemonUtils {
 	    return text;
 	}
 	
-//	public static boolean onOrAfter(Date issueTime, Date credentialsUpdatedAt) {
-//		
-//		return issueTime.toInstant().getEpochSecond() >= credentialsUpdatedAt.toInstant().getEpochSecond();
-//	}
+	public static Optional<Cookie> fetchCookie(HttpServletRequest request, String name) {
+		
+		Cookie[] cookies = request.getCookies();
+
+		if (cookies != null && cookies.length > 0)
+			for (int i = 0; i < cookies.length; i++)
+				if (cookies[i].getName().equals(name))
+					return Optional.of(cookies[i]);
+		
+		return Optional.empty();
+	}
 }
