@@ -49,10 +49,10 @@ public class OAuth2AuthenticationSuccessHandler<ID extends Serializable>
 		String targetUrl = LemonUtils.fetchCookie(request,
 				HttpCookieOAuth2AuthorizationRequestRepository.LEMON_REDIRECT_URI_COOKIE_PARAM_NAME)
 				.map(Cookie::getValue)
-				.orElse(properties.getApplicationUrl() + "/social-login-success");
+				.orElse(properties.getOauth2AuthenticationSuccessUrl());
 		
 		HttpCookieOAuth2AuthorizationRequestRepository.deleteCookies(request, response);
-		return targetUrl + "?token=" + shortLivedAuthToken;
+		return targetUrl + shortLivedAuthToken;
 //				
 //		return properties.getApplicationUrl()
 //				+ "/social-login-success?token="

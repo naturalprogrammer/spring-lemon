@@ -30,6 +30,12 @@ public class LemonProperties {
 	 * Used in the verification link mailed to the users, etc.
 	 */
     private String applicationUrl = "http://localhost:9000";
+    
+	/**
+	 * The default URL to redirect to after
+	 * a user logs in using OAuth2/OpenID
+	 */
+    private String oauth2AuthenticationSuccessUrl = "http://localhost:9000/social-login-success?token=";
 
     /**
 	 * Recaptcha related properties
@@ -101,6 +107,14 @@ public class LemonProperties {
 
 	public void setApplicationUrl(String applicationUrl) {
 		this.applicationUrl = applicationUrl;
+	}
+
+	public String getOauth2AuthenticationSuccessUrl() {
+		return oauth2AuthenticationSuccessUrl;
+	}
+
+	public void setOauth2AuthenticationSuccessUrl(String oauth2AuthenticationSuccessUrl) {
+		this.oauth2AuthenticationSuccessUrl = oauth2AuthenticationSuccessUrl;
 	}
 
 	public Jwt getJwt() {
