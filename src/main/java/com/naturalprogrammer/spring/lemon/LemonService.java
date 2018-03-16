@@ -507,7 +507,7 @@ public abstract class LemonService
 	@UserEditPermission
 	@Validated(AbstractUser.UpdateValidation.class)
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
-	public void updateUser(U user, @Valid U updatedUser) {
+	public SpringUser<ID> updateUser(U user, @Valid U updatedUser) {
 		
 		log.debug("Updating user: " + user);
 
@@ -518,7 +518,11 @@ public abstract class LemonService
 		updateUserFields(user, updatedUser, LemonUtils.getSpringUser());
 		userRepository.save(user);
 		
-		log.debug("Updated user: " + user);	
+		log.debug("Updated user: " + user);
+		
+		SpringUser<ID> springUser = user.toSpringUser();
+		springUser.setPassword(null);
+		return springUser;
 	}
 	
 	
