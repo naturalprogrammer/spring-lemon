@@ -211,6 +211,8 @@ public abstract class LemonController
 		
 		// Send a new token in the response
 		springUserWithToken(response);
+		
+		user.hideConfidentialFields();
 		return user;
 	}
 	
