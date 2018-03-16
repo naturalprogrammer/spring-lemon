@@ -518,13 +518,13 @@ public abstract class LemonService
 		updateUserFields(user, updatedUser, LemonUtils.getSpringUser());
 		userRepository.save(user);
 		
-		// after successful commit,
-		LemonUtils.afterCommit(() -> {
-			
-			// Login the user
-			LemonUtils.login(user);
-		});
-
+//		// after successful commit,
+//		LemonUtils.afterCommit(() -> {
+//			
+//			// Login the user
+//			LemonUtils.login(user);
+//		});
+//
 		log.debug("Updated user: " + user);		
 	}
 	

@@ -196,7 +196,7 @@ public abstract class LemonController
 	 * @throws JsonProcessingException 
 	 */
 	@PatchMapping(value = "/users/{id}")
-	public SpringUser<ID> updateUser(
+	public U updateUser(
 			@PathVariable("id") U user,
 			@RequestBody String patch,
 			HttpServletResponse response)
@@ -209,8 +209,9 @@ public abstract class LemonController
 		U updatedUser = LemonUtils.applyPatch(user, patch); // create a patched form
 		lemonService.updateUser(user, updatedUser);
 		
-		// return the currently logged in user data (in case updated)
-		return springUserWithToken(response);		
+		// Send a new token in the response
+		springUserWithToken(response);
+		return user;
 	}
 	
 	
