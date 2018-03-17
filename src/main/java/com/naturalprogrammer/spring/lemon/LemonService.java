@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import javax.mail.MessagingException;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -792,9 +791,8 @@ public abstract class LemonService
 	 * @return 
 	 */
 	@PreAuthorize("isAuthenticated()")
-	public SpringUser<ID> fetchNewToken(Optional<Long> expirationMillis,
-			Optional<String> optionalUsername,
-			HttpServletResponse response) {
+	public String fetchNewToken(Optional<Long> expirationMillis,
+			Optional<String> optionalUsername) {
 		
 		SpringUser<ID> springUser = LemonUtils.getSpringUser();
 		String username = optionalUsername.orElse(springUser.getUsername());
@@ -802,10 +800,8 @@ public abstract class LemonService
 		LemonUtils.ensureAuthority(springUser.getUsername().equals(username) ||
 				springUser.isGoodAdmin(), "com.naturalprogrammer.spring.notGoodAdminOrSameUser");
 		
-		jwtService.addAuthHeader(response, username,
+		return jwtService.createToken(JwtService.AUTH_AUDIENCE, username,
 				expirationMillis.orElse(properties.getJwt().getExpirationMillis()));
-		
-		return springUser;
 	}
 
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)

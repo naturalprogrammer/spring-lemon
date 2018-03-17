@@ -290,13 +290,13 @@ public abstract class LemonController
 	 * @return 
 	 */
 	@PostMapping("/fetch-new-token")
-	public SpringUser<ID> fetchNewToken(
+	public Map<String, String> fetchNewToken(
 			@RequestParam Optional<Long> expirationMillis,
 			@RequestParam Optional<String> username,
 			HttpServletResponse response) {
 		
 		log.debug("Fetching a new token ... ");
-		return lemonService.fetchNewToken(expirationMillis, username, response);
+		return LemonUtils.mapOf("token", lemonService.fetchNewToken(expirationMillis, username));
 	}
 
 	protected SpringUser<ID> springUserWithToken(HttpServletResponse response) {
