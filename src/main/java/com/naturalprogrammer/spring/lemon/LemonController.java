@@ -77,12 +77,12 @@ public abstract class LemonController
 	 * the current-user data.
 	 */
 	@GetMapping(value = "/context")
-	public Map<String, Object> getContext() {
-		
-		Map<String, Object> context =
-			LemonUtils.mapOf("context", lemonService.getContext(),
-							"user", LemonUtils.getSpringUser());
-		
+	public Map<String, Object> getContext(
+			@RequestParam Optional<Long> expirationMillis,
+			HttpServletResponse response) {
+
+		log.debug("Getting context ");
+		Map<String, Object> context = lemonService.getContext(expirationMillis, response);
 		log.debug("Returning context: " + context);
 
 		return context;
@@ -286,10 +286,10 @@ public abstract class LemonController
 //	}
 //	
 	/**
-	 * Fetch a new token - for session scrolling, switch user etc.
+	 * Fetch a new token - for session sliding, switch user etc.
 	 * @return 
 	 */
-	@PostMapping("/fetch-new-token")
+	@PostMapping("/fetch-new-auth-token")
 	public Map<String, String> fetchNewToken(
 			@RequestParam Optional<Long> expirationMillis,
 			@RequestParam Optional<String> username,

@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import javax.mail.MessagingException;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -35,6 +36,7 @@ import com.naturalprogrammer.spring.lemon.domain.ChangePasswordForm;
 import com.naturalprogrammer.spring.lemon.mail.MailSender;
 import com.naturalprogrammer.spring.lemon.permissions.UserEditPermission;
 import com.naturalprogrammer.spring.lemon.security.JwtService;
+import com.naturalprogrammer.spring.lemon.security.LemonSecurityConfig;
 import com.naturalprogrammer.spring.lemon.security.SpringUser;
 import com.naturalprogrammer.spring.lemon.util.LemonUtils;
 import com.naturalprogrammer.spring.lemon.validation.Password;
@@ -165,17 +167,26 @@ public abstract class LemonService
 	 * properties in the format <em>lemon.shared.fooBar</em>.
 	 * 
 	 * Override this method if needed.
+	 * @param response 
+	 * @param expirationMillis 
 	 */
-	public Map<String, Object> getContext() {
+	public Map<String, Object> getContext(Optional<Long> expirationMillis, HttpServletResponse response) {
 		
-		// make the context
-		Map<String, Object> context = new HashMap<String, Object>(2);
-		context.put("reCaptchaSiteKey", properties.getRecaptcha().getSitekey());
-		context.put("shared", properties.getShared());
-		
-		log.debug("Returning context: " + context);
+		log.debug("Getting context ...");
 
-		return context;		
+		// make the context
+		Map<String, Object> sharedProperties = new HashMap<String, Object>(2);
+		sharedProperties.put("reCaptchaSiteKey", properties.getRecaptcha().getSitekey());
+		sharedProperties.put("shared", properties.getShared());
+		
+		SpringUser<ID> springUser = LemonUtils.getSpringUser();
+		if (springUser != null)
+			jwtService.addAuthHeader(response, springUser.getUsername(),
+					expirationMillis.orElse(properties.getJwt().getExpirationMillis()));
+		
+		return LemonUtils.mapOf(
+				"context", sharedProperties,
+				"user", LemonUtils.getSpringUser());	
 	}
 	
 	
@@ -800,7 +811,8 @@ public abstract class LemonService
 		LemonUtils.ensureAuthority(springUser.getUsername().equals(username) ||
 				springUser.isGoodAdmin(), "com.naturalprogrammer.spring.notGoodAdminOrSameUser");
 		
-		return jwtService.createToken(JwtService.AUTH_AUDIENCE, username,
+		return LemonSecurityConfig.TOKEN_PREFIX +
+				jwtService.createToken(JwtService.AUTH_AUDIENCE, username,
 				expirationMillis.orElse(properties.getJwt().getExpirationMillis()));
 	}
 
