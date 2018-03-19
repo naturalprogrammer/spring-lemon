@@ -118,7 +118,7 @@ public class LemonAutoConfiguration {
 	}
 	
 	/**
-	 * Password encoder
+	 * Configures Password encoder
 	 */
 	@Bean
 	@ConditionalOnMissingBean(PasswordEncoder.class)
@@ -128,6 +128,9 @@ public class LemonAutoConfiguration {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 	
+	/**
+	 * Spring Lemon related properties
+	 */	
 	@Bean
 	public LemonProperties lemonProperties() {
 		
@@ -135,6 +138,9 @@ public class LemonAutoConfiguration {
 		return new LemonProperties();
 	}
 	
+	/**
+	 * Configures Lemon Auditor Aware
+	 */	
 	@Bean
 	@ConditionalOnMissingBean(AuditorAware.class)
 	public <U extends AbstractUser<U,ID>, ID extends Serializable>
@@ -144,6 +150,9 @@ public class LemonAutoConfiguration {
 		return new LemonAuditorAware<U, ID>(userRepository);
 	}
 
+	/**
+	 * Configures Error Response Composer
+	 */	
 	@Bean
 	@ConditionalOnMissingBean(ErrorResponseComposer.class)
 	public <T extends Throwable>
@@ -153,6 +162,9 @@ public class LemonAutoConfiguration {
 		return new ErrorResponseComposer<T>(handlers);
 	}
 	
+	/**
+	 * Configures Exception Handler Controller Advice
+	 */	
 	@Bean
 	@ConditionalOnMissingBean(DefaultExceptionHandlerControllerAdvice.class)
 	public <T extends Throwable>
@@ -162,6 +174,9 @@ public class LemonAutoConfiguration {
 		return new DefaultExceptionHandlerControllerAdvice<T>(errorResponseComposer);
 	}
 	
+	/**
+	 * Configures Lemon Error Attributes
+	 */	
 	@Bean
 	@ConditionalOnMissingBean(ErrorAttributes.class)
 	public <T extends Throwable>
@@ -171,6 +186,9 @@ public class LemonAutoConfiguration {
 		return new LemonErrorAttributes<T>(errorResponseComposer);
 	}
 	
+	/**
+	 * Configures Lemon Error Controller
+	 */	
 	@Bean
 	@ConditionalOnMissingBean(ErrorController.class)
 	public ErrorController errorController(ErrorAttributes errorAttributes,
@@ -208,6 +226,9 @@ public class LemonAutoConfiguration {
 		return new SmtpMailSender(javaMailSender);
 	}
 	
+	/**
+	 * Configures JwtService
+	 */
 	@Bean
 	@ConditionalOnMissingBean(JwtService.class)
 	public JwtService jwtService(LemonProperties properties) throws KeyLengthException {
@@ -216,6 +237,9 @@ public class LemonAutoConfiguration {
 		return new JwtService(properties.getJwt().getSecret());
 	}
 
+	/**
+	 * Configures AuthenticationSuccessHandler
+	 */
 	@Bean
 	@ConditionalOnMissingBean(AuthenticationSuccessHandler.class)
 	public AuthenticationSuccessHandler authenticationSuccessHandler(
@@ -225,6 +249,9 @@ public class LemonAutoConfiguration {
 		return new AuthenticationSuccessHandler(objectMapper, jwtService, properties);
 	}
 	
+	/**
+	 * Configures OAuth2AuthenticationSuccessHandler
+	 */
 	@Bean
 	@ConditionalOnMissingBean(OAuth2AuthenticationSuccessHandler.class)
 	public OAuth2AuthenticationSuccessHandler<?> oauth2AuthenticationSuccessHandler(
@@ -234,6 +261,9 @@ public class LemonAutoConfiguration {
 		return new OAuth2AuthenticationSuccessHandler<>(properties, jwtService);
 	}
 	
+	/**
+	 * Configures OAuth2AuthenticationFailureHandler
+	 */
 	@Bean
 	@ConditionalOnMissingBean(OAuth2AuthenticationFailureHandler.class)
 	public OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler() {
@@ -243,8 +273,7 @@ public class LemonAutoConfiguration {
 	}
 
 	/**
-	 * Authentication failure handler, to override the default behavior
-	 * of spring security -  redirecting to the login screen 
+	 * Configures AuthenticationFailureHandler
 	 */
 	@Bean
 	@ConditionalOnMissingBean(AuthenticationFailureHandler.class)
@@ -254,14 +283,9 @@ public class LemonAutoConfiguration {
     	return new SimpleUrlAuthenticationFailureHandler();
     }	
 
-//	@Bean
-//	@ConditionalOnMissingBean(LogoutSuccessHandler.class)
-//	public LogoutSuccessHandler logoutSuccessHandler() {
-//		
-//        log.info("Configuring LemonLogoutSuccessHandler");       
-//		return new LemonLogoutSuccessHandler();
-//	}
-//	
+	/**
+	 * Configures PermissionEvaluator
+	 */
 	@Bean
 	@ConditionalOnMissingBean(PermissionEvaluator.class)
 	public PermissionEvaluator permissionEvaluator() {
@@ -270,6 +294,9 @@ public class LemonAutoConfiguration {
 		return new LemonPermissionEvaluator();
 	}
 
+	/**
+	 * Configures UserDetailsService
+	 */
 	@Bean
 	@ConditionalOnMissingBean(UserDetailsService.class)
 	public <U extends AbstractUser<U,ID>, ID extends Serializable>
