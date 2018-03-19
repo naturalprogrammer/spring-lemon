@@ -52,7 +52,7 @@ import com.naturalprogrammer.spring.lemon.mail.SmtpMailSender;
 import com.naturalprogrammer.spring.lemon.security.AuthenticationSuccessHandler;
 import com.naturalprogrammer.spring.lemon.security.JwtAuthenticationProvider;
 import com.naturalprogrammer.spring.lemon.security.JwtService;
-import com.naturalprogrammer.spring.lemon.security.LemonCorsFilter;
+import com.naturalprogrammer.spring.lemon.security.LemonCorsConfig;
 import com.naturalprogrammer.spring.lemon.security.LemonOAuth2UserService;
 import com.naturalprogrammer.spring.lemon.security.LemonOidcUserService;
 import com.naturalprogrammer.spring.lemon.security.LemonPermissionEvaluator;
@@ -308,11 +308,11 @@ public class LemonAutoConfiguration {
 
 	@Bean
 	@ConditionalOnProperty(name="lemon.cors.allowed-origins")
-	@ConditionalOnMissingBean(LemonCorsFilter.class)
-	public LemonCorsFilter lemonCorsFilter(LemonProperties properties) {
+	@ConditionalOnMissingBean(LemonCorsConfig.class)
+	public LemonCorsConfig lemonCorsConfig(LemonProperties properties) {
 		
-        log.info("Configuring LemonCorsFilter");       
-		return new LemonCorsFilter(properties);		
+        log.info("Configuring LemonCorsConfig");       
+		return new LemonCorsConfig(properties);		
 	}
 	
 	@Bean
@@ -384,4 +384,6 @@ public class LemonAutoConfiguration {
         log.info("Configuring UniqueEmailValidator");       
 		return new UniqueEmailValidator(userRepository);		
 	}
+	
+	
 }

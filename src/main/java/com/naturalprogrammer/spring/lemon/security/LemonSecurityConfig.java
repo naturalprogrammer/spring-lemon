@@ -31,10 +31,6 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 	public static final String GOOD_ADMIN = "GOOD_ADMIN";
 	public static final String GOOD_USER = "GOOD_USER";
 	
-	// CSRF related
-	public static final String XSRF_TOKEN_HEADER_NAME = "X-XSRF-TOKEN";
-	public static final String XSRF_TOKEN_COOKIE_NAME = "XSRF-TOKEN";
-	
 	// JWT Token related
     public static final String TOKEN_PREFIX = "Bearer ";
     public static final String TOKEN_REQUEST_HEADER_NAME = "Authorization";
@@ -89,7 +85,8 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 		login(http); // authentication
 		logout(http); // logout related configuration
 		exceptionHandling(http); // exception handling
-		csrf(http); // csrf configuration
+		csrf(http); // CSRF configuration
+		cors(http); // CORS configuration
 		//switchUser(http); // switch-user configuration
 		//customTokenAuthentication(http); // API key authentication
 		oauth2Client(http);
@@ -185,6 +182,19 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 		
 		http
 			.csrf().disable();
+	}
+
+	
+	/**
+	 * Configures CORS
+	 *  
+	 * @param http
+	 * @throws Exception
+	 */
+	protected void cors(HttpSecurity http) throws Exception {
+		
+		http
+			.cors();
 	}
 
 	
