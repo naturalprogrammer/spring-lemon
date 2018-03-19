@@ -99,13 +99,9 @@ public class LemonAutoConfiguration {
 	}
 
 	/**
-	 * Prefixes JSON responses for JSON vulnerability. See for more details:
-	 * 
-	 * https://docs.angularjs.org/api/ng/service/$http
-	 * http://stackoverflow.com/questions/26384930/how-to-add-n-before-each-spring-json-response-to-prevent-common-vulnerab
-	 * 
-	 * To disable this, in your application.properties, use
-	 * lemon.enabled.json-prefix: false
+	 * Prefixes JSON responses for JSON vulnerability. Disabled by default.
+	 * To enable, add this to your application properties:
+	 *     lemon.enabled.json-prefix: true
 	 */
 	@Bean
 	@ConditionalOnProperty(name="lemon.enabled.json-prefix")
