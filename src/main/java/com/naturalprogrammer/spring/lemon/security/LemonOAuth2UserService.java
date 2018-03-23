@@ -3,8 +3,6 @@ package com.naturalprogrammer.spring.lemon.security;
 import java.io.Serializable;
 import java.util.Map;
 
-import javax.mail.MessagingException;
-
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -68,7 +66,7 @@ public class LemonOAuth2UserService<U extends AbstractUser<U,ID>, ID extends Ser
 				
 				lemonService.mailForgotPasswordLink(newUser);
 				
-			} catch (MessagingException e) {
+			} catch (Throwable e) {
 				
 				// In case of exception, just log the error and keep silent			
 				log.error(ExceptionUtils.getStackTrace(e));

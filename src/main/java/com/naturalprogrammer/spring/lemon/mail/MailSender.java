@@ -1,7 +1,5 @@
 package com.naturalprogrammer.spring.lemon.mail;
 
-import javax.mail.MessagingException;
-
 /**
  * The mail sender interface for sending mail
  * 
@@ -9,6 +7,6 @@ import javax.mail.MessagingException;
  */
 public interface MailSender {
 
-	void send(String to, String subject, String body) throws MessagingException;
+	void send(String to, String subject, String body);
 
 }

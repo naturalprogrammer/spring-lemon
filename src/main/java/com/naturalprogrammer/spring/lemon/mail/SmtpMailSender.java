@@ -35,8 +35,7 @@ public class SmtpMailSender implements MailSender {
 	 */
 	@Override
 	@Async
-	public void send(String to, String subject, String body)
-			throws MessagingException {
+	public void send(String to, String subject, String body) {
 		
 		log.info("Sending SMTP mail from thread " + Thread.currentThread().getName()); // toString gives more info    	
 
@@ -44,18 +43,23 @@ public class SmtpMailSender implements MailSender {
 		MimeMessage message = javaMailSender.createMimeMessage();
 		MimeMessageHelper helper;
 
-		// create a helper
-		helper = new MimeMessageHelper(message, true); // true indicates
-													   // multipart message
-		// set the attributes
-		helper.setSubject(subject);
-		helper.setTo(to);
-		helper.setText(body, true); // true indicates html
-		// continue using helper object for more functionalities like adding attachments, etc.  
+		try {
+			
+			// create a helper
+			helper = new MimeMessageHelper(message, true);
+			// set the attributes
+			helper.setSubject(subject);
+			helper.setTo(to);
+			helper.setText(body, true); // true indicates html
+			// continue using helper object for more functionalities like adding attachments, etc.  
+			
+		} catch (MessagingException e) {
+
+			throw new RuntimeException(e);
+		}
 		
 		//send the mail
-		javaMailSender.send(message);
-		
+		javaMailSender.send(message);		
 		log.info("Sent SMTP mail from thread " + Thread.currentThread().getName());    	
 	}
 

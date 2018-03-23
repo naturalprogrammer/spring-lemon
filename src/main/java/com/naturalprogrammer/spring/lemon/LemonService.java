@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
@@ -276,7 +275,7 @@ public abstract class LemonService
 			
 			log.debug("Verification mail to " + user.getEmail() + " queued.");
 			
-		} catch (MessagingException e) {
+		} catch (Throwable e) {
 			// In case of exception, just log the error and keep silent
 			log.error(ExceptionUtils.getStackTrace(e));
 		}
@@ -379,10 +378,9 @@ public abstract class LemonService
 	 * Forgot password.
 	 * 
 	 * @param email	the email of the user who forgot his password
-	 * @throws MessagingException 
 	 */
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
-	public void forgotPassword(@Valid @Email @NotBlank String email) throws MessagingException {
+	public void forgotPassword(@Valid @Email @NotBlank String email) {
 		
 		log.debug("Processing forgot password for email: " + email);
 		
@@ -424,9 +422,8 @@ public abstract class LemonService
 	 * Mails the forgot password link.
 	 * 
 	 * @param user
-	 * @throws MessagingException 
 	 */
-	public void mailForgotPasswordLink(U user) throws MessagingException {
+	public void mailForgotPasswordLink(U user) {
 		
 		log.debug("Mailing forgot password link to user: " + user);
 
@@ -687,7 +684,7 @@ public abstract class LemonService
 			
 			log.debug("Change email link mail queued.");
 			
-		} catch (MessagingException e) {
+		} catch (Throwable e) {
 			// In case of exception, just log the error and keep silent			
 			log.error(ExceptionUtils.getStackTrace(e));
 		}

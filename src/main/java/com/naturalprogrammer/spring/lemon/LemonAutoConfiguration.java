@@ -118,7 +118,7 @@ public class LemonAutoConfiguration {
 	}
 	
 	/**
-	 * Configures Password encoder
+	 * Configures Password encoder if missing
 	 */
 	@Bean
 	@ConditionalOnMissingBean(PasswordEncoder.class)
@@ -139,7 +139,7 @@ public class LemonAutoConfiguration {
 	}
 	
 	/**
-	 * Configures Lemon Auditor Aware
+	 * Configures an Auditor Aware if missing
 	 */	
 	@Bean
 	@ConditionalOnMissingBean(AuditorAware.class)
@@ -151,7 +151,7 @@ public class LemonAutoConfiguration {
 	}
 
 	/**
-	 * Configures Error Response Composer
+	 * Configures ErrorResponseComposer if missing
 	 */	
 	@Bean
 	@ConditionalOnMissingBean(ErrorResponseComposer.class)
@@ -163,7 +163,7 @@ public class LemonAutoConfiguration {
 	}
 	
 	/**
-	 * Configures Exception Handler Controller Advice
+	 * Configures DefaultExceptionHandlerControllerAdvice if missing
 	 */	
 	@Bean
 	@ConditionalOnMissingBean(DefaultExceptionHandlerControllerAdvice.class)
@@ -175,7 +175,7 @@ public class LemonAutoConfiguration {
 	}
 	
 	/**
-	 * Configures Lemon Error Attributes
+	 * Configures an Error Attributes if missing
 	 */	
 	@Bean
 	@ConditionalOnMissingBean(ErrorAttributes.class)
@@ -187,7 +187,7 @@ public class LemonAutoConfiguration {
 	}
 	
 	/**
-	 * Configures Lemon Error Controller
+	 * Configures an Error Controller if missing
 	 */	
 	@Bean
 	@ConditionalOnMissingBean(ErrorController.class)
@@ -227,7 +227,7 @@ public class LemonAutoConfiguration {
 	}
 	
 	/**
-	 * Configures JwtService
+	 * Configures JwtService if missing
 	 */
 	@Bean
 	@ConditionalOnMissingBean(JwtService.class)
@@ -238,7 +238,7 @@ public class LemonAutoConfiguration {
 	}
 
 	/**
-	 * Configures AuthenticationSuccessHandler
+	 * Configures AuthenticationSuccessHandler if missing
 	 */
 	@Bean
 	@ConditionalOnMissingBean(AuthenticationSuccessHandler.class)
@@ -250,7 +250,7 @@ public class LemonAutoConfiguration {
 	}
 	
 	/**
-	 * Configures OAuth2AuthenticationSuccessHandler
+	 * Configures OAuth2AuthenticationSuccessHandler if missing
 	 */
 	@Bean
 	@ConditionalOnMissingBean(OAuth2AuthenticationSuccessHandler.class)
@@ -262,7 +262,7 @@ public class LemonAutoConfiguration {
 	}
 	
 	/**
-	 * Configures OAuth2AuthenticationFailureHandler
+	 * Configures OAuth2AuthenticationFailureHandler if missing
 	 */
 	@Bean
 	@ConditionalOnMissingBean(OAuth2AuthenticationFailureHandler.class)
@@ -273,7 +273,7 @@ public class LemonAutoConfiguration {
 	}
 
 	/**
-	 * Configures AuthenticationFailureHandler
+	 * Configures AuthenticationFailureHandler if missing
 	 */
 	@Bean
 	@ConditionalOnMissingBean(AuthenticationFailureHandler.class)
@@ -284,7 +284,7 @@ public class LemonAutoConfiguration {
     }	
 
 	/**
-	 * Configures PermissionEvaluator
+	 * Configures PermissionEvaluator if missing
 	 */
 	@Bean
 	@ConditionalOnMissingBean(PermissionEvaluator.class)
@@ -295,7 +295,7 @@ public class LemonAutoConfiguration {
 	}
 
 	/**
-	 * Configures UserDetailsService
+	 * Configures UserDetailsService if missing
 	 */
 	@Bean
 	@ConditionalOnMissingBean(UserDetailsService.class)
@@ -306,6 +306,9 @@ public class LemonAutoConfiguration {
 		return new LemonUserDetailsService<U, ID>(userRepository);
 	}
 
+	/**
+	 * Configures LemonCorsConfig if missing and lemon.cors.allowed-origins is provided
+	 */
 	@Bean
 	@ConditionalOnProperty(name="lemon.cors.allowed-origins")
 	@ConditionalOnMissingBean(LemonCorsConfig.class)
@@ -315,6 +318,9 @@ public class LemonAutoConfiguration {
 		return new LemonCorsConfig(properties);		
 	}
 	
+	/**
+	 * Configures LemonOidcUserService if missing
+	 */
 	@Bean
 	@ConditionalOnMissingBean(LemonOidcUserService.class)	
 	public LemonOidcUserService lemonOidcUserService(LemonOAuth2UserService<?, ?> lemonOAuth2UserService) {
@@ -323,6 +329,9 @@ public class LemonAutoConfiguration {
 		return new LemonOidcUserService(lemonOAuth2UserService);
 	}
 
+	/**
+	 * Configures LemonOAuth2UserService if missing
+	 */
 	@Bean
 	@ConditionalOnMissingBean(LemonOAuth2UserService.class)	
 	public <U extends AbstractUser<U,ID>, ID extends Serializable>
@@ -335,6 +344,9 @@ public class LemonAutoConfiguration {
 		return new LemonOAuth2UserService<U,ID>(userDetailsService, lemonService, passwordEncoder);
 	}
 
+	/**
+	 * Configures JwtAuthenticationProvider if missing
+	 */
 	@Bean
 	@ConditionalOnMissingBean(JwtAuthenticationProvider.class)	
 	public <U extends AbstractUser<U,ID>, ID extends Serializable>
@@ -346,6 +358,9 @@ public class LemonAutoConfiguration {
 		return new JwtAuthenticationProvider<U,ID>(jwtService, userDetailsService);
 	}	
 	
+	/**
+	 * Configures LemonSecurityConfig if missing
+	 */
 	@Bean
 	@ConditionalOnMissingBean(LemonSecurityConfig.class)	
 	public LemonSecurityConfig lemonSecurityConfig() {
@@ -354,6 +369,9 @@ public class LemonAutoConfiguration {
 		return new LemonSecurityConfig();
 	}
 	
+	/**
+	 * Configures LemonUtils
+	 */
 	@Bean
 	public LemonUtils lemonUtil(ApplicationContext applicationContext,
 			MessageSource messageSource, ObjectMapper objectMapper) {
@@ -362,6 +380,9 @@ public class LemonAutoConfiguration {
 		return new LemonUtils(applicationContext, messageSource, objectMapper);
 	}
 	
+	/**
+	 * Configures CaptchaValidator if missing
+	 */
 	@Bean
 	@ConditionalOnMissingBean(CaptchaValidator.class)
 	public CaptchaValidator captchaValidator(LemonProperties properties, RestTemplateBuilder restTemplateBuilder) {
@@ -370,6 +391,9 @@ public class LemonAutoConfiguration {
 		return new CaptchaValidator(properties, restTemplateBuilder);
 	}
 	
+	/**
+	 * Configures RetypePasswordValidator if missing
+	 */
 	@Bean
 	@ConditionalOnMissingBean(RetypePasswordValidator.class)
 	public RetypePasswordValidator retypePasswordValidator() {
@@ -378,12 +402,13 @@ public class LemonAutoConfiguration {
 		return new RetypePasswordValidator();
 	}
 	
+	/**
+	 * Configures UniqueEmailValidator if missing
+	 */
 	@Bean
 	public UniqueEmailValidator uniqueEmailValidator(AbstractUserRepository<?, ?> userRepository) {
 		
         log.info("Configuring UniqueEmailValidator");       
 		return new UniqueEmailValidator(userRepository);		
-	}
-	
-	
+	}	
 }

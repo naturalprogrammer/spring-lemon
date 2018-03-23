@@ -5,7 +5,6 @@ import java.io.Serializable;
 import java.util.Map;
 import java.util.Optional;
 
-import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
@@ -31,7 +30,7 @@ import com.naturalprogrammer.spring.lemon.security.SpringUser;
 import com.naturalprogrammer.spring.lemon.util.LemonUtils;
 
 /**
- * The Lemon API
+ * The Lemon API. See the <a href="https://github.com/naturalprogrammer/spring-lemon#documentation-and-resources">API documentation</a> for details.
  * 
  * @author Sanjay Patel
  *
@@ -73,8 +72,8 @@ public abstract class LemonController
 	
 	
 	/**
-	 * Returns context properties needed at the client side, and
-	 * the current-user data.
+	 * Returns context properties needed at the client side,
+	 * current-user data and an Authorization token as a response header.
 	 */
 	@GetMapping(value = "/context")
 	public Map<String, Object> getContext(
@@ -139,11 +138,10 @@ public abstract class LemonController
 
 	/**
 	 * The forgot Password feature.
-	 * @throws MessagingException 
 	 */
 	@PostMapping("/forgot-password")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void forgotPassword(@RequestParam String email) throws MessagingException {
+	public void forgotPassword(@RequestParam String email) {
 		
 		log.debug("Received forgot password request for: " + email);				
 		lemonService.forgotPassword(email);
