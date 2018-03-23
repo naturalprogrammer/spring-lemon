@@ -32,6 +32,7 @@ import com.naturalprogrammer.spring.lemon.domain.AbstractUser.Role;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser.SignUpValidation;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUserRepository;
 import com.naturalprogrammer.spring.lemon.domain.ChangePasswordForm;
+import com.naturalprogrammer.spring.lemon.mail.LemonMailData;
 import com.naturalprogrammer.spring.lemon.mail.MailSender;
 import com.naturalprogrammer.spring.lemon.permissions.UserEditPermission;
 import com.naturalprogrammer.spring.lemon.security.JwtService;
@@ -66,7 +67,7 @@ public abstract class LemonService
 	@Autowired
 	public void createLemonService(LemonProperties properties,
 			PasswordEncoder passwordEncoder,
-			MailSender mailSender,
+			MailSender<?> mailSender,
 			AbstractUserRepository<U, ID> userRepository,
 			UserDetailsService userDetailsService,
 			JwtService jwtService) {
@@ -266,19 +267,30 @@ public abstract class LemonService
 			// make the link
 			String verifyLink = properties.getApplicationUrl()
 				+ "/users/" + user.getId() + "/verification?code=" + verificationCode;
-			
+
 			// send the mail
-			mailSender.send(user.getEmail(),
-				LemonUtils.getMessage("com.naturalprogrammer.spring.verifySubject"),
-				LemonUtils.getMessage(
-					"com.naturalprogrammer.spring.verifyEmail",	verifyLink));
-			
+			sendVerificationMail(user, verifyLink);
+
 			log.debug("Verification mail to " + user.getEmail() + " queued.");
 			
 		} catch (Throwable e) {
 			// In case of exception, just log the error and keep silent
 			log.error(ExceptionUtils.getStackTrace(e));
 		}
+	}	
+
+	
+	/**
+	 * Sends verification mail to a unverified user.
+	 * Override this method if you're using a different MailData
+	 */
+	protected void sendVerificationMail(final U user, String verifyLink) {
+		
+		// send the mail
+		mailSender.send(LemonMailData.of(user.getEmail(),
+			LemonUtils.getMessage("com.naturalprogrammer.spring.verifySubject"),
+			LemonUtils.getMessage(
+				"com.naturalprogrammer.spring.verifyEmail",	verifyLink)));
 	}	
 
 	
@@ -434,36 +446,25 @@ public abstract class LemonService
 		String forgotPasswordLink =	properties.getApplicationUrl()
 			    + "/reset-password?code=" + forgotPasswordCode;
 		
-		// send the mail
-		mailSender.send(user.getEmail(),
-				LemonUtils.getMessage("com.naturalprogrammer.spring.forgotPasswordSubject"),
-				LemonUtils.getMessage("com.naturalprogrammer.spring.forgotPasswordEmail",
-					forgotPasswordLink));
+		mailForgotPasswordLink(user, forgotPasswordLink);
 		
 		log.debug("Forgot password link mail queued.");
-//
-//		try {
-//
-//			
-//			// make the link
-//			String forgotPasswordLink =	properties.getApplicationUrl()
-//				    + "/users/" + user.getForgotPasswordCode()
-//					+ "/reset-password";
-//			
-//			// send the mail
-//			mailSender.send(user.getEmail(),
-//					LemonUtils.getMessage("com.naturalprogrammer.spring.forgotPasswordSubject"),
-//					LemonUtils.getMessage("com.naturalprogrammer.spring.forgotPasswordEmail",
-//						forgotPasswordLink));
-//			
-//			log.debug("Forgot password link mail queued.");
-//			
-//		} catch (MessagingException e) {
-//			// In case of exception, just log the error and keep silent			
-//			log.error(ExceptionUtils.getStackTrace(e));
-//		}
 	}
 
+	
+	/**
+	 * Mails the forgot password link.
+	 * 
+	 * Override this method if you're using a different MailData
+	 */
+	public void mailForgotPasswordLink(U user, String forgotPasswordLink) {
+		
+		// send the mail
+		mailSender.send(LemonMailData.of(user.getEmail(),
+				LemonUtils.getMessage("com.naturalprogrammer.spring.forgotPasswordSubject"),
+				LemonUtils.getMessage("com.naturalprogrammer.spring.forgotPasswordEmail",
+					forgotPasswordLink)));
+	}
 	
 	/**
 	 * Resets the password.
@@ -656,8 +657,6 @@ public abstract class LemonService
 	
 	/**
 	 * Mails the change-email verification link to the user.
-	 * 
-	 * @param user
 	 */
 	protected void mailChangeEmailLink(U user) {
 		
@@ -675,12 +674,7 @@ public abstract class LemonService
 					+ "/change-email?code=" + changeEmailCode;
 			
 			// mail it
-			mailSender.send(user.getNewEmail(),
-				LemonUtils.getMessage(
-					"com.naturalprogrammer.spring.changeEmailSubject"),
-				LemonUtils.getMessage(
-					"com.naturalprogrammer.spring.changeEmailEmail",
-					 changeEmailLink));
+			mailChangeEmailLink(user, changeEmailLink);
 			
 			log.debug("Change email link mail queued.");
 			
@@ -691,6 +685,22 @@ public abstract class LemonService
 	}
 
 
+	/**
+	 * Mails the change-email verification link to the user.
+	 * 
+	 * Override this method if you're using a different MailData
+	 */
+	protected void mailChangeEmailLink(U user, String changeEmailLink) {
+		
+		mailSender.send(LemonMailData.of(user.getNewEmail(),
+			LemonUtils.getMessage(
+				"com.naturalprogrammer.spring.changeEmailSubject"),
+			LemonUtils.getMessage(
+				"com.naturalprogrammer.spring.changeEmailEmail",
+				 changeEmailLink)));
+	}
+
+	
 	/**
 	 * Change the email.
 	 * 

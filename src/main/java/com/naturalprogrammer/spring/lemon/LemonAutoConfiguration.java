@@ -206,7 +206,7 @@ public class LemonAutoConfiguration {
 	@Bean
 	@ConditionalOnMissingBean(MailSender.class)
 	@ConditionalOnProperty(name="spring.mail.host", havingValue="foo", matchIfMissing=true)
-	public MailSender mockMailSender() {
+	public MailSender<?> mockMailSender() {
 
         log.info("Configuring MockMailSender");       
         return new MockMailSender();
@@ -220,7 +220,7 @@ public class LemonAutoConfiguration {
 	@Bean
 	@ConditionalOnMissingBean(MailSender.class)
 	@ConditionalOnProperty("spring.mail.host")
-	public MailSender smtpMailSender(JavaMailSender javaMailSender) {
+	public MailSender<?> smtpMailSender(JavaMailSender javaMailSender) {
 		
         log.info("Configuring SmtpMailSender");       
 		return new SmtpMailSender(javaMailSender);

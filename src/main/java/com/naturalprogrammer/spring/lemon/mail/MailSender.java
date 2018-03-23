@@ -5,8 +5,7 @@ package com.naturalprogrammer.spring.lemon.mail;
  * 
  * @author Sanjay Patel
  */
-public interface MailSender {
+public interface MailSender<MailData> {
 
-	void send(String to, String subject, String body);
-
+	void send(MailData mail);
 }

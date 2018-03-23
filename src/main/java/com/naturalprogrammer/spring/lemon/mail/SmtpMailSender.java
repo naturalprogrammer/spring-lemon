@@ -17,7 +17,7 @@ import org.springframework.scheduling.annotation.Async;
  * @author Sanjay Patel
  *
  */
-public class SmtpMailSender implements MailSender {
+public class SmtpMailSender implements MailSender<LemonMailData> {
 	
 	private static final Log log = LogFactory.getLog(SmtpMailSender.class);
 
@@ -35,7 +35,7 @@ public class SmtpMailSender implements MailSender {
 	 */
 	@Override
 	@Async
-	public void send(String to, String subject, String body) {
+	public void send(LemonMailData mail) {
 		
 		log.info("Sending SMTP mail from thread " + Thread.currentThread().getName()); // toString gives more info    	
 
@@ -48,9 +48,9 @@ public class SmtpMailSender implements MailSender {
 			// create a helper
 			helper = new MimeMessageHelper(message, true);
 			// set the attributes
-			helper.setSubject(subject);
-			helper.setTo(to);
-			helper.setText(body, true); // true indicates html
+			helper.setSubject(mail.getSubject());
+			helper.setTo(mail.getTo());
+			helper.setText(mail.getBody(), true); // true indicates html
 			// continue using helper object for more functionalities like adding attachments, etc.  
 			
 		} catch (MessagingException e) {

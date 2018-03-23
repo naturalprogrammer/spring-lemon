@@ -9,7 +9,7 @@ import org.apache.commons.logging.LogFactory;
  * 
  * @author Sanjay Patel
  */
-public class MockMailSender implements MailSender {
+public class MockMailSender implements MailSender<LemonMailData> {
 	
 	private static final Log log = LogFactory.getLog(MockMailSender.class);
 	
@@ -18,10 +18,11 @@ public class MockMailSender implements MailSender {
 	}
 
 	@Override
-	public void send(String to, String subject, String body) {
-		log.info("Sending mail to " + to);
-		log.info("Subject: " + subject);
-		log.info("Body: " + body);
+	public void send(LemonMailData mail) {
+		
+		log.info("Sending mail to " + mail.getTo());
+		log.info("Subject: " + mail.getSubject());
+		log.info("Body: " + mail.getBody());
 	}
 
 }
