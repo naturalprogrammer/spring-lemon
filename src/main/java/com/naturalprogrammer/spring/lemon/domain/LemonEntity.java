@@ -13,10 +13,7 @@ import com.naturalprogrammer.spring.lemon.security.UserDto;
  * Base class for all entities.
  * 
  * @author Sanjay Patel
- *
- * @param <U>	the concrete user type, e.g. User
- * @param <ID>	the concrete primary key type, e.g. Long
- */
+  */
 @MappedSuperclass
 @JsonIgnoreProperties({ "createdBy", "lastModifiedBy", "createdDate", "lastModifiedDate" })
 public class LemonEntity<U extends AbstractUser<U,ID>, ID extends Serializable> extends AbstractAuditable<U, ID> {

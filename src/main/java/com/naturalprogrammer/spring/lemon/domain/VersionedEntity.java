@@ -7,12 +7,9 @@ import javax.persistence.Version;
 
 
 /**
- * Base class for all entities with optimistic locking.
+ * Base class for all entities needing optimistic locking.
  * 
  * @author Sanjay Patel
- *
- * @param <U>	The User class
- * @param <ID>	The Primary key type of User class 
  */
 @MappedSuperclass
 public abstract class VersionedEntity<U extends AbstractUser<U,ID>, ID extends Serializable> extends LemonEntity<U, ID> {

@@ -53,9 +53,5 @@ public class OAuth2AuthenticationSuccessHandler<ID extends Serializable>
 		
 		HttpCookieOAuth2AuthorizationRequestRepository.deleteCookies(request, response);
 		return targetUrl + shortLivedAuthToken;
-//				
-//		return properties.getApplicationUrl()
-//				+ "/social-login-success?token="
-//				+ shortLivedAuthToken;
 	}
 }

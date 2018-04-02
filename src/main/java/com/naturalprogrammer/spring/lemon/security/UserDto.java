@@ -4,6 +4,10 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * A lighter User class,
+ * mainly used for holding logged-in user data 
+ */
 public class UserDto<ID extends Serializable> {
 
 	private ID id;
@@ -11,7 +15,6 @@ public class UserDto<ID extends Serializable> {
 	private String password;
 	private Set<String> roles = new HashSet<String>();
 	private Serializable tag;
-	//private String nonce;
 	
 	private boolean unverified = false;
 	private boolean blocked = false;
@@ -79,10 +82,4 @@ public class UserDto<ID extends Serializable> {
 	public void setRoles(Set<String> roles) {
 		this.roles = roles;
 	}
-//	public String getNonce() {
-//		return nonce;
-//	}
-//	public void setNonce(String nonce) {
-//		this.nonce = nonce;
-//	}
 }

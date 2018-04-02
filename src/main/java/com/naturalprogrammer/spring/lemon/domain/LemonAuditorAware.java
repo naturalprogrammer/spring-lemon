@@ -15,9 +15,6 @@ import com.naturalprogrammer.spring.lemon.util.LemonUtils;
  * AbstractAuditable columns of AbstractUser
  *  
  * @author Sanjay Patel
- *
- * @param <U>	The User class
- * @param <ID>	The Primary key type of User class 
  */
 public class LemonAuditorAware
 	<U extends AbstractUser<U,ID>,

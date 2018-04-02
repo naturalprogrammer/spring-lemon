@@ -4,6 +4,10 @@ import java.util.Collection;
 
 import com.naturalprogrammer.spring.lemon.validation.FieldError;
 
+/**
+ * Error DTO, to be sent as response body
+ * in case of errors
+ */
 public class ErrorResponse {
 	
 	private String exception;

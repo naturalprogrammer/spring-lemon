@@ -16,6 +16,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
+/**
+ * Used for handling exceptions that can't be handled by
+ * <code>DefaultExceptionHandlerControllerAdvice</code>,
+ * e.g. exceptions thrown in filters.
+ */
 public class LemonErrorController extends BasicErrorController {
 	
     private static final Log log = LogFactory.getLog(LemonErrorController.class);
@@ -28,6 +33,9 @@ public class LemonErrorController extends BasicErrorController {
 		log.info("Created");
 	}
 
+    /**
+     * Overrides the base method to add our custom logic
+     */
 	@Override	
 	public ResponseEntity<Map<String, Object>> error(HttpServletRequest request) {
 		

@@ -40,7 +40,6 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 	private UserDetailsService userDetailsService;
 	private AuthenticationSuccessHandler authenticationSuccessHandler;
 	private AuthenticationFailureHandler authenticationFailureHandler;
-	//private LogoutSuccessHandler logoutSuccessHandler;
 	private LemonOidcUserService oidcUserService;
 	private LemonOAuth2UserService<?, ?> oauth2UserService;
 	private OAuth2AuthenticationSuccessHandler<?> oauth2AuthenticationSuccessHandler;
@@ -51,7 +50,6 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	public void createLemonSecurityConfig(LemonProperties properties, UserDetailsService userDetailsService,
 			AuthenticationSuccessHandler authenticationSuccessHandler, AuthenticationFailureHandler authenticationFailureHandler,
-			//LogoutSuccessHandler logoutSuccessHandler,
 			LemonOidcUserService oidcUserService,
 			LemonOAuth2UserService<?, ?> oauth2UserService,
 			OAuth2AuthenticationSuccessHandler<?> oauth2AuthenticationSuccessHandler,
@@ -64,7 +62,6 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 		this.userDetailsService = userDetailsService;
 		this.authenticationSuccessHandler = authenticationSuccessHandler;
 		this.authenticationFailureHandler = authenticationFailureHandler;
-		//this.logoutSuccessHandler = logoutSuccessHandler;
 		this.oidcUserService = oidcUserService;
 		this.oauth2UserService = oauth2UserService;
 		this.oauth2AuthenticationSuccessHandler = oauth2AuthenticationSuccessHandler;
@@ -87,8 +84,6 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 		exceptionHandling(http); // exception handling
 		csrf(http); // CSRF configuration
 		cors(http); // CORS configuration
-		//switchUser(http); // switch-user configuration
-		//customTokenAuthentication(http); // API key authentication
 		oauth2Client(http);
 		authorizeRequests(http); // authorize requests
 		otherConfigurations(http); // override this to add more configurations
@@ -96,9 +91,6 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	/**
 	 * Configuring Session creation policy
-	 * 
-	 * @param http
-	 * @throws Exception
 	 */
 	protected void sessionCreationPolicy(HttpSecurity http) throws Exception {
 		
@@ -107,21 +99,17 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 			.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 	}
 
-
 	/**
 	 * Configuring authentication.
-	 * 
-	 * @param http
-	 * @throws Exception
 	 */
 	protected void login(HttpSecurity http) throws Exception {
 		
 		http
-		.formLogin() // cookie based form login
+		.formLogin() // form login
 			
 			/******************************************
 			 * Setting a successUrl would redirect the user there. Instead,
-			 * let's send 200 and the userDto.
+			 * let's send 200 and the userDto along with an Authorization token.
 			 *****************************************/
 			.successHandler(authenticationSuccessHandler)
 			
@@ -136,28 +124,16 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	/**
 	 * Logout related configuration
-	 * 
-	 * @param http
-	 * @throws Exception
 	 */
 	protected void logout(HttpSecurity http) throws Exception {
 		
 		http
-		.logout().disable(); // we are stateless; so /logout endpoint not needed
-			
-//			/************************************************
-//			 * To prevent redirection to home page, we need to
-//			 * have this custom logoutSuccessHandler
-//			 ***********************************************/
-//			.logoutSuccessHandler(logoutSuccessHandler);
+			.logout().disable(); // we are stateless; so /logout endpoint not needed			
 	}
 
 	
 	/**
 	 * Configures exception-handling
-	 * 
-	 * @param http
-	 * @throws Exception
 	 */
 	protected void exceptionHandling(HttpSecurity http) throws Exception {
 		
@@ -173,10 +149,7 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 
 
 	/**
-	 * Configures CSRF
-	 *  
-	 * @param http
-	 * @throws Exception
+	 * Disables CSRF. We are stateless.
 	 */
 	protected void csrf(HttpSecurity http) throws Exception {
 		
@@ -187,9 +160,6 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	/**
 	 * Configures CORS
-	 *  
-	 * @param http
-	 * @throws Exception
 	 */
 	protected void cors(HttpSecurity http) throws Exception {
 		
@@ -197,24 +167,6 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 			.cors();
 	}
 
-	
-//	/**
-//	 * Adds switch-user filter
-//	 * 
-//	 * @param http
-//	 */
-//	protected void switchUser(HttpSecurity http) {
-//		
-//		http
-//			.addFilterAfter(switchUserFilter(), FilterSecurityInterceptor.class);
-//	}
-//
-//
-//	private void customTokenAuthentication(HttpSecurity http) throws Exception {
-//	
-//		http.addFilterBefore(lemonTokenAuthenticationFilter(),
-//				UsernamePasswordAuthenticationFilter.class);
-//	}
 	
 	private void oauth2Client(HttpSecurity http) throws Exception {
 		
@@ -228,33 +180,16 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 				.userService(oauth2UserService);
 	}	
 
+	
 	/**
 	 * URL based authorization configuration. Override this if needed.
-	 * 
-	 * @param http
-	 * @throws Exception
 	 */
 	protected void authorizeRequests(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
-			.mvcMatchers("/login/impersonate*").hasRole(GOOD_ADMIN)
-			.mvcMatchers("/logout/impersonate*").authenticated()
 			.mvcMatchers("/**").permitAll();                  
 	}
 	
-//	/**
-//	 * Returns switch-user filter
-//	 * 
-//	 * @return
-//	 */
-//	protected SwitchUserFilter switchUserFilter() {
-//		
-//		SwitchUserFilter filter = new SwitchUserFilter();
-//		filter.setUserDetailsService(userDetailsService);
-//		filter.setSuccessHandler(authenticationSuccessHandler);
-//		filter.setFailureHandler(authenticationFailureHandler);
-//		return filter;
-//	}	
-	
+
 	/**
 	 * Override this to add more http configurations,
 	 * such as more authentication methods.
@@ -266,6 +201,7 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	}
 
+	
 	/**
 	 * Needed for configuring JwtAuthenticationProvider
 	 */
@@ -277,6 +213,10 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
         	.authenticationProvider(jwtAuthenticationProvider);
     }
 
+    
+    /**
+     * Configures our TokenAuthenticationFilter
+     */
 	@Bean
 	@ConditionalOnMissingBean(LemonTokenAuthenticationFilter.class)
 	public LemonTokenAuthenticationFilter lemonTokenAuthenticationFilter() throws Exception {

@@ -13,7 +13,6 @@ import com.naturalprogrammer.spring.lemon.security.LemonSecurityConfig;
  * Lemon Properties
  * 
  * @author Sanjay Patel
- *
  */
 @Validated
 @ConfigurationProperties(prefix="lemon")
@@ -33,7 +32,7 @@ public class LemonProperties {
     
 	/**
 	 * The default URL to redirect to after
-	 * a user logs in using OAuth2/OpenID
+	 * a user logs in using OAuth2/OpenIDConnect
 	 */
     private String oauth2AuthenticationSuccessUrl = "http://localhost:9000/social-login-success?token=";
 
@@ -180,7 +179,7 @@ public class LemonProperties {
 		private String[] allowedMethods = {"GET", "HEAD", "POST", "PUT", "DELETE", "TRACE", "OPTIONS", "PATCH"};
 		
 		/**
-		 * Request headers to be allowed, e.g. content-type,accept,origin,x-requested-with,x-xsrf-token,...
+		 * Request headers to be allowed, e.g. content-type,accept,origin,x-requested-with,...
 		 */
 		private String[] allowedHeaders = {
 				"Accept",
@@ -200,7 +199,7 @@ public class LemonProperties {
 				LemonSecurityConfig.TOKEN_REQUEST_HEADER_NAME};
 		
 		/**
-		 * Response headers that you want to expose to the client JavaScript programmer, e.g. "X-XSRF-TOKEN".
+		 * Response headers that you want to expose to the client JavaScript programmer, e.g. Lemon-Authorization.
 		 * I don't think we need to mention here the headers that we don't want to access through JavaScript.
 		 * Still, by default, we have provided most of the common headers.
 		 *  

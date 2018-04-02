@@ -15,9 +15,6 @@ import com.naturalprogrammer.spring.lemon.util.LemonUtils;
  * annotated with @PreAuthorize("hasPermission(...
  * 
  * @author Sanjay Patel
- *
- * @param <U>	The user class
- * @param <ID>	Primary key class, e.g. Long
  */
 public class LemonPermissionEvaluator implements PermissionEvaluator {
 

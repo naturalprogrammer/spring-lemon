@@ -12,6 +12,9 @@ import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
 import com.naturalprogrammer.spring.lemon.util.LemonUtils;
 import com.nimbusds.jwt.JWTClaimsSet;
 
+/**
+ * Authentication provider for JWT token authentication
+ */
 public class JwtAuthenticationProvider
 <U extends AbstractUser<U,ID>, ID extends Serializable> implements AuthenticationProvider {
 

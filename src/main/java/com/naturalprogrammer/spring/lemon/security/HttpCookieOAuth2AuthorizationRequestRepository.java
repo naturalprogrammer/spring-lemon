@@ -15,39 +15,37 @@ import org.springframework.util.Assert;
 import com.naturalprogrammer.spring.lemon.LemonProperties;
 import com.naturalprogrammer.spring.lemon.util.LemonUtils;
 
+/**
+ * Cookie based repository for storing Authorization requests
+ */
 public class HttpCookieOAuth2AuthorizationRequestRepository implements AuthorizationRequestRepository<OAuth2AuthorizationRequest> {
 	
 	private static final String AUTHORIZATION_REQUEST_COOKIE_NAME = "lemon_oauth2_authorization_request";
 	public static final String LEMON_REDIRECT_URI_COOKIE_PARAM_NAME = "lemon_redirect_uri";
 	
-	private int cookieExpiry;
+	private int cookieExpirySecs;
 	
 	public HttpCookieOAuth2AuthorizationRequestRepository(LemonProperties properties) {
 
-		cookieExpiry = properties.getJwt().getShortLivedMillis() / 1000;
+		cookieExpirySecs = properties.getJwt().getShortLivedMillis() / 1000;
 	}
 
+	/**
+	 * Load authorization request from cookie
+	 */
 	@Override
 	public OAuth2AuthorizationRequest loadAuthorizationRequest(HttpServletRequest request) {
 		
 		Assert.notNull(request, "request cannot be null");
 		
 		return LemonUtils.fetchCookie(request, AUTHORIZATION_REQUEST_COOKIE_NAME)
-					.map(this::toOAuth2AuthorizationRequest)
+					.map(this::deserialize)
 					.orElse(null);
 	}
 
-//	private Stream<Cookie> fetchCookies(HttpServletRequest request) {
-//		
-//		Cookie[] cookies = request.getCookies();
-//		if (cookies == null)
-//			cookies = new Cookie[0];
-//
-//		return Stream.of(cookies).filter(cookie ->
-//			cookie.getName().equals(AUTHORIZATION_REQUEST_COOKIE_NAME) ||
-//			cookie.getName().equals(LEMON_REDIRECT_URI_COOKIE_PARAM_NAME));
-//	}
-
+	/**
+	 * Save authorization request in cookie
+	 */
 	@Override
 	public void saveAuthorizationRequest(OAuth2AuthorizationRequest authorizationRequest, HttpServletRequest request,
 			HttpServletResponse response) {
@@ -61,10 +59,10 @@ public class HttpCookieOAuth2AuthorizationRequestRepository implements Authoriza
 			return;
 		}
 		
-		Cookie cookie = new Cookie(AUTHORIZATION_REQUEST_COOKIE_NAME, fromAuthorizationRequest(authorizationRequest));
+		Cookie cookie = new Cookie(AUTHORIZATION_REQUEST_COOKIE_NAME, serialize(authorizationRequest));
 		cookie.setPath("/");
 		cookie.setHttpOnly(true);
-		cookie.setMaxAge(cookieExpiry);
+		cookie.setMaxAge(cookieExpirySecs);
 		response.addCookie(cookie);
 		
 		String lemonRedirectUri = request.getParameter(LEMON_REDIRECT_URI_COOKIE_PARAM_NAME);
@@ -73,7 +71,7 @@ public class HttpCookieOAuth2AuthorizationRequestRepository implements Authoriza
 			cookie = new Cookie(LEMON_REDIRECT_URI_COOKIE_PARAM_NAME, lemonRedirectUri);
 			cookie.setPath("/");
 			cookie.setHttpOnly(true);
-			cookie.setMaxAge(cookieExpiry);
+			cookie.setMaxAge(cookieExpirySecs);
 			response.addCookie(cookie);
 		}		
 	}
@@ -84,12 +82,9 @@ public class HttpCookieOAuth2AuthorizationRequestRepository implements Authoriza
 		return loadAuthorizationRequest(request);
 	}
 	
-	private String fromAuthorizationRequest(OAuth2AuthorizationRequest authorizationRequest) {
-		
-		return Base64.getUrlEncoder().encodeToString(
-				SerializationUtils.serialize(authorizationRequest));
-	}
-
+	/**
+	 * Utility for deleting related cookies
+	 */
 	public static void deleteCookies(HttpServletRequest request, HttpServletResponse response) {
 		
 		Cookie[] cookies = request.getCookies();
@@ -106,7 +101,13 @@ public class HttpCookieOAuth2AuthorizationRequestRepository implements Authoriza
 				}
 	}
 
-	private OAuth2AuthorizationRequest toOAuth2AuthorizationRequest(Cookie cookie) {
+	private String serialize(OAuth2AuthorizationRequest authorizationRequest) {
+		
+		return Base64.getUrlEncoder().encodeToString(
+				SerializationUtils.serialize(authorizationRequest));
+	}
+
+	private OAuth2AuthorizationRequest deserialize(Cookie cookie) {
 		
 		return SerializationUtils.deserialize(
 				Base64.getUrlDecoder().decode(cookie.getValue()));

@@ -56,12 +56,6 @@ public class MultiErrorException extends RuntimeException {
 	
 	/**
 	 * Adds a global-error if the given condition isn't true
-	 * 
-	 * @param valid			the given condition
-	 * @param messageKey	message key
-	 * @param args			optional message arguments
-	 * 
-	 * @return				the exception object
 	 */
 	public MultiErrorException validate(boolean valid,
 			String messageKey, Object... args) {
@@ -72,13 +66,6 @@ public class MultiErrorException extends RuntimeException {
 
 	/**
 	 * Adds a field-error if the given condition isn't true
-	 * 
-	 * @param fieldName		the name of the associated field
-	 * @param valid			the given condition
-	 * @param messageKey	message key
-	 * @param args			optional message arguments
-	 * 
-	 * @return				the exception object
 	 */
 	public MultiErrorException validate(String fieldName, boolean valid,
 			String messageKey, Object... args) {
@@ -97,48 +84,4 @@ public class MultiErrorException extends RuntimeException {
 		if (errors.size() > 0)
 			throw this;
 	}
-//
-//	/**
-//	 * Factory method for a field-level error
-//	 * 
-//	 * @param fieldName		the name of the associated field
-//	 * @param messageKey	message key
-//	 * @param args			optional message arguments
-//	 * 
-//	 * @return				the exception object
-//	 */
-//	public static Supplier<MultiErrorException> fieldSupplier(HttpStatus status,
-//			String fieldName, String messageKey, Object... args) {
-//		
-//		return () -> {
-//			
-//			MultiErrorException exception = new MultiErrorException();
-//			exception.errors.add(new FieldError(fieldName, messageKey,
-//					LemonUtils.getMessage(messageKey, args)));
-//			exception.httpStatus(status);
-//			
-//			return exception;
-//		};
-//	}
-//	
-//	
-//	/**
-//	 * Factory method for a global-level error
-//	 * 
-//	 * @param messageKey	message key
-//	 * @param args			optional message arguments
-//	 * 
-//	 * @return				the exception object
-//	 */
-//	public static Supplier<MultiErrorException> supplier(HttpStatus status, String messageKey, Object... args) {
-//		
-//		return MultiErrorException.fieldSupplier(status, null, messageKey, args);
-//	}
-//	
-//	public static Supplier<MultiErrorException> notFoundSupplier() {
-//	
-//		return MultiErrorException.supplier(HttpStatus.NOT_FOUND,
-//				"com.naturalprogrammer.spring.notFound");
-//
-//	}
 }

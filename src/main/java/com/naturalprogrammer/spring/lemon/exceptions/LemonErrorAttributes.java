@@ -7,6 +7,11 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.boot.web.servlet.error.DefaultErrorAttributes;
 import org.springframework.web.context.request.WebRequest;
 
+/**
+ * Used for handling exceptions that can't be handled by
+ * <code>DefaultExceptionHandlerControllerAdvice</code>,
+ * e.g. exceptions thrown in filters.
+ */
 public class LemonErrorAttributes<T extends Throwable> extends DefaultErrorAttributes {
 	
     private static final Log log = LogFactory.getLog(LemonErrorAttributes.class);
@@ -21,6 +26,9 @@ public class LemonErrorAttributes<T extends Throwable> extends DefaultErrorAttri
 		log.info("Created");
 	}
 	
+    /**
+     * Calls the base class and then adds our details
+     */
 	@Override
 	public Map<String, Object> getErrorAttributes(WebRequest request,
 			boolean includeStackTrace) {
@@ -33,6 +41,9 @@ public class LemonErrorAttributes<T extends Throwable> extends DefaultErrorAttri
 		return errorAttributes;
 	}
 
+	/**
+     * Handles exceptions
+     */
 	@SuppressWarnings("unchecked")
 	protected void addLemonErrorDetails(
 			Map<String, Object> errorAttributes, WebRequest request) {

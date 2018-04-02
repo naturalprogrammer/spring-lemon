@@ -10,7 +10,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 
 /**
- * OAuth2 Authentication failure handler for removing the 
+ * OAuth2 Authentication failure handler for removing oauth2 related cookies
  * 
  * @author Sanjay Patel
  */

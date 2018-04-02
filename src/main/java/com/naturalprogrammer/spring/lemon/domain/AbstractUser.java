@@ -28,9 +28,6 @@ import com.naturalprogrammer.spring.lemon.validation.UniqueEmail;
  * Base class for User entity
  * 
  * @author Sanjay Patel
- *
- * @param <U>	The User class
- * @param <ID>	The Primary key type of User class 
  */
 @MappedSuperclass
 public class AbstractUser
@@ -90,28 +87,12 @@ extends VersionedEntity<U, ID> {
     @Column(name="role")
 	private Set<String> roles = new HashSet<>();
 	
-//	// verification code
-//	@Column(length = UUID_LENGTH, unique=true)
-//	protected String verificationCode;
-	
-//	// forgot password code
-//	@Column(length = UUID_LENGTH, unique=true)
-//	protected String forgotPasswordCode;
-//	
 	// in the email-change process, temporarily stores the new email
 	@UniqueEmail(groups = {ChangeEmailValidation.class})
 	@Column(length = EMAIL_MAX)
 	protected String newEmail;
 
-//	// change email code
-//	@Column(length = UUID_LENGTH, unique=true)
-//	protected String changeEmailCode;
-	
-	// One time token
-//	@JsonIgnore
-//	private String nonce;
-	
-	// A JWT after before this won't be valid
+	// A JWT issued before this won't be valid
 	@Column(nullable = false)
 	@JsonIgnore
 	private long credentialsUpdatedMillis = System.currentTimeMillis();
@@ -124,22 +105,6 @@ extends VersionedEntity<U, ID> {
 	
 	// getters and setters
 	
-//	public String getVerificationCode() {
-//		return verificationCode;
-//	}
-//
-//	public void setVerificationCode(String verificationCode) {
-//		this.verificationCode = verificationCode;
-//	}
-
-//	public String getForgotPasswordCode() {
-//		return forgotPasswordCode;
-//	}
-//
-//	public void setForgotPasswordCode(String forgotPasswordCode) {
-//		this.forgotPasswordCode = forgotPasswordCode;
-//	}
-//	
 	public String getNewEmail() {
 		return newEmail;
 	}
@@ -148,14 +113,6 @@ extends VersionedEntity<U, ID> {
 		this.newEmail = newEmail;
 	}
 
-//	public String getChangeEmailCode() {
-//		return changeEmailCode;
-//	}
-//
-//	public void setChangeEmailCode(String changeEmailCode) {
-//		this.changeEmailCode = changeEmailCode;
-//	}
-//
 	public String getCaptchaResponse() {
 		return captchaResponse;
 	}
@@ -190,7 +147,7 @@ extends VersionedEntity<U, ID> {
 
 	public final boolean hasRole(String role) {
 		return roles.contains(role);
-	}
+	}	
 	
 	
 	/**
@@ -198,9 +155,7 @@ extends VersionedEntity<U, ID> {
 	 */
 	public void hideConfidentialFields() {
 		
-		password = null; // JsonIgnore didn't work because of JsonIgnore
-		//verificationCode = null;
-		//forgotPasswordCode = null;
+		password = null; // JsonIgnore didn't work
 		
 		if (!hasPermission(LemonUtils.currentUser(), Permission.EDIT))
 			email = null;
@@ -208,14 +163,6 @@ extends VersionedEntity<U, ID> {
 		log.debug("Hid confidential fields for user: " + this);
 	}
 	
-//	public String getNonce() {
-//		return nonce;
-//	}
-//
-//	public void setNonce(String nonce) {
-//		this.nonce = nonce;
-//	}
-//
 	public long getCredentialsUpdatedMillis() {
 		return credentialsUpdatedMillis;
 	}
@@ -259,9 +206,7 @@ extends VersionedEntity<U, ID> {
 
 
 	/**
-	 * Makes a Spring User
-	 * 
-	 * @return
+	 * Makes a User DTO
 	 */
 	public UserDto<ID> toUserDto() {
 		
@@ -288,6 +233,10 @@ extends VersionedEntity<U, ID> {
 		return userDto;
 	}
 
+	/**
+	 * Override this to supply any additional fields to the user DTO,
+	 * e.g. name
+	 */
 	protected Serializable toTag() {
 		
 		return null;

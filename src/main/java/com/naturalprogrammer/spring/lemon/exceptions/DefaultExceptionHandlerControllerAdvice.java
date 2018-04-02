@@ -8,12 +8,18 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+/**
+ * Handles exceptions thrown from in controllers or inner routines
+ */
 @RestControllerAdvice
 @RequestMapping(produces = "application/json")
 public class DefaultExceptionHandlerControllerAdvice<T extends Throwable> {
 	
 	private static final Log log = LogFactory.getLog(DefaultExceptionHandlerControllerAdvice.class);
 
+	/**
+	 * Component that actually builds the error response
+	 */
 	private ErrorResponseComposer<T> errorResponseComposer;
 	
     public DefaultExceptionHandlerControllerAdvice(ErrorResponseComposer<T> errorResponseComposer) {
@@ -25,10 +31,6 @@ public class DefaultExceptionHandlerControllerAdvice<T extends Throwable> {
 
 	/**
      * Handles exceptions
-     *
-     * @param ex the exception
-     * @return the error response
-	 * @throws T 
      */
     @RequestMapping(produces = "application/json")
     @ExceptionHandler(Throwable.class)

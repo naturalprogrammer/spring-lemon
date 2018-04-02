@@ -8,6 +8,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import com.naturalprogrammer.spring.lemon.LemonProperties;
 import com.naturalprogrammer.spring.lemon.LemonProperties.Cors;
 
+/**
+ * CORS Configuration
+ */
 public class LemonCorsConfig implements WebMvcConfigurer {
 
 	private static final Log log = LogFactory.getLog(LemonCorsConfig.class);

@@ -14,6 +14,9 @@ import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 
+/**
+ * Spring Security Principal, implementing both OidcUser, UserDetails
+ */
 public class LemonPrincipal<ID extends Serializable> implements OidcUser, UserDetails, CredentialsContainer {
 
 	private static final long serialVersionUID = -7849730155307434535L;

@@ -46,9 +46,6 @@ import com.nimbusds.jwt.JWTClaimsSet;
  * The Lemon Service class
  * 
  * @author Sanjay Patel
- *
- * @param <U>	The User class
- * @param <ID>	The Primary key type of User class 
  */
 @Validated
 @Transactional(propagation=Propagation.SUPPORTS, readOnly=true)
@@ -81,9 +78,6 @@ public abstract class LemonService
 		
 		log.info("Created");
 	}
-
-	
-	abstract public ID parseId(String id);
 
 	
 	/**
@@ -166,9 +160,11 @@ public abstract class LemonService
 	 * To send custom properties, put those in your application
 	 * properties in the format <em>lemon.shared.fooBar</em>.
 	 * 
+	 * If a user is logged in, it also returns the user data
+	 * and a new authorization token. If expirationMillis is not provided,
+	 * the expiration of the new token is set to the default.
+	 *
 	 * Override this method if needed.
-	 * @param response 
-	 * @param expirationMillis 
 	 */
 	public Map<String, Object> getContext(Optional<Long> expirationMillis, HttpServletResponse response) {
 		
@@ -192,10 +188,7 @@ public abstract class LemonService
 	
 	/**
 	 * Signs up a user.
-	 * 
-	 * @param user	data fed by the user
 	 */
-	//@PreAuthorize("isAnonymous()")
 	@Validated(SignUpValidation.class)
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
 	public void signup(@Valid U user) {
@@ -215,9 +208,8 @@ public abstract class LemonService
 	
 	
 	/**
-	 * Initializes the user based on the input data
-	 * 
-	 * @param user
+	 * Initializes the user based on the input data,
+	 * e.g. encrypts the password
 	 */
 	protected void initUser(U user) {
 		
@@ -230,7 +222,6 @@ public abstract class LemonService
 	
 	/**
 	 * Makes a user unverified
-	 * @param user
 	 */
 	protected void makeUnverified(U user) {
 		
@@ -239,21 +230,9 @@ public abstract class LemonService
 		LemonUtils.afterCommit(() -> sendVerificationMail(user)); // send a verification mail to the user
 	}
 	
-//	/***
-//	 * Makes a user verified
-//	 * @param user
-//	 */
-//	protected void makeVerified(U user) {
-//		user.getRoles().remove(Role.UNVERIFIED);
-//		user.setCredentialsUpdatedAt(new Date());
-//		//user.setVerificationCode(null);
-//	}
-	
 	
 	/**
 	 * Sends verification mail to a unverified user.
-	 * 
-	 * @param user
 	 */
 	protected void sendVerificationMail(final U user) {
 		try {
@@ -296,8 +275,6 @@ public abstract class LemonService
 	
 	/**
 	 * Resends verification mail to the user.
-	 * 
-	 * @param user
 	 */
 	@UserEditPermission
 	public void resendVerificationMail(U user) {
@@ -316,9 +293,6 @@ public abstract class LemonService
 	
 	/**
 	 * Fetches a user by email
-	 * 
-	 * @param email
-	 * @return the decorated user object
 	 */
 	public U fetchUserByEmail(@Valid @Email @NotBlank String email) {
 		
@@ -329,9 +303,6 @@ public abstract class LemonService
 	
 	/**
 	 * Returns a non-null, processed user for the client.
-	 * 
-	 * @param user
-	 * @return
 	 */
 	public U processUser(U user) {
 		
@@ -349,8 +320,6 @@ public abstract class LemonService
 	
 	/**
 	 * Verifies the email id of current-user
-	 *  
-	 * @param verificationCode
 	 */
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
 	public void verifyUser(ID userId, String verificationCode) {
@@ -388,8 +357,6 @@ public abstract class LemonService
 	
 	/**
 	 * Forgot password.
-	 * 
-	 * @param email	the email of the user who forgot his password
 	 */
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
 	public void forgotPassword(@Valid @Email @NotBlank String email) {
@@ -401,35 +368,9 @@ public abstract class LemonService
 				.orElseThrow(LemonUtils.notFoundSupplier());
 
 		mailForgotPasswordLink(user);
-//		
-//		// set a forgot password code
-//		user.setForgotPasswordCode(LemonUtils.uid());
-//		userRepository.save(user);
-//
-//		// after successful commit, mail him a link to reset his password
-//		LemonUtils.afterCommit(() -> mailForgotPasswordLink(user));
 	}
 	
 	
-//	/**
-//	 * Forgot password.
-//	 * 
-//	 * @param email	the email of the user who forgot his password
-//	 */
-//	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
-//	public void forgotPassword(U user) {
-//		
-//		log.debug("Processing forgot password for user: " + user);
-//		
-//		// set a forgot password code
-//		user.setForgotPasswordCode(LemonUtils.uid());
-//		userRepository.save(user);
-//
-//		// after successful commit, mail him a link to reset his password
-//		LemonUtils.afterCommit(() -> mailForgotPasswordLink(user));
-//	}
-//	
-//	
 	/**
 	 * Mails the forgot password link.
 	 * 
@@ -468,9 +409,6 @@ public abstract class LemonService
 	
 	/**
 	 * Resets the password.
-	 * 
-	 * @param forgotPasswordCode
-	 * @param newPassword
 	 */
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
 	public void resetPassword(
@@ -508,9 +446,6 @@ public abstract class LemonService
 	
 	/**
 	 * Updates a user with the given data.
-	 * 
-	 * @param user
-	 * @param updatedUser
 	 */
 	@UserEditPermission
 	@Validated(AbstractUser.UpdateValidation.class)
@@ -536,9 +471,6 @@ public abstract class LemonService
 	
 	/**
 	 * Changes the password.
-	 * 
-	 * @param user
-	 * @param changePasswordForm
 	 */
 	@UserEditPermission
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
@@ -562,19 +494,7 @@ public abstract class LemonService
 		user.setPassword(passwordEncoder.encode(changePasswordForm.getPassword()));
 		user.setCredentialsUpdatedMillis(System.currentTimeMillis());
 		userRepository.save(user);
-		
-//		// after successful commit
-//		LemonUtils.afterCommit(() -> {
-//
-//			UserDto<ID> currentUser = LemonUtils.getSpringUser();
-//			
-////			if (currentUser.getId().equals(user.getId())) { // if current-user's password changed,
-////				
-////				log.debug("Logging out ...");
-////				LemonUtils.logOut(); // log him out
-////			}
-//		});
-//		
+
 		log.debug("Changed password for user: " + user);
 		return user.toUserDto().getUsername();
 	}
@@ -582,18 +502,11 @@ public abstract class LemonService
 
 	/**
 	 * Updates the fields of the users. Override this if you have more fields.
-	 * 
-	 * @param user
-	 * @param updatedUser
-	 * @param currentUser
 	 */
 	protected void updateUserFields(U user, U updatedUser, UserDto<ID> currentUser) {
 
 		log.debug("Updating user fields for user: " + user);
 
-		// User is already decorated while checking the 'edit' permission
-		// So, user.isRolesEditable() below would work
-		
 		// Another good admin must be logged in to edit roles
 		if (currentUser.isGoodAdmin() &&
 		   !currentUser.getId().equals(user.getId())) { 
@@ -625,9 +538,6 @@ public abstract class LemonService
 	
 	/**
 	 * Requests for email change.
-	 * 
-	 * @param user
-	 * @param updatedUser
 	 */
 	@UserEditPermission
 	@Validated(AbstractUser.ChangeEmailValidation.class)
@@ -703,8 +613,6 @@ public abstract class LemonService
 	
 	/**
 	 * Change the email.
-	 * 
-	 * @param changeEmailCode
 	 */
 	@PreAuthorize("isAuthenticated()")
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
@@ -755,22 +663,33 @@ public abstract class LemonService
 			// Login the user
 			LemonUtils.login(user);
 		});
-		// logout after successful commit
-		//LemonUtils.afterCommit(LemonUtils::logOut);
 		
 		log.debug("Changed email of user: " + user);
 	}
 
 
+	/**
+	 * Extracts the email id from user attributes received from OAuth2 provider, e.g. Google
+	 * 
+	 */
 	public String getOAuth2Email(String registrationId, Map<String, Object> attributes) {
 
 		return (String) attributes.get(StandardClaimNames.EMAIL);
 	}
+
 	
+	/**
+	 * Extracts additional fields, e.g. name from user attributes received from OAuth2 provider, e.g. Google
+	 * Override this if you introduce more user fields, e.g. name
+	 */
 	public void fillAdditionalFields(String clientId, U user, Map<String, Object> attributes) {
 		
 	}
 
+	
+	/**
+	 * Checks if the account at the OAuth2 provider is verified 
+	 */
 	public boolean getOAuth2AccountVerified(String registrationId, Map<String, Object> attributes) {
 
 		Object verified = attributes.get(StandardClaimNames.EMAIL_VERIFIED);
@@ -780,30 +699,7 @@ public abstract class LemonService
 		return (boolean) verified;
 	}
 
-//	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
-//	public void loginWithNonce(@Valid NonceForm<ID> nonce, HttpServletResponse response) {
-//		
-//		U user = userRepository.findById(nonce.getUserId())
-//			.orElseThrow(LemonUtils.notFoundSupplier());
-//
-//		LemonUtils.ensureCredentials(nonce.getNonce().equals(user.getNonce()),
-//			"com.naturalprogrammer.spring.invalidNonce");
-//
-//		user.setNonce(null);
-//		userRepository.save(user);
-//		LemonUtils.login(user);
-//	}
 
-//	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
-//	public String addNonce(U user) {
-//		
-//		String nonce = LemonUtils.uid();
-//		user.setNonce(nonce);
-//		userRepository.save(user);
-//		
-//		return nonce;
-//	}
-//
 	/**
 	 * Fetches a new token - for session scrolling etc.
 	 * @return 
@@ -823,6 +719,10 @@ public abstract class LemonService
 				expirationMillis.orElse(properties.getJwt().getExpirationMillis()));
 	}
 
+	
+	/**
+	 * Saves the user
+	 */
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
 	public void save(U user) {
 		

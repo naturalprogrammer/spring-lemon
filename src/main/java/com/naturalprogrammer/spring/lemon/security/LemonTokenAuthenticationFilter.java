@@ -16,6 +16,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.GenericFilterBean;
 
+/**
+ * Filter for token authentication
+ */
 public class LemonTokenAuthenticationFilter	extends GenericFilterBean {
 	
     private static final Log log = LogFactory.getLog(LemonTokenAuthenticationFilter.class);
@@ -28,7 +31,10 @@ public class LemonTokenAuthenticationFilter	extends GenericFilterBean {
 		log.info("Created");
 	}
 
-	public static boolean tokenPresent(HttpServletRequest request) {
+	/**
+	 * Checks if a "Bearer " token is present
+	 */
+	protected boolean tokenPresent(HttpServletRequest request) {
 		
 		String header = request.getHeader(LemonSecurityConfig.TOKEN_REQUEST_HEADER_NAME);		
 		return header != null && header.startsWith(LemonSecurityConfig.TOKEN_PREFIX);

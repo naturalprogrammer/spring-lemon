@@ -30,12 +30,11 @@ import com.naturalprogrammer.spring.lemon.security.UserDto;
 import com.naturalprogrammer.spring.lemon.util.LemonUtils;
 
 /**
- * The Lemon API. See the <a href="https://github.com/naturalprogrammer/spring-lemon#documentation-and-resources">API documentation</a> for details.
+ * The Lemon API. See the
+ * <a href="https://github.com/naturalprogrammer/spring-lemon#documentation-and-resources">
+ * API documentation</a> for details.
  * 
  * @author Sanjay Patel
- *
- * @param <U>	The User class
- * @param <ID>	The Primary key type of User class 
  */
 public abstract class LemonController
 	<U extends AbstractUser<U,ID>, ID extends Serializable> {
@@ -89,10 +88,8 @@ public abstract class LemonController
 	
 
 	/**
-	 * Signs up a user, and logs him in.
-     *
-	 * @param user	data fed by the user
-	 * @return data about the logged in user
+	 * Signs up a user, and
+	 * returns current-user data and an Authorization token as a response header.
 	 */
 	@PostMapping(value = "/users")
 	@ResponseStatus(HttpStatus.CREATED)
@@ -108,7 +105,7 @@ public abstract class LemonController
 	
 	
 	/**
-	 * Resends verification mail. 
+	 * Resends verification mail
 	 */
 	@PostMapping("/users/{id}/resend-verification-mail")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
@@ -121,7 +118,7 @@ public abstract class LemonController
 
 
 	/**
-	 * Verifies current-user.
+	 * Verifies current-user
 	 */
 	@PostMapping(value = "/users/{id}/verification")
 	public UserDto<ID> verifyUser(
@@ -137,7 +134,7 @@ public abstract class LemonController
 	
 
 	/**
-	 * The forgot Password feature.
+	 * The forgot Password feature
 	 */
 	@PostMapping("/forgot-password")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
@@ -149,8 +146,7 @@ public abstract class LemonController
 	
 
 	/**
-	 * Resets password after it is forgotten.
-	 * @return 
+	 * Resets password after it is forgotten
 	 */
 	@PostMapping("/reset-password")
 	public UserDto<ID> resetPassword(
@@ -166,7 +162,7 @@ public abstract class LemonController
 
 
 	/**
-	 * Fetches a user by email.
+	 * Fetches a user by email
 	 */
 	@PostMapping(value = "/users/fetch-by-email")
 	public U fetchUserByEmail(@RequestParam String email) {
@@ -177,7 +173,7 @@ public abstract class LemonController
 
 	
 	/**
-	 * Fetches a user by Id.
+	 * Fetches a user by ID
 	 */	
 	@GetMapping(value = "/users/{id}")
 	public U fetchUserById(@PathVariable("id") U user) {
@@ -188,10 +184,7 @@ public abstract class LemonController
 
 	
 	/**
-	 * Updates a user.
-	 * @throws JsonPatchException 
-	 * @throws IOException 
-	 * @throws JsonProcessingException 
+	 * Updates a user
 	 */
 	@PatchMapping(value = "/users/{id}")
 	public UserDto<ID> updateUser(
@@ -216,7 +209,7 @@ public abstract class LemonController
 	
 	
 	/**
-	 * Changes password.
+	 * Changes password
 	 */
 	@PostMapping("/users/{id}/password")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
@@ -232,7 +225,7 @@ public abstract class LemonController
 
 
 	/**
-	 * Requests for changing email.
+	 * Requests for changing email
 	 */
 	@PostMapping("/users/{id}/email-change-request")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
@@ -245,8 +238,7 @@ public abstract class LemonController
 
 
 	/**
-	 * Changes the email.
-	 * @return 
+	 * Changes the email
 	 */
 	@PostMapping("/users/{userId}/email")
 	public UserDto<ID> changeEmail(
@@ -261,31 +253,9 @@ public abstract class LemonController
 		return userWithToken(response);		
 	}
 
-	
-//	/**
-//	 * Login with nonce - used after a user social logs in
-//	 */
-//	@PostMapping("/login-with-nonce")
-//	public UserDto<ID> loginWithNonce(@RequestBody NonceForm<ID> nonce, HttpServletResponse response) {
-//		
-//		log.debug("Logging in user in exchange of nonce ... ");
-//		lemonService.loginWithNonce(nonce, response);
-//		
-//		UserDto<ID> springUser = LemonUtils.getSpringUser();
-//		
-//		if (nonce.getExpirationMillis() == null)
-//			nonce.setExpirationMillis(jwtExpirationMillis);
-//		
-//		jwtService.addAuthHeader(response,
-//				springUser.getUsername(),
-//				nonce.getExpirationMillis());
-//
-//		return springUser;
-//	}
-//	
+
 	/**
 	 * Fetch a new token - for session sliding, switch user etc.
-	 * @return 
 	 */
 	@PostMapping("/fetch-new-auth-token")
 	public Map<String, String> fetchNewToken(
@@ -297,6 +267,10 @@ public abstract class LemonController
 		return LemonUtils.mapOf("token", lemonService.fetchNewToken(expirationMillis, username));
 	}
 
+
+	/**
+	 * returns the current user and a new authorization token in the response
+	 */
 	protected UserDto<ID> userWithToken(HttpServletResponse response) {
 		
 		UserDto<ID> currentUser = LemonUtils.currentUser();

@@ -29,12 +29,12 @@ import com.nimbusds.jwt.proc.ConfigurableJWTProcessor;
 import com.nimbusds.jwt.proc.DefaultJWTProcessor;
 
 /**
+ * JWT Service
+ * 
  * References:
  * 
  * https://connect2id.com/products/nimbus-jose-jwt/examples/jwe-with-shared-key
  * https://connect2id.com/products/nimbus-jose-jwt/examples/validating-jwt-access-tokens
- * 
- * @author Sanjay
  */
 public class JwtService {
 	
@@ -64,6 +64,9 @@ public class JwtService {
 		jwtProcessor.setJWEKeySelector(jweKeySelector);
 	}
 
+	/**
+	 * Creates a token
+	 */
 	public String createToken(String aud, String subject, Long expirationMillis, Map<String, Object> claimMap) {
 		
 		JWTClaimsSet.Builder builder = new JWTClaimsSet.Builder();
@@ -98,12 +101,17 @@ public class JwtService {
     	return jweObject.serialize();
 	}
 
-
+	/**
+	 * Creates a token
+	 */
 	public String createToken(String audience, String subject, Long expirationMillis) {
 
 		return createToken(audience, subject, expirationMillis, new HashMap<>());
 	}
 
+	/**
+	 * Parses a token
+	 */
 	public JWTClaimsSet parseToken(String token, String audience) {
 
 		try {
@@ -124,6 +132,9 @@ public class JwtService {
 		}
 	}
 	
+	/**
+	 * Parses a token
+	 */
 	public JWTClaimsSet parseToken(String token, String audience, long issuedAfter) {
 		
 		JWTClaimsSet claims = parseToken(token, audience);
@@ -135,6 +146,9 @@ public class JwtService {
 		return claims;
 	}	
 	
+	/**
+	 * Adds a Lemon-Authorization header to the response
+	 */
 	public void addAuthHeader(HttpServletResponse response, String username, Long expirationMillis) {
 	
 		response.addHeader(LemonSecurityConfig.TOKEN_RESPONSE_HEADER_NAME,

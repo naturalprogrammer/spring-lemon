@@ -49,10 +49,9 @@ import com.naturalprogrammer.spring.lemon.validation.FieldError;
 import com.nimbusds.jwt.JWTClaimsSet;
 
 /**
- * Useful static methods
+ * Useful helper methods
  * 
  * @author Sanjay Patel
- *
  */
 @Component
 public class LemonUtils {
@@ -190,14 +189,6 @@ public class LemonUtils {
 	    SecurityContextHolder.getContext().setAuthentication(authentication); // put that in the security context
 	    principal.eraseCredentials();
 	}
-	
-//
-//	/**
-//	 * Signs a user out
-//	 */
-//	public static void logOut() {
-//		SecurityContextHolder.getContext().setAuthentication(null); // set the authentication to null
-//	}
 
 
 	/**
@@ -214,12 +205,24 @@ public class LemonUtils {
 			throw new VersionException(original.getClass().getSimpleName());
 	}
 	
+	/**
+	 * Throws BadCredentialsException if not valid
+	 * 
+	 * @param valid
+	 * @param messageKey
+	 */
 	public static void ensureCredentials(boolean valid, String messageKey) {
 		
 		if (!valid)
 			throw new BadCredentialsException(getMessage(messageKey));
 	}
 
+	/**
+	 * Throws AccessDeniedException is not authorized
+	 * 
+	 * @param authorized
+	 * @param messageKey
+	 */
 	public static void ensureAuthority(boolean authorized, String messageKey) {
 		
 		if (!authorized)
@@ -254,17 +257,28 @@ public class LemonUtils {
 		return new MultiErrorException().validate(fieldName, valid, messageKey, args);
 	}
 
+	
+	/**
+	 * Throws 404 Error is the entity isn't found
+	 * 
+	 * @param entity
+	 */
 	public static <T> void ensureFound(T entity) {
 		
 		LemonUtils.validate("id", entity != null,
 				"com.naturalprogrammer.spring.notFound")
 				.httpStatus(HttpStatus.NOT_FOUND).go();
 	}
+
 	
+	/**
+	 * Supplys a 404 exception
+	 */
 	public static Supplier<MultiErrorException> notFoundSupplier() {
 		
 		return () -> NOT_FOUND_EXCEPTION;
 	}	
+
 	
 	/**
 	 * A convenient method for running code
@@ -284,12 +298,19 @@ public class LemonUtils {
 		});				
 	}
 
+	
+	/**
+	 * Generates a random unique string
+	 */
 	public static String uid() {
 		
 		return UUID.randomUUID().toString();
 	}
 	
 	
+	/**
+	 * Applies a JsonPatch to an object
+	 */
     @SuppressWarnings("unchecked")
 	public static <T> T applyPatch(T originalObj, String patchString)
 			throws JsonProcessingException, IOException, JsonPatchException {
@@ -309,18 +330,31 @@ public class LemonUtils {
         // Convert the patched node to an updated obj
         return objectMapper.treeToValue(patchedObjNode, (Class<T>) originalObj.getClass());
     }
+
     
+    /**
+     * Serializes an object to JSON string
+     */
 	public static <T> String toJson(T obj) throws JsonProcessingException {
 
 		return objectMapper.writeValueAsString(obj);
 	}
 	
+	
+	/**
+	 * Deserializes a JSON String
+	 */
 	public static <T> T fromJson(String json, Class<T> clazz)
 			throws JsonParseException, JsonMappingException, IOException {
 
 		return objectMapper.readValue(json, clazz);
 	}
 
+	
+	/**
+	 * Throws BadCredentialsException if 
+	 * user's credentials were updated after the JWT was issued
+	 */
 	public static <U extends AbstractUser<U,ID>, ID extends Serializable>
 	void ensureCredentialsUpToDate(JWTClaimsSet claims, U user) {
 		
@@ -330,6 +364,10 @@ public class LemonUtils {
 				"com.naturalprogrammer.spring.obsoleteToken");
 	}
 	
+	
+	/**
+	 * Reads a resource into a String
+	 */
 	public static String toString(Resource resource) throws IOException {
 		
 		String text = null;
@@ -339,7 +377,11 @@ public class LemonUtils {
 	    
 	    return text;
 	}
+
 	
+	/**
+	 * Fetches a cookie from the request
+	 */
 	public static Optional<Cookie> fetchCookie(HttpServletRequest request, String name) {
 		
 		Cookie[] cookies = request.getCookies();

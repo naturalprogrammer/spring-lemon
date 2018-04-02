@@ -1,5 +1,9 @@
 package com.naturalprogrammer.spring.lemon.mail;
 
+/**
+ * Data needed for sending a mail.
+ * Override this if you need more data to be sent.
+ */
 public class LemonMailData {
 	
 	private String to;

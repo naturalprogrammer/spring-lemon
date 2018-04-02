@@ -7,6 +7,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 
+/**
+ * JWT Authentication token
+ */
 public class JwtAuthenticationToken extends AbstractAuthenticationToken {
 
 	private static final long serialVersionUID = 7032335279756013130L;

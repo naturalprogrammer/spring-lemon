@@ -9,6 +9,9 @@ import org.springframework.http.HttpStatus;
 import com.naturalprogrammer.spring.lemon.exceptions.ErrorResponse;
 import com.naturalprogrammer.spring.lemon.validation.FieldError;
 
+/**
+ * Extend this to code an exception handler
+ */
 public abstract class AbstractExceptionHandler<T extends Throwable> {
 	
 	protected final Log log = LogFactory.getLog(this.getClass());

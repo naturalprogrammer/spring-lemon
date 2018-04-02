@@ -16,6 +16,9 @@ import com.naturalprogrammer.spring.lemon.LemonService;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
 import com.naturalprogrammer.spring.lemon.util.LemonUtils;
 
+/**
+ * Logs in or registers a user after OAuth2 SignIn/Up
+ */
 public class LemonOAuth2UserService<U extends AbstractUser<U,ID>, ID extends Serializable> extends DefaultOAuth2UserService {
 
 	private static final Log log = LogFactory.getLog(LemonOAuth2UserService.class);
@@ -43,6 +46,10 @@ public class LemonOAuth2UserService<U extends AbstractUser<U,ID>, ID extends Ser
 		return buildPrincipal(oath2User, userRequest.getClientRegistration().getRegistrationId());
 	}
 
+	/**
+	 * Builds the security principal from the given userReqest.
+	 * Registers the user if not already reqistered
+	 */
 	public LemonPrincipal<ID> buildPrincipal(OAuth2User oath2User, String registrationId) {
 		
 		Map<String, Object> attributes = oath2User.getAttributes();
@@ -75,12 +82,7 @@ public class LemonOAuth2UserService<U extends AbstractUser<U,ID>, ID extends Ser
 			return newUser;
     	});
     	
-    	//user.setNonce(LemonUtils.uid());
-    	//lemonService.save(user);
-    	
     	UserDto<ID> userDto = user.toUserDto();
-    	//springUser.setNonce(user.getNonce());
-    	
 		LemonPrincipal<ID> principal = new LemonPrincipal<>(userDto);
 		principal.setAttributes(attributes);
 		principal.setName(oath2User.getName());

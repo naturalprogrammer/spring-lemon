@@ -12,6 +12,9 @@ import org.springframework.core.annotation.AnnotationAwareOrderComparator;
 
 import com.naturalprogrammer.spring.lemon.exceptions.handlers.AbstractExceptionHandler;
 
+/**
+ * Given an exception, builds a response.
+ */
 public class ErrorResponseComposer<T extends Throwable> {
 	
     private static final Log log = LogFactory.getLog(LemonErrorAttributes.class);
@@ -32,7 +35,10 @@ public class ErrorResponseComposer<T extends Throwable> {
 		log.info("Created");
 	}
 
-	
+	/**
+	 * Given an exception, finds a handler for 
+	 * building the response and uses that to build and return the response
+	 */
 	public Optional<ErrorResponse> compose(T ex) {
 
 		AbstractExceptionHandler<T> handler = null;

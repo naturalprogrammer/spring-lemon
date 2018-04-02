@@ -18,8 +18,7 @@ import com.naturalprogrammer.spring.lemon.util.LemonUtils;
 
 /**
  * Authentication success handler for sending the response
- * to the client after successful authentication. This would replace
- * the default handler of Spring Security
+ * to the client after successful authentication.
  * 
  * @author Sanjay Patel
  */
