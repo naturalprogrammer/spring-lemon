@@ -18,7 +18,7 @@ public class LemonPrincipal<ID extends Serializable> implements OidcUser, UserDe
 
 	private static final long serialVersionUID = -7849730155307434535L;
 	
-	private SpringUser<ID> springUser;
+	private UserDto<ID> userDto;
 	
 	private Map<String, Object> attributes;
 	private String name;
@@ -26,31 +26,31 @@ public class LemonPrincipal<ID extends Serializable> implements OidcUser, UserDe
 	private OidcUserInfo userInfo;
 	private OidcIdToken idToken;
 	
-	public LemonPrincipal(SpringUser<ID> springUser) {
+	public LemonPrincipal(UserDto<ID> userDto) {
 
-		this.springUser = springUser;
+		this.userDto = userDto;
 	}
 
-	public SpringUser<ID> getSpringUser() {
-		return springUser;
+	public UserDto<ID> currentUser() {
+		return userDto;
 	}
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 
-		Set<String> roles = springUser.getRoles();
+		Set<String> roles = userDto.getRoles();
 		
 		Collection<LemonGrantedAuthority> authorities = roles.stream()
 				.map(role -> new LemonGrantedAuthority("ROLE_" + role))
 				.collect(Collectors.toCollection(() ->
 					new ArrayList<LemonGrantedAuthority>(roles.size() + 2))); 
 		
-		if (springUser.isGoodUser()) {
+		if (userDto.isGoodUser()) {
 			
 			authorities.add(new LemonGrantedAuthority("ROLE_"
 					+ LemonSecurityConfig.GOOD_USER));
 			
-			if (springUser.isGoodAdmin())
+			if (userDto.isGoodAdmin())
 				authorities.add(new LemonGrantedAuthority("ROLE_"
 					+ LemonSecurityConfig.GOOD_ADMIN));
 		}
@@ -93,13 +93,13 @@ public class LemonPrincipal<ID extends Serializable> implements OidcUser, UserDe
 	@Override
 	public String getPassword() {
 
-		return springUser.getPassword();
+		return userDto.getPassword();
 	}
 
 	@Override
 	public String getUsername() {
 
-		return springUser.getUsername();
+		return userDto.getUsername();
 	}
 
 	@Override
@@ -129,7 +129,7 @@ public class LemonPrincipal<ID extends Serializable> implements OidcUser, UserDe
 	@Override
 	public void eraseCredentials() {
 		
-		springUser.setPassword(null);
+		userDto.setPassword(null);
 		attributes = null;
 		claims = null;
 		userInfo = null;

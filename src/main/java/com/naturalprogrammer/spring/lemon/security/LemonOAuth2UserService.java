@@ -78,10 +78,10 @@ public class LemonOAuth2UserService<U extends AbstractUser<U,ID>, ID extends Ser
     	//user.setNonce(LemonUtils.uid());
     	//lemonService.save(user);
     	
-    	SpringUser<ID> springUser = user.toSpringUser();
+    	UserDto<ID> userDto = user.toUserDto();
     	//springUser.setNonce(user.getNonce());
     	
-		LemonPrincipal<ID> principal = new LemonPrincipal<>(springUser);
+		LemonPrincipal<ID> principal = new LemonPrincipal<>(userDto);
 		principal.setAttributes(attributes);
 		principal.setName(oath2User.getName());
 		

@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-public class SpringUser<ID extends Serializable> {
+public class UserDto<ID extends Serializable> {
 
 	private ID id;
 	private String username;

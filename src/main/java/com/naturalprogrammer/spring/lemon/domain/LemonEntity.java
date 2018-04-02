@@ -7,7 +7,7 @@ import javax.persistence.MappedSuperclass;
 import org.springframework.data.jpa.domain.AbstractAuditable;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.naturalprogrammer.spring.lemon.security.SpringUser;
+import com.naturalprogrammer.spring.lemon.security.UserDto;
 
 /**
  * Base class for all entities.
@@ -27,7 +27,7 @@ public class LemonEntity<U extends AbstractUser<U,ID>, ID extends Serializable> 
 	 * Whether the given user has the given permission for
 	 * this entity. Override this method where you need.
 	 */
-	public boolean hasPermission(SpringUser<?> user, String permission) {
+	public boolean hasPermission(UserDto<?> user, String permission) {
 		return false;
 	}
 	

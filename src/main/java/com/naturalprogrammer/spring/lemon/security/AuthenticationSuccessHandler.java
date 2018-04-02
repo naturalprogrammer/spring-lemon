@@ -58,7 +58,7 @@ public class AuthenticationSuccessHandler
     			defaultExpirationMillis : Long.valueOf(expirationMillisStr);
  
     	// get the current-user
-    	SpringUser<?> currentUser = LemonUtils.getSpringUser();
+    	UserDto<?> currentUser = LemonUtils.currentUser();
 
     	jwtService.addAuthHeader(response, currentUser.getUsername(), expirationMillis);
     	

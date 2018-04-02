@@ -7,7 +7,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.data.domain.AuditorAware;
 
-import com.naturalprogrammer.spring.lemon.security.SpringUser;
+import com.naturalprogrammer.spring.lemon.security.UserDto;
 import com.naturalprogrammer.spring.lemon.util.LemonUtils;
 
 /**
@@ -37,11 +37,11 @@ implements AuditorAware<U> {
 	@Override
 	public Optional<U> getCurrentAuditor() {
 		
-		SpringUser<ID> springUser = LemonUtils.getSpringUser();
+		UserDto<ID> currentUser = LemonUtils.currentUser();
 		
-		if (springUser == null)
+		if (currentUser == null)
 			return Optional.empty();
 		
-		return userRepository.findById(springUser.getId());
+		return userRepository.findById(currentUser.getId());
 	}	
 }

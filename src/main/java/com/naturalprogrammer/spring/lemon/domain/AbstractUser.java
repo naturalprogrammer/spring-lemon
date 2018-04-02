@@ -17,7 +17,7 @@ import org.apache.commons.logging.LogFactory;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
-import com.naturalprogrammer.spring.lemon.security.SpringUser;
+import com.naturalprogrammer.spring.lemon.security.UserDto;
 import com.naturalprogrammer.spring.lemon.util.LemonUtils;
 import com.naturalprogrammer.spring.lemon.validation.Captcha;
 import com.naturalprogrammer.spring.lemon.validation.Password;
@@ -202,7 +202,7 @@ extends VersionedEntity<U, ID> {
 		//verificationCode = null;
 		//forgotPasswordCode = null;
 		
-		if (!hasPermission(LemonUtils.getSpringUser(), Permission.EDIT))
+		if (!hasPermission(LemonUtils.currentUser(), Permission.EDIT))
 			email = null;
 		
 		log.debug("Hid confidential fields for user: " + this);
@@ -230,7 +230,7 @@ extends VersionedEntity<U, ID> {
 	 * on this entity. 
 	 */
 	@Override
-	public boolean hasPermission(SpringUser<?> currentUser, String permission) {
+	public boolean hasPermission(UserDto<?> currentUser, String permission) {
 		
 		log.debug("Computing " + permission	+ " permission for : " + this
 			+ "\n  Logged in user: " + currentUser);
@@ -263,15 +263,15 @@ extends VersionedEntity<U, ID> {
 	 * 
 	 * @return
 	 */
-	public SpringUser<ID> toSpringUser() {
+	public UserDto<ID> toUserDto() {
 		
-		SpringUser<ID> springUser = new SpringUser<>();
+		UserDto<ID> userDto = new UserDto<>();
 		
-		springUser.setId(getId());
-		springUser.setUsername(email);
-		springUser.setPassword(password);
-		springUser.setRoles(roles);
-		springUser.setTag(toTag());
+		userDto.setId(getId());
+		userDto.setUsername(email);
+		userDto.setPassword(password);
+		userDto.setRoles(roles);
+		userDto.setTag(toTag());
 		
 		boolean unverified = hasRole(Role.UNVERIFIED);
 		boolean blocked = hasRole(Role.BLOCKED);
@@ -279,13 +279,13 @@ extends VersionedEntity<U, ID> {
 		boolean goodUser = !(unverified || blocked);
 		boolean goodAdmin = goodUser && admin;
 
-		springUser.setAdmin(admin);
-		springUser.setBlocked(blocked);
-		springUser.setGoodAdmin(goodAdmin);
-		springUser.setGoodUser(goodUser);
-		springUser.setUnverified(unverified);
+		userDto.setAdmin(admin);
+		userDto.setBlocked(blocked);
+		userDto.setGoodAdmin(goodAdmin);
+		userDto.setGoodUser(goodUser);
+		userDto.setUnverified(unverified);
 		
-		return springUser;
+		return userDto;
 	}
 
 	protected Serializable toTag() {

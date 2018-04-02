@@ -49,7 +49,7 @@ implements UserDetailsService {
 
 		log.debug("Loaded user having username: " + username);
 
-		return new LemonPrincipal<>(user.toSpringUser());
+		return new LemonPrincipal<>(user.toUserDto());
 	}
 
 	/**

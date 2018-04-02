@@ -39,11 +39,11 @@ public class OAuth2AuthenticationSuccessHandler<ID extends Serializable>
 	protected String determineTargetUrl(HttpServletRequest request,
 			HttpServletResponse response) {
 		
-		SpringUser<ID> springUser = LemonUtils.getSpringUser();
+		UserDto<ID> currentUser = LemonUtils.currentUser();
 		
 		String shortLivedAuthToken = jwtService.createToken(
 				JwtService.AUTH_AUDIENCE,
-				springUser.getUsername(),
+				currentUser.getUsername(),
 				(long) properties.getJwt().getShortLivedMillis());
 
 		String targetUrl = LemonUtils.fetchCookie(request,

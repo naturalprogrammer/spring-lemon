@@ -26,7 +26,7 @@ import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser.SignupInput;
 import com.naturalprogrammer.spring.lemon.domain.ChangePasswordForm;
 import com.naturalprogrammer.spring.lemon.security.JwtService;
-import com.naturalprogrammer.spring.lemon.security.SpringUser;
+import com.naturalprogrammer.spring.lemon.security.UserDto;
 import com.naturalprogrammer.spring.lemon.util.LemonUtils;
 
 /**
@@ -96,14 +96,14 @@ public abstract class LemonController
 	 */
 	@PostMapping(value = "/users")
 	@ResponseStatus(HttpStatus.CREATED)
-	public SpringUser<ID> signup(@RequestBody @JsonView(SignupInput.class) U user,
+	public UserDto<ID> signup(@RequestBody @JsonView(SignupInput.class) U user,
 			HttpServletResponse response) {
 		
 		log.debug("Signing up: " + user);
 		lemonService.signup(user);
 		log.debug("Signed up: " + user);
 
-		return springUserWithToken(response);
+		return userWithToken(response);
 	}
 	
 	
@@ -124,7 +124,7 @@ public abstract class LemonController
 	 * Verifies current-user.
 	 */
 	@PostMapping(value = "/users/{id}/verification")
-	public SpringUser<ID> verifyUser(
+	public UserDto<ID> verifyUser(
 			@PathVariable ID id,
 			@RequestParam String code,
 			HttpServletResponse response) {
@@ -132,7 +132,7 @@ public abstract class LemonController
 		log.debug("Verifying user ...");		
 		lemonService.verifyUser(id, code);
 		
-		return springUserWithToken(response);
+		return userWithToken(response);
 	}
 	
 
@@ -153,7 +153,7 @@ public abstract class LemonController
 	 * @return 
 	 */
 	@PostMapping("/reset-password")
-	public SpringUser<ID> resetPassword(
+	public UserDto<ID> resetPassword(
 			@RequestParam String code,
 		    @RequestParam String newPassword,
 			HttpServletResponse response) {
@@ -161,7 +161,7 @@ public abstract class LemonController
 		log.debug("Resetting password ... ");				
 		lemonService.resetPassword(code, newPassword);
 		
-		return springUserWithToken(response);
+		return userWithToken(response);
 	}
 
 
@@ -194,7 +194,7 @@ public abstract class LemonController
 	 * @throws JsonProcessingException 
 	 */
 	@PatchMapping(value = "/users/{id}")
-	public SpringUser<ID> updateUser(
+	public UserDto<ID> updateUser(
 			@PathVariable("id") U user,
 			@RequestBody String patch,
 			HttpServletResponse response)
@@ -205,13 +205,13 @@ public abstract class LemonController
 		// ensure that the user exists
 		LemonUtils.ensureFound(user);
 		U updatedUser = LemonUtils.applyPatch(user, patch); // create a patched form
-		SpringUser<ID> springUser = lemonService.updateUser(user, updatedUser);
+		UserDto<ID> userDto = lemonService.updateUser(user, updatedUser);
 		
 		// Send a new token for logged in user in the response
-		springUserWithToken(response);
+		userWithToken(response);
 		
 		// Send updated user data in the response
-		return springUser;
+		return userDto;
 	}
 	
 	
@@ -249,7 +249,7 @@ public abstract class LemonController
 	 * @return 
 	 */
 	@PostMapping("/users/{userId}/email")
-	public SpringUser<ID> changeEmail(
+	public UserDto<ID> changeEmail(
 			@PathVariable ID userId,
 			@RequestParam String code,
 			HttpServletResponse response) {
@@ -258,7 +258,7 @@ public abstract class LemonController
 		lemonService.changeEmail(userId, code);
 		
 		// return the currently logged in user with new email
-		return springUserWithToken(response);		
+		return userWithToken(response);		
 	}
 
 	
@@ -266,12 +266,12 @@ public abstract class LemonController
 //	 * Login with nonce - used after a user social logs in
 //	 */
 //	@PostMapping("/login-with-nonce")
-//	public SpringUser<ID> loginWithNonce(@RequestBody NonceForm<ID> nonce, HttpServletResponse response) {
+//	public UserDto<ID> loginWithNonce(@RequestBody NonceForm<ID> nonce, HttpServletResponse response) {
 //		
 //		log.debug("Logging in user in exchange of nonce ... ");
 //		lemonService.loginWithNonce(nonce, response);
 //		
-//		SpringUser<ID> springUser = LemonUtils.getSpringUser();
+//		UserDto<ID> springUser = LemonUtils.getSpringUser();
 //		
 //		if (nonce.getExpirationMillis() == null)
 //			nonce.setExpirationMillis(jwtExpirationMillis);
@@ -297,10 +297,10 @@ public abstract class LemonController
 		return LemonUtils.mapOf("token", lemonService.fetchNewToken(expirationMillis, username));
 	}
 
-	protected SpringUser<ID> springUserWithToken(HttpServletResponse response) {
+	protected UserDto<ID> userWithToken(HttpServletResponse response) {
 		
-		SpringUser<ID> springUser = LemonUtils.getSpringUser();
-		jwtService.addAuthHeader(response, springUser.getUsername(), jwtExpirationMillis);
-		return springUser;
+		UserDto<ID> currentUser = LemonUtils.currentUser();
+		jwtService.addAuthHeader(response, currentUser.getUsername(), jwtExpirationMillis);
+		return currentUser;
 	}
 }

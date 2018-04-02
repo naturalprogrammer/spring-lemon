@@ -44,7 +44,7 @@ import com.naturalprogrammer.spring.lemon.exceptions.MultiErrorException;
 import com.naturalprogrammer.spring.lemon.exceptions.VersionException;
 import com.naturalprogrammer.spring.lemon.security.JwtService;
 import com.naturalprogrammer.spring.lemon.security.LemonPrincipal;
-import com.naturalprogrammer.spring.lemon.security.SpringUser;
+import com.naturalprogrammer.spring.lemon.security.UserDto;
 import com.naturalprogrammer.spring.lemon.validation.FieldError;
 import com.nimbusds.jwt.JWTClaimsSet;
 
@@ -145,14 +145,14 @@ public class LemonUtils {
 	/**
 	 * Gets the current-user
 	 */
-	public static <ID extends Serializable> SpringUser<ID> getSpringUser() {
+	public static <ID extends Serializable> UserDto<ID> currentUser() {
 		
 		// get the authentication object
 		Authentication auth = SecurityContextHolder
 			.getContext().getAuthentication();
 		
 		// get the user from the authentication object
-		return getSpringUser(auth);
+		return currentUser(auth);
 	}
 	
 
@@ -162,12 +162,12 @@ public class LemonUtils {
 	 * @param auth
 	 * @return
 	 */
-	public static <ID extends Serializable> SpringUser<ID> getSpringUser(Authentication auth) {
+	public static <ID extends Serializable> UserDto<ID> currentUser(Authentication auth) {
 		
 	    if (auth != null) {
 	      Object principal = auth.getPrincipal();
 	      if (principal instanceof LemonPrincipal<?>) {
-	        return ((LemonPrincipal<ID>) principal).getSpringUser();
+	        return ((LemonPrincipal<ID>) principal).currentUser();
 	      }
 	    }
 	    return null;	  
@@ -182,7 +182,7 @@ public class LemonUtils {
 	public static <U extends AbstractUser<U,ID>, ID extends Serializable>
 	void login(U user) {
 		
-		LemonPrincipal<ID> principal = new LemonPrincipal<>(user.toSpringUser());
+		LemonPrincipal<ID> principal = new LemonPrincipal<>(user.toUserDto());
 
 		Authentication authentication = // make the authentication object
 	    	new UsernamePasswordAuthenticationToken(principal, null, principal.getAuthorities());

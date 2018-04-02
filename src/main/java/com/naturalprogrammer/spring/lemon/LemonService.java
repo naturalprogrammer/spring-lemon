@@ -37,7 +37,7 @@ import com.naturalprogrammer.spring.lemon.mail.MailSender;
 import com.naturalprogrammer.spring.lemon.permissions.UserEditPermission;
 import com.naturalprogrammer.spring.lemon.security.JwtService;
 import com.naturalprogrammer.spring.lemon.security.LemonSecurityConfig;
-import com.naturalprogrammer.spring.lemon.security.SpringUser;
+import com.naturalprogrammer.spring.lemon.security.UserDto;
 import com.naturalprogrammer.spring.lemon.util.LemonUtils;
 import com.naturalprogrammer.spring.lemon.validation.Password;
 import com.nimbusds.jwt.JWTClaimsSet;
@@ -179,14 +179,14 @@ public abstract class LemonService
 		sharedProperties.put("reCaptchaSiteKey", properties.getRecaptcha().getSitekey());
 		sharedProperties.put("shared", properties.getShared());
 		
-		SpringUser<ID> springUser = LemonUtils.getSpringUser();
-		if (springUser != null)
-			jwtService.addAuthHeader(response, springUser.getUsername(),
+		UserDto<ID> currentUser = LemonUtils.currentUser();
+		if (currentUser != null)
+			jwtService.addAuthHeader(response, currentUser.getUsername(),
 					expirationMillis.orElse(properties.getJwt().getExpirationMillis()));
 		
 		return LemonUtils.mapOf(
 				"context", sharedProperties,
-				"user", LemonUtils.getSpringUser());	
+				"user", LemonUtils.currentUser());	
 	}
 	
 	
@@ -515,7 +515,7 @@ public abstract class LemonService
 	@UserEditPermission
 	@Validated(AbstractUser.UpdateValidation.class)
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
-	public SpringUser<ID> updateUser(U user, @Valid U updatedUser) {
+	public UserDto<ID> updateUser(U user, @Valid U updatedUser) {
 		
 		log.debug("Updating user: " + user);
 
@@ -523,14 +523,14 @@ public abstract class LemonService
 		LemonUtils.ensureCorrectVersion(user, updatedUser);
 
 		// delegates to updateUserFields
-		updateUserFields(user, updatedUser, LemonUtils.getSpringUser());
+		updateUserFields(user, updatedUser, LemonUtils.currentUser());
 		userRepository.save(user);
 		
 		log.debug("Updated user: " + user);
 		
-		SpringUser<ID> springUser = user.toSpringUser();
-		springUser.setPassword(null);
-		return springUser;
+		UserDto<ID> userDto = user.toUserDto();
+		userDto.setPassword(null);
+		return userDto;
 	}
 	
 	
@@ -547,8 +547,8 @@ public abstract class LemonService
 		log.debug("Changing password for user: " + user);
 		
 		// Get the old password of the logged in user (logged in user may be an ADMIN)
-		SpringUser<ID> springUser = LemonUtils.getSpringUser();
-		U loggedIn = userRepository.findById(springUser.getId()).get();
+		UserDto<ID> currentUser = LemonUtils.currentUser();
+		U loggedIn = userRepository.findById(currentUser.getId()).get();
 		String oldPassword = loggedIn.getPassword();
 
 		// checks
@@ -566,7 +566,7 @@ public abstract class LemonService
 //		// after successful commit
 //		LemonUtils.afterCommit(() -> {
 //
-//			SpringUser<ID> currentUser = LemonUtils.getSpringUser();
+//			UserDto<ID> currentUser = LemonUtils.getSpringUser();
 //			
 ////			if (currentUser.getId().equals(user.getId())) { // if current-user's password changed,
 ////				
@@ -576,7 +576,7 @@ public abstract class LemonService
 //		});
 //		
 		log.debug("Changed password for user: " + user);
-		return user.toSpringUser().getUsername();
+		return user.toUserDto().getUsername();
 	}
 
 
@@ -587,7 +587,7 @@ public abstract class LemonService
 	 * @param updatedUser
 	 * @param currentUser
 	 */
-	protected void updateUserFields(U user, U updatedUser, SpringUser<ID> currentUser) {
+	protected void updateUserFields(U user, U updatedUser, UserDto<ID> currentUser) {
 
 		log.debug("Updating user fields for user: " + user);
 
@@ -713,7 +713,7 @@ public abstract class LemonService
 		log.debug("Changing email of current user ...");
 
 		// fetch the current-user
-		SpringUser<ID> currentUser = LemonUtils.getSpringUser();
+		UserDto<ID> currentUser = LemonUtils.currentUser();
 		
 		LemonUtils.validate(userId.equals(currentUser.getId()),
 			"com.naturalprogrammer.spring.wrong.login").go();
@@ -812,11 +812,11 @@ public abstract class LemonService
 	public String fetchNewToken(Optional<Long> expirationMillis,
 			Optional<String> optionalUsername) {
 		
-		SpringUser<ID> springUser = LemonUtils.getSpringUser();
-		String username = optionalUsername.orElse(springUser.getUsername());
+		UserDto<ID> currentUser = LemonUtils.currentUser();
+		String username = optionalUsername.orElse(currentUser.getUsername());
 		
-		LemonUtils.ensureAuthority(springUser.getUsername().equals(username) ||
-				springUser.isGoodAdmin(), "com.naturalprogrammer.spring.notGoodAdminOrSameUser");
+		LemonUtils.ensureAuthority(currentUser.getUsername().equals(username) ||
+				currentUser.isGoodAdmin(), "com.naturalprogrammer.spring.notGoodAdminOrSameUser");
 		
 		return LemonSecurityConfig.TOKEN_PREFIX +
 				jwtService.createToken(JwtService.AUTH_AUDIENCE, username,
