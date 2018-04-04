@@ -4,15 +4,15 @@ If you are developing a real-world Spring REST API for your web or mobile client
 
 1. code token authentication, session sliding etc., for statelessness
 1. configure Spring Security to suit API development, e.g. returning 2xx or 4xx responses on login, configuring CORS, JSON vulnerability protection, etc.
-1. support multiple social sign up/in support, using OpenID Connect or OAuth2 providers such as Google and Facebook
 1. code components for handling validations and exceptions in a cross functional manner and sending precise errors to the client
+1. support multiple social sign up/in support, using OpenID Connect or OAuth2 providers such as Google and Facebook
 1. provide support for PATCH and JsonPatch to handle partial updates correctly
 
 You'll also need to code a robust user module with features like sign up (with captcha validation), sign in, verify email, social signup or in, update profile, forgot password, change password, change email, token authentication etc.
 
 Coding the above effectively needs in-depth knowledge of Spring. It also takes a lot of development time and effort, and needs to be properly maintained as new versions of Spring modules come out.
 
-To relieve you of this non-trivial job, we thought to bring out Spring Lemon, a tiny open source library holding all these common configuration and components, and a production grade user module with all the abovementioned features.
+To relieve you of this non-trivial job, we thought to bring out _Spring Lemon_, a tiny open source library holding all these common configuration and components, and a production grade user module with all the abovementioned features.
 
 Even if you don't plan to use Spring Lemon, it's a good example application to learn from, because it showcases the essential best practices for developing elegant Web Services using Spring.
 
