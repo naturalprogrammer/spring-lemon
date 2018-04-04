@@ -1,6 +1,6 @@
 # Spring Lemon
 
-If you are developing a real-world Spring REST API for your web or mobile clients or any consumer services, you'll first need to do tons of sophisticated configuration and coding. For example, you'll need to
+If you are developing a real-world Spring REST API (to be consumed by your web client, mobile clients, or other backend services), you'll need to do lots of sophisticated configuration and non-functional coding first. For example, you'll need to
 
 1. code token authentication, session sliding etc., for statelessness
 1. configure Spring Security to suit API development, e.g. returning 2xx or 4xx responses on login, configuring CORS, JSON vulnerability protection, etc.
