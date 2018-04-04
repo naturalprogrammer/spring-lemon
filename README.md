@@ -1,19 +1,20 @@
 # Spring Lemon
 
-Developing a robust REST web service using Spring first needs us to some sophisticated configuration and non-functional coding. For example, we'll need to code 
+If you are developing a real-world Spring REST API for your web or mobile clients or any consumer services, you'll first need to do tons of sophisticated configuration and coding. For example, you'll need to
 
-1.	code token authentication, session sliding etc., for making our API stateless
-1.	configure Spring Security to suit API development, e.g. returning 2xx or 4xx responses on login, configuring CORS, JSON vulnerability protection, etc.
-1.	multiple social sign on support, using OpenID Connect or OAuth2 providers such as Google and Facebook
-1.	components for handling validations and exceptions in a cross functional manner and sending precise errors to the client
+1. code token authentication, session sliding etc., for making the web service stateless
+1. configure Spring Security to suit API development, e.g. returning 2xx or 4xx responses on login, configuring CORS, JSON vulnerability protection, etc.
+1. support multiple social sign up/in support, using OpenID Connect or OAuth2 providers such as Google and Facebook
+1. code components for handling validations and exceptions in a cross functional manner and sending precise errors to the client
+1. provide support for PATCH and JsonPatch to handle partial updates correctly
 
-We'll also need to code a robust user module with features like sign up (with captcha validation), sign in, verify email, social signup or in, update profile, forgot password, change password, change email, token authentication etc.
+You'll also need to code a robust user module with features like sign up (with captcha validation), sign in, verify email, social signup or in, update profile, forgot password, change password, change email, token authentication etc.
 
 Coding the above effectively needs in-depth knowledge of Spring. It also takes a lot of development time and effort, and needs to be properly maintained as new versions of Spring modules come out.
 
-To relieve you of this non-trivial job, we thought to bring out Spring Lemon, a tiny open source library holding all these essential code and patterns, and a production grade user module with all the above features.
+To relieve you of this non-trivial job, we thought to bring out Spring Lemon, a tiny open source library holding all these common configuration and components, and a production grade user module with all the abovementioned features.
 
-Even if you don't plan to use Spring Lemon in production, it's a good example application to learn from if you plan to develop Spring REST Services, because it showcases many essential best practices.
+Even if you don't plan to use Spring Lemon, it's a good example application to learn from, because it showcases the essential best practices for developing elegant Web Services using Spring.
 
 Most Spring Boot applications can use Spring Lemon straight away, with some simple configurations. But, if you don't find it suitable for your application, feel free to fork it, or just roll out your own library by learning its patterns and practices. Better yet, be a contributor!
 
