@@ -3,8 +3,7 @@ package com.naturalprogrammer.spring.lemon.security;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.context.annotation.Bean;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -213,14 +212,12 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
         	.authenticationProvider(jwtAuthenticationProvider);
     }
 
-    
+
     /**
-     * Configures our TokenAuthenticationFilter
+     * Returns AuthenticationManager, to be used for configuring LemonTokenAuthenticationFilter
      */
-	@Bean
-	@ConditionalOnMissingBean(LemonTokenAuthenticationFilter.class)
-	public LemonTokenAuthenticationFilter lemonTokenAuthenticationFilter() throws Exception {
-		
-		return new LemonTokenAuthenticationFilter(super.authenticationManager());
-	}
+    public AuthenticationManager getAuthenticationManager() throws Exception {
+    	
+    	return super.authenticationManager();
+    }
 }
