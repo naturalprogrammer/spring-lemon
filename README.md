@@ -8,7 +8,7 @@ If you are developing a real-world Spring REST API (to be consumed by your web c
 1. support multiple social sign up/in support, using OpenID Connect or OAuth2 providers such as Google and Facebook
 1. provide support for PATCH and JsonPatch to handle partial updates correctly
 
-You'll also need to code a robust user module with features like sign up (with captcha validation), sign in, verify email, social signup or in, update profile, forgot password, change password, change email, token authentication etc.
+You'll also need to code a robust user module with features like _sign up_ (with _captcha validation_), _sign in_, _verify email_, _social sign up/in_, _update profile_, _forgot password_, _change password_, _change email_, _token authentication_ etc.
 
 Coding the above effectively needs in-depth knowledge of Spring. It also takes a lot of development time and effort, and needs to be properly maintained as new versions of Spring modules come out.
 
@@ -18,7 +18,7 @@ Even if you don't plan to use Spring Lemon, it's a good example application to l
 
 Most Spring Boot applications can use Spring Lemon straight away, with some simple configurations. But, if you don't find it suitable for your application, feel free to fork it, or just roll out your own library by learning its patterns and practices. Better yet, be a contributor!
 
-Read [this quick starter guide](https://github.com/naturalprogrammer/spring-lemon/wiki/Getting-Started-With-Spring-Lemon) or watch [this video tutorial](https://gum.co/IKqz) for getting started.
+Watch [this video tutorial](https://gum.co/IKqz) or read [this quick starter guide](https://github.com/naturalprogrammer/spring-lemon/wiki/Getting-Started-With-Spring-Lemon) for getting started.
 
 ## Documentation and Resources
 
@@ -28,7 +28,7 @@ Read [this quick starter guide](https://github.com/naturalprogrammer/spring-lemo
 1. _[API documentation](https://documenter.getpostman.com/view/305915/RVu2mqEH)_ of the above application.
 1. Spring Lemon [JavaDoc](https://naturalprogrammer.github.io/javadoc/spring-lemon/1.0.0.m2/)
 1. _[Example Angular 1.x front-end application](https://github.com/naturalprogrammer/lemon-demo-angular1)_ - A sample AngularJS 1.x front-end. It'll work both for the application developed in the above [getting started guide](https://documenter.getpostman.com/view/305915/lemondemo/RVnPL46k) as well as the [Lemon Demo application](https://github.com/naturalprogrammer/lemon-demo). 
-1. _Mastering Real-World RESTful Web Services Development With Spring_ - Ultimate video tutorial discussing Spring Lemon code and features in minute details. Go through it to master REST API development using Spring, whether you use Spring Lemon or not. Supposed to be released soon -- but [pre-order now](https://gum.co/NPFm/associate) to get it only for USD <s>297</s> 97 (plus taxes as applicable)!
+1. _[Mastering Real-World RESTful Web Services Development With Spring](https://gum.co/NPFm/associate)_ - Ultimate video tutorial discussing Spring Lemon code and features in minute details. Go through it to master REST API development using Spring, whether you use Spring Lemon or not. Supposed to be released soon -- but [pre-order now](https://gum.co/NPFm/associate) to get it only for USD <s>297</s> 97 (plus taxes as applicable)!
 
 ## Help and Support
 1. Community help is available at [stackoverflow.com](http://stackoverflow.com/questions/tagged/spring-lemon), under the `spring-lemon` tag. Do not miss to tag the questions with `spring-lemon`!
