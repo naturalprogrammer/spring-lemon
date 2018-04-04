@@ -2,7 +2,7 @@
 
 If you are developing a real-world Spring REST API for your web or mobile clients or any consumer services, you'll first need to do tons of sophisticated configuration and coding. For example, you'll need to
 
-1. code token authentication, session sliding etc., for making the web service stateless
+1. code token authentication, session sliding etc., for statelessness
 1. configure Spring Security to suit API development, e.g. returning 2xx or 4xx responses on login, configuring CORS, JSON vulnerability protection, etc.
 1. support multiple social sign up/in support, using OpenID Connect or OAuth2 providers such as Google and Facebook
 1. code components for handling validations and exceptions in a cross functional manner and sending precise errors to the client
