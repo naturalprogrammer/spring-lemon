@@ -7,16 +7,16 @@ When developing **real-world** Spring REST services for JavaScript web applicati
 1. How to handle _validations_ and _exceptions_ in a cross functional manner and send precise errors to the client.
 1. How exactly to support multiple _social sign up/in_, using _OpenID Connect_ or _OAuth2_ providers such as _Google_ and _Facebook_.
 1. How to code a robust user module (with features like _sign up_, _sign in_, _verify email_, _social sign up/in_, _update profile_, _forgot password_, _change password_, _change email_, _token authentication_ etc.) and share it across all your applications.
-1. _What would be the good ways to test your API_.
+1. _What would be good ways to test your API_.
 1. How to do _Captcha validation_.
 1. How to properly organize _application properties_.
 1. How to use _PATCH_ and _JsonPatch_ to handle partial updates correctly.
 
-Coding the above effectively needs in-depth knowledge of Spring. It also takes a lot of development time and effort, and needs to be properly maintained as new versions of Spring modules come out.
+Coding all the above effectively needs in-depth knowledge of Spring. It also takes a lot of development time and effort, and needs to be properly maintained as new versions of Spring modules come out.
 
-To relieve you of this non-trivial job, we thought to bring out _Spring Lemon_, a tiny open source library holding all these common configuration and components, and a production grade user module with all the abovementioned features.
+To relieve you of this non-trivial job, we thought to bring out **Spring Lemon**, a tiny open source library holding all these common configuration and components, and a production grade user module with all the abovementioned features.
 
-Even if you don't plan to use Spring Lemon, it's a good example application to learn from, because it showcases the essential best practices for developing elegant Web Services using Spring.
+Even if you don't plan to use Spring Lemon, it's a good example application to learn from, because it showcases the essential best practices for developing elegant web services using Spring.
 
 Most Spring Boot applications can use Spring Lemon straight away, with some simple configurations. But, if you don't find it suitable for your application, feel free to fork it, or just roll out your own library by learning its patterns and practices. Better yet, be a contributor!
 
