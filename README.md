@@ -1,16 +1,16 @@
 # Spring Lemon
 
-When developing real-world Spring REST services for JavaScript web applications, mobile clients or any consumer, you face many challenges, such as
+When developing **real-world** Spring REST services for JavaScript web applications, mobile clients or any consumer, you face many challenges, such as
 
-1. How to make the API truly stateless, using token authentication, session sliding etc.
-1. How to configure Spring Security to suit API development, e.g. returning 200 or 401 responses on login, configuring CORS, JSON vulnerability protection, etc.
-1. How to handle validations and exceptions in a cross functional manner and send precise errors to the client
-1. How exactly to support multiple social sign up/in support, using OpenID Connect or OAuth2 providers such as Google and Facebook
-1. How to code a robust user module (with features like _sign up_, _sign in_, _verify email_, _social sign up/in_, _update profile_, _forgot password_, _change password_, _change email_, _token authentication_ etc.) and share it across all your applications
-1. How to test your API
-1. How to do Captcha validation
-1. How to properly organize application properties
-1. How to use PATCH and JsonPatch to handle partial updates correctly
+1. How to make the API truly _stateless_, using token authentication, session sliding etc.
+1. How to configure Spring Security to suit API development, e.g. returning _200_ or _401_ responses on login, configuring _CORS_, _JSON vulnerability protection_, etc.
+1. How to handle _validations_ and _exceptions_ in a cross functional manner and send precise errors to the client.
+1. How exactly to support multiple _social sign up/in_, using _OpenID Connect_ or _OAuth2_ providers such as _Google_ and _Facebook_.
+1. How to code a robust user module (with features like _sign up_, _sign in_, _verify email_, _social sign up/in_, _update profile_, _forgot password_, _change password_, _change email_, _token authentication_ etc.) and share it across all your applications.
+1. _What would be the good ways to test your API_.
+1. How to do _Captcha validation_.
+1. How to properly organize _application properties_.
+1. How to use _PATCH_ and _JsonPatch_ to handle partial updates correctly.
 
 Coding the above effectively needs in-depth knowledge of Spring. It also takes a lot of development time and effort, and needs to be properly maintained as new versions of Spring modules come out.
 
@@ -32,8 +32,8 @@ Watch [this video tutorial](https://gum.co/IKqz) or read [this quick starter gui
 1. Spring Lemon [JavaDoc](https://naturalprogrammer.github.io/javadoc/spring-lemon/1.0.0.m2/)
 1. _[Example Angular 1.x front-end application](https://github.com/naturalprogrammer/lemon-demo-angular1)_ - A sample AngularJS 1.x front-end. It'll work both for the application developed in the above [getting started guide](https://documenter.getpostman.com/view/305915/lemondemo/RVnPL46k) as well as the [Lemon Demo application](https://github.com/naturalprogrammer/lemon-demo). 
 1. _Mastering Real-World RESTful Web Services Development With Spring_ - Ultimate course to master REST API development using Spring. Also covers Spring Lemon in depth. A must guide if you want to become an expert Spring developer, whether you use Spring Lemon or not:
-   1. *PDF eBook* - [pre-order now](https://gum.co/rIwHJ/associate) only for USD <s>115</s> 27 (plus taxes as applicable)!
-   1. *Video Tutorial* - [pre-order now](https://gum.co/NPFm/associate) only for USD <s>297</s> 97 (plus taxes as applicable)!
+   1. **PDF eBook** - [pre-order now](https://gum.co/rIwHJ/associate) only for USD <s>115</s> 27 (plus taxes as applicable)!
+   1. **Video Tutorial** - [pre-order now](https://gum.co/NPFm/associate) only for USD <s>297</s> 97 (plus taxes as applicable)!
 
 ## Help and Support
 1. Community help is available at [stackoverflow.com](http://stackoverflow.com/questions/tagged/spring-lemon), under the `spring-lemon` tag. Do not miss to tag the questions with `spring-lemon`!
