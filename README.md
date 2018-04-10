@@ -24,6 +24,7 @@ Watch [this video tutorial](https://gum.co/IKqz) or read [this quick starter gui
 
 ## Documentation and Resources
 
+1. Feature demo: https://youtu.be/6mNg-Feq8CY
 1. _Getting started guide_
    1. [Book](https://github.com/naturalprogrammer/spring-lemon/wiki/Getting-Started-With-Spring-Lemon)
    1. [Video Tutorial](https://gum.co/IKqz/associate)
