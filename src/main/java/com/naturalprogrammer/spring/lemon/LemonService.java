@@ -144,7 +144,7 @@ public abstract class LemonService
 	 * subclass, like this:
 	 * 
 	 * <pre>
-	 * protected User newUser() {
+	 * public User newUser() {
 	 *    return new User();
 	 * }
 	 * </pre>

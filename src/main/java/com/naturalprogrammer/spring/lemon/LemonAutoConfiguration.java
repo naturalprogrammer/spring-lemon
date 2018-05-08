@@ -125,7 +125,7 @@ public class LemonAutoConfiguration {
 	@ConditionalOnMissingBean(PasswordEncoder.class)
     public PasswordEncoder passwordEncoder() {
 	
-		log.info("Configuring BCryptPasswordEncoder");		
+		log.info("Configuring PasswordEncoder");		
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 	
