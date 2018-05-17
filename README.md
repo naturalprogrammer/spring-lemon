@@ -20,14 +20,14 @@ Even if you don't plan to use Spring Lemon, it's a good example application to l
 
 Most Spring Boot applications can use Spring Lemon straight away, with some simple configurations. But, if you don't find it suitable for your application, feel free to fork it, or just roll out your own library by learning its patterns and practices. Better yet, be a contributor!
 
-Watch [this video tutorial](https://www.naturalprogrammer.com/purchase?product_id=657547) or read [this quick starter guide](https://github.com/naturalprogrammer/spring-lemon/wiki/Getting-Started-With-Spring-Lemon) for getting started.
+Watch [this video tutorial](https://www.naturalprogrammer.com/p/spring-lemon-restful-web-services-development) or read [this quick starter guide](https://github.com/naturalprogrammer/spring-lemon/wiki/Getting-Started-With-Spring-Lemon) for getting started.
 
 ## Documentation and Resources
 
 1. Feature demo: https://youtu.be/6mNg-Feq8CY
 1. _Getting started guide_
    1. [Book](https://github.com/naturalprogrammer/spring-lemon/wiki/Getting-Started-With-Spring-Lemon)
-   1. [Video Tutorial](https://www.naturalprogrammer.com/purchase?product_id=657547)
+   1. [Video Tutorial](https://www.naturalprogrammer.com/p/spring-lemon-restful-web-services-development)
 1. _[Example application](https://github.com/naturalprogrammer/lemon-demo)_ - A sample application using Spring Lemon. Quite similar to the one developed in the above [getting started guide](https://github.com/naturalprogrammer/spring-lemon/wiki/Getting-Started-With-Spring-Lemon), but additionally has automated tests.
 1. _[API documentation](https://documenter.getpostman.com/view/305915/RVu2mqEH)_ of the above application.
 1. Spring Lemon [JavaDoc](https://naturalprogrammer.github.io/javadoc/spring-lemon/1.0.0.m2/)
