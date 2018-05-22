@@ -18,7 +18,7 @@ import com.nimbusds.jwt.JWTClaimsSet;
 public class JwtAuthenticationProvider
 <U extends AbstractUser<U,ID>, ID extends Serializable> implements AuthenticationProvider {
 
-    private static final Log log = LogFactory.getLog(LemonTokenAuthenticationFilter.class);
+    private static final Log log = LogFactory.getLog(JwtAuthenticationProvider.class);
 
 	private final JwtService jwtService;
 	private LemonUserDetailsService<U, ID> userDetailsService;

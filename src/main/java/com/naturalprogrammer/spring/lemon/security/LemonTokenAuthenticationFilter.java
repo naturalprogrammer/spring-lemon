@@ -4,8 +4,6 @@ import java.io.IOException;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -14,12 +12,12 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.filter.GenericFilterBean;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 /**
  * Filter for token authentication
  */
-public class LemonTokenAuthenticationFilter	extends GenericFilterBean {
+public class LemonTokenAuthenticationFilter	extends OncePerRequestFilter {
 	
     private static final Log log = LogFactory.getLog(LemonTokenAuthenticationFilter.class);
 	
@@ -41,19 +39,16 @@ public class LemonTokenAuthenticationFilter	extends GenericFilterBean {
 	}	
 
 	@Override
-	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-			throws IOException, ServletException {
+	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+			throws ServletException, IOException {
 		
 		log.debug("Inside LemonTokenAuthenticationFilter ...");
 		
-		HttpServletRequest req = (HttpServletRequest) request;
-		HttpServletResponse res = (HttpServletResponse) response;
-		
-    	if (tokenPresent(req)) {
+    	if (tokenPresent(request)) {
 			
 			log.debug("Found a token");
 			
-		    String token = req.getHeader(LemonSecurityConfig.TOKEN_REQUEST_HEADER_NAME).substring(7);
+		    String token = request.getHeader(LemonSecurityConfig.TOKEN_REQUEST_HEADER_NAME).substring(7);
 		    JwtAuthenticationToken authRequest = new JwtAuthenticationToken(token);
 		    
 		    try {
@@ -67,7 +62,7 @@ public class LemonTokenAuthenticationFilter	extends GenericFilterBean {
 		    	
 				log.debug("Token authentication failed - " + e.getMessage());
 				
-		    	res.sendError(HttpServletResponse.SC_UNAUTHORIZED,
+		    	response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
 						"Authentication Failed: " + e.getMessage());
 		    	
 		    	return;
@@ -77,6 +72,6 @@ public class LemonTokenAuthenticationFilter	extends GenericFilterBean {
 		
 			log.debug("Token authentication skipped");
 		
-		chain.doFilter(request, response);
+		filterChain.doFilter(request, response);
 	}
 }

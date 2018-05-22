@@ -57,7 +57,6 @@ import com.naturalprogrammer.spring.lemon.security.LemonOAuth2UserService;
 import com.naturalprogrammer.spring.lemon.security.LemonOidcUserService;
 import com.naturalprogrammer.spring.lemon.security.LemonPermissionEvaluator;
 import com.naturalprogrammer.spring.lemon.security.LemonSecurityConfig;
-import com.naturalprogrammer.spring.lemon.security.LemonTokenAuthenticationFilter;
 import com.naturalprogrammer.spring.lemon.security.LemonUserDetailsService;
 import com.naturalprogrammer.spring.lemon.security.OAuth2AuthenticationFailureHandler;
 import com.naturalprogrammer.spring.lemon.security.OAuth2AuthenticationSuccessHandler;
@@ -355,7 +354,7 @@ public class LemonAutoConfiguration {
 			JwtService jwtService,
 			LemonUserDetailsService<U, ID> userDetailsService) {
 		
-        log.info("Configuring LemonSecurityConfig");       
+        log.info("Configuring JwtAuthenticationProvider");       
 		return new JwtAuthenticationProvider<U,ID>(jwtService, userDetailsService);
 	}	
 	
@@ -370,18 +369,6 @@ public class LemonAutoConfiguration {
 		return new LemonSecurityConfig();
 	}
 	
-    
-    /**
-     * Configures our TokenAuthenticationFilter
-     */
-	@Bean
-	@ConditionalOnMissingBean(LemonTokenAuthenticationFilter.class)
-	public LemonTokenAuthenticationFilter lemonTokenAuthenticationFilter(
-			LemonSecurityConfig lemonSecurityConfig) throws Exception {
-		
-		return new LemonTokenAuthenticationFilter(lemonSecurityConfig.getAuthenticationManager());
-	}
-
 	/**
 	 * Configures LemonUtils
 	 */

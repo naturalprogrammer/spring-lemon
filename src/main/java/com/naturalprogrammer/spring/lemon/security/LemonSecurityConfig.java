@@ -3,7 +3,6 @@ package com.naturalprogrammer.spring.lemon.security;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -12,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.naturalprogrammer.spring.lemon.LemonProperties;
 
@@ -81,6 +81,7 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 		login(http); // authentication
 		logout(http); // logout related configuration
 		exceptionHandling(http); // exception handling
+		tokenAuthentication(http); // configure token authentication filter
 		csrf(http); // CSRF configuration
 		cors(http); // CORS configuration
 		oauth2Client(http);
@@ -88,8 +89,9 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 		otherConfigurations(http); // override this to add more configurations
 	}
 
+	
 	/**
-	 * Configuring Session creation policy
+	 * Configuring session creation policy
 	 */
 	protected void sessionCreationPolicy(HttpSecurity http) throws Exception {
 		
@@ -98,6 +100,7 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 			.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 	}
 
+	
 	/**
 	 * Configuring authentication.
 	 */
@@ -144,6 +147,17 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 			 * when someone tries to access a restricted page
 			 **********************************************/
 			.authenticationEntryPoint(new Http403ForbiddenEntryPoint());
+	}
+
+
+	/**
+	 * Configuring token authentication filter
+	 */
+	protected void tokenAuthentication(HttpSecurity http) throws Exception {
+		
+		http.addFilterBefore(new LemonTokenAuthenticationFilter(
+				super.authenticationManager()),
+				UsernamePasswordAuthenticationFilter.class);
 	}
 
 
@@ -210,14 +224,5 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
         auth.userDetailsService(userDetailsService)
         	.passwordEncoder(passwordEncoder).and()
         	.authenticationProvider(jwtAuthenticationProvider);
-    }
-
-
-    /**
-     * Returns AuthenticationManager, to be used for configuring LemonTokenAuthenticationFilter
-     */
-    public AuthenticationManager getAuthenticationManager() throws Exception {
-    	
-    	return super.authenticationManager();
     }
 }
