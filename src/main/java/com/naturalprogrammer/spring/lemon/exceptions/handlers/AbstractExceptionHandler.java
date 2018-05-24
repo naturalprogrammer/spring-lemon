@@ -42,9 +42,7 @@ public abstract class AbstractExceptionHandler<T extends Throwable> {
 		
 		ErrorResponse errorResponse = new ErrorResponse();
 		
-		String message = getMessage(ex);
-		if (message != null)
-			errorResponse.setMessage(message);
+		errorResponse.setMessage(getMessage(ex));
 		
 		HttpStatus status = getStatus(ex);
 		if (status != null) {

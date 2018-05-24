@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
  * Handles exceptions thrown from in controllers or inner routines
  */
 @RestControllerAdvice
-@RequestMapping(produces = "application/json")
 public class DefaultExceptionHandlerControllerAdvice<T extends Throwable> {
 	
 	private static final Log log = LogFactory.getLog(DefaultExceptionHandlerControllerAdvice.class);
