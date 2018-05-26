@@ -40,8 +40,7 @@ implements ConstraintValidator<RetypePassword, RetypePasswordForm> {
 						"{com.naturalprogrammer.spring.different.passwords}")
 						.addPropertyNode("retypePassword").addConstraintViolation();
 			
-			return false;
-			
+			return false;	
 		}
 		
 		log.debug("Retype password validation succeeded.");		

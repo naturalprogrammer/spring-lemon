@@ -74,7 +74,7 @@ public abstract class LemonController
 	 * Returns context properties needed at the client side,
 	 * current-user data and an Authorization token as a response header.
 	 */
-	@GetMapping(value = "/context")
+	@GetMapping("/context")
 	public Map<String, Object> getContext(
 			@RequestParam Optional<Long> expirationMillis,
 			HttpServletResponse response) {
@@ -91,7 +91,7 @@ public abstract class LemonController
 	 * Signs up a user, and
 	 * returns current-user data and an Authorization token as a response header.
 	 */
-	@PostMapping(value = "/users")
+	@PostMapping("/users")
 	@ResponseStatus(HttpStatus.CREATED)
 	public UserDto<ID> signup(@RequestBody @JsonView(SignupInput.class) U user,
 			HttpServletResponse response) {
@@ -120,7 +120,7 @@ public abstract class LemonController
 	/**
 	 * Verifies current-user
 	 */
-	@PostMapping(value = "/users/{id}/verification")
+	@PostMapping("/users/{id}/verification")
 	public UserDto<ID> verifyUser(
 			@PathVariable ID id,
 			@RequestParam String code,
@@ -164,7 +164,7 @@ public abstract class LemonController
 	/**
 	 * Fetches a user by email
 	 */
-	@PostMapping(value = "/users/fetch-by-email")
+	@PostMapping("/users/fetch-by-email")
 	public U fetchUserByEmail(@RequestParam String email) {
 		
 		log.debug("Fetching user by email: " + email);						
@@ -175,7 +175,7 @@ public abstract class LemonController
 	/**
 	 * Fetches a user by ID
 	 */	
-	@GetMapping(value = "/users/{id}")
+	@GetMapping("/users/{id}")
 	public U fetchUserById(@PathVariable("id") U user) {
 		
 		log.debug("Fetching user: " + user);				
@@ -186,7 +186,7 @@ public abstract class LemonController
 	/**
 	 * Updates a user
 	 */
-	@PatchMapping(value = "/users/{id}")
+	@PatchMapping("/users/{id}")
 	public UserDto<ID> updateUser(
 			@PathVariable("id") U user,
 			@RequestBody String patch,
