@@ -21,47 +21,12 @@ public class MultiErrorException extends RuntimeException {
 	// HTTP Status code to be returned
 	private HttpStatus status = HttpStatus.UNPROCESSABLE_ENTITY;
 	
-	public HttpStatus getStatus() {
-		return status;
-	}
-
-	public void setStatus(HttpStatus status) {
-		this.status = status;
-	}
-
-	public MultiErrorException httpStatus(HttpStatus status) {
-		this.status = status;
-		return this;
-	}
-
 	// list of errors
 	private List<FieldError> errors = new ArrayList<FieldError>(10);
 	
-	public List<FieldError> getErrors() {
-		return errors;
-	}	
-	
-	/**
-	 * Overrides the standard getMessage
-	 */
-	@Override
-	public String getMessage() {
-
-		if (errors.size() == 0)
-			return null;
-		
-		// return the first message
-		return errors.get(0).getMessage();
-	}
-	
-	/**
-	 * Adds a global-error if the given condition isn't true
-	 */
-	public MultiErrorException validate(boolean valid,
-			String messageKey, Object... args) {
-		
-		// delegate
-		return validate(null, valid, messageKey, args);
+	public MultiErrorException httpStatus(HttpStatus status) {
+		this.status = status;
+		return this;
 	}
 
 	/**
@@ -81,7 +46,42 @@ public class MultiErrorException extends RuntimeException {
 	 * Throws the exception, if there are accumulated errors
 	 */
 	public void go() {
-		if (errors.size() > 0)
+		if (!errors.isEmpty())
 			throw this;
 	}
+	
+	/**
+	 * Adds a global-error if the given condition isn't true
+	 */
+	public MultiErrorException validate(boolean valid,
+			String messageKey, Object... args) {
+		
+		// delegate
+		return validate(null, valid, messageKey, args);
+	}
+
+	/**
+	 * Overrides the standard getMessage
+	 */
+	@Override
+	public String getMessage() {
+
+		if (errors.size() == 0)
+			return null;
+		
+		// return the first message
+		return errors.get(0).getMessage();
+	}
+
+	public HttpStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(HttpStatus status) {
+		this.status = status;
+	}
+	
+	public List<FieldError> getErrors() {
+		return errors;
+	}	
 }
