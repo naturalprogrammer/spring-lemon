@@ -45,7 +45,6 @@ import com.naturalprogrammer.spring.lemon.exceptions.VersionException;
 import com.naturalprogrammer.spring.lemon.security.JwtService;
 import com.naturalprogrammer.spring.lemon.security.LemonPrincipal;
 import com.naturalprogrammer.spring.lemon.security.UserDto;
-import com.naturalprogrammer.spring.lemon.validation.FieldError;
 import com.nimbusds.jwt.JWTClaimsSet;
 
 /**
@@ -77,11 +76,9 @@ public class LemonUtils {
 	@PostConstruct
 	public void postConstruct() {
 		
-		NOT_FOUND_EXCEPTION.getErrors().add(
-				new FieldError(null, "com.naturalprogrammer.spring.notFound",
-				getMessage("com.naturalprogrammer.spring.notFound")));
-		
-		NOT_FOUND_EXCEPTION.httpStatus(HttpStatus.NOT_FOUND);
+		NOT_FOUND_EXCEPTION
+			.httpStatus(HttpStatus.NOT_FOUND)
+			.validate(false, "com.naturalprogrammer.spring.notFound");
 		
 		log.info("NOT_FOUND_EXCEPTION built");		
 	}

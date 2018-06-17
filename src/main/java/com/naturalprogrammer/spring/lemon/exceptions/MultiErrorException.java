@@ -18,11 +18,11 @@ public class MultiErrorException extends RuntimeException {
 
 	private static final long serialVersionUID = 6020532846519363456L;
 	
+	// list of errors
+	private List<FieldError> errors = new ArrayList<>(10);
+	
 	// HTTP Status code to be returned
 	private HttpStatus status = HttpStatus.UNPROCESSABLE_ENTITY;
-	
-	// list of errors
-	private List<FieldError> errors = new ArrayList<FieldError>(10);
 	
 	public MultiErrorException httpStatus(HttpStatus status) {
 		this.status = status;
@@ -66,7 +66,7 @@ public class MultiErrorException extends RuntimeException {
 	@Override
 	public String getMessage() {
 
-		if (errors.size() == 0)
+		if (errors.isEmpty())
 			return null;
 		
 		// return the first message
