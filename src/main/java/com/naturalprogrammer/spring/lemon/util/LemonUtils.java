@@ -199,7 +199,7 @@ public class LemonUtils {
 	void ensureCorrectVersion(VersionedEntity<U,ID> original, VersionedEntity<U,ID> updated) {
 		
 		if (original.getVersion() != updated.getVersion())
-			throw new VersionException(original.getClass().getSimpleName());
+			throw new VersionException(original.getClass().getSimpleName(), original.getId().toString());
 	}
 	
 	/**
@@ -262,9 +262,9 @@ public class LemonUtils {
 	 */
 	public static <T> void ensureFound(T entity) {
 		
-		LemonUtils.validate("id", entity != null,
-				"com.naturalprogrammer.spring.notFound")
-				.httpStatus(HttpStatus.NOT_FOUND).go();
+		LemonUtils.validate(entity != null,
+			"com.naturalprogrammer.spring.notFound")
+			.httpStatus(HttpStatus.NOT_FOUND).go();
 	}
 
 	
