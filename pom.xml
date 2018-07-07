@@ -5,7 +5,7 @@
 
     <groupId>com.naturalprogrammer</groupId>
     <artifactId>spring-lemon</artifactId>
-    <version>1.0.0.M4</version>
+    <version>multi-module-xxx</version>
     <packaging>pom</packaging>
 
     <name>spring-lemon</name>
