@@ -14,6 +14,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import com.naturalprogrammer.spring.lemon.LemonService;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
+import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
 import com.naturalprogrammer.spring.lemon.util.LemonUtils;
 
 /**
@@ -54,10 +55,10 @@ public class LemonOAuth2UserService<U extends AbstractUser<U,ID>, ID extends Ser
 		
 		Map<String, Object> attributes = oath2User.getAttributes();
 		String email = lemonService.getOAuth2Email(registrationId, attributes);
-		LemonUtils.validate(email != null, "com.naturalprogrammer.spring.oauth2EmailNeeded", registrationId).go();
+		LexUtils.validate(email != null, "com.naturalprogrammer.spring.oauth2EmailNeeded", registrationId).go();
 		
 		boolean emailVerified = lemonService.getOAuth2AccountVerified(registrationId, attributes);
-		LemonUtils.validate(emailVerified, "com.naturalprogrammer.spring.oauth2EmailNotVerified", registrationId).go();
+		LexUtils.validate(emailVerified, "com.naturalprogrammer.spring.oauth2EmailNotVerified", registrationId).go();
 		
     	U user = userDetailsService.findUserByUsername(email).orElseGet(()  -> {
     		

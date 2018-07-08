@@ -1,0 +1,41 @@
+## Common lemon demo properties
+
+# Spring related properties
+spring:
+
+  # Active profile
+  profiles.active: dev
+  
+  # JSON serialization settings
+  jackson:
+    default-property-inclusion: NON_NULL
+    
+    serialization:
+      write-null-map-values: false 
+      
+    deserialization:
+      accept-single-value-as-array: true
+  
+  devtools:
+    # Comment this if you want the app to restart
+    # when source code changes
+    restart.enabled: false
+    livereload.enabled: false
+
+server.servlet.session.persistent: false
+
+# Spring Lemon related properties
+lemon:
+
+  # First ADMIN user
+  admin:
+    username: admin@example.com
+    password: admin!
+    
+   # Spring Lemon flags
+   # enabled:
+      # json-prefix: false
+      
+  # Properties to be passed to client
+  shared:
+    fooBar: 123...

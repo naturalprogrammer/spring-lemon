@@ -20,8 +20,8 @@
 
 	<modules>
 		<module>spring-lemon-exceptions</module>
-		<module>spring-lemon-commons</module>
 		<module>spring-lemon-jpa</module>
+		<module>lemon-demo-jpa</module>
 	</modules>
 	
     <properties>

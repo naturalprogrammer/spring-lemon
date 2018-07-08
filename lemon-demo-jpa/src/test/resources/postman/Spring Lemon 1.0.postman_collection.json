@@ -1,0 +1,3385 @@
+{
+	"info": {
+		"_postman_id": "f7a6c695-811c-41aa-a06e-6f392c4f047c",
+		"name": "Spring Lemon 1.0",
+		"description": "This is the API documentation of the _Spring Lemon Demo Application_, which shows how to easily develop a production grade REST Service with a full-featured user module by using the [Spring Lemon](https://github.com/naturalprogrammer/spring-lemon) open source library.\n\nBefore you dive in, let’s first look at a few key thing to keep in mind when using the API.\n\nCORS\n====\nYour API could be accessed from multiple clients. One of those could be a JavaScript web front-end, such as an AngularJS single page application.\n\nWhen developing a JavaScript web front-end, you will have two choices:\n\n1. Put it in the same project, say inside _src/main/resources/static_, and deploy both the server and the client as a single unit.\n1. Keep it separate, say as a Grunt/Gulp project, and deploy it in a different domain. For example, your API could be hosted at example.cfapps.io, whereas your AngularJS application could be hosted at www.example.com.\n\nIf you go for the second option, your JavaScript can’t call your API unless you deal with the [same origin policy](https://en.wikipedia.org/wiki/Same-origin_policy).\n\nSpring Lemon uses CORS at the server side to deal with this. You just have to add a line like this in _application.properties_:\n\n```\nlemon.cors.allowed-origins: http://localhost:9000,http://www.example.com\n```\n\nYou may also need a little configuration at the client side. For example, in AngularJS, you will need to set the withCredentials flag of [$http](https://docs.angularjs.org/api/ng/service/$http#cross-site-request-forgery-xsrf-protection) service, like this:\n\n```\nangular.module('myApp', ['ngCookies', ... ])\n.config(['$httpProvider', function ($httpProvider) {\n\n    $httpProvider.defaults.withCredentials = true;\n    ...\n}]);\n```\n\nRefer [documentation and resources](https://github.com/naturalprogrammer/spring-lemon#documentation-and-resources) for more details.\n\nHandling Errors\n===============\nIf some request data would not comply to the business rules, the API would respond with _422 Unprocessable Entity_, with a JSON body holding field-wise error details. For example, trying to sign up with some invalid data could produce the following JSON data:\n```\n{\n  \"exception\": \"ConstraintViolationException\",\n  \"error\": \"Unprocessable Entity\",\n  \"message\": \"Validation Error\",\n  \"status\": 422,\n  \"errors\": [\n    {\n      \"field\": \"user.email\",\n      \"code\": \"{com.naturalprogrammer.spring.invalid.email}\",\n      \"message\": \"Not a well formed email address\"\n    },\n    {\n      \"field\": \"user.password\",\n      \"code\": \"{com.naturalprogrammer.spring.invalid.password.size}\",\n      \"message\": \"Password must be between 6 and 50 characters\"\n    },\n    {\n      \"field\": \"user.name\",\n      \"code\": \"{blank.name}\",\n      \"message\": \"Name required\"\n    },\n    {\n      \"field\": \"user.email\",\n      \"code\": \"{com.naturalprogrammer.spring.invalid.email.size}\",\n      \"message\": \"Email must be between 4 and 250 characters\"\n    }\n  ]\n}\n```\nEach error in errors above will have three fields:\n\n* *field*: Name of the field, or null in case of a form level error.\n* *code*: The error code.\n* *message*: An internationalized message, which could vary depending on the locale of the user.\n\nCommon terms\n============\nSome terms that we would be using often in the documentation are given below.\n\n<dl>\n  <dt>ADMIN</dt>\n  <dd>A user having \"ADMIN\" in his roles collection.</dd>\n\n  <dt>Unverified user</dt>\n  <dd>A user having \"UNVERIFIED\" in his roles collection.</dd>\n\n  <dt>Blocked user</dt>\n  <dd>A user having \"BLOCKED\" in his roles collection.</dd>\n  \n  <dt>Bad user</dt>\n  <dd>An unverified or blocked user.</dd>\n\n  <dt>Good user</dt>\n  <dd>A user who is not bad.</dd>\n\n  <dt>Bad ADMIN</dt>\n  <dd>An ADMIN who is a bad user.</dd>\n  \n  <dt>Good ADMIN</dt>\n  <dd>An ADMIN who is a good user.</dd>\n</dl>\n\nCommon Business Rules\n=====================\nThis section documents the common business rules, which are referred at multiple places in the API documentation.\n\n### Accessing Users\n\n#### Who is permitted to edit a User entity\n##### Editing the fields\nA user can be edited either by himself or a good ADMIN.\n\n##### Adding or removing roles\n1. roles can only be edited by good ADMINs.\n1. A user can’t edit his own roles even if he is a good ADMIN.\n\n#### Confidential fields\nWhen fetching a user (either by email or id), _password_ is not returned. _email_ is returned if the logged in user does not have right to edit the fields (see above) of the user being fetched.\n\n### User entity validation constraints\n\n#### email\n1. Should not be null\n1. Should not be blank\n1. Should be between 4 and 250 characters long\n1. Should be well-formed email format\n1. Should be unique\n\n#### password\n1. Should not be null\n1. Should not be blank\n1. Should be between 4 and 50 characters long\n\n#### name\n1. Should not be blank\n1. Should be between 1 and 50 characters long\n",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Common Operations",
+			"description": "",
+			"item": [
+				{
+					"name": "Ping",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Ping status code is 200\"] = responseCode.code === 204;",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{lemonDemoUrl}}/api/core/ping",
+							"host": [
+								"{{lemonDemoUrl}}"
+							],
+							"path": [
+								"api",
+								"core",
+								"ping"
+							]
+						},
+						"description": "Pings the server. Server returns a `204` response."
+					},
+					"response": [
+						{
+							"id": "dc13c098-4ab6-4708-9a22-4c6647aa1698",
+							"name": "Ping",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{lemonDemoUrl}}/api/core/ping",
+									"host": [
+										"{{lemonDemoUrl}}"
+									],
+									"path": [
+										"api",
+										"core",
+										"ping"
+									]
+								}
+							},
+							"status": "No Content",
+							"code": 204,
+							"_postman_previewlanguage": "plain",
+							"header": [
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true",
+									"name": "Access-Control-Allow-Credentials",
+									"description": "Indicates whether or not the response to the request can be exposed when the credentials flag is true. When used as part of a response to a preflight request, this indicates whether or not the actual request can be made using credentials."
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "Accept,Accept-Encoding,Accept-Language,Cache-Control,Connection,Content-Length,Content-Type,Cookie,Host,Origin,Pragma,Referer,User-Agent,x-requested-with,X-XSRF-TOKEN,Lemon-Authorization",
+									"name": "Access-Control-Allow-Headers",
+									"description": "Used in response to a preflight request to indicate which HTTP headers can be used when making the actual request."
+								},
+								{
+									"key": "Access-Control-Allow-Methods",
+									"value": "GET,HEAD,POST,PUT,DELETE,TRACE,OPTIONS,PATCH",
+									"name": "Access-Control-Allow-Methods",
+									"description": "Specifies the method or methods allowed when accessing the resource. This is used in response to a preflight request."
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://localhost:9000",
+									"name": "Access-Control-Allow-Origin",
+									"description": "Specifies a URI that may access the resource. For requests without credentials, the server may specify '*' as a wildcard, thereby allowing any origin to access the resource."
+								},
+								{
+									"key": "Access-Control-Expose-Headers",
+									"value": "Cache-Control,Connection,Content-Type,Date,Expires,Pragma,Server,Set-Cookie,Transfer-Encoding,X-Content-Type-Options,X-XSS-Protection,X-Frame-Options,X-Application-Context,X-XSRF-TOKEN",
+									"name": "Access-Control-Expose-Headers",
+									"description": "Lets a server whitelist headers that browsers are allowed to access."
+								},
+								{
+									"key": "Access-Control-Max-Age",
+									"value": "3600",
+									"name": "Access-Control-Max-Age",
+									"description": "Indicates how long the results of a preflight request can be cached in seconds."
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate",
+									"name": "Cache-Control",
+									"description": "Tells all caching mechanisms from server to client whether they may cache this object. It is measured in seconds"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 02 Mar 2018 16:47:53 GMT",
+									"name": "Date",
+									"description": "The date and time that the message was sent"
+								},
+								{
+									"key": "Expires",
+									"value": "0",
+									"name": "Expires",
+									"description": "Gives the date/time after which the response is considered stale"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache",
+									"name": "Pragma",
+									"description": "Implementation-specific headers that may have various effects anywhere along the request-response chain."
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff",
+									"name": "X-Content-Type-Options",
+									"description": "The only defined value, \"nosniff\", prevents Internet Explorer from MIME-sniffing a response away from the declared content-type"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY",
+									"name": "X-Frame-Options",
+									"description": "Clickjacking protection: \"deny\" - no rendering within a frame, \"sameorigin\" - no rendering if origin mismatch"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "1; mode=block",
+									"name": "X-XSS-Protection",
+									"description": "Cross-site scripting (XSS) filter"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						}
+					]
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Login status code is 200\"] = responseCode.code === 200;",
+									"",
+									"if (responseCode.code === 200) {",
+									"    postman.setEnvironmentVariable(\"userAuthHeader\", postman.getResponseHeader(\"Lemon-Authorization\"));",
+									"    postman.setEnvironmentVariable(\"userId\", JSON.parse(responseBody).id);",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "username",
+									"value": "admin@example.com",
+									"description": "Email",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "admin!",
+									"description": "Password",
+									"type": "text"
+								},
+								{
+									"key": "expirationMillis",
+									"value": "864000000",
+									"description": "Optional - defaults to 864000000 (10 days)",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{lemonDemoUrl}}/login",
+							"host": [
+								"{{lemonDemoUrl}}"
+							],
+							"path": [
+								"login"
+							]
+						},
+						"description": "Given a user's credentials, this endpoint returns a `200` response with the user details and a `Lemon-Authorization` response header. In case of bad credentils, it responds with a `401`.\n\nThe `Lemon-Authorization` response header looks as below:\n\n> Bearer eyJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwiYWxnIjoiZGlyIn0..x_LjxSnecBiaRVJH46pjxA.HPLsSqScB9dF7Ax568sPUiPfi9Q6tY5jiI0Xco3kuxDjCaRlEemQ6HtJo-WgvrEsTWWx3_v_c6C5a_STjZfD4cPdjlq8_6Tgbq5-aCDLidLF7Obz5O3O9VTEimu77mva.bGp0g-WCbHKXu2Y0l_ToSw\n\nIt can be used as the `Authorization` request header in subsequent calls to authenticate the user in a stateless manner."
+					},
+					"response": [
+						{
+							"id": "e6eefb5e-b4a3-4b42-b9ad-2d2e6dbfb48d",
+							"name": "Login",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/x-www-form-urlencoded",
+										"disabled": false
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "username",
+											"value": "admin@example.com",
+											"description": "Email",
+											"type": "text"
+										},
+										{
+											"key": "password",
+											"value": "admin!",
+											"description": "Password",
+											"type": "text"
+										},
+										{
+											"key": "expirationMillis",
+											"value": "864000000",
+											"description": "Optional - defaults to 864000000 (10 days)",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{lemonDemoUrl}}/login",
+									"host": [
+										"{{lemonDemoUrl}}"
+									],
+									"path": [
+										"login"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate",
+									"name": "Cache-Control",
+									"description": "Tells all caching mechanisms from server to client whether they may cache this object. It is measured in seconds"
+								},
+								{
+									"key": "Content-Length",
+									"value": "169",
+									"name": "Content-Length",
+									"description": "The length of the response body in octets (8-bit bytes)"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"name": "Content-Type",
+									"description": "The mime type of this content"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 26 May 2018 12:39:00 GMT",
+									"name": "Date",
+									"description": "The date and time that the message was sent"
+								},
+								{
+									"key": "Expires",
+									"value": "0",
+									"name": "Expires",
+									"description": "Gives the date/time after which the response is considered stale"
+								},
+								{
+									"key": "Lemon-Authorization",
+									"value": "Bearer eyJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwiYWxnIjoiZGlyIn0..AqIlYN5HLXZIYLjrMKdk0A.IErc8xXFz5NplCLSoe4Is0Bj0tk5fqH9VXCioWJXjeuBJ1LaP3iKlHUV50z5BckwegJwVpTsaLrz2pLXeT7KOSwesU9v5BQ5pPdfLnnriNQJJRtCxnI2aPT6DFl6eBcc.Ko4VwTUe242rIfcmdjHteQ",
+									"name": "Lemon-Authorization",
+									"description": "Custom header"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache",
+									"name": "Pragma",
+									"description": "Implementation-specific headers that may have various effects anywhere along the request-response chain."
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff",
+									"name": "X-Content-Type-Options",
+									"description": "The only defined value, \"nosniff\", prevents Internet Explorer from MIME-sniffing a response away from the declared content-type"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY",
+									"name": "X-Frame-Options",
+									"description": "Clickjacking protection: \"deny\" - no rendering within a frame, \"sameorigin\" - no rendering if origin mismatch"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "1; mode=block",
+									"name": "X-XSS-Protection",
+									"description": "Cross-site scripting (XSS) filter"
+								}
+							],
+							"cookie": [],
+							"body": "{\"id\":9,\"username\":\"admin@example.com\",\"roles\":[\"ADMIN\"],\"tag\":{\"name\":\"Administrator\"},\"unverified\":false,\"blocked\":false,\"admin\":true,\"goodUser\":true,\"goodAdmin\":true}"
+						},
+						{
+							"id": "e3a0b42d-4ad2-46bd-aa6e-ef47d47c60c2",
+							"name": "Login with wrong credentials",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/x-www-form-urlencoded",
+										"disabled": false
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "username",
+											"value": "admin@example.com",
+											"description": "Email",
+											"type": "text"
+										},
+										{
+											"key": "password",
+											"value": "wrong-password",
+											"description": "Password",
+											"type": "text"
+										},
+										{
+											"key": "expirationMillis",
+											"value": "864000000",
+											"description": "Optional - defaults to 864000000 (10 days)",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{lemonDemoUrl}}/login",
+									"host": [
+										"{{lemonDemoUrl}}"
+									],
+									"path": [
+										"login"
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate",
+									"name": "Cache-Control",
+									"description": "Tells all caching mechanisms from server to client whether they may cache this object. It is measured in seconds"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json;charset=UTF-8",
+									"name": "Content-Type",
+									"description": "The mime type of this content"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 26 May 2018 12:38:14 GMT",
+									"name": "Date",
+									"description": "The date and time that the message was sent"
+								},
+								{
+									"key": "Expires",
+									"value": "0",
+									"name": "Expires",
+									"description": "Gives the date/time after which the response is considered stale"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache",
+									"name": "Pragma",
+									"description": "Implementation-specific headers that may have various effects anywhere along the request-response chain."
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked",
+									"name": "Transfer-Encoding",
+									"description": "The form of encoding used to safely transfer the entity to the user. Currently defined methods are: chunked, compress, deflate, gzip, identity."
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff",
+									"name": "X-Content-Type-Options",
+									"description": "The only defined value, \"nosniff\", prevents Internet Explorer from MIME-sniffing a response away from the declared content-type"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY",
+									"name": "X-Frame-Options",
+									"description": "Clickjacking protection: \"deny\" - no rendering within a frame, \"sameorigin\" - no rendering if origin mismatch"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "1; mode=block",
+									"name": "X-XSS-Protection",
+									"description": "Cross-site scripting (XSS) filter"
+								}
+							],
+							"cookie": [],
+							"body": "{\"timestamp\":\"2018-05-26T12:38:14.153+0000\",\"status\":401,\"error\":\"Unauthorized\",\"message\":\"Unauthorized\",\"path\":\"/login\"}"
+						}
+					]
+				},
+				{
+					"name": "Get context",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Get context status code is 200\"] = responseCode.code === 200;",
+									"",
+									"// Set userId",
+									"var user = JSON.parse(responseBody).user;",
+									"if (user) {",
+									"    postman.setEnvironmentVariable(\"userId\", user.id);",
+									"    postman.setEnvironmentVariable(\"userAuthHeader\", postman.getResponseHeader(\"Lemon-Authorization\"));",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{userAuthHeader}}",
+								"description": "Optional. If given, the user data is returned."
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{lemonDemoUrl}}/api/core/context",
+							"host": [
+								"{{lemonDemoUrl}}"
+							],
+							"path": [
+								"api",
+								"core",
+								"context"
+							]
+						},
+						"description": "Returns a `200` response with useful application properties and current user data. If an Authorization request header is provided, responds with a new `Lemon-Authorization` header that can be used for next calls (session sliding).\n\nCall this\n1. At start-up of a client application to fetch useful application properties (e.g. _reCaptchaSiteKey_), and a fresh authorization token along with current-user data if you have a authentication token in _local storage_.\n2. When you have a shiort lived token or a token that is about to expire, so that you can get a new token in the `Lemon-Authorization` response header.\n\nThe _context.shared_ response field would have all the _lemon.shared.\\*properties_ that are defined in _application\\*.yml_. So, if your applicstion needs to pass some properties to the client, just define those under _lemon.shared._ in _appliction\\*.properties_."
+					},
+					"response": [
+						{
+							"id": "123567f0-1a53-4fe1-b75d-3775da8559e1",
+							"name": "Get context with Authorization header",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{userAuthHeader}}",
+										"description": "Optional. If given, the user data is returned."
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{lemonDemoUrl}}/api/core/context",
+									"host": [
+										"{{lemonDemoUrl}}"
+									],
+									"path": [
+										"api",
+										"core",
+										"context"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true",
+									"name": "Access-Control-Allow-Credentials",
+									"description": "Indicates whether or not the response to the request can be exposed when the credentials flag is true. When used as part of a response to a preflight request, this indicates whether or not the actual request can be made using credentials."
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "Accept,Accept-Encoding,Accept-Language,Cache-Control,Connection,Content-Length,Content-Type,Cookie,Host,Origin,Pragma,Referer,User-Agent,x-requested-with,Authorization",
+									"name": "Access-Control-Allow-Headers",
+									"description": "Used in response to a preflight request to indicate which HTTP headers can be used when making the actual request."
+								},
+								{
+									"key": "Access-Control-Allow-Methods",
+									"value": "GET,HEAD,POST,PUT,DELETE,TRACE,OPTIONS,PATCH",
+									"name": "Access-Control-Allow-Methods",
+									"description": "Specifies the method or methods allowed when accessing the resource. This is used in response to a preflight request."
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://localhost:9000",
+									"name": "Access-Control-Allow-Origin",
+									"description": "Specifies a URI that may access the resource. For requests without credentials, the server may specify '*' as a wildcard, thereby allowing any origin to access the resource."
+								},
+								{
+									"key": "Access-Control-Expose-Headers",
+									"value": "Cache-Control,Connection,Content-Type,Date,Expires,Pragma,Server,Set-Cookie,Transfer-Encoding,X-Content-Type-Options,X-XSS-Protection,X-Frame-Options,X-Application-Context,Lemon-Authorization",
+									"name": "Access-Control-Expose-Headers",
+									"description": "Lets a server whitelist headers that browsers are allowed to access."
+								},
+								{
+									"key": "Access-Control-Max-Age",
+									"value": "3600",
+									"name": "Access-Control-Max-Age",
+									"description": "Indicates how long the results of a preflight request can be cached in seconds."
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate",
+									"name": "Cache-Control",
+									"description": "Tells all caching mechanisms from server to client whether they may cache this object. It is measured in seconds"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json;charset=UTF-8",
+									"name": "Content-Type",
+									"description": "The mime type of this content"
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 19 Mar 2018 00:50:13 GMT",
+									"name": "Date",
+									"description": "The date and time that the message was sent"
+								},
+								{
+									"key": "Expires",
+									"value": "0",
+									"name": "Expires",
+									"description": "Gives the date/time after which the response is considered stale"
+								},
+								{
+									"key": "Lemon-Authorization",
+									"value": "Bearer eyJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwiYWxnIjoiZGlyIn0..bTinaHZP4Z5QYHNEchr1kw.Mw1bC0sHDqlcSAdxtzM1veJ-Ok0Qhvo8YiYnID3VZcQ-R3D11HzXgNgFnnRRq1eCRvcFpbNqqNZhPwmCSM9pxnRQuZ78rbggNd_Vb3xIsRl3G7UWNHPjNvnveaX8GElj.iPbu77xZ9ts_-I3LFRBcug",
+									"name": "Lemon-Authorization",
+									"description": "Custom header"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache",
+									"name": "Pragma",
+									"description": "Implementation-specific headers that may have various effects anywhere along the request-response chain."
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked",
+									"name": "Transfer-Encoding",
+									"description": "The form of encoding used to safely transfer the entity to the user. Currently defined methods are: chunked, compress, deflate, gzip, identity."
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff",
+									"name": "X-Content-Type-Options",
+									"description": "The only defined value, \"nosniff\", prevents Internet Explorer from MIME-sniffing a response away from the declared content-type"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY",
+									"name": "X-Frame-Options",
+									"description": "Clickjacking protection: \"deny\" - no rendering within a frame, \"sameorigin\" - no rendering if origin mismatch"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "1; mode=block",
+									"name": "X-XSS-Protection",
+									"description": "Cross-site scripting (XSS) filter"
+								}
+							],
+							"cookie": [],
+							"body": "{\"context\":{\"reCaptchaSiteKey\":\"6LdwxRcUAAAAABkhOGWQXhl9FsR27D5YUJRuGzx0\",\"shared\":{\"fooBar\":\"123...\"}},\"user\":{\"id\":2,\"username\":\"skpatel20@gmail.com\",\"roles\":[\"UNVERIFIED\"],\"tag\":{\"name\":\"Sanjay Patel\"},\"unverified\":true,\"blocked\":false,\"admin\":false,\"goodUser\":false,\"goodAdmin\":false}}"
+						},
+						{
+							"id": "6f023dfc-2374-4155-86b7-236b150c427e",
+							"name": "Get context using a wrong Authorization token",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer a-wrong-token",
+										"description": "A wrong token"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{lemonDemoUrl}}/api/core/context",
+									"host": [
+										"{{lemonDemoUrl}}"
+									],
+									"path": [
+										"api",
+										"core",
+										"context"
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true",
+									"name": "Access-Control-Allow-Credentials",
+									"description": "Indicates whether or not the response to the request can be exposed when the credentials flag is true. When used as part of a response to a preflight request, this indicates whether or not the actual request can be made using credentials."
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "Accept,Accept-Encoding,Accept-Language,Cache-Control,Connection,Content-Length,Content-Type,Cookie,Host,Origin,Pragma,Referer,User-Agent,x-requested-with,X-XSRF-TOKEN,Lemon-Authorization",
+									"name": "Access-Control-Allow-Headers",
+									"description": "Used in response to a preflight request to indicate which HTTP headers can be used when making the actual request."
+								},
+								{
+									"key": "Access-Control-Allow-Methods",
+									"value": "GET,HEAD,POST,PUT,DELETE,TRACE,OPTIONS,PATCH",
+									"name": "Access-Control-Allow-Methods",
+									"description": "Specifies the method or methods allowed when accessing the resource. This is used in response to a preflight request."
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://localhost:9000",
+									"name": "Access-Control-Allow-Origin",
+									"description": "Specifies a URI that may access the resource. For requests without credentials, the server may specify '*' as a wildcard, thereby allowing any origin to access the resource."
+								},
+								{
+									"key": "Access-Control-Expose-Headers",
+									"value": "Cache-Control,Connection,Content-Type,Date,Expires,Pragma,Server,Set-Cookie,Transfer-Encoding,X-Content-Type-Options,X-XSS-Protection,X-Frame-Options,X-Application-Context,X-XSRF-TOKEN",
+									"name": "Access-Control-Expose-Headers",
+									"description": "Lets a server whitelist headers that browsers are allowed to access."
+								},
+								{
+									"key": "Access-Control-Max-Age",
+									"value": "3600",
+									"name": "Access-Control-Max-Age",
+									"description": "Indicates how long the results of a preflight request can be cached in seconds."
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate",
+									"name": "Cache-Control",
+									"description": "Tells all caching mechanisms from server to client whether they may cache this object. It is measured in seconds"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json;charset=UTF-8",
+									"name": "Content-Type",
+									"description": "The mime type of this content"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 03 Mar 2018 06:21:34 GMT",
+									"name": "Date",
+									"description": "The date and time that the message was sent"
+								},
+								{
+									"key": "Expires",
+									"value": "0",
+									"name": "Expires",
+									"description": "Gives the date/time after which the response is considered stale"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache",
+									"name": "Pragma",
+									"description": "Implementation-specific headers that may have various effects anywhere along the request-response chain."
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked",
+									"name": "Transfer-Encoding",
+									"description": "The form of encoding used to safely transfer the entity to the user. Currently defined methods are: chunked, compress, deflate, gzip, identity."
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff",
+									"name": "X-Content-Type-Options",
+									"description": "The only defined value, \"nosniff\", prevents Internet Explorer from MIME-sniffing a response away from the declared content-type"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY",
+									"name": "X-Frame-Options",
+									"description": "Clickjacking protection: \"deny\" - no rendering within a frame, \"sameorigin\" - no rendering if origin mismatch"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "1; mode=block",
+									"name": "X-XSS-Protection",
+									"description": "Cross-site scripting (XSS) filter"
+								}
+							],
+							"cookie": [],
+							"body": "{\"timestamp\":\"2018-03-03T06:21:34.748+0000\",\"status\":401,\"error\":\"Unauthorized\",\"message\":\"Authentication Failed: Invalid JWT serialization: Missing dot delimiter(s)\",\"path\":\"/api/core/context\"}"
+						},
+						{
+							"id": "761ee1eb-aaa5-48ae-ac7b-d91a666f7ae1",
+							"name": "Get context without Authorization header",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{lemonDemoUrl}}/api/core/context",
+									"host": [
+										"{{lemonDemoUrl}}"
+									],
+									"path": [
+										"api",
+										"core",
+										"context"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true",
+									"name": "Access-Control-Allow-Credentials",
+									"description": "Indicates whether or not the response to the request can be exposed when the credentials flag is true. When used as part of a response to a preflight request, this indicates whether or not the actual request can be made using credentials."
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "Accept,Accept-Encoding,Accept-Language,Cache-Control,Connection,Content-Length,Content-Type,Cookie,Host,Origin,Pragma,Referer,User-Agent,x-requested-with,X-XSRF-TOKEN,Lemon-Authorization",
+									"name": "Access-Control-Allow-Headers",
+									"description": "Used in response to a preflight request to indicate which HTTP headers can be used when making the actual request."
+								},
+								{
+									"key": "Access-Control-Allow-Methods",
+									"value": "GET,HEAD,POST,PUT,DELETE,TRACE,OPTIONS,PATCH",
+									"name": "Access-Control-Allow-Methods",
+									"description": "Specifies the method or methods allowed when accessing the resource. This is used in response to a preflight request."
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://localhost:9000",
+									"name": "Access-Control-Allow-Origin",
+									"description": "Specifies a URI that may access the resource. For requests without credentials, the server may specify '*' as a wildcard, thereby allowing any origin to access the resource."
+								},
+								{
+									"key": "Access-Control-Expose-Headers",
+									"value": "Cache-Control,Connection,Content-Type,Date,Expires,Pragma,Server,Set-Cookie,Transfer-Encoding,X-Content-Type-Options,X-XSS-Protection,X-Frame-Options,X-Application-Context,X-XSRF-TOKEN",
+									"name": "Access-Control-Expose-Headers",
+									"description": "Lets a server whitelist headers that browsers are allowed to access."
+								},
+								{
+									"key": "Access-Control-Max-Age",
+									"value": "3600",
+									"name": "Access-Control-Max-Age",
+									"description": "Indicates how long the results of a preflight request can be cached in seconds."
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate",
+									"name": "Cache-Control",
+									"description": "Tells all caching mechanisms from server to client whether they may cache this object. It is measured in seconds"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json;charset=UTF-8",
+									"name": "Content-Type",
+									"description": "The mime type of this content"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 03 Mar 2018 01:24:33 GMT",
+									"name": "Date",
+									"description": "The date and time that the message was sent"
+								},
+								{
+									"key": "Expires",
+									"value": "0",
+									"name": "Expires",
+									"description": "Gives the date/time after which the response is considered stale"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache",
+									"name": "Pragma",
+									"description": "Implementation-specific headers that may have various effects anywhere along the request-response chain."
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked",
+									"name": "Transfer-Encoding",
+									"description": "The form of encoding used to safely transfer the entity to the user. Currently defined methods are: chunked, compress, deflate, gzip, identity."
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff",
+									"name": "X-Content-Type-Options",
+									"description": "The only defined value, \"nosniff\", prevents Internet Explorer from MIME-sniffing a response away from the declared content-type"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY",
+									"name": "X-Frame-Options",
+									"description": "Clickjacking protection: \"deny\" - no rendering within a frame, \"sameorigin\" - no rendering if origin mismatch"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "1; mode=block",
+									"name": "X-XSS-Protection",
+									"description": "Cross-site scripting (XSS) filter"
+								}
+							],
+							"cookie": [],
+							"body": "{\"context\":{\"reCaptchaSiteKey\":\"  \",\"shared\":{\"fooBar\":\"123...\"}}}"
+						}
+					]
+				},
+				{
+					"name": "Google SignUp / SignIn",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{lemonDemoUrl}}/oauth2/authorization/google",
+							"host": [
+								"{{lemonDemoUrl}}"
+							],
+							"path": [
+								"oauth2",
+								"authorization",
+								"google"
+							]
+						},
+						"description": "Front-ends can use this URL to redirect the user to logging in using Google. On successful Google authentication, if the email id of the user will not be found in our database, a new user will be created (and a link will be mailed to him for setting up a password, in case he needs username/password login sometime in future).\n\nUpon successful authentication, the user will be reirected to _http://front-end-app-url/social-login-success?token=short-lived-token_\n\nThe front-end should use the _short-lived-token_ above and call `GET /context` to receive the user data and a longer term token.\n\nThe `front-end-app-url` above would be `localhost:9000` by default. To change it, define an application property as below:\n\n```\nlemon.oauth2-authentication-success-url: http://your-front-end-app-url/your-social-login-success?token=\n```\n\nIn case a front-end needs to chanage the _authentication-success-url_ dynamically, it can pass the url as a `lemon_redirect_uri` parameter to the request, e.g.\n```\nGET /oauth2/authorization/google?lemon_redirect_uri=http://your-front-end-app-url/dynamic-social-login-success?token=\n```\n\n### References\nLooking at [example front-end applications](https://github.com/naturalprogrammer/spring-lemon#documentation-and-resources) might help knowing how exactly front-ends could implement this."
+					},
+					"response": []
+				},
+				{
+					"name": "Facebook SignUp / SignIn",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{lemonDemoUrl}}/oauth2/authorization/facebook",
+							"host": [
+								"{{lemonDemoUrl}}"
+							],
+							"path": [
+								"oauth2",
+								"authorization",
+								"facebook"
+							]
+						},
+						"description": "Similar to Google SignUp/SignIn."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User Module",
+			"description": "",
+			"item": [
+				{
+					"name": "Sign up",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.environment.set(\"registeredEmail\", \"skpatel20+lemon\" + Math.floor(Math.random() * 10000000) + \"@example.com\");"
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Signup\"] = responseCode.code === 201;",
+									"",
+									"// Set userId and email",
+									"if (responseCode.code === 201) {",
+									"    postman.setEnvironmentVariable(\"userAuthHeader\", postman.getResponseHeader(\"Lemon-Authorization\"));",
+									"    postman.setEnvironmentVariable(\"userId\", JSON.parse(responseBody).id);",
+									"    postman.setEnvironmentVariable(\"userEmail\", JSON.parse(responseBody).username);",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"{{registeredEmail}}\",\r\n    \"password\": \"sanjay\",\r\n    \"name\": \"Sample User\",\r\n    \"captchaResponse\": null\r\n}"
+						},
+						"url": {
+							"raw": "{{lemonDemoUrl}}/api/core/users",
+							"host": [
+								"{{lemonDemoUrl}}"
+							],
+							"path": [
+								"api",
+								"core",
+								"users"
+							]
+						},
+						"description": "Signs a new user up, and returns a `201` response with user data and an Authorization token in the _Lemon-Authorization_ response parameter. A verification mail as well is sent to his email. In case of validation errors, returns a 422 response with error data.\n\nProvide the `captchaResponse` field if you want captcha validation. Sign up let’s you use [reCAPTCHA](https://developers.google.com/recaptcha/) from Google. If you use it, `captchaResponse` field should hold the captcha response. To use it,\n\n1. At the server side, set a couple of properties, as described in the Spring Lemon getting started guide.\n1. At the client side, for an AngularJS client, [angular-recaptcha](https://github.com/VividCortex/angular-recaptcha) works great. Remember to send the captcha response in the captchaResponse field.\n\nIf you don’t want Captcha, e.g. in automated tests, just don’t provide the captcha related properties in application.yml."
+					},
+					"response": [
+						{
+							"id": "e7d318ce-ae30-4120-a3b2-4207ffcf6661",
+							"name": "Sign up with invalid data",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"email\": \"abc\",\r\n    \"password\": \"user1\",\r\n    \"name\": null,\r\n    \"captchaResponse\": null\r\n}"
+								},
+								"url": {
+									"raw": "{{lemonDemoUrl}}/api/core/users",
+									"host": [
+										"{{lemonDemoUrl}}"
+									],
+									"path": [
+										"api",
+										"core",
+										"users"
+									]
+								}
+							},
+							"status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+							"code": 422,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true",
+									"name": "Access-Control-Allow-Credentials",
+									"description": "Indicates whether or not the response to the request can be exposed when the credentials flag is true. When used as part of a response to a preflight request, this indicates whether or not the actual request can be made using credentials."
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "Accept,Accept-Encoding,Accept-Language,Cache-Control,Connection,Content-Length,Content-Type,Cookie,Host,Origin,Pragma,Referer,User-Agent,x-requested-with,X-XSRF-TOKEN,Lemon-Authorization",
+									"name": "Access-Control-Allow-Headers",
+									"description": "Used in response to a preflight request to indicate which HTTP headers can be used when making the actual request."
+								},
+								{
+									"key": "Access-Control-Allow-Methods",
+									"value": "GET,HEAD,POST,PUT,DELETE,TRACE,OPTIONS,PATCH",
+									"name": "Access-Control-Allow-Methods",
+									"description": "Specifies the method or methods allowed when accessing the resource. This is used in response to a preflight request."
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://localhost:9000",
+									"name": "Access-Control-Allow-Origin",
+									"description": "Specifies a URI that may access the resource. For requests without credentials, the server may specify '*' as a wildcard, thereby allowing any origin to access the resource."
+								},
+								{
+									"key": "Access-Control-Expose-Headers",
+									"value": "Cache-Control,Connection,Content-Type,Date,Expires,Pragma,Server,Set-Cookie,Transfer-Encoding,X-Content-Type-Options,X-XSS-Protection,X-Frame-Options,X-Application-Context,X-XSRF-TOKEN",
+									"name": "Access-Control-Expose-Headers",
+									"description": "Lets a server whitelist headers that browsers are allowed to access."
+								},
+								{
+									"key": "Access-Control-Max-Age",
+									"value": "3600",
+									"name": "Access-Control-Max-Age",
+									"description": "Indicates how long the results of a preflight request can be cached in seconds."
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate",
+									"name": "Cache-Control",
+									"description": "Tells all caching mechanisms from server to client whether they may cache this object. It is measured in seconds"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json;charset=UTF-8",
+									"name": "Content-Type",
+									"description": "The mime type of this content"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 03 Mar 2018 06:53:01 GMT",
+									"name": "Date",
+									"description": "The date and time that the message was sent"
+								},
+								{
+									"key": "Expires",
+									"value": "0",
+									"name": "Expires",
+									"description": "Gives the date/time after which the response is considered stale"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache",
+									"name": "Pragma",
+									"description": "Implementation-specific headers that may have various effects anywhere along the request-response chain."
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked",
+									"name": "Transfer-Encoding",
+									"description": "The form of encoding used to safely transfer the entity to the user. Currently defined methods are: chunked, compress, deflate, gzip, identity."
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff",
+									"name": "X-Content-Type-Options",
+									"description": "The only defined value, \"nosniff\", prevents Internet Explorer from MIME-sniffing a response away from the declared content-type"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY",
+									"name": "X-Frame-Options",
+									"description": "Clickjacking protection: \"deny\" - no rendering within a frame, \"sameorigin\" - no rendering if origin mismatch"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "1; mode=block",
+									"name": "X-XSS-Protection",
+									"description": "Cross-site scripting (XSS) filter"
+								}
+							],
+							"cookie": [],
+							"body": "{\"exception\":\"ConstraintViolationException\",\"error\":\"Unprocessable Entity\",\"message\":\"Validation Error\",\"status\":422,\"errors\":[{\"field\":\"user.email\",\"code\":\"{com.naturalprogrammer.spring.invalid.email}\",\"message\":\"Not a well formed email address\"},{\"field\":\"user.password\",\"code\":\"{com.naturalprogrammer.spring.invalid.password.size}\",\"message\":\"Password must be between 6 and 50 characters\"},{\"field\":\"user.name\",\"code\":\"{blank.name}\",\"message\":\"Name required\"},{\"field\":\"user.email\",\"code\":\"{com.naturalprogrammer.spring.invalid.email.size}\",\"message\":\"Email must be between 4 and 250 characters\"}]}"
+						},
+						{
+							"id": "ee65ea2e-743a-4135-bbab-fad97ce3c06f",
+							"name": "Sign up",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"email\": \"{{registeredEmail}}\",\r\n    \"password\": \"user123\",\r\n    \"name\": \"Sample User\",\r\n    \"captchaResponse\": null\r\n}"
+								},
+								"url": {
+									"raw": "{{lemonDemoUrl}}/api/core/users",
+									"host": [
+										"{{lemonDemoUrl}}"
+									],
+									"path": [
+										"api",
+										"core",
+										"users"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true",
+									"name": "Access-Control-Allow-Credentials",
+									"description": "Indicates whether or not the response to the request can be exposed when the credentials flag is true. When used as part of a response to a preflight request, this indicates whether or not the actual request can be made using credentials."
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "Accept,Accept-Encoding,Accept-Language,Cache-Control,Connection,Content-Length,Content-Type,Cookie,Host,Origin,Pragma,Referer,User-Agent,x-requested-with,X-XSRF-TOKEN,Lemon-Authorization",
+									"name": "Access-Control-Allow-Headers",
+									"description": "Used in response to a preflight request to indicate which HTTP headers can be used when making the actual request."
+								},
+								{
+									"key": "Access-Control-Allow-Methods",
+									"value": "GET,HEAD,POST,PUT,DELETE,TRACE,OPTIONS,PATCH",
+									"name": "Access-Control-Allow-Methods",
+									"description": "Specifies the method or methods allowed when accessing the resource. This is used in response to a preflight request."
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://localhost:9000",
+									"name": "Access-Control-Allow-Origin",
+									"description": "Specifies a URI that may access the resource. For requests without credentials, the server may specify '*' as a wildcard, thereby allowing any origin to access the resource."
+								},
+								{
+									"key": "Access-Control-Expose-Headers",
+									"value": "Cache-Control,Connection,Content-Type,Date,Expires,Pragma,Server,Set-Cookie,Transfer-Encoding,X-Content-Type-Options,X-XSS-Protection,X-Frame-Options,X-Application-Context,X-XSRF-TOKEN",
+									"name": "Access-Control-Expose-Headers",
+									"description": "Lets a server whitelist headers that browsers are allowed to access."
+								},
+								{
+									"key": "Access-Control-Max-Age",
+									"value": "3600",
+									"name": "Access-Control-Max-Age",
+									"description": "Indicates how long the results of a preflight request can be cached in seconds."
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate",
+									"name": "Cache-Control",
+									"description": "Tells all caching mechanisms from server to client whether they may cache this object. It is measured in seconds"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json;charset=UTF-8",
+									"name": "Content-Type",
+									"description": "The mime type of this content"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 03 Mar 2018 06:50:56 GMT",
+									"name": "Date",
+									"description": "The date and time that the message was sent"
+								},
+								{
+									"key": "Expires",
+									"value": "0",
+									"name": "Expires",
+									"description": "Gives the date/time after which the response is considered stale"
+								},
+								{
+									"key": "Lemon-Authorization",
+									"value": "Bearer eyJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwiYWxnIjoiZGlyIn0..TSLs6gmlI5PkGrAuu7dwiA.1jOzgzLUGzR5h_blEA2suPJeXOCG2tjekE2SYke-YUYdc8YGhlge4UGG3Lq0w-1LAITXVOgopPIaY2mYbw5-eY4PaszlUDmwkEjg3ehxSnI8iUhb4SaBCn82DRskiyBG66_iR_BZmj8V-ne5c_Poww.iLYs34fnij_z-GZjMFuMwg",
+									"name": "Lemon-Authorization",
+									"description": "Custom header"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache",
+									"name": "Pragma",
+									"description": "Implementation-specific headers that may have various effects anywhere along the request-response chain."
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked",
+									"name": "Transfer-Encoding",
+									"description": "The form of encoding used to safely transfer the entity to the user. Currently defined methods are: chunked, compress, deflate, gzip, identity."
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff",
+									"name": "X-Content-Type-Options",
+									"description": "The only defined value, \"nosniff\", prevents Internet Explorer from MIME-sniffing a response away from the declared content-type"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY",
+									"name": "X-Frame-Options",
+									"description": "Clickjacking protection: \"deny\" - no rendering within a frame, \"sameorigin\" - no rendering if origin mismatch"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "1; mode=block",
+									"name": "X-XSS-Protection",
+									"description": "Cross-site scripting (XSS) filter"
+								}
+							],
+							"cookie": [],
+							"body": "{\"id\":2,\"username\":\"skpatel20+lemon1842637@example.com\",\"roles\":[\"UNVERIFIED\"],\"tag\":{\"name\":\"Sample User\"},\"unverified\":true,\"blocked\":false,\"admin\":false,\"goodUser\":false,\"goodAdmin\":false}"
+						}
+					]
+				},
+				{
+					"name": "Resend verification mail",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Resend verification mail\"] = responseCode.code === 204;",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{userAuthHeader}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{lemonDemoUrl}}/api/core/users/{{userId}}/resend-verification-mail",
+							"host": [
+								"{{lemonDemoUrl}}"
+							],
+							"path": [
+								"api",
+								"core",
+								"users",
+								"{{userId}}",
+								"resend-verification-mail"
+							]
+						},
+						"description": "A verification mail is sent to users upon sign up. But, sometimes they may miss it. So, when a unverified user signs in, you may like to show him a button or something to resend the verification mail. When the user clicks on that, this endpoint is to be called to resend a verification mail.\n\nApart from self, an ADMIN is also permitted to resend verification mail to any unverified user.\n\nReturns `204` on success."
+					},
+					"response": [
+						{
+							"id": "7b70613c-b89e-45e4-b641-4ccfbde839d8",
+							"name": "Resend verification mail",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{userAuthHeader}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{lemonDemoUrl}}/api/core/users/{{userId}}/resend-verification-mail",
+									"host": [
+										"{{lemonDemoUrl}}"
+									],
+									"path": [
+										"api",
+										"core",
+										"users",
+										"{{userId}}",
+										"resend-verification-mail"
+									]
+								}
+							},
+							"status": "No Content",
+							"code": 204,
+							"_postman_previewlanguage": "plain",
+							"header": [
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true",
+									"name": "Access-Control-Allow-Credentials",
+									"description": "Indicates whether or not the response to the request can be exposed when the credentials flag is true. When used as part of a response to a preflight request, this indicates whether or not the actual request can be made using credentials."
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "Accept,Accept-Encoding,Accept-Language,Cache-Control,Connection,Content-Length,Content-Type,Cookie,Host,Origin,Pragma,Referer,User-Agent,x-requested-with,X-XSRF-TOKEN,Lemon-Authorization",
+									"name": "Access-Control-Allow-Headers",
+									"description": "Used in response to a preflight request to indicate which HTTP headers can be used when making the actual request."
+								},
+								{
+									"key": "Access-Control-Allow-Methods",
+									"value": "GET,HEAD,POST,PUT,DELETE,TRACE,OPTIONS,PATCH",
+									"name": "Access-Control-Allow-Methods",
+									"description": "Specifies the method or methods allowed when accessing the resource. This is used in response to a preflight request."
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://localhost:9000",
+									"name": "Access-Control-Allow-Origin",
+									"description": "Specifies a URI that may access the resource. For requests without credentials, the server may specify '*' as a wildcard, thereby allowing any origin to access the resource."
+								},
+								{
+									"key": "Access-Control-Expose-Headers",
+									"value": "Cache-Control,Connection,Content-Type,Date,Expires,Pragma,Server,Set-Cookie,Transfer-Encoding,X-Content-Type-Options,X-XSS-Protection,X-Frame-Options,X-Application-Context,X-XSRF-TOKEN",
+									"name": "Access-Control-Expose-Headers",
+									"description": "Lets a server whitelist headers that browsers are allowed to access."
+								},
+								{
+									"key": "Access-Control-Max-Age",
+									"value": "3600",
+									"name": "Access-Control-Max-Age",
+									"description": "Indicates how long the results of a preflight request can be cached in seconds."
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate",
+									"name": "Cache-Control",
+									"description": "Tells all caching mechanisms from server to client whether they may cache this object. It is measured in seconds"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 03 Mar 2018 07:16:16 GMT",
+									"name": "Date",
+									"description": "The date and time that the message was sent"
+								},
+								{
+									"key": "Expires",
+									"value": "0",
+									"name": "Expires",
+									"description": "Gives the date/time after which the response is considered stale"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache",
+									"name": "Pragma",
+									"description": "Implementation-specific headers that may have various effects anywhere along the request-response chain."
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff",
+									"name": "X-Content-Type-Options",
+									"description": "The only defined value, \"nosniff\", prevents Internet Explorer from MIME-sniffing a response away from the declared content-type"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY",
+									"name": "X-Frame-Options",
+									"description": "Clickjacking protection: \"deny\" - no rendering within a frame, \"sameorigin\" - no rendering if origin mismatch"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "1; mode=block",
+									"name": "X-XSS-Protection",
+									"description": "Cross-site scripting (XSS) filter"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						}
+					]
+				},
+				{
+					"name": "Verify User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Verify user\"] = responseCode.code === 200;",
+									"",
+									"if (responseCode.code === 200)",
+									"    postman.setEnvironmentVariable(\"userAuthHeader\", postman.getResponseHeader(\"Lemon-Authorization\"));",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {},
+						"url": {
+							"raw": "{{lemonDemoUrl}}/api/core/users/{{userId}}/verification",
+							"host": [
+								"{{lemonDemoUrl}}"
+							],
+							"path": [
+								"api",
+								"core",
+								"users",
+								"{{userId}}",
+								"verification"
+							]
+						},
+						"description": "After a user signs up, he receives a verification mail. The mail contains a link with the userId and a verification code. Clicking on that takes the user to the front-end application, from where this endpoint should be called.\n\nReturns a `200` response upon success, along with updated user data and a new `Lemon-Authorization` token. In subsequent requests, this new token should be used. Old tokens would no more work."
+					},
+					"response": [
+						{
+							"id": "79277fc4-5434-4863-99b7-cf4529a4cbcf",
+							"name": "Verify User",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/x-www-form-urlencoded",
+										"disabled": false
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "code",
+											"value": "eyJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwiYWxnIjoiZGlyIn0..bgPz5wkdew5HThpgJgNiUA.HkHqjo4EUf9VOpzX5ugKmDmkKwFzFom87HBgSPvTNrqzD5ZoQs28IckTlLt867n4ZtkGtqWd340m5bLdKF3lqVrqcw1oQ7GVbtqMPatGtKn5c2ouPbscTKACQ_CPplSD62-25oZlHQus8bIa3SovkTVzV8oHuIO-C6NnUJ635wc.yc-ewibiFQ0HDUHp49R-4Q",
+											"description": "",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{lemonDemoUrl}}/api/core/users/{{userId}}/verification",
+									"host": [
+										"{{lemonDemoUrl}}"
+									],
+									"path": [
+										"api",
+										"core",
+										"users",
+										"{{userId}}",
+										"verification"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate",
+									"name": "Cache-Control",
+									"description": "Tells all caching mechanisms from server to client whether they may cache this object. It is measured in seconds"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json;charset=UTF-8",
+									"name": "Content-Type",
+									"description": "The mime type of this content"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 26 May 2018 12:58:20 GMT",
+									"name": "Date",
+									"description": "The date and time that the message was sent"
+								},
+								{
+									"key": "Expires",
+									"value": "0",
+									"name": "Expires",
+									"description": "Gives the date/time after which the response is considered stale"
+								},
+								{
+									"key": "Lemon-Authorization",
+									"value": "Bearer eyJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwiYWxnIjoiZGlyIn0..YKawRAwKMxBN_Ohz9k09FA.Sa5WokvHmgm_RVd3CTLrQTPShSET2m6Zbq-x9r46V_S0rmZOsaops0J3ZoNWy2EVFn5jh2tt10UwvjWOi8BXLKtE8QaT-hOZ3zil-S1nz-gKLZSUYK_m08LXJSsoPYq5VfmtVxaRxGriWqongpak3A.LqtQZgfp8srgb88VbmBsGw",
+									"name": "Lemon-Authorization",
+									"description": "Custom header"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache",
+									"name": "Pragma",
+									"description": "Implementation-specific headers that may have various effects anywhere along the request-response chain."
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked",
+									"name": "Transfer-Encoding",
+									"description": "The form of encoding used to safely transfer the entity to the user. Currently defined methods are: chunked, compress, deflate, gzip, identity."
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff",
+									"name": "X-Content-Type-Options",
+									"description": "The only defined value, \"nosniff\", prevents Internet Explorer from MIME-sniffing a response away from the declared content-type"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY",
+									"name": "X-Frame-Options",
+									"description": "Clickjacking protection: \"deny\" - no rendering within a frame, \"sameorigin\" - no rendering if origin mismatch"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "1; mode=block",
+									"name": "X-XSS-Protection",
+									"description": "Cross-site scripting (XSS) filter"
+								}
+							],
+							"cookie": [
+								{
+									"expires": "Sat May 26 2018 20:06:10 GMT+0530 (India Standard Time)",
+									"httpOnly": true,
+									"domain": "localhost",
+									"path": "/",
+									"secure": false,
+									"value": "rO0ABXNyAExvcmcuc3ByaW5nZnJhbWV3b3JrLnNlY3VyaXR5Lm9hdXRoMi5jb3JlLmVuZHBvaW50Lk9BdXRoMkF1dGhvcml6YXRpb25SZXF1ZXN0AAAAAAAAAfQCAAhMABRhZGRpdGlvbmFsUGFyYW1ldGVyc3QAD0xqYXZhL3V0aWwvTWFwO0wAFmF1dGhvcml6YXRpb25HcmFudFR5cGV0AEFMb3JnL3NwcmluZ2ZyYW1ld29yay9zZWN1cml0eS9vYXV0aDIvY29yZS9BdXRob3JpemF0aW9uR3JhbnRUeXBlO0wAEGF1dGhvcml6YXRpb25Vcml0ABJMamF2YS9sYW5nL1N0cmluZztMAAhjbGllbnRJZHEAfgADTAALcmVkaXJlY3RVcmlxAH4AA0wADHJlc3BvbnNlVHlwZXQAU0xvcmcvc3ByaW5nZnJhbWV3b3JrL3NlY3VyaXR5L29hdXRoMi9jb3JlL2VuZHBvaW50L09BdXRoMkF1dGhvcml6YXRpb25SZXNwb25zZVR5cGU7TAAGc2NvcGVzdAAPTGphdmEvdXRpbC9TZXQ7TAAFc3RhdGVxAH4AA3hwc3IAJWphdmEudXRpbC5Db2xsZWN0aW9ucyRVbm1vZGlmaWFibGVNYXDxpaj-dPUHQgIAAUwAAW1xAH4AAXhwc3IAF2phdmEudXRpbC5MaW5rZWRIYXNoTWFwNMBOXBBswPsCAAFaAAthY2Nlc3NPcmRlcnhyABFqYXZhLnV0aWwuSGFzaE1hcAUH2sHDFmDRAwACRgAKbG9hZEZhY3RvckkACXRocmVzaG9sZHhwP0AAAAAAAAF3CAAAAAIAAAABdAAPcmVnaXN0cmF0aW9uX2lkdAAIZmFjZWJvb2t4AHNyAD9vcmcuc3ByaW5nZnJhbWV3b3JrLnNlY3VyaXR5Lm9hdXRoMi5jb3JlLkF1dGhvcml6YXRpb25HcmFudFR5cGUAAAAAAAAB9AIAAUwABXZhbHVlcQB-AAN4cHQAEmF1dGhvcml6YXRpb25fY29kZXQAKmh0dHBzOi8vd3d3LmZhY2Vib29rLmNvbS92Mi44L2RpYWxvZy9vYXV0aHQAEDEyMzQwMjAxODY3MTg3NDF0ADBodHRwOi8vbG9jYWxob3N0OjgwODAvbG9naW4vb2F1dGgyL2NvZGUvZmFjZWJvb2tzcgBRb3JnLnNwcmluZ2ZyYW1ld29yay5zZWN1cml0eS5vYXV0aDIuY29yZS5lbmRwb2ludC5PQXV0aDJBdXRob3JpemF0aW9uUmVzcG9uc2VUeXBlAAAAAAAAAfQCAAFMAAV2YWx1ZXEAfgADeHB0AARjb2Rlc3IAJWphdmEudXRpbC5Db2xsZWN0aW9ucyRVbm1vZGlmaWFibGVTZXSAHZLRj5uAVQIAAHhyACxqYXZhLnV0aWwuQ29sbGVjdGlvbnMkVW5tb2RpZmlhYmxlQ29sbGVjdGlvbhlCAIDLXvceAgABTAABY3QAFkxqYXZhL3V0aWwvQ29sbGVjdGlvbjt4cHNyABdqYXZhLnV0aWwuTGlua2VkSGFzaFNldNhs11qV3SoeAgAAeHIAEWphdmEudXRpbC5IYXNoU2V0ukSFlZa4tzQDAAB4cHcMAAAAED9AAAAAAAACdAAOcHVibGljX3Byb2ZpbGV0AAVlbWFpbHh0ACxkM2ppcWU0ZXBfeVhHSWZoNUVNaTZ1ZGs3WFdXQnZ4V3hjQmYtNE5oZ3hjPQ==",
+									"key": "lemon_oauth2_authorization_request"
+								}
+							],
+							"body": "{\"id\":11,\"username\":\"skpatel20+lemon3382895@example.com\",\"roles\":[],\"tag\":{\"name\":\"Sample User\"},\"unverified\":false,\"blocked\":false,\"admin\":false,\"goodUser\":true,\"goodAdmin\":false}"
+						}
+					]
+				},
+				{
+					"name": "Forgot password",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Forgot password\"] = responseCode.code === 204;",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "email",
+									"value": "{{userEmail}}",
+									"description": "",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{lemonDemoUrl}}/api/core/forgot-password",
+							"host": [
+								"{{lemonDemoUrl}}"
+							],
+							"path": [
+								"api",
+								"core",
+								"forgot-password"
+							]
+						},
+						"description": "Calling this endpoint sends a link to the given email, with a code embedded. That link can be used by the user to reset his password (See next endpoint).\n\nReturns a `204` response."
+					},
+					"response": [
+						{
+							"id": "b7913835-3286-4c8f-b2c8-56f8432bf971",
+							"name": "Forgot password",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"name": "Content-Type",
+										"value": "application/x-www-form-urlencoded",
+										"disabled": false
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "email",
+											"value": "{{userEmail}}",
+											"description": "",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{lemonDemoUrl}}/api/core/forgot-password",
+									"host": [
+										"{{lemonDemoUrl}}"
+									],
+									"path": [
+										"api",
+										"core",
+										"forgot-password"
+									]
+								}
+							},
+							"status": "No Content",
+							"code": 204,
+							"_postman_previewlanguage": "plain",
+							"header": [
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate",
+									"name": "Cache-Control",
+									"description": "Tells all caching mechanisms from server to client whether they may cache this object. It is measured in seconds"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 26 May 2018 13:01:15 GMT",
+									"name": "Date",
+									"description": "The date and time that the message was sent"
+								},
+								{
+									"key": "Expires",
+									"value": "0",
+									"name": "Expires",
+									"description": "Gives the date/time after which the response is considered stale"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache",
+									"name": "Pragma",
+									"description": "Implementation-specific headers that may have various effects anywhere along the request-response chain."
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff",
+									"name": "X-Content-Type-Options",
+									"description": "The only defined value, \"nosniff\", prevents Internet Explorer from MIME-sniffing a response away from the declared content-type"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY",
+									"name": "X-Frame-Options",
+									"description": "Clickjacking protection: \"deny\" - no rendering within a frame, \"sameorigin\" - no rendering if origin mismatch"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "1; mode=block",
+									"name": "X-XSS-Protection",
+									"description": "Cross-site scripting (XSS) filter"
+								}
+							],
+							"cookie": [
+								{
+									"expires": "Sat May 26 2018 20:06:10 GMT+0530 (India Standard Time)",
+									"httpOnly": true,
+									"domain": "localhost",
+									"path": "/",
+									"secure": false,
+									"value": "rO0ABXNyAExvcmcuc3ByaW5nZnJhbWV3b3JrLnNlY3VyaXR5Lm9hdXRoMi5jb3JlLmVuZHBvaW50Lk9BdXRoMkF1dGhvcml6YXRpb25SZXF1ZXN0AAAAAAAAAfQCAAhMABRhZGRpdGlvbmFsUGFyYW1ldGVyc3QAD0xqYXZhL3V0aWwvTWFwO0wAFmF1dGhvcml6YXRpb25HcmFudFR5cGV0AEFMb3JnL3NwcmluZ2ZyYW1ld29yay9zZWN1cml0eS9vYXV0aDIvY29yZS9BdXRob3JpemF0aW9uR3JhbnRUeXBlO0wAEGF1dGhvcml6YXRpb25Vcml0ABJMamF2YS9sYW5nL1N0cmluZztMAAhjbGllbnRJZHEAfgADTAALcmVkaXJlY3RVcmlxAH4AA0wADHJlc3BvbnNlVHlwZXQAU0xvcmcvc3ByaW5nZnJhbWV3b3JrL3NlY3VyaXR5L29hdXRoMi9jb3JlL2VuZHBvaW50L09BdXRoMkF1dGhvcml6YXRpb25SZXNwb25zZVR5cGU7TAAGc2NvcGVzdAAPTGphdmEvdXRpbC9TZXQ7TAAFc3RhdGVxAH4AA3hwc3IAJWphdmEudXRpbC5Db2xsZWN0aW9ucyRVbm1vZGlmaWFibGVNYXDxpaj-dPUHQgIAAUwAAW1xAH4AAXhwc3IAF2phdmEudXRpbC5MaW5rZWRIYXNoTWFwNMBOXBBswPsCAAFaAAthY2Nlc3NPcmRlcnhyABFqYXZhLnV0aWwuSGFzaE1hcAUH2sHDFmDRAwACRgAKbG9hZEZhY3RvckkACXRocmVzaG9sZHhwP0AAAAAAAAF3CAAAAAIAAAABdAAPcmVnaXN0cmF0aW9uX2lkdAAIZmFjZWJvb2t4AHNyAD9vcmcuc3ByaW5nZnJhbWV3b3JrLnNlY3VyaXR5Lm9hdXRoMi5jb3JlLkF1dGhvcml6YXRpb25HcmFudFR5cGUAAAAAAAAB9AIAAUwABXZhbHVlcQB-AAN4cHQAEmF1dGhvcml6YXRpb25fY29kZXQAKmh0dHBzOi8vd3d3LmZhY2Vib29rLmNvbS92Mi44L2RpYWxvZy9vYXV0aHQAEDEyMzQwMjAxODY3MTg3NDF0ADBodHRwOi8vbG9jYWxob3N0OjgwODAvbG9naW4vb2F1dGgyL2NvZGUvZmFjZWJvb2tzcgBRb3JnLnNwcmluZ2ZyYW1ld29yay5zZWN1cml0eS5vYXV0aDIuY29yZS5lbmRwb2ludC5PQXV0aDJBdXRob3JpemF0aW9uUmVzcG9uc2VUeXBlAAAAAAAAAfQCAAFMAAV2YWx1ZXEAfgADeHB0AARjb2Rlc3IAJWphdmEudXRpbC5Db2xsZWN0aW9ucyRVbm1vZGlmaWFibGVTZXSAHZLRj5uAVQIAAHhyACxqYXZhLnV0aWwuQ29sbGVjdGlvbnMkVW5tb2RpZmlhYmxlQ29sbGVjdGlvbhlCAIDLXvceAgABTAABY3QAFkxqYXZhL3V0aWwvQ29sbGVjdGlvbjt4cHNyABdqYXZhLnV0aWwuTGlua2VkSGFzaFNldNhs11qV3SoeAgAAeHIAEWphdmEudXRpbC5IYXNoU2V0ukSFlZa4tzQDAAB4cHcMAAAAED9AAAAAAAACdAAOcHVibGljX3Byb2ZpbGV0AAVlbWFpbHh0ACxkM2ppcWU0ZXBfeVhHSWZoNUVNaTZ1ZGs3WFdXQnZ4V3hjQmYtNE5oZ3hjPQ==",
+									"key": "lemon_oauth2_authorization_request"
+								}
+							],
+							"body": ""
+						}
+					]
+				},
+				{
+					"name": "Reset password",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Reset password\"] = responseCode.code === 200;",
+									"",
+									"if (responseCode.code === 200)",
+									"    postman.setEnvironmentVariable(\"userAuthHeader\", postman.getResponseHeader(\"Lemon-Authorization\"));",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "newPassword",
+									"value": "a-new-password",
+									"description": "",
+									"type": "text"
+								},
+								{
+									"key": "code",
+									"value": "eyJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwiYWxnIjoiZGlyIn0..HoDu5pdYAx8fS7p9PKCl5g.jRNA1Vu0ZydW9G4bDd6f7GirpNahXtytXke9i7M5xmrsTqUvCitotGwOm3NwhmyIUcBeRTS53lx1SCxDa8cuv9McD2v2exRfKhnNu1i7cG1E10Cmb4m9nuDuAP2LviXpUOLJyYUFRGrxQOrCwwkMNQ.iN6xYjU1Xe-w9O4VDKDEOA",
+									"description": "",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{lemonDemoUrl}}/api/core/reset-password",
+							"host": [
+								"{{lemonDemoUrl}}"
+							],
+							"path": [
+								"api",
+								"core",
+								"reset-password"
+							]
+						},
+						"description": "In the previous endpoint, we saw how a user gets a link with a code embedded for resetting his password. Clicking on that link should take him to a front-end form, where he should enter a new password. Upon submitting that form, this endpoint should be called.\n\nReturns a `200` response with the user details and a new Authorization token in the `Lemon-Authorization` header. The new token shoukd be used for authorization henceforward. Old tokens won't work anymore."
+					},
+					"response": [
+						{
+							"id": "bbc954f4-d67a-421c-9045-58cf125ecd31",
+							"name": "Reset password",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"name": "Content-Type",
+										"value": "application/x-www-form-urlencoded",
+										"disabled": false
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "newPassword",
+											"value": "a-new-password",
+											"description": "",
+											"type": "text"
+										},
+										{
+											"key": "code",
+											"value": "eyJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwiYWxnIjoiZGlyIn0..HoDu5pdYAx8fS7p9PKCl5g.jRNA1Vu0ZydW9G4bDd6f7GirpNahXtytXke9i7M5xmrsTqUvCitotGwOm3NwhmyIUcBeRTS53lx1SCxDa8cuv9McD2v2exRfKhnNu1i7cG1E10Cmb4m9nuDuAP2LviXpUOLJyYUFRGrxQOrCwwkMNQ.iN6xYjU1Xe-w9O4VDKDEOA",
+											"description": "",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{lemonDemoUrl}}/api/core/reset-password",
+									"host": [
+										"{{lemonDemoUrl}}"
+									],
+									"path": [
+										"api",
+										"core",
+										"reset-password"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate",
+									"name": "Cache-Control",
+									"description": "Tells all caching mechanisms from server to client whether they may cache this object. It is measured in seconds"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json;charset=UTF-8",
+									"name": "Content-Type",
+									"description": "The mime type of this content"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 26 May 2018 13:03:22 GMT",
+									"name": "Date",
+									"description": "The date and time that the message was sent"
+								},
+								{
+									"key": "Expires",
+									"value": "0",
+									"name": "Expires",
+									"description": "Gives the date/time after which the response is considered stale"
+								},
+								{
+									"key": "Lemon-Authorization",
+									"value": "Bearer eyJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwiYWxnIjoiZGlyIn0..EYfq9lEyJSw8QaWo-Dydhw.IDKnfUnbIEViYvvnjnr8BoC8QKUrCz04tUfGaWVWoXgppKHX8WmAjt90ItzN_rNh8pxP65deqHFZYastmiXIBm7FkxvR1ex7KmcUtB58BlPFw8mYpLnJgZXu1swJ5x4JQ7_8oG9y5pP9r0x4O0uL4Q.zSgIzCBcBlofxPsfRbdtmQ",
+									"name": "Lemon-Authorization",
+									"description": "Custom header"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache",
+									"name": "Pragma",
+									"description": "Implementation-specific headers that may have various effects anywhere along the request-response chain."
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked",
+									"name": "Transfer-Encoding",
+									"description": "The form of encoding used to safely transfer the entity to the user. Currently defined methods are: chunked, compress, deflate, gzip, identity."
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff",
+									"name": "X-Content-Type-Options",
+									"description": "The only defined value, \"nosniff\", prevents Internet Explorer from MIME-sniffing a response away from the declared content-type"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY",
+									"name": "X-Frame-Options",
+									"description": "Clickjacking protection: \"deny\" - no rendering within a frame, \"sameorigin\" - no rendering if origin mismatch"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "1; mode=block",
+									"name": "X-XSS-Protection",
+									"description": "Cross-site scripting (XSS) filter"
+								}
+							],
+							"cookie": [
+								{
+									"expires": "Sat May 26 2018 20:06:10 GMT+0530 (India Standard Time)",
+									"httpOnly": true,
+									"domain": "localhost",
+									"path": "/",
+									"secure": false,
+									"value": "rO0ABXNyAExvcmcuc3ByaW5nZnJhbWV3b3JrLnNlY3VyaXR5Lm9hdXRoMi5jb3JlLmVuZHBvaW50Lk9BdXRoMkF1dGhvcml6YXRpb25SZXF1ZXN0AAAAAAAAAfQCAAhMABRhZGRpdGlvbmFsUGFyYW1ldGVyc3QAD0xqYXZhL3V0aWwvTWFwO0wAFmF1dGhvcml6YXRpb25HcmFudFR5cGV0AEFMb3JnL3NwcmluZ2ZyYW1ld29yay9zZWN1cml0eS9vYXV0aDIvY29yZS9BdXRob3JpemF0aW9uR3JhbnRUeXBlO0wAEGF1dGhvcml6YXRpb25Vcml0ABJMamF2YS9sYW5nL1N0cmluZztMAAhjbGllbnRJZHEAfgADTAALcmVkaXJlY3RVcmlxAH4AA0wADHJlc3BvbnNlVHlwZXQAU0xvcmcvc3ByaW5nZnJhbWV3b3JrL3NlY3VyaXR5L29hdXRoMi9jb3JlL2VuZHBvaW50L09BdXRoMkF1dGhvcml6YXRpb25SZXNwb25zZVR5cGU7TAAGc2NvcGVzdAAPTGphdmEvdXRpbC9TZXQ7TAAFc3RhdGVxAH4AA3hwc3IAJWphdmEudXRpbC5Db2xsZWN0aW9ucyRVbm1vZGlmaWFibGVNYXDxpaj-dPUHQgIAAUwAAW1xAH4AAXhwc3IAF2phdmEudXRpbC5MaW5rZWRIYXNoTWFwNMBOXBBswPsCAAFaAAthY2Nlc3NPcmRlcnhyABFqYXZhLnV0aWwuSGFzaE1hcAUH2sHDFmDRAwACRgAKbG9hZEZhY3RvckkACXRocmVzaG9sZHhwP0AAAAAAAAF3CAAAAAIAAAABdAAPcmVnaXN0cmF0aW9uX2lkdAAIZmFjZWJvb2t4AHNyAD9vcmcuc3ByaW5nZnJhbWV3b3JrLnNlY3VyaXR5Lm9hdXRoMi5jb3JlLkF1dGhvcml6YXRpb25HcmFudFR5cGUAAAAAAAAB9AIAAUwABXZhbHVlcQB-AAN4cHQAEmF1dGhvcml6YXRpb25fY29kZXQAKmh0dHBzOi8vd3d3LmZhY2Vib29rLmNvbS92Mi44L2RpYWxvZy9vYXV0aHQAEDEyMzQwMjAxODY3MTg3NDF0ADBodHRwOi8vbG9jYWxob3N0OjgwODAvbG9naW4vb2F1dGgyL2NvZGUvZmFjZWJvb2tzcgBRb3JnLnNwcmluZ2ZyYW1ld29yay5zZWN1cml0eS5vYXV0aDIuY29yZS5lbmRwb2ludC5PQXV0aDJBdXRob3JpemF0aW9uUmVzcG9uc2VUeXBlAAAAAAAAAfQCAAFMAAV2YWx1ZXEAfgADeHB0AARjb2Rlc3IAJWphdmEudXRpbC5Db2xsZWN0aW9ucyRVbm1vZGlmaWFibGVTZXSAHZLRj5uAVQIAAHhyACxqYXZhLnV0aWwuQ29sbGVjdGlvbnMkVW5tb2RpZmlhYmxlQ29sbGVjdGlvbhlCAIDLXvceAgABTAABY3QAFkxqYXZhL3V0aWwvQ29sbGVjdGlvbjt4cHNyABdqYXZhLnV0aWwuTGlua2VkSGFzaFNldNhs11qV3SoeAgAAeHIAEWphdmEudXRpbC5IYXNoU2V0ukSFlZa4tzQDAAB4cHcMAAAAED9AAAAAAAACdAAOcHVibGljX3Byb2ZpbGV0AAVlbWFpbHh0ACxkM2ppcWU0ZXBfeVhHSWZoNUVNaTZ1ZGs3WFdXQnZ4V3hjQmYtNE5oZ3hjPQ==",
+									"key": "lemon_oauth2_authorization_request"
+								}
+							],
+							"body": "{\"id\":11,\"username\":\"skpatel20+lemon3382895@example.com\",\"roles\":[],\"tag\":{\"name\":\"Sample User\"},\"unverified\":false,\"blocked\":false,\"admin\":false,\"goodUser\":true,\"goodAdmin\":false}"
+						}
+					]
+				},
+				{
+					"name": "Fetch user by email",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Fetch user by email\"] = responseCode.code === 200;",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{userAuthHeader}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "email",
+									"value": "{{userEmail}}",
+									"description": "",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{lemonDemoUrl}}/api/core/users/fetch-by-email",
+							"host": [
+								"{{lemonDemoUrl}}"
+							],
+							"path": [
+								"api",
+								"core",
+								"users",
+								"fetch-by-email"
+							]
+						},
+						"description": "E.g. a good ADMIN fetching a user, maybe for changing its roles. The confidential fields would not be returned in case the current user is neither self nor an ADMIN.\n\nReturns a `200` response."
+					},
+					"response": [
+						{
+							"id": "d1ccdda8-bf5d-446a-a468-e1fbc607e26c",
+							"name": "Fetch user by email - Others",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{userAuthHeader}}",
+										"disabled": true
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/x-www-form-urlencoded",
+										"disabled": false
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "email",
+											"value": "{{userEmail}}",
+											"description": "",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{lemonDemoUrl}}/api/core/users/fetch-by-email",
+									"host": [
+										"{{lemonDemoUrl}}"
+									],
+									"path": [
+										"api",
+										"core",
+										"users",
+										"fetch-by-email"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate",
+									"name": "Cache-Control",
+									"description": "Tells all caching mechanisms from server to client whether they may cache this object. It is measured in seconds"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json;charset=UTF-8",
+									"name": "Content-Type",
+									"description": "The mime type of this content"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 26 May 2018 13:06:17 GMT",
+									"name": "Date",
+									"description": "The date and time that the message was sent"
+								},
+								{
+									"key": "Expires",
+									"value": "0",
+									"name": "Expires",
+									"description": "Gives the date/time after which the response is considered stale"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache",
+									"name": "Pragma",
+									"description": "Implementation-specific headers that may have various effects anywhere along the request-response chain."
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked",
+									"name": "Transfer-Encoding",
+									"description": "The form of encoding used to safely transfer the entity to the user. Currently defined methods are: chunked, compress, deflate, gzip, identity."
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff",
+									"name": "X-Content-Type-Options",
+									"description": "The only defined value, \"nosniff\", prevents Internet Explorer from MIME-sniffing a response away from the declared content-type"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY",
+									"name": "X-Frame-Options",
+									"description": "Clickjacking protection: \"deny\" - no rendering within a frame, \"sameorigin\" - no rendering if origin mismatch"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "1; mode=block",
+									"name": "X-XSS-Protection",
+									"description": "Cross-site scripting (XSS) filter"
+								}
+							],
+							"cookie": [
+								{
+									"expires": "Sat May 26 2018 20:06:10 GMT+0530 (India Standard Time)",
+									"httpOnly": true,
+									"domain": "localhost",
+									"path": "/",
+									"secure": false,
+									"value": "rO0ABXNyAExvcmcuc3ByaW5nZnJhbWV3b3JrLnNlY3VyaXR5Lm9hdXRoMi5jb3JlLmVuZHBvaW50Lk9BdXRoMkF1dGhvcml6YXRpb25SZXF1ZXN0AAAAAAAAAfQCAAhMABRhZGRpdGlvbmFsUGFyYW1ldGVyc3QAD0xqYXZhL3V0aWwvTWFwO0wAFmF1dGhvcml6YXRpb25HcmFudFR5cGV0AEFMb3JnL3NwcmluZ2ZyYW1ld29yay9zZWN1cml0eS9vYXV0aDIvY29yZS9BdXRob3JpemF0aW9uR3JhbnRUeXBlO0wAEGF1dGhvcml6YXRpb25Vcml0ABJMamF2YS9sYW5nL1N0cmluZztMAAhjbGllbnRJZHEAfgADTAALcmVkaXJlY3RVcmlxAH4AA0wADHJlc3BvbnNlVHlwZXQAU0xvcmcvc3ByaW5nZnJhbWV3b3JrL3NlY3VyaXR5L29hdXRoMi9jb3JlL2VuZHBvaW50L09BdXRoMkF1dGhvcml6YXRpb25SZXNwb25zZVR5cGU7TAAGc2NvcGVzdAAPTGphdmEvdXRpbC9TZXQ7TAAFc3RhdGVxAH4AA3hwc3IAJWphdmEudXRpbC5Db2xsZWN0aW9ucyRVbm1vZGlmaWFibGVNYXDxpaj-dPUHQgIAAUwAAW1xAH4AAXhwc3IAF2phdmEudXRpbC5MaW5rZWRIYXNoTWFwNMBOXBBswPsCAAFaAAthY2Nlc3NPcmRlcnhyABFqYXZhLnV0aWwuSGFzaE1hcAUH2sHDFmDRAwACRgAKbG9hZEZhY3RvckkACXRocmVzaG9sZHhwP0AAAAAAAAF3CAAAAAIAAAABdAAPcmVnaXN0cmF0aW9uX2lkdAAIZmFjZWJvb2t4AHNyAD9vcmcuc3ByaW5nZnJhbWV3b3JrLnNlY3VyaXR5Lm9hdXRoMi5jb3JlLkF1dGhvcml6YXRpb25HcmFudFR5cGUAAAAAAAAB9AIAAUwABXZhbHVlcQB-AAN4cHQAEmF1dGhvcml6YXRpb25fY29kZXQAKmh0dHBzOi8vd3d3LmZhY2Vib29rLmNvbS92Mi44L2RpYWxvZy9vYXV0aHQAEDEyMzQwMjAxODY3MTg3NDF0ADBodHRwOi8vbG9jYWxob3N0OjgwODAvbG9naW4vb2F1dGgyL2NvZGUvZmFjZWJvb2tzcgBRb3JnLnNwcmluZ2ZyYW1ld29yay5zZWN1cml0eS5vYXV0aDIuY29yZS5lbmRwb2ludC5PQXV0aDJBdXRob3JpemF0aW9uUmVzcG9uc2VUeXBlAAAAAAAAAfQCAAFMAAV2YWx1ZXEAfgADeHB0AARjb2Rlc3IAJWphdmEudXRpbC5Db2xsZWN0aW9ucyRVbm1vZGlmaWFibGVTZXSAHZLRj5uAVQIAAHhyACxqYXZhLnV0aWwuQ29sbGVjdGlvbnMkVW5tb2RpZmlhYmxlQ29sbGVjdGlvbhlCAIDLXvceAgABTAABY3QAFkxqYXZhL3V0aWwvQ29sbGVjdGlvbjt4cHNyABdqYXZhLnV0aWwuTGlua2VkSGFzaFNldNhs11qV3SoeAgAAeHIAEWphdmEudXRpbC5IYXNoU2V0ukSFlZa4tzQDAAB4cHcMAAAAED9AAAAAAAACdAAOcHVibGljX3Byb2ZpbGV0AAVlbWFpbHh0ACxkM2ppcWU0ZXBfeVhHSWZoNUVNaTZ1ZGs3WFdXQnZ4V3hjQmYtNE5oZ3hjPQ==",
+									"key": "lemon_oauth2_authorization_request"
+								}
+							],
+							"body": "{\"id\":11,\"version\":2,\"roles\":[],\"name\":\"Sample User\",\"new\":false}"
+						},
+						{
+							"id": "5595f812-2a4f-4360-bf32-f1813a22a6f3",
+							"name": "Fetch user by email - Self or Admin",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{userAuthHeader}}",
+										"disabled": false
+									},
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/x-www-form-urlencoded",
+										"disabled": false
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "email",
+											"value": "{{userEmail}}",
+											"description": "",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{lemonDemoUrl}}/api/core/users/fetch-by-email",
+									"host": [
+										"{{lemonDemoUrl}}"
+									],
+									"path": [
+										"api",
+										"core",
+										"users",
+										"fetch-by-email"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate",
+									"name": "Cache-Control",
+									"description": "Tells all caching mechanisms from server to client whether they may cache this object. It is measured in seconds"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json;charset=UTF-8",
+									"name": "Content-Type",
+									"description": "The mime type of this content"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 26 May 2018 13:05:46 GMT",
+									"name": "Date",
+									"description": "The date and time that the message was sent"
+								},
+								{
+									"key": "Expires",
+									"value": "0",
+									"name": "Expires",
+									"description": "Gives the date/time after which the response is considered stale"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache",
+									"name": "Pragma",
+									"description": "Implementation-specific headers that may have various effects anywhere along the request-response chain."
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked",
+									"name": "Transfer-Encoding",
+									"description": "The form of encoding used to safely transfer the entity to the user. Currently defined methods are: chunked, compress, deflate, gzip, identity."
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff",
+									"name": "X-Content-Type-Options",
+									"description": "The only defined value, \"nosniff\", prevents Internet Explorer from MIME-sniffing a response away from the declared content-type"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY",
+									"name": "X-Frame-Options",
+									"description": "Clickjacking protection: \"deny\" - no rendering within a frame, \"sameorigin\" - no rendering if origin mismatch"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "1; mode=block",
+									"name": "X-XSS-Protection",
+									"description": "Cross-site scripting (XSS) filter"
+								}
+							],
+							"cookie": [
+								{
+									"expires": "Sat May 26 2018 20:06:10 GMT+0530 (India Standard Time)",
+									"httpOnly": true,
+									"domain": "localhost",
+									"path": "/",
+									"secure": false,
+									"value": "rO0ABXNyAExvcmcuc3ByaW5nZnJhbWV3b3JrLnNlY3VyaXR5Lm9hdXRoMi5jb3JlLmVuZHBvaW50Lk9BdXRoMkF1dGhvcml6YXRpb25SZXF1ZXN0AAAAAAAAAfQCAAhMABRhZGRpdGlvbmFsUGFyYW1ldGVyc3QAD0xqYXZhL3V0aWwvTWFwO0wAFmF1dGhvcml6YXRpb25HcmFudFR5cGV0AEFMb3JnL3NwcmluZ2ZyYW1ld29yay9zZWN1cml0eS9vYXV0aDIvY29yZS9BdXRob3JpemF0aW9uR3JhbnRUeXBlO0wAEGF1dGhvcml6YXRpb25Vcml0ABJMamF2YS9sYW5nL1N0cmluZztMAAhjbGllbnRJZHEAfgADTAALcmVkaXJlY3RVcmlxAH4AA0wADHJlc3BvbnNlVHlwZXQAU0xvcmcvc3ByaW5nZnJhbWV3b3JrL3NlY3VyaXR5L29hdXRoMi9jb3JlL2VuZHBvaW50L09BdXRoMkF1dGhvcml6YXRpb25SZXNwb25zZVR5cGU7TAAGc2NvcGVzdAAPTGphdmEvdXRpbC9TZXQ7TAAFc3RhdGVxAH4AA3hwc3IAJWphdmEudXRpbC5Db2xsZWN0aW9ucyRVbm1vZGlmaWFibGVNYXDxpaj-dPUHQgIAAUwAAW1xAH4AAXhwc3IAF2phdmEudXRpbC5MaW5rZWRIYXNoTWFwNMBOXBBswPsCAAFaAAthY2Nlc3NPcmRlcnhyABFqYXZhLnV0aWwuSGFzaE1hcAUH2sHDFmDRAwACRgAKbG9hZEZhY3RvckkACXRocmVzaG9sZHhwP0AAAAAAAAF3CAAAAAIAAAABdAAPcmVnaXN0cmF0aW9uX2lkdAAIZmFjZWJvb2t4AHNyAD9vcmcuc3ByaW5nZnJhbWV3b3JrLnNlY3VyaXR5Lm9hdXRoMi5jb3JlLkF1dGhvcml6YXRpb25HcmFudFR5cGUAAAAAAAAB9AIAAUwABXZhbHVlcQB-AAN4cHQAEmF1dGhvcml6YXRpb25fY29kZXQAKmh0dHBzOi8vd3d3LmZhY2Vib29rLmNvbS92Mi44L2RpYWxvZy9vYXV0aHQAEDEyMzQwMjAxODY3MTg3NDF0ADBodHRwOi8vbG9jYWxob3N0OjgwODAvbG9naW4vb2F1dGgyL2NvZGUvZmFjZWJvb2tzcgBRb3JnLnNwcmluZ2ZyYW1ld29yay5zZWN1cml0eS5vYXV0aDIuY29yZS5lbmRwb2ludC5PQXV0aDJBdXRob3JpemF0aW9uUmVzcG9uc2VUeXBlAAAAAAAAAfQCAAFMAAV2YWx1ZXEAfgADeHB0AARjb2Rlc3IAJWphdmEudXRpbC5Db2xsZWN0aW9ucyRVbm1vZGlmaWFibGVTZXSAHZLRj5uAVQIAAHhyACxqYXZhLnV0aWwuQ29sbGVjdGlvbnMkVW5tb2RpZmlhYmxlQ29sbGVjdGlvbhlCAIDLXvceAgABTAABY3QAFkxqYXZhL3V0aWwvQ29sbGVjdGlvbjt4cHNyABdqYXZhLnV0aWwuTGlua2VkSGFzaFNldNhs11qV3SoeAgAAeHIAEWphdmEudXRpbC5IYXNoU2V0ukSFlZa4tzQDAAB4cHcMAAAAED9AAAAAAAACdAAOcHVibGljX3Byb2ZpbGV0AAVlbWFpbHh0ACxkM2ppcWU0ZXBfeVhHSWZoNUVNaTZ1ZGs3WFdXQnZ4V3hjQmYtNE5oZ3hjPQ==",
+									"key": "lemon_oauth2_authorization_request"
+								}
+							],
+							"body": "{\"id\":11,\"version\":2,\"email\":\"skpatel20+lemon3382895@example.com\",\"roles\":[],\"name\":\"Sample User\",\"new\":false}"
+						}
+					]
+				},
+				{
+					"name": "Fetch user by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Fetch user by ID\"] = responseCode.code === 200;",
+									"",
+									"if (responseCode.code === 200) {",
+									"    var currentUser = JSON.parse(responseBody);",
+									"    console.log(currentUser.version);",
+									"    postman.setEnvironmentVariable(\"userVersion\", currentUser.version);  ",
+									"}",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{userAuthHeader}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{lemonDemoUrl}}/api/core/users/{{userId}}",
+							"host": [
+								"{{lemonDemoUrl}}"
+							],
+							"path": [
+								"api",
+								"core",
+								"users",
+								"{{userId}}"
+							]
+						},
+						"description": "Used for viewing the profile of a user. Returns with a `200` response. Confidential fields aren't returned in case the user is neither self nor an Admin."
+					},
+					"response": [
+						{
+							"id": "2448a1cc-627d-4d23-a10f-fa4f6d32efc7",
+							"name": "Fetch user by ID - Self or Admin",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{userAuthHeader}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{lemonDemoUrl}}/api/core/users/{{userId}}",
+									"host": [
+										"{{lemonDemoUrl}}"
+									],
+									"path": [
+										"api",
+										"core",
+										"users",
+										"{{userId}}"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true",
+									"name": "Access-Control-Allow-Credentials",
+									"description": "Indicates whether or not the response to the request can be exposed when the credentials flag is true. When used as part of a response to a preflight request, this indicates whether or not the actual request can be made using credentials."
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "Accept,Accept-Encoding,Accept-Language,Cache-Control,Connection,Content-Length,Content-Type,Cookie,Host,Origin,Pragma,Referer,User-Agent,x-requested-with,X-XSRF-TOKEN,Lemon-Authorization",
+									"name": "Access-Control-Allow-Headers",
+									"description": "Used in response to a preflight request to indicate which HTTP headers can be used when making the actual request."
+								},
+								{
+									"key": "Access-Control-Allow-Methods",
+									"value": "GET,HEAD,POST,PUT,DELETE,TRACE,OPTIONS,PATCH",
+									"name": "Access-Control-Allow-Methods",
+									"description": "Specifies the method or methods allowed when accessing the resource. This is used in response to a preflight request."
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://localhost:9000",
+									"name": "Access-Control-Allow-Origin",
+									"description": "Specifies a URI that may access the resource. For requests without credentials, the server may specify '*' as a wildcard, thereby allowing any origin to access the resource."
+								},
+								{
+									"key": "Access-Control-Expose-Headers",
+									"value": "Cache-Control,Connection,Content-Type,Date,Expires,Pragma,Server,Set-Cookie,Transfer-Encoding,X-Content-Type-Options,X-XSS-Protection,X-Frame-Options,X-Application-Context,X-XSRF-TOKEN",
+									"name": "Access-Control-Expose-Headers",
+									"description": "Lets a server whitelist headers that browsers are allowed to access."
+								},
+								{
+									"key": "Access-Control-Max-Age",
+									"value": "3600",
+									"name": "Access-Control-Max-Age",
+									"description": "Indicates how long the results of a preflight request can be cached in seconds."
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate",
+									"name": "Cache-Control",
+									"description": "Tells all caching mechanisms from server to client whether they may cache this object. It is measured in seconds"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json;charset=UTF-8",
+									"name": "Content-Type",
+									"description": "The mime type of this content"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 03 Mar 2018 07:59:01 GMT",
+									"name": "Date",
+									"description": "The date and time that the message was sent"
+								},
+								{
+									"key": "Expires",
+									"value": "0",
+									"name": "Expires",
+									"description": "Gives the date/time after which the response is considered stale"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache",
+									"name": "Pragma",
+									"description": "Implementation-specific headers that may have various effects anywhere along the request-response chain."
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked",
+									"name": "Transfer-Encoding",
+									"description": "The form of encoding used to safely transfer the entity to the user. Currently defined methods are: chunked, compress, deflate, gzip, identity."
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff",
+									"name": "X-Content-Type-Options",
+									"description": "The only defined value, \"nosniff\", prevents Internet Explorer from MIME-sniffing a response away from the declared content-type"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY",
+									"name": "X-Frame-Options",
+									"description": "Clickjacking protection: \"deny\" - no rendering within a frame, \"sameorigin\" - no rendering if origin mismatch"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "1; mode=block",
+									"name": "X-XSS-Protection",
+									"description": "Cross-site scripting (XSS) filter"
+								}
+							],
+							"cookie": [],
+							"body": "{\"id\":2,\"version\":2,\"email\":\"skpatel20+lemon1842637@example.com\",\"roles\":[],\"name\":\"Sample User\",\"new\":false}"
+						},
+						{
+							"id": "7288f472-5f1e-437a-be18-bd3e0e11d789",
+							"name": "Fetch user by ID - Others",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{lemonDemoUrl}}/api/core/users/{{userId}}",
+									"host": [
+										"{{lemonDemoUrl}}"
+									],
+									"path": [
+										"api",
+										"core",
+										"users",
+										"{{userId}}"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true",
+									"name": "Access-Control-Allow-Credentials",
+									"description": "Indicates whether or not the response to the request can be exposed when the credentials flag is true. When used as part of a response to a preflight request, this indicates whether or not the actual request can be made using credentials."
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "Accept,Accept-Encoding,Accept-Language,Cache-Control,Connection,Content-Length,Content-Type,Cookie,Host,Origin,Pragma,Referer,User-Agent,x-requested-with,X-XSRF-TOKEN,Lemon-Authorization",
+									"name": "Access-Control-Allow-Headers",
+									"description": "Used in response to a preflight request to indicate which HTTP headers can be used when making the actual request."
+								},
+								{
+									"key": "Access-Control-Allow-Methods",
+									"value": "GET,HEAD,POST,PUT,DELETE,TRACE,OPTIONS,PATCH",
+									"name": "Access-Control-Allow-Methods",
+									"description": "Specifies the method or methods allowed when accessing the resource. This is used in response to a preflight request."
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://localhost:9000",
+									"name": "Access-Control-Allow-Origin",
+									"description": "Specifies a URI that may access the resource. For requests without credentials, the server may specify '*' as a wildcard, thereby allowing any origin to access the resource."
+								},
+								{
+									"key": "Access-Control-Expose-Headers",
+									"value": "Cache-Control,Connection,Content-Type,Date,Expires,Pragma,Server,Set-Cookie,Transfer-Encoding,X-Content-Type-Options,X-XSS-Protection,X-Frame-Options,X-Application-Context,X-XSRF-TOKEN",
+									"name": "Access-Control-Expose-Headers",
+									"description": "Lets a server whitelist headers that browsers are allowed to access."
+								},
+								{
+									"key": "Access-Control-Max-Age",
+									"value": "3600",
+									"name": "Access-Control-Max-Age",
+									"description": "Indicates how long the results of a preflight request can be cached in seconds."
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate",
+									"name": "Cache-Control",
+									"description": "Tells all caching mechanisms from server to client whether they may cache this object. It is measured in seconds"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json;charset=UTF-8",
+									"name": "Content-Type",
+									"description": "The mime type of this content"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 03 Mar 2018 07:59:28 GMT",
+									"name": "Date",
+									"description": "The date and time that the message was sent"
+								},
+								{
+									"key": "Expires",
+									"value": "0",
+									"name": "Expires",
+									"description": "Gives the date/time after which the response is considered stale"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache",
+									"name": "Pragma",
+									"description": "Implementation-specific headers that may have various effects anywhere along the request-response chain."
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked",
+									"name": "Transfer-Encoding",
+									"description": "The form of encoding used to safely transfer the entity to the user. Currently defined methods are: chunked, compress, deflate, gzip, identity."
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff",
+									"name": "X-Content-Type-Options",
+									"description": "The only defined value, \"nosniff\", prevents Internet Explorer from MIME-sniffing a response away from the declared content-type"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY",
+									"name": "X-Frame-Options",
+									"description": "Clickjacking protection: \"deny\" - no rendering within a frame, \"sameorigin\" - no rendering if origin mismatch"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "1; mode=block",
+									"name": "X-XSS-Protection",
+									"description": "Cross-site scripting (XSS) filter"
+								}
+							],
+							"cookie": [],
+							"body": "{\"id\":2,\"version\":2,\"roles\":[],\"name\":\"Sample User\",\"new\":false}"
+						}
+					]
+				},
+				{
+					"name": "Update user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Update user\"] = responseCode.code === 200;",
+									"",
+									"if (responseCode.code === 200)",
+									"    postman.setEnvironmentVariable(\"userAuthHeader\", postman.getResponseHeader(\"Lemon-Authorization\"));",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{userAuthHeader}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[\r\n  { \"op\": \"replace\", \"path\": \"/name\", \"value\": \"Edited name\" },\r\n  { \"op\": \"replace\", \"path\": \"/email\", \"value\": \"should.not@get.replaced\" },\r\n  { \"op\": \"replace\", \"path\": \"/roles\", \"value\": [\"ADMIN\"] },\r\n  { \"op\": \"replace\", \"path\": \"/version\", \"value\": {{userVersion}} }  \r\n]\r\n"
+						},
+						"url": {
+							"raw": "{{lemonDemoUrl}}/api/core/users/{{userId}}",
+							"host": [
+								"{{lemonDemoUrl}}"
+							],
+							"path": [
+								"api",
+								"core",
+								"users",
+								"{{userId}}"
+							]
+						},
+						"description": "Updates the name and roles of a user. If you have added more updatable fields to User, they can also be updated using this request. Please note that roles can be updated not by self, but by another Admin only.\n\nReturns `200` upon success. A new Authorization token is returned in a `Lemon-Authorization` header, which should be used in subsequent requests. If roles are updated, all old tokens would be invalid.\n\n#### What is version\n\nUser, like all _VersionedEntity_, has a version column, which is incremented on each update.\n\nWhile updating, it is first checked that the given version is equal to the version in the database record. Otherwise, it is assumed that someone else has updated the record concurrently, and the update fails. To use it, you will typically\n\n1. Along with the data to be updated, fetch the version column as well (It'll be there in the response of _Fetch user by ID_).\n1. When the user submits the updated data, send the version back along with the updated data.\n\nPrecisely, we are talking about optimistic locking. Refer [documentation and resources](https://github.com/naturalprogrammer/spring-lemon#documentation-and-resources) for more details."
+					},
+					"response": [
+						{
+							"id": "9c1fc11b-c7e2-4406-9db2-07325bdd6da2",
+							"name": "Update user",
+							"originalRequest": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "{{userAuthHeader}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "[\r\n  { \"op\": \"replace\", \"path\": \"/name\", \"value\": \"Edited name\" },\r\n  { \"op\": \"replace\", \"path\": \"/email\", \"value\": \"should.not@get.replaced\" },\r\n  { \"op\": \"replace\", \"path\": \"/roles\", \"value\": [\"ADMIN\"] },\r\n  { \"op\": \"replace\", \"path\": \"/version\", \"value\": {{userVersion}} }  \r\n]\r\n"
+								},
+								"url": {
+									"raw": "{{lemonDemoUrl}}/api/core/users/{{userId}}",
+									"host": [
+										"{{lemonDemoUrl}}"
+									],
+									"path": [
+										"api",
+										"core",
+										"users",
+										"{{userId}}"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true",
+									"name": "Access-Control-Allow-Credentials",
+									"description": "Indicates whether or not the response to the request can be exposed when the credentials flag is true. When used as part of a response to a preflight request, this indicates whether or not the actual request can be made using credentials."
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "Accept,Accept-Encoding,Accept-Language,Cache-Control,Connection,Content-Length,Content-Type,Cookie,Host,Origin,Pragma,Referer,User-Agent,x-requested-with,Authorization",
+									"name": "Access-Control-Allow-Headers",
+									"description": "Used in response to a preflight request to indicate which HTTP headers can be used when making the actual request."
+								},
+								{
+									"key": "Access-Control-Allow-Methods",
+									"value": "GET,HEAD,POST,PUT,DELETE,TRACE,OPTIONS,PATCH",
+									"name": "Access-Control-Allow-Methods",
+									"description": "Specifies the method or methods allowed when accessing the resource. This is used in response to a preflight request."
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://localhost:9000",
+									"name": "Access-Control-Allow-Origin",
+									"description": "Specifies a URI that may access the resource. For requests without credentials, the server may specify '*' as a wildcard, thereby allowing any origin to access the resource."
+								},
+								{
+									"key": "Access-Control-Expose-Headers",
+									"value": "Cache-Control,Connection,Content-Type,Date,Expires,Pragma,Server,Set-Cookie,Transfer-Encoding,X-Content-Type-Options,X-XSS-Protection,X-Frame-Options,X-Application-Context,Lemon-Authorization",
+									"name": "Access-Control-Expose-Headers",
+									"description": "Lets a server whitelist headers that browsers are allowed to access."
+								},
+								{
+									"key": "Access-Control-Max-Age",
+									"value": "3600",
+									"name": "Access-Control-Max-Age",
+									"description": "Indicates how long the results of a preflight request can be cached in seconds."
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate",
+									"name": "Cache-Control",
+									"description": "Tells all caching mechanisms from server to client whether they may cache this object. It is measured in seconds"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json;charset=UTF-8",
+									"name": "Content-Type",
+									"description": "The mime type of this content"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 16 Mar 2018 16:19:26 GMT",
+									"name": "Date",
+									"description": "The date and time that the message was sent"
+								},
+								{
+									"key": "Expires",
+									"value": "0",
+									"name": "Expires",
+									"description": "Gives the date/time after which the response is considered stale"
+								},
+								{
+									"key": "Lemon-Authorization",
+									"value": "Bearer eyJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwiYWxnIjoiZGlyIn0..7FGtjpQvhqs605UkjJJjeg.59TURUcGpmNQ9qrA_b10o6WJVf78UK9VWEaczzg0Q85dAefE58V04p-vWX21mwXXbnZdZMtYxhWxsxv0fRKYQq9Hl6wDT-HHBiEkPniYrFhN_FNz3WsiBT6ZWNfrLHO5QyEqCYmuhqeZrFJfM7CmZw.3sYFZwXdGuP7ff_Azrqdlg",
+									"name": "Lemon-Authorization",
+									"description": "Custom header"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache",
+									"name": "Pragma",
+									"description": "Implementation-specific headers that may have various effects anywhere along the request-response chain."
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked",
+									"name": "Transfer-Encoding",
+									"description": "The form of encoding used to safely transfer the entity to the user. Currently defined methods are: chunked, compress, deflate, gzip, identity."
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff",
+									"name": "X-Content-Type-Options",
+									"description": "The only defined value, \"nosniff\", prevents Internet Explorer from MIME-sniffing a response away from the declared content-type"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY",
+									"name": "X-Frame-Options",
+									"description": "Clickjacking protection: \"deny\" - no rendering within a frame, \"sameorigin\" - no rendering if origin mismatch"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "1; mode=block",
+									"name": "X-XSS-Protection",
+									"description": "Cross-site scripting (XSS) filter"
+								}
+							],
+							"cookie": [],
+							"body": "{\"id\":2,\"username\":\"skpatel20+changedlemon6524790@example.com\",\"roles\":[],\"tag\":{\"name\":\"Edited name 2\"},\"unverified\":false,\"blocked\":false,\"admin\":false,\"goodUser\":true,\"goodAdmin\":false}"
+						}
+					]
+				},
+				{
+					"name": "Change password",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Change password\"] = responseCode.code === 204;",
+									"",
+									"if (responseCode.code === 204)",
+									"    postman.setEnvironmentVariable(\"userAuthHeader\", postman.getResponseHeader(\"Lemon-Authorization\"));",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{userAuthHeader}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"oldPassword\" : \"a-new-password\",\r\n    \"password\" : \"a-new-password-2\",\r\n    \"retypePassword\" : \"a-new-password-2\"\r\n}"
+						},
+						"url": {
+							"raw": "{{lemonDemoUrl}}/api/core/users/{{userId}}/password",
+							"host": [
+								"{{lemonDemoUrl}}"
+							],
+							"path": [
+								"api",
+								"core",
+								"users",
+								"{{userId}}",
+								"password"
+							]
+						},
+						"description": "Changes the password of a user. Returns `204`with a new Authorization token in the `Lemon-Authorization` header. The new token shoukd be used for authorization henceforward. Old tokens won't work anymore."
+					},
+					"response": [
+						{
+							"id": "81590aa2-a281-4755-bf43-568fc79f82b1",
+							"name": "Change password",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "{{userAuthHeader}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"oldPassword\" : \"a-new-password\",\r\n    \"password\" : \"a-new-password-2\",\r\n    \"retypePassword\" : \"a-new-password-2\"\r\n}"
+								},
+								"url": {
+									"raw": "{{lemonDemoUrl}}/api/core/users/{{userId}}/password",
+									"host": [
+										"{{lemonDemoUrl}}"
+									],
+									"path": [
+										"api",
+										"core",
+										"users",
+										"{{userId}}",
+										"password"
+									]
+								}
+							},
+							"status": "No Content",
+							"code": 204,
+							"_postman_previewlanguage": "plain",
+							"header": [
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true",
+									"name": "Access-Control-Allow-Credentials",
+									"description": "Indicates whether or not the response to the request can be exposed when the credentials flag is true. When used as part of a response to a preflight request, this indicates whether or not the actual request can be made using credentials."
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "Accept,Accept-Encoding,Accept-Language,Cache-Control,Connection,Content-Length,Content-Type,Cookie,Host,Origin,Pragma,Referer,User-Agent,x-requested-with,X-XSRF-TOKEN,Lemon-Authorization",
+									"name": "Access-Control-Allow-Headers",
+									"description": "Used in response to a preflight request to indicate which HTTP headers can be used when making the actual request."
+								},
+								{
+									"key": "Access-Control-Allow-Methods",
+									"value": "GET,HEAD,POST,PUT,DELETE,TRACE,OPTIONS,PATCH",
+									"name": "Access-Control-Allow-Methods",
+									"description": "Specifies the method or methods allowed when accessing the resource. This is used in response to a preflight request."
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://localhost:9000",
+									"name": "Access-Control-Allow-Origin",
+									"description": "Specifies a URI that may access the resource. For requests without credentials, the server may specify '*' as a wildcard, thereby allowing any origin to access the resource."
+								},
+								{
+									"key": "Access-Control-Expose-Headers",
+									"value": "Cache-Control,Connection,Content-Type,Date,Expires,Pragma,Server,Set-Cookie,Transfer-Encoding,X-Content-Type-Options,X-XSS-Protection,X-Frame-Options,X-Application-Context,X-XSRF-TOKEN",
+									"name": "Access-Control-Expose-Headers",
+									"description": "Lets a server whitelist headers that browsers are allowed to access."
+								},
+								{
+									"key": "Access-Control-Max-Age",
+									"value": "3600",
+									"name": "Access-Control-Max-Age",
+									"description": "Indicates how long the results of a preflight request can be cached in seconds."
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate",
+									"name": "Cache-Control",
+									"description": "Tells all caching mechanisms from server to client whether they may cache this object. It is measured in seconds"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 03 Mar 2018 08:21:23 GMT",
+									"name": "Date",
+									"description": "The date and time that the message was sent"
+								},
+								{
+									"key": "Expires",
+									"value": "0",
+									"name": "Expires",
+									"description": "Gives the date/time after which the response is considered stale"
+								},
+								{
+									"key": "Lemon-Authorization",
+									"value": "Bearer eyJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwiYWxnIjoiZGlyIn0..ZxDIAjfAZPFqpuMX9iLkzw.yT39za4iL-rKc9cJgCJnftIqdBnX6_djv2FKxY8MmDBnC2GWWlFkfcVEXat1ulpItfDi6QlnEXQ3TySf5K5mxYZBMySIvyeoyc6uj0SNQLLcqGJ_QzD3MxWIbrH7MoT70Eb17BDQran6hR88FHb8Lw.idY7jd0K40ajmOkoCpM7fg",
+									"name": "Lemon-Authorization",
+									"description": "Custom header"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache",
+									"name": "Pragma",
+									"description": "Implementation-specific headers that may have various effects anywhere along the request-response chain."
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff",
+									"name": "X-Content-Type-Options",
+									"description": "The only defined value, \"nosniff\", prevents Internet Explorer from MIME-sniffing a response away from the declared content-type"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY",
+									"name": "X-Frame-Options",
+									"description": "Clickjacking protection: \"deny\" - no rendering within a frame, \"sameorigin\" - no rendering if origin mismatch"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "1; mode=block",
+									"name": "X-XSS-Protection",
+									"description": "Cross-site scripting (XSS) filter"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						}
+					]
+				},
+				{
+					"name": "Requesting for changing email",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.environment.set(\"newEmail\", \"skpatel20+changedlemon\" + Math.floor(Math.random() * 10000000) + \"@example.com\");"
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Request email change\"] = responseCode.code === 204;",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{userAuthHeader}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"password\" : \"a-new-password-2\",\r\n    \"newEmail\": \"{{newEmail}}\"\r\n}"
+						},
+						"url": {
+							"raw": "{{lemonDemoUrl}}/api/core/users/{{userId}}/email-change-request",
+							"host": [
+								"{{lemonDemoUrl}}"
+							],
+							"path": [
+								"api",
+								"core",
+								"users",
+								"{{userId}}",
+								"email-change-request"
+							]
+						},
+						"description": "A user (or an Admin on his behalf) can use this endpoint for changing his email id.\n\nOn calling this endpoint, an email with a link is sent to the new email id, which contains a code. Clicking on the link brings the user back to the front-end, where first he should log in if he is not already. Then, he would click a button for sending the final email change request for doing the final change (see the next endpoint).\n\nReturns `204`."
+					},
+					"response": [
+						{
+							"id": "f7320de8-3bd4-45ac-851a-9b4db1870fe5",
+							"name": "Requesting for changing email",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "{{userAuthHeader}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"password\" : \"a-new-password-2\",\r\n    \"newEmail\": \"{{newEmail}}\"\r\n}"
+								},
+								"url": {
+									"raw": "{{lemonDemoUrl}}/api/core/users/{{userId}}/email-change-request",
+									"host": [
+										"{{lemonDemoUrl}}"
+									],
+									"path": [
+										"api",
+										"core",
+										"users",
+										"{{userId}}",
+										"email-change-request"
+									]
+								}
+							},
+							"status": "No Content",
+							"code": 204,
+							"_postman_previewlanguage": "plain",
+							"header": [
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true",
+									"name": "Access-Control-Allow-Credentials",
+									"description": "Indicates whether or not the response to the request can be exposed when the credentials flag is true. When used as part of a response to a preflight request, this indicates whether or not the actual request can be made using credentials."
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "Accept,Accept-Encoding,Accept-Language,Cache-Control,Connection,Content-Length,Content-Type,Cookie,Host,Origin,Pragma,Referer,User-Agent,x-requested-with,X-XSRF-TOKEN,Lemon-Authorization",
+									"name": "Access-Control-Allow-Headers",
+									"description": "Used in response to a preflight request to indicate which HTTP headers can be used when making the actual request."
+								},
+								{
+									"key": "Access-Control-Allow-Methods",
+									"value": "GET,HEAD,POST,PUT,DELETE,TRACE,OPTIONS,PATCH",
+									"name": "Access-Control-Allow-Methods",
+									"description": "Specifies the method or methods allowed when accessing the resource. This is used in response to a preflight request."
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://localhost:9000",
+									"name": "Access-Control-Allow-Origin",
+									"description": "Specifies a URI that may access the resource. For requests without credentials, the server may specify '*' as a wildcard, thereby allowing any origin to access the resource."
+								},
+								{
+									"key": "Access-Control-Expose-Headers",
+									"value": "Cache-Control,Connection,Content-Type,Date,Expires,Pragma,Server,Set-Cookie,Transfer-Encoding,X-Content-Type-Options,X-XSS-Protection,X-Frame-Options,X-Application-Context,X-XSRF-TOKEN",
+									"name": "Access-Control-Expose-Headers",
+									"description": "Lets a server whitelist headers that browsers are allowed to access."
+								},
+								{
+									"key": "Access-Control-Max-Age",
+									"value": "3600",
+									"name": "Access-Control-Max-Age",
+									"description": "Indicates how long the results of a preflight request can be cached in seconds."
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate",
+									"name": "Cache-Control",
+									"description": "Tells all caching mechanisms from server to client whether they may cache this object. It is measured in seconds"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 03 Mar 2018 08:27:58 GMT",
+									"name": "Date",
+									"description": "The date and time that the message was sent"
+								},
+								{
+									"key": "Expires",
+									"value": "0",
+									"name": "Expires",
+									"description": "Gives the date/time after which the response is considered stale"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache",
+									"name": "Pragma",
+									"description": "Implementation-specific headers that may have various effects anywhere along the request-response chain."
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff",
+									"name": "X-Content-Type-Options",
+									"description": "The only defined value, \"nosniff\", prevents Internet Explorer from MIME-sniffing a response away from the declared content-type"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY",
+									"name": "X-Frame-Options",
+									"description": "Clickjacking protection: \"deny\" - no rendering within a frame, \"sameorigin\" - no rendering if origin mismatch"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "1; mode=block",
+									"name": "X-XSS-Protection",
+									"description": "Cross-site scripting (XSS) filter"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						}
+					]
+				},
+				{
+					"name": "Change email",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Change email\"] = responseCode.code === 200;",
+									"",
+									"if (responseCode.code === 200) {",
+									"    ",
+									"    postman.setEnvironmentVariable(\"userAuthHeader\", postman.getResponseHeader(\"Lemon-Authorization\"));",
+									"    ",
+									"    var currentUser = JSON.parse(responseBody);",
+									"    postman.setEnvironmentVariable(\"userEmail\", currentUser.username);",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{userAuthHeader}}"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "code",
+									"value": "eyJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwiYWxnIjoiZGlyIn0..r2QI1lFdFcSvtU7kzsRaxA.4uAMPzfg6eAJ36r3ih77Y8XpvWmMXoJZFGGlKTl_ybno8P5Qs02RNroUXPzGZNjXqdOGJ4huslGh_r0BiZ3ry4fCJhM9lPpsLFk9sRrFWEmbg-0DHi_QNxB2I3VXGYUGGVdqYCW0P_cVtU1AHnCHWrSRKwzXUzL-UDyBkZwJtYtnA2JVavlZQTuQK7pol3Ky.z0BcfAoaXNapzIOCVgccPQ",
+									"description": "",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{lemonDemoUrl}}/api/core/users/{{userId}}/email",
+							"host": [
+								"{{lemonDemoUrl}}"
+							],
+							"path": [
+								"api",
+								"core",
+								"users",
+								"{{userId}}",
+								"email"
+							]
+						},
+						"description": "In the previous endpoint, we saw how a user gets a link with a code for changing his email. Clicking on that should brings him back to the front-end, where first he should login if he is not already. He would then click a button for proceeding with the change, which should call this endpoint.\n\nReturns a `200` response with the user details and a new Authorization token in the `Lemon-Authorization` header. The new token should be used for authorization henceforward. Old tokens won't work anymore."
+					},
+					"response": [
+						{
+							"id": "09ead591-4e70-4726-b240-f29b5e0f16af",
+							"name": "Change email",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"name": "Content-Type",
+										"value": "application/x-www-form-urlencoded",
+										"disabled": false
+									},
+									{
+										"key": "Authorization",
+										"value": "{{userAuthHeader}}",
+										"disabled": false
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "code",
+											"value": "eyJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwiYWxnIjoiZGlyIn0..r2QI1lFdFcSvtU7kzsRaxA.4uAMPzfg6eAJ36r3ih77Y8XpvWmMXoJZFGGlKTl_ybno8P5Qs02RNroUXPzGZNjXqdOGJ4huslGh_r0BiZ3ry4fCJhM9lPpsLFk9sRrFWEmbg-0DHi_QNxB2I3VXGYUGGVdqYCW0P_cVtU1AHnCHWrSRKwzXUzL-UDyBkZwJtYtnA2JVavlZQTuQK7pol3Ky.z0BcfAoaXNapzIOCVgccPQ",
+											"description": "",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{lemonDemoUrl}}/api/core/users/{{userId}}/email",
+									"host": [
+										"{{lemonDemoUrl}}"
+									],
+									"path": [
+										"api",
+										"core",
+										"users",
+										"{{userId}}",
+										"email"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate",
+									"name": "Cache-Control",
+									"description": "Tells all caching mechanisms from server to client whether they may cache this object. It is measured in seconds"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json;charset=UTF-8",
+									"name": "Content-Type",
+									"description": "The mime type of this content"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 26 May 2018 13:09:02 GMT",
+									"name": "Date",
+									"description": "The date and time that the message was sent"
+								},
+								{
+									"key": "Expires",
+									"value": "0",
+									"name": "Expires",
+									"description": "Gives the date/time after which the response is considered stale"
+								},
+								{
+									"key": "Lemon-Authorization",
+									"value": "Bearer eyJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwiYWxnIjoiZGlyIn0..EoLCdtaB9KEjAB5ucKzuXg.TsnrZoL8oqxCuHc6T-rpCY8Gg1YSmJ1FfGUTrU0mxBbc4hx0wq4MWNO2HsRMoNUXMVqx-TOND8BsYoBqDAPUaUGDlBNQGWvD3Ijuqsh3s2MGKISZeGMdDnYD204aSd-Suwjs__nfb5_ZzwV8jsWg9g.v50pjexU4bNzIu3z1FW5bg",
+									"name": "Lemon-Authorization",
+									"description": "Custom header"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache",
+									"name": "Pragma",
+									"description": "Implementation-specific headers that may have various effects anywhere along the request-response chain."
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked",
+									"name": "Transfer-Encoding",
+									"description": "The form of encoding used to safely transfer the entity to the user. Currently defined methods are: chunked, compress, deflate, gzip, identity."
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff",
+									"name": "X-Content-Type-Options",
+									"description": "The only defined value, \"nosniff\", prevents Internet Explorer from MIME-sniffing a response away from the declared content-type"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY",
+									"name": "X-Frame-Options",
+									"description": "Clickjacking protection: \"deny\" - no rendering within a frame, \"sameorigin\" - no rendering if origin mismatch"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "1; mode=block",
+									"name": "X-XSS-Protection",
+									"description": "Cross-site scripting (XSS) filter"
+								}
+							],
+							"cookie": [
+								{
+									"expires": "Sat May 26 2018 20:06:10 GMT+0530 (India Standard Time)",
+									"httpOnly": true,
+									"domain": "localhost",
+									"path": "/",
+									"secure": false,
+									"value": "rO0ABXNyAExvcmcuc3ByaW5nZnJhbWV3b3JrLnNlY3VyaXR5Lm9hdXRoMi5jb3JlLmVuZHBvaW50Lk9BdXRoMkF1dGhvcml6YXRpb25SZXF1ZXN0AAAAAAAAAfQCAAhMABRhZGRpdGlvbmFsUGFyYW1ldGVyc3QAD0xqYXZhL3V0aWwvTWFwO0wAFmF1dGhvcml6YXRpb25HcmFudFR5cGV0AEFMb3JnL3NwcmluZ2ZyYW1ld29yay9zZWN1cml0eS9vYXV0aDIvY29yZS9BdXRob3JpemF0aW9uR3JhbnRUeXBlO0wAEGF1dGhvcml6YXRpb25Vcml0ABJMamF2YS9sYW5nL1N0cmluZztMAAhjbGllbnRJZHEAfgADTAALcmVkaXJlY3RVcmlxAH4AA0wADHJlc3BvbnNlVHlwZXQAU0xvcmcvc3ByaW5nZnJhbWV3b3JrL3NlY3VyaXR5L29hdXRoMi9jb3JlL2VuZHBvaW50L09BdXRoMkF1dGhvcml6YXRpb25SZXNwb25zZVR5cGU7TAAGc2NvcGVzdAAPTGphdmEvdXRpbC9TZXQ7TAAFc3RhdGVxAH4AA3hwc3IAJWphdmEudXRpbC5Db2xsZWN0aW9ucyRVbm1vZGlmaWFibGVNYXDxpaj-dPUHQgIAAUwAAW1xAH4AAXhwc3IAF2phdmEudXRpbC5MaW5rZWRIYXNoTWFwNMBOXBBswPsCAAFaAAthY2Nlc3NPcmRlcnhyABFqYXZhLnV0aWwuSGFzaE1hcAUH2sHDFmDRAwACRgAKbG9hZEZhY3RvckkACXRocmVzaG9sZHhwP0AAAAAAAAF3CAAAAAIAAAABdAAPcmVnaXN0cmF0aW9uX2lkdAAIZmFjZWJvb2t4AHNyAD9vcmcuc3ByaW5nZnJhbWV3b3JrLnNlY3VyaXR5Lm9hdXRoMi5jb3JlLkF1dGhvcml6YXRpb25HcmFudFR5cGUAAAAAAAAB9AIAAUwABXZhbHVlcQB-AAN4cHQAEmF1dGhvcml6YXRpb25fY29kZXQAKmh0dHBzOi8vd3d3LmZhY2Vib29rLmNvbS92Mi44L2RpYWxvZy9vYXV0aHQAEDEyMzQwMjAxODY3MTg3NDF0ADBodHRwOi8vbG9jYWxob3N0OjgwODAvbG9naW4vb2F1dGgyL2NvZGUvZmFjZWJvb2tzcgBRb3JnLnNwcmluZ2ZyYW1ld29yay5zZWN1cml0eS5vYXV0aDIuY29yZS5lbmRwb2ludC5PQXV0aDJBdXRob3JpemF0aW9uUmVzcG9uc2VUeXBlAAAAAAAAAfQCAAFMAAV2YWx1ZXEAfgADeHB0AARjb2Rlc3IAJWphdmEudXRpbC5Db2xsZWN0aW9ucyRVbm1vZGlmaWFibGVTZXSAHZLRj5uAVQIAAHhyACxqYXZhLnV0aWwuQ29sbGVjdGlvbnMkVW5tb2RpZmlhYmxlQ29sbGVjdGlvbhlCAIDLXvceAgABTAABY3QAFkxqYXZhL3V0aWwvQ29sbGVjdGlvbjt4cHNyABdqYXZhLnV0aWwuTGlua2VkSGFzaFNldNhs11qV3SoeAgAAeHIAEWphdmEudXRpbC5IYXNoU2V0ukSFlZa4tzQDAAB4cHcMAAAAED9AAAAAAAACdAAOcHVibGljX3Byb2ZpbGV0AAVlbWFpbHh0ACxkM2ppcWU0ZXBfeVhHSWZoNUVNaTZ1ZGs3WFdXQnZ4V3hjQmYtNE5oZ3hjPQ==",
+									"key": "lemon_oauth2_authorization_request"
+								}
+							],
+							"body": "{\"id\":11,\"username\":\"skpatel20+changedlemon1487515@example.com\",\"roles\":[],\"tag\":{\"name\":\"Sample User\"},\"unverified\":false,\"blocked\":false,\"admin\":false,\"goodUser\":true,\"goodAdmin\":false}"
+						}
+					]
+				},
+				{
+					"name": "Fetch new token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Fetch new token\"] = responseCode.code === 200;",
+									"",
+									"if (responseCode.code === 200)",
+									"    postman.setEnvironmentVariable(\"userAuthHeader\", JSON.parse(responseBody).token);",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{userAuthHeader}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "username",
+									"value": "{{userEmail}}",
+									"description": "Optional. Can be used by Admins for fetcing token of another user",
+									"type": "text"
+								},
+								{
+									"key": "expirationMillis",
+									"value": "864000000",
+									"description": "Optional - defaults to 864000000 (10 days)",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{lemonDemoUrl}}/api/core/fetch-new-auth-token",
+							"host": [
+								"{{lemonDemoUrl}}"
+							],
+							"path": [
+								"api",
+								"core",
+								"fetch-new-auth-token"
+							]
+						},
+						"description": "Fetches a new Authorization token. Apart from the same user, also an ADMIN can fetch a new token for another user.\n\nReturns `200`."
+					},
+					"response": [
+						{
+							"id": "af5ab736-94b8-4ef8-9f43-c240d1331df1",
+							"name": "Fetch new token",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{userAuthHeader}}",
+										"disabled": false
+									},
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"name": "Content-Type",
+										"value": "application/x-www-form-urlencoded",
+										"disabled": false
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "username",
+											"value": "{{userEmail}}",
+											"description": "",
+											"type": "text"
+										},
+										{
+											"key": "expirationMillis",
+											"value": "864000000",
+											"description": "",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{lemonDemoUrl}}/api/core/fetch-new-auth-token",
+									"host": [
+										"{{lemonDemoUrl}}"
+									],
+									"path": [
+										"api",
+										"core",
+										"fetch-new-auth-token"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate",
+									"name": "Cache-Control",
+									"description": "Tells all caching mechanisms from server to client whether they may cache this object. It is measured in seconds"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json;charset=UTF-8",
+									"name": "Content-Type",
+									"description": "The mime type of this content"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 26 May 2018 13:13:10 GMT",
+									"name": "Date",
+									"description": "The date and time that the message was sent"
+								},
+								{
+									"key": "Expires",
+									"value": "0",
+									"name": "Expires",
+									"description": "Gives the date/time after which the response is considered stale"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache",
+									"name": "Pragma",
+									"description": "Implementation-specific headers that may have various effects anywhere along the request-response chain."
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked",
+									"name": "Transfer-Encoding",
+									"description": "The form of encoding used to safely transfer the entity to the user. Currently defined methods are: chunked, compress, deflate, gzip, identity."
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff",
+									"name": "X-Content-Type-Options",
+									"description": "The only defined value, \"nosniff\", prevents Internet Explorer from MIME-sniffing a response away from the declared content-type"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY",
+									"name": "X-Frame-Options",
+									"description": "Clickjacking protection: \"deny\" - no rendering within a frame, \"sameorigin\" - no rendering if origin mismatch"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "1; mode=block",
+									"name": "X-XSS-Protection",
+									"description": "Cross-site scripting (XSS) filter"
+								}
+							],
+							"cookie": [
+								{
+									"expires": "Sat May 26 2018 20:06:10 GMT+0530 (India Standard Time)",
+									"httpOnly": true,
+									"domain": "localhost",
+									"path": "/",
+									"secure": false,
+									"value": "rO0ABXNyAExvcmcuc3ByaW5nZnJhbWV3b3JrLnNlY3VyaXR5Lm9hdXRoMi5jb3JlLmVuZHBvaW50Lk9BdXRoMkF1dGhvcml6YXRpb25SZXF1ZXN0AAAAAAAAAfQCAAhMABRhZGRpdGlvbmFsUGFyYW1ldGVyc3QAD0xqYXZhL3V0aWwvTWFwO0wAFmF1dGhvcml6YXRpb25HcmFudFR5cGV0AEFMb3JnL3NwcmluZ2ZyYW1ld29yay9zZWN1cml0eS9vYXV0aDIvY29yZS9BdXRob3JpemF0aW9uR3JhbnRUeXBlO0wAEGF1dGhvcml6YXRpb25Vcml0ABJMamF2YS9sYW5nL1N0cmluZztMAAhjbGllbnRJZHEAfgADTAALcmVkaXJlY3RVcmlxAH4AA0wADHJlc3BvbnNlVHlwZXQAU0xvcmcvc3ByaW5nZnJhbWV3b3JrL3NlY3VyaXR5L29hdXRoMi9jb3JlL2VuZHBvaW50L09BdXRoMkF1dGhvcml6YXRpb25SZXNwb25zZVR5cGU7TAAGc2NvcGVzdAAPTGphdmEvdXRpbC9TZXQ7TAAFc3RhdGVxAH4AA3hwc3IAJWphdmEudXRpbC5Db2xsZWN0aW9ucyRVbm1vZGlmaWFibGVNYXDxpaj-dPUHQgIAAUwAAW1xAH4AAXhwc3IAF2phdmEudXRpbC5MaW5rZWRIYXNoTWFwNMBOXBBswPsCAAFaAAthY2Nlc3NPcmRlcnhyABFqYXZhLnV0aWwuSGFzaE1hcAUH2sHDFmDRAwACRgAKbG9hZEZhY3RvckkACXRocmVzaG9sZHhwP0AAAAAAAAF3CAAAAAIAAAABdAAPcmVnaXN0cmF0aW9uX2lkdAAIZmFjZWJvb2t4AHNyAD9vcmcuc3ByaW5nZnJhbWV3b3JrLnNlY3VyaXR5Lm9hdXRoMi5jb3JlLkF1dGhvcml6YXRpb25HcmFudFR5cGUAAAAAAAAB9AIAAUwABXZhbHVlcQB-AAN4cHQAEmF1dGhvcml6YXRpb25fY29kZXQAKmh0dHBzOi8vd3d3LmZhY2Vib29rLmNvbS92Mi44L2RpYWxvZy9vYXV0aHQAEDEyMzQwMjAxODY3MTg3NDF0ADBodHRwOi8vbG9jYWxob3N0OjgwODAvbG9naW4vb2F1dGgyL2NvZGUvZmFjZWJvb2tzcgBRb3JnLnNwcmluZ2ZyYW1ld29yay5zZWN1cml0eS5vYXV0aDIuY29yZS5lbmRwb2ludC5PQXV0aDJBdXRob3JpemF0aW9uUmVzcG9uc2VUeXBlAAAAAAAAAfQCAAFMAAV2YWx1ZXEAfgADeHB0AARjb2Rlc3IAJWphdmEudXRpbC5Db2xsZWN0aW9ucyRVbm1vZGlmaWFibGVTZXSAHZLRj5uAVQIAAHhyACxqYXZhLnV0aWwuQ29sbGVjdGlvbnMkVW5tb2RpZmlhYmxlQ29sbGVjdGlvbhlCAIDLXvceAgABTAABY3QAFkxqYXZhL3V0aWwvQ29sbGVjdGlvbjt4cHNyABdqYXZhLnV0aWwuTGlua2VkSGFzaFNldNhs11qV3SoeAgAAeHIAEWphdmEudXRpbC5IYXNoU2V0ukSFlZa4tzQDAAB4cHcMAAAAED9AAAAAAAACdAAOcHVibGljX3Byb2ZpbGV0AAVlbWFpbHh0ACxkM2ppcWU0ZXBfeVhHSWZoNUVNaTZ1ZGs3WFdXQnZ4V3hjQmYtNE5oZ3hjPQ==",
+									"key": "lemon_oauth2_authorization_request"
+								}
+							],
+							"body": "{\"token\":\"Bearer eyJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwiYWxnIjoiZGlyIn0..CGn0oLJUw6SZj8qN3bv5UA.duI-9vBwLZNYwzFAvtoLGGSzW7SkBEPZcgthIcj4S18M6IGL6M-fSiBcBSehBTBpww5nGqZRykcTCB8VggM237yFLErjcsanfdNg9QlJH4pU2aKKw9oSe3ewLW9y0n8Hax5bF2pD0J4r2K0kaIokyg.twGE66-9KUMvRHDoDChpzQ\"}"
+						}
+					]
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "aaaefe57-070b-428e-a037-c0ade9094b43",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "8523ee97-1f1e-4c01-9cac-7387a1f5d809",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

@@ -374,10 +374,10 @@ public class LemonAutoConfiguration {
 	 */
 	@Bean
 	public LemonUtils lemonUtil(ApplicationContext applicationContext,
-			MessageSource messageSource, ObjectMapper objectMapper) {
+			ObjectMapper objectMapper) {
 
         log.info("Configuring LemonUtil");       		
-		return new LemonUtils(applicationContext, messageSource, objectMapper);
+		return new LemonUtils(applicationContext, objectMapper);
 	}
 	
 	/**

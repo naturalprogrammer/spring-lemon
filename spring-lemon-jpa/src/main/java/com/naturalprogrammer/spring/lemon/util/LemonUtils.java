@@ -42,6 +42,7 @@ import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
 import com.naturalprogrammer.spring.lemon.domain.VersionedEntity;
 import com.naturalprogrammer.spring.lemon.exceptions.MultiErrorException;
 import com.naturalprogrammer.spring.lemon.exceptions.VersionException;
+import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
 import com.naturalprogrammer.spring.lemon.security.JwtService;
 import com.naturalprogrammer.spring.lemon.security.LemonPrincipal;
 import com.naturalprogrammer.spring.lemon.security.UserDto;
@@ -52,35 +53,20 @@ import com.nimbusds.jwt.JWTClaimsSet;
  * 
  * @author Sanjay Patel
  */
-@Component
 public class LemonUtils {
 	
 	private static final Log log = LogFactory.getLog(LemonUtils.class);
 
 	private static ApplicationContext applicationContext;
-	private static MessageSource messageSource;
 	private static ObjectMapper objectMapper;
-	public static final MultiErrorException NOT_FOUND_EXCEPTION = new MultiErrorException();
 	
 	public LemonUtils(ApplicationContext applicationContext,
-		MessageSource messageSource,
 		ObjectMapper objectMapper) {
 		
 		LemonUtils.applicationContext = applicationContext;
-		LemonUtils.messageSource = messageSource;
 		LemonUtils.objectMapper = objectMapper;
 		
 		log.info("Created");
-	}
-	
-	@PostConstruct
-	public void postConstruct() {
-		
-		NOT_FOUND_EXCEPTION
-			.httpStatus(HttpStatus.NOT_FOUND)
-			.validate(false, "com.naturalprogrammer.spring.notFound");
-		
-		log.info("NOT_FOUND_EXCEPTION built");		
 	}
 
 
@@ -89,6 +75,7 @@ public class LemonUtils {
 		return objectMapper;
 	}
 	
+	
 	/**
 	 * Gets the reference to an application-context bean
 	 *  
@@ -96,23 +83,6 @@ public class LemonUtils {
 	 */
 	public static <T> T getBean(Class<T> clazz) {
 		return applicationContext.getBean(clazz);
-	}
-	
-	
-	/**
-	 * Gets a message from messages.properties
-	 * 
-	 * @param messageKey	the key of the message
-	 * @param args			any arguments
-	 */
-	public static String getMessage(String messageKey, Object... args) {
-		
-		if (messageSource == null)
-			return "ApplicationContext unavailable, probably unit test going on";
-		
-		// http://stackoverflow.com/questions/10792551/how-to-obtain-a-current-user-locale-from-spring-without-passing-it-as-a-paramete
-		return messageSource.getMessage(messageKey, args,
-				LocaleContextHolder.getLocale());
 	}
 	
 
@@ -211,9 +181,10 @@ public class LemonUtils {
 	public static void ensureCredentials(boolean valid, String messageKey) {
 		
 		if (!valid)
-			throw new BadCredentialsException(getMessage(messageKey));
+			throw new BadCredentialsException(LexUtils.getMessage(messageKey));
 	}
 
+	
 	/**
 	 * Throws AccessDeniedException is not authorized
 	 * 
@@ -223,59 +194,9 @@ public class LemonUtils {
 	public static void ensureAuthority(boolean authorized, String messageKey) {
 		
 		if (!authorized)
-			throw new AccessDeniedException(getMessage(messageKey));
+			throw new AccessDeniedException(LexUtils.getMessage(messageKey));
 	}
 	
-	/**
-	 * Creates a MultiErrorException out of the given parameters
-	 * 
-	 * @param valid			the condition to check for
-	 * @param messageKey	key of the error message
-	 * @param args			any message arguments
-	 */
-	public static MultiErrorException validate(
-			boolean valid, String messageKey, Object... args) {
-		
-		return LemonUtils.validate(null, valid, messageKey, args);
-	}
-
-	
-	/**
-	 * Creates a MultiErrorException out of the given parameters
-	 * 
-	 * @param fieldName		the name of the field related to the error
-	 * @param valid			the condition to check for
-	 * @param messageKey	key of the error message
-	 * @param args			any message arguments
-	 */
-	public static MultiErrorException validate(
-			String fieldName, boolean valid, String messageKey, Object... args) {
-		
-		return new MultiErrorException().validate(fieldName, valid, messageKey, args);
-	}
-
-	
-	/**
-	 * Throws 404 Error is the entity isn't found
-	 * 
-	 * @param entity
-	 */
-	public static <T> void ensureFound(T entity) {
-		
-		LemonUtils.validate(entity != null,
-			"com.naturalprogrammer.spring.notFound")
-			.httpStatus(HttpStatus.NOT_FOUND).go();
-	}
-
-	
-	/**
-	 * Supplys a 404 exception
-	 */
-	public static Supplier<MultiErrorException> notFoundSupplier() {
-		
-		return () -> NOT_FOUND_EXCEPTION;
-	}	
-
 	
 	/**
 	 * A convenient method for running code

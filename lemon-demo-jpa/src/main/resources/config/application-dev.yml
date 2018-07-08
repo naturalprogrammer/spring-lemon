@@ -1,0 +1,52 @@
+## Development environment
+
+spring:
+  jpa.hibernate.ddl-auto: update
+  jpa:
+    hibernate:
+      use-new-id-generator-mappings: false
+  datasource:
+    url: jdbc:mysql://localhost:3306/lemon?useSSL=false
+    username: lemon
+    password: lemon
+  security:
+    oauth2:
+      client:
+        provider:
+          facebook:
+            user-info-uri: https://graph.facebook.com/me?fields=email,name,verified 
+        registration:
+          google:
+            client-id: 1011974249454-6gq0hr01gqh3cndoqnss5r69tkk2nd84.apps.googleusercontent.com
+            client-secret: saDA6Cj60wipncFM-hzBD-C6
+          facebook:
+            client-id: 1234020186718741
+            client-secret: 0c0abaf685a83e879e8e48b1167c96ab
+
+logging:
+  level:
+    root: INFO
+    org.springframework: INFO
+    org.springframework.security.oauth2.client: DEBUG
+    com.naturalprogrammer: DEBUG
+  #file: D:\\tmp\\dev-log.txt
+
+lemon:
+
+  # application-url: http://localhost:9000
+  # oauth2-authentication-success-url: http://localhost:9000/social-login-success?token=
+
+  cors:
+    # Comma separated values of CORS allowedOrigins
+    # If this property is not given, CORS is not configured
+    allowed-origins: http://localhost:9000
+    
+  recaptcha:
+    sitekey: 6LdwxRcUAAAAABkhOGWQXhl9FsR27D5YUJRuGzx0
+    secretkey: 6LdwxRcUAAAAADaG0Eo1qkYCco15cnngiBoBt2IO
+  
+  jwt:
+    # An aes-128-cbc key generated at https://asecuritysite.com/encryption/keygen (take the "key" field)
+    secret: 841D8A6C80CBA4FCAD32D5367C18C53B
+    # expiration-millis: 864000000 # 10 days
+    # short-lived-millis: 120000   # two minutes

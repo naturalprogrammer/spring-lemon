@@ -32,6 +32,7 @@ import com.naturalprogrammer.spring.lemon.domain.AbstractUser.Role;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser.SignUpValidation;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUserRepository;
 import com.naturalprogrammer.spring.lemon.domain.ChangePasswordForm;
+import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
 import com.naturalprogrammer.spring.lemon.mail.LemonMailData;
 import com.naturalprogrammer.spring.lemon.mail.MailSender;
 import com.naturalprogrammer.spring.lemon.permissions.UserEditPermission;
@@ -267,8 +268,8 @@ public abstract class LemonService
 		
 		// send the mail
 		mailSender.send(LemonMailData.of(user.getEmail(),
-			LemonUtils.getMessage("com.naturalprogrammer.spring.verifySubject"),
-			LemonUtils.getMessage(
+			LexUtils.getMessage("com.naturalprogrammer.spring.verifySubject"),
+			LexUtils.getMessage(
 				"com.naturalprogrammer.spring.verifyEmail",	verifyLink)));
 	}	
 
@@ -280,10 +281,10 @@ public abstract class LemonService
 	public void resendVerificationMail(U user) {
 
 		// The user must exist
-		LemonUtils.ensureFound(user);
+		LexUtils.ensureFound(user);
 		
 		// must be unverified
-		LemonUtils.validate(user.getRoles().contains(Role.UNVERIFIED),
+		LexUtils.validate(user.getRoles().contains(Role.UNVERIFIED),
 				"com.naturalprogrammer.spring.alreadyVerified").go();	
 
 		// send the verification mail
@@ -309,7 +310,7 @@ public abstract class LemonService
 		log.debug("Fetching user: " + user);
 
 		// ensure that the user exists
-		LemonUtils.ensureFound(user);
+		LexUtils.ensureFound(user);
 		
 		// hide confidential fields
 		user.hideConfidentialFields();
@@ -326,10 +327,10 @@ public abstract class LemonService
 		
 		log.debug("Verifying user ...");
 
-		U user = userRepository.findById(userId).orElseThrow(LemonUtils.notFoundSupplier());
+		U user = userRepository.findById(userId).orElseThrow(LexUtils.notFoundSupplier());
 		
 		// ensure that he is unverified
-		LemonUtils.validate(user.hasRole(Role.UNVERIFIED),
+		LexUtils.validate(user.hasRole(Role.UNVERIFIED),
 				"com.naturalprogrammer.spring.alreadyVerified").go();	
 		
 		JWTClaimsSet claims = jwtService.parseToken(verificationCode, JwtService.VERIFY_AUDIENCE, user.getCredentialsUpdatedMillis());
@@ -365,7 +366,7 @@ public abstract class LemonService
 		
 		// fetch the user record from database
 		U user = userRepository.findByEmail(email)
-				.orElseThrow(LemonUtils.notFoundSupplier());
+				.orElseThrow(LexUtils.notFoundSupplier());
 
 		mailForgotPasswordLink(user);
 	}
@@ -402,8 +403,8 @@ public abstract class LemonService
 		
 		// send the mail
 		mailSender.send(LemonMailData.of(user.getEmail(),
-				LemonUtils.getMessage("com.naturalprogrammer.spring.forgotPasswordSubject"),
-				LemonUtils.getMessage("com.naturalprogrammer.spring.forgotPasswordEmail",
+				LexUtils.getMessage("com.naturalprogrammer.spring.forgotPasswordSubject"),
+				LexUtils.getMessage("com.naturalprogrammer.spring.forgotPasswordEmail",
 					forgotPasswordLink)));
 	}
 	
@@ -423,7 +424,7 @@ public abstract class LemonService
 		String email = claims.getSubject();
 		
 		// fetch the user
-		U user = userRepository.findByEmail(email).orElseThrow(LemonUtils.notFoundSupplier());
+		U user = userRepository.findByEmail(email).orElseThrow(LexUtils.notFoundSupplier());
 		LemonUtils.ensureCredentialsUpToDate(claims, user);
 		
 		// sets the password
@@ -484,8 +485,8 @@ public abstract class LemonService
 		String oldPassword = loggedIn.getPassword();
 
 		// checks
-		LemonUtils.ensureFound(user);
-		LemonUtils.validate("changePasswordForm.oldPassword",
+		LexUtils.ensureFound(user);
+		LexUtils.validate("changePasswordForm.oldPassword",
 			passwordEncoder.matches(changePasswordForm.getOldPassword(),
 					oldPassword),
 			"com.naturalprogrammer.spring.wrong.password").go();
@@ -547,8 +548,8 @@ public abstract class LemonService
 		log.debug("Requesting email change: " + user);
 
 		// checks
-		LemonUtils.ensureFound(user);	
-		LemonUtils.validate("updatedUser.password",
+		LexUtils.ensureFound(user);	
+		LexUtils.validate("updatedUser.password",
 			passwordEncoder.matches(updatedUser.getPassword(),
 									user.getPassword()),
 			"com.naturalprogrammer.spring.wrong.password").go();
@@ -603,9 +604,9 @@ public abstract class LemonService
 	protected void mailChangeEmailLink(U user, String changeEmailLink) {
 		
 		mailSender.send(LemonMailData.of(user.getNewEmail(),
-			LemonUtils.getMessage(
+				LexUtils.getMessage(
 				"com.naturalprogrammer.spring.changeEmailSubject"),
-			LemonUtils.getMessage(
+				LexUtils.getMessage(
 				"com.naturalprogrammer.spring.changeEmailEmail",
 				 changeEmailLink)));
 	}
@@ -623,12 +624,12 @@ public abstract class LemonService
 		// fetch the current-user
 		UserDto<ID> currentUser = LemonUtils.currentUser();
 		
-		LemonUtils.validate(userId.equals(currentUser.getId()),
+		LexUtils.validate(userId.equals(currentUser.getId()),
 			"com.naturalprogrammer.spring.wrong.login").go();
 		
-		U user = userRepository.findById(userId).orElseThrow(LemonUtils.notFoundSupplier());
+		U user = userRepository.findById(userId).orElseThrow(LexUtils.notFoundSupplier());
 		
-		LemonUtils.validate(StringUtils.isNotBlank(user.getNewEmail()),
+		LexUtils.validate(StringUtils.isNotBlank(user.getNewEmail()),
 				"com.naturalprogrammer.spring.blank.newEmail").go();
 		
 		JWTClaimsSet claims = jwtService.parseToken(changeEmailCode,
@@ -641,7 +642,7 @@ public abstract class LemonService
 				"com.naturalprogrammer.spring.wrong.changeEmailCode");
 		
 		// Ensure that the email would be unique 
-		LemonUtils.validate(
+		LexUtils.validate(
 				!userRepository.findByEmail(user.getNewEmail()).isPresent(),
 				"com.naturalprogrammer.spring.duplicate.email").go();	
 		

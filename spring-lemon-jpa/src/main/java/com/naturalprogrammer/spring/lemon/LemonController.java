@@ -25,6 +25,7 @@ import com.github.fge.jsonpatch.JsonPatchException;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser.SignupInput;
 import com.naturalprogrammer.spring.lemon.domain.ChangePasswordForm;
+import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
 import com.naturalprogrammer.spring.lemon.security.JwtService;
 import com.naturalprogrammer.spring.lemon.security.UserDto;
 import com.naturalprogrammer.spring.lemon.util.LemonUtils;
@@ -196,7 +197,7 @@ public abstract class LemonController
 		log.debug("Updating user ... ");
 		
 		// ensure that the user exists
-		LemonUtils.ensureFound(user);
+		LexUtils.ensureFound(user);
 		U updatedUser = LemonUtils.applyPatch(user, patch); // create a patched form
 		UserDto<ID> userDto = lemonService.updateUser(user, updatedUser);
 		
