@@ -5,7 +5,7 @@
 
     <groupId>com.naturalprogrammer</groupId>
     <artifactId>spring-lemon</artifactId>
-    <version>multi-module-xxx</version>
+    <version>1.0.0.M4</version>
     <packaging>pom</packaging>
 
     <name>spring-lemon</name>
@@ -19,6 +19,8 @@
     </parent>
 
 	<modules>
+		<module>spring-lemon-exceptions</module>
+		<module>spring-lemon-commons</module>
 		<module>spring-lemon-jpa</module>
 	</modules>
 	

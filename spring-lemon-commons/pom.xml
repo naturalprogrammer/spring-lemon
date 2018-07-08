@@ -3,11 +3,11 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>spring-lemon-jpa</artifactId>
+    <artifactId>spring-lemon-commons</artifactId>
     <packaging>jar</packaging>
 
-    <name>spring-lemon-jpa</name>
-    <description>Helper library for Spring Boot JPA Web Applications</description>
+    <name>spring-lemon-commons</name>
+    <description>Helper library for Spring Boot Web Applications</description>
 
     <parent>
         <groupId>com.naturalprogrammer</groupId>
@@ -17,15 +17,10 @@
 
     <dependencies>
     
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
-        </dependency>
+		<dependency>
+		    <groupId>org.springframework.boot</groupId>
+		    <artifactId>spring-boot-starter-validation</artifactId>
+		</dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
