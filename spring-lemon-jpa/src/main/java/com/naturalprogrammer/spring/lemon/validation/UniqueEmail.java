@@ -8,7 +8,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
-import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
+import com.naturalprogrammer.spring.lemon.commons.util.UserUtils;
 
 /**
  * Annotation for unique-email constraint,
@@ -18,7 +18,7 @@ import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
  * @author Sanjay Patel
  */
 @NotBlank(message = "{com.naturalprogrammer.spring.blank.email}")
-@Size(min=AbstractUser.EMAIL_MIN, max=AbstractUser.EMAIL_MAX,
+@Size(min=UserUtils.EMAIL_MIN, max=UserUtils.EMAIL_MAX,
 	message = "{com.naturalprogrammer.spring.invalid.email.size}")
 @Email(message = "{com.naturalprogrammer.spring.invalid.email}")
 @Retention(RetentionPolicy.RUNTIME)

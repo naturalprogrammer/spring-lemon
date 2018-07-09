@@ -16,7 +16,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 
-import com.naturalprogrammer.spring.lemon.domain.AbstractUser.Role;
+import com.naturalprogrammer.spring.lemon.commons.util.UserUtils;
 import com.naturalprogrammer.spring.lemon.security.LemonSecurityConfig;
 import com.naturalprogrammer.spring.lemon.util.LemonUtils;
 import com.naturalprogrammer.spring.lemondemo.entities.User;
@@ -77,7 +77,7 @@ public class UpdateUserMvcTests extends AbstractMvcTests {
 		// Ensure that data changed properly
 		Assert.assertEquals(UNVERIFIED_USER_EMAIL, user.getEmail());
 		Assert.assertEquals(1, user.getRoles().size());
-		Assert.assertTrue(user.getRoles().contains(Role.UNVERIFIED));
+		Assert.assertTrue(user.getRoles().contains(UserUtils.Role.UNVERIFIED));
 		Assert.assertEquals(2L, user.getVersion().longValue());
 		
 		// Version mismatch
@@ -115,7 +115,7 @@ public class UpdateUserMvcTests extends AbstractMvcTests {
 		// Ensure that data changed properly
 		Assert.assertEquals(UNVERIFIED_USER_EMAIL, user.getEmail());
 		Assert.assertEquals(1, user.getRoles().size());
-		Assert.assertTrue(user.getRoles().contains(Role.ADMIN));
+		Assert.assertTrue(user.getRoles().contains(UserUtils.Role.ADMIN));
     }
 	
 	/**

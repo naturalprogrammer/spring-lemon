@@ -5,7 +5,6 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableAsync;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 
 import com.naturalprogrammer.spring.lemon.commons.exceptions.handlers.BadCredentialsExceptionHandler;
 

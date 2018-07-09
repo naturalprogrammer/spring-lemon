@@ -23,8 +23,8 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
+import com.naturalprogrammer.spring.lemon.commons.util.UserUtils;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
-import com.naturalprogrammer.spring.lemon.domain.AbstractUser.SignupInput;
 import com.naturalprogrammer.spring.lemon.domain.ChangePasswordForm;
 import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
 import com.naturalprogrammer.spring.lemon.security.JwtService;
@@ -94,7 +94,7 @@ public abstract class LemonController
 	 */
 	@PostMapping("/users")
 	@ResponseStatus(HttpStatus.CREATED)
-	public UserDto<ID> signup(@RequestBody @JsonView(SignupInput.class) U user,
+	public UserDto<ID> signup(@RequestBody @JsonView(UserUtils.SignupInput.class) U user,
 			HttpServletResponse response) {
 		
 		log.debug("Signing up: " + user);

@@ -9,7 +9,7 @@ import javax.validation.Payload;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
-import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
+import com.naturalprogrammer.spring.lemon.commons.util.UserUtils;
 
 /**
  * Annotation for password constraint
@@ -20,7 +20,7 @@ import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
  *
  */
 @NotBlank(message="{com.naturalprogrammer.spring.blank.password}")
-@Size(min=AbstractUser.PASSWORD_MIN, max=AbstractUser.PASSWORD_MAX,
+@Size(min=UserUtils.PASSWORD_MIN, max=UserUtils.PASSWORD_MAX,
 	message="{com.naturalprogrammer.spring.invalid.password.size}")
 @Retention(RUNTIME)
 @Constraint(validatedBy = { })

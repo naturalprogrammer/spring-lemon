@@ -1,0 +1,97 @@
+package com.naturalprogrammer.spring.lemonreactive.domain;
+
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.mongodb.core.index.Indexed;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
+import com.naturalprogrammer.spring.lemon.commons.util.UserUtils;
+
+public abstract class AbstractMongoUser
+	<ID extends Serializable>
+	extends AbstractDocument<ID> {
+
+	@Indexed(unique = true)
+	protected String email;
+	
+	protected String password;
+	protected Set<String> roles = new HashSet<>();
+	
+	@Indexed(unique = true)
+	protected String newEmail;
+	
+	@JsonIgnore
+	protected long credentialsUpdatedMillis = System.currentTimeMillis();
+	
+	// holds reCAPTCHA response while signing up
+	@Transient
+	@JsonView(UserUtils.SignupInput.class)
+	private String captchaResponse;
+	
+	public final boolean hasRole(String role) {
+		return roles.contains(role);
+	}	
+	
+	/**
+	 * Called by spring security permission evaluator
+	 * to check whether the current-user has the given permission
+	 * on this entity. 
+	 */
+	@Override
+	public boolean hasPermission(UserDto<?> currentUser, String permission) {
+		
+		return UserUtils.hasPermission(getId(), currentUser, permission);		
+	}
+
+	
+	/**
+	 * A convenient toString method
+	 */
+	@Override
+	public String toString() {
+		return "AbstractUser [email=" + email + ", roles=" + roles + "]";
+	}
+
+
+	/**
+	 * Makes a User DTO
+	 */
+	public UserDto<ID> toUserDto() {
+		
+		UserDto<ID> userDto = new UserDto<>();
+		
+		userDto.setId(getId());
+		userDto.setUsername(email);
+		userDto.setPassword(password);
+		userDto.setRoles(roles);
+		userDto.setTag(toTag());
+		
+		boolean unverified = hasRole(UserUtils.Role.UNVERIFIED);
+		boolean blocked = hasRole(UserUtils.Role.BLOCKED);
+		boolean admin = hasRole(UserUtils.Role.ADMIN);
+		boolean goodUser = !(unverified || blocked);
+		boolean goodAdmin = goodUser && admin;
+
+		userDto.setAdmin(admin);
+		userDto.setBlocked(blocked);
+		userDto.setGoodAdmin(goodAdmin);
+		userDto.setGoodUser(goodUser);
+		userDto.setUnverified(unverified);
+		
+		return userDto;
+	}
+
+	/**
+	 * Override this to supply any additional fields to the user DTO,
+	 * e.g. name
+	 */
+	protected Serializable toTag() {
+		
+		return null;
+	}
+}

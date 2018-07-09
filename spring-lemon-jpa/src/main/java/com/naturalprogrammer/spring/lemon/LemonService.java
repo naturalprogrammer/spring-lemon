@@ -28,9 +28,8 @@ import org.springframework.validation.annotation.Validated;
 
 import com.naturalprogrammer.spring.lemon.LemonProperties.Admin;
 import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
+import com.naturalprogrammer.spring.lemon.commons.util.UserUtils;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
-import com.naturalprogrammer.spring.lemon.domain.AbstractUser.Role;
-import com.naturalprogrammer.spring.lemon.domain.AbstractUser.SignUpValidation;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUserRepository;
 import com.naturalprogrammer.spring.lemon.domain.ChangePasswordForm;
 import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
@@ -134,7 +133,7 @@ public abstract class LemonService
     	user.setEmail(initialAdmin.getUsername());
 		user.setPassword(passwordEncoder.encode(
 			properties.getAdmin().getPassword()));
-		user.getRoles().add(Role.ADMIN);
+		user.getRoles().add(UserUtils.Role.ADMIN);
 		
 		return user;
 	}
@@ -190,7 +189,7 @@ public abstract class LemonService
 	/**
 	 * Signs up a user.
 	 */
-	@Validated(SignUpValidation.class)
+	@Validated(UserUtils.SignUpValidation.class)
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
 	public void signup(@Valid U user) {
 		
@@ -226,7 +225,7 @@ public abstract class LemonService
 	 */
 	protected void makeUnverified(U user) {
 		
-		user.getRoles().add(Role.UNVERIFIED);
+		user.getRoles().add(UserUtils.Role.UNVERIFIED);
 		user.setCredentialsUpdatedMillis(System.currentTimeMillis());
 		LemonUtils.afterCommit(() -> sendVerificationMail(user)); // send a verification mail to the user
 	}
@@ -284,7 +283,7 @@ public abstract class LemonService
 		LexUtils.ensureFound(user);
 		
 		// must be unverified
-		LexUtils.validate(user.getRoles().contains(Role.UNVERIFIED),
+		LexUtils.validate(user.getRoles().contains(UserUtils.Role.UNVERIFIED),
 				"com.naturalprogrammer.spring.alreadyVerified").go();	
 
 		// send the verification mail
@@ -313,7 +312,7 @@ public abstract class LemonService
 		LexUtils.ensureFound(user);
 		
 		// hide confidential fields
-		user.hideConfidentialFields();
+		hideConfidentialFields(user);
 		
 		return user;
 	}
@@ -330,7 +329,7 @@ public abstract class LemonService
 		U user = userRepository.findById(userId).orElseThrow(LexUtils.notFoundSupplier());
 		
 		// ensure that he is unverified
-		LexUtils.validate(user.hasRole(Role.UNVERIFIED),
+		LexUtils.validate(user.hasRole(UserUtils.Role.UNVERIFIED),
 				"com.naturalprogrammer.spring.alreadyVerified").go();	
 		
 		JWTClaimsSet claims = jwtService.parseToken(verificationCode, JwtService.VERIFY_AUDIENCE, user.getCredentialsUpdatedMillis());
@@ -340,7 +339,7 @@ public abstract class LemonService
 				claims.getClaim("email").equals(user.getEmail()),
 				"com.naturalprogrammer.spring.wrong.verificationCode");
 		
-		user.getRoles().remove(Role.UNVERIFIED); // make him verified
+		user.getRoles().remove(UserUtils.Role.UNVERIFIED); // make him verified
 		user.setCredentialsUpdatedMillis(System.currentTimeMillis());
 		userRepository.save(user);
 		
@@ -449,7 +448,7 @@ public abstract class LemonService
 	 * Updates a user with the given data.
 	 */
 	@UserEditPermission
-	@Validated(AbstractUser.UpdateValidation.class)
+	@Validated(UserUtils.UpdateValidation.class)
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
 	public UserDto<ID> updateUser(U user, @Valid U updatedUser) {
 		
@@ -519,16 +518,16 @@ public abstract class LemonService
 			if (user.getRoles().equals(updatedUser.getRoles())) // roles are same
 				return;
 			
-			if (updatedUser.hasRole(Role.UNVERIFIED)) {
+			if (updatedUser.hasRole(UserUtils.Role.UNVERIFIED)) {
 				
-				if (!user.hasRole(Role.UNVERIFIED)) {
+				if (!user.hasRole(UserUtils.Role.UNVERIFIED)) {
 
 					makeUnverified(user); // make user unverified
 				}
 			} else {
 				
-				if (user.hasRole(Role.UNVERIFIED))
-					user.getRoles().remove(Role.UNVERIFIED); // make user verified
+				if (user.hasRole(UserUtils.Role.UNVERIFIED))
+					user.getRoles().remove(UserUtils.Role.UNVERIFIED); // make user verified
 			}
 			
 			user.setRoles(updatedUser.getRoles());
@@ -541,7 +540,7 @@ public abstract class LemonService
 	 * Requests for email change.
 	 */
 	@UserEditPermission
-	@Validated(AbstractUser.ChangeEmailValidation.class)
+	@Validated(UserUtils.ChangeEmailValidation.class)
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
 	public void requestEmailChange(U user, @Valid U updatedUser) {
 		
@@ -653,8 +652,8 @@ public abstract class LemonService
 		user.setCredentialsUpdatedMillis(System.currentTimeMillis());
 		
 		// make the user verified if he is not
-		if (user.hasRole(Role.UNVERIFIED))
-			user.getRoles().remove(Role.UNVERIFIED);
+		if (user.hasRole(UserUtils.Role.UNVERIFIED))
+			user.getRoles().remove(UserUtils.Role.UNVERIFIED);
 		
 		userRepository.save(user);
 		
@@ -728,5 +727,19 @@ public abstract class LemonService
 	public void save(U user) {
 		
 		userRepository.save(user);
+	}
+	
+	
+	/**
+	 * Hides the confidential fields before sending to client
+	 */
+	protected void hideConfidentialFields(U user) {
+		
+		user.setPassword(null); // JsonIgnore didn't work
+		
+		if (!user.hasPermission(LemonUtils.currentUser(), UserUtils.Permission.EDIT))
+			user.setEmail(null);
+		
+		log.debug("Hid confidential fields for user: " + user);
 	}
 }

@@ -9,6 +9,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.naturalprogrammer.spring.lemon.commons.util.UserUtils;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
 
 @Entity
@@ -43,9 +44,9 @@ public class User extends AbstractUser<User,Long> {
 		this.name = name;
 	}
 
-	@JsonView(SignupInput.class)
-	@NotBlank(message = "{blank.name}", groups = {SignUpValidation.class, UpdateValidation.class})
-    @Size(min=NAME_MIN, max=NAME_MAX, groups = {SignUpValidation.class, UpdateValidation.class})
+	@JsonView(UserUtils.SignupInput.class)
+	@NotBlank(message = "{blank.name}", groups = {UserUtils.SignUpValidation.class, UserUtils.UpdateValidation.class})
+    @Size(min=NAME_MIN, max=NAME_MAX, groups = {UserUtils.SignUpValidation.class, UserUtils.UpdateValidation.class})
     @Column(nullable = false, length = NAME_MAX)
     private String name;
 	
