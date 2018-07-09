@@ -23,9 +23,9 @@
 		<module>spring-lemon-exceptions</module>
 		<module>spring-lemon-commons</module>
 		<module>spring-lemon-jpa</module>
-		<module>spring-lemon-mongodb</module>
+		<module>spring-lemon-reactive</module>
 		<module>lemon-demo-jpa</module>
-		<module>lemon-demo-mongodb</module>
+		<module>lemon-demo-reactive</module>
 	</modules>
 
 	<dependencies>

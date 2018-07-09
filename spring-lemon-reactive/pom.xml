@@ -4,10 +4,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.naturalprogrammer.spring-lemon</groupId>
-    <artifactId>spring-lemon-mongodb</artifactId>
+    <artifactId>spring-lemon-reactive</artifactId>
     <packaging>jar</packaging>
 
-    <name>spring-lemon-mongodb</name>
+    <name>spring-lemon-reactive</name>
     <description>Helper reactive library for Spring Boot REST APIs</description>
 
     <parent>

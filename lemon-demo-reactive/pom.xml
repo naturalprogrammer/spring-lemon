@@ -4,10 +4,10 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.naturalprogrammer.spring-lemon</groupId>
-	<artifactId>lemon-demo-mongodb</artifactId>
+	<artifactId>lemon-demo-reactive</artifactId>
 	<packaging>jar</packaging>
 
-	<name>lemon-demo-mongodb</name>
+	<name>lemon-demo-reactive</name>
 	<description>Demo project for Spring Lemon MongoDB</description>
 
 	<parent>
@@ -20,7 +20,7 @@
 
 		<dependency>
 			<groupId>com.naturalprogrammer.spring-lemon</groupId>
-			<artifactId>spring-lemon-mongodb</artifactId>
+			<artifactId>spring-lemon-reactive</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 
