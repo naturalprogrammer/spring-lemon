@@ -11,6 +11,6 @@ public class LemonReactiveAuthenticationFailureHandler implements ServerAuthenti
 	@Override
 	public Mono<Void> onAuthenticationFailure(WebFilterExchange webFilterExchange, AuthenticationException exception) {
 		
-		throw exception;
+		return Mono.error(exception);
 	}
 }

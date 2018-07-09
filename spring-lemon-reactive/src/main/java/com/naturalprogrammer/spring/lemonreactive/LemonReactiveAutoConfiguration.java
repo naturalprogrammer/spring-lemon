@@ -13,8 +13,11 @@ import org.springframework.boot.web.reactive.error.ErrorAttributes;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.config.EnableMongoAuditing;
+import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.web.server.SecurityWebFilterChain;
+import org.springframework.security.web.server.authentication.WebFilterChainServerAuthenticationSuccessHandler;
+import org.springframework.security.web.server.context.NoOpServerSecurityContextRepository;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import com.naturalprogrammer.spring.lemon.exceptions.ErrorResponseComposer;
@@ -25,6 +28,7 @@ import com.naturalprogrammer.spring.lemonreactive.security.LemonReactiveAuthenti
 @Configuration
 @EnableTransactionManagement
 @EnableMongoAuditing
+@EnableReactiveMethodSecurity
 @AutoConfigureBefore({
 	WebFluxAutoConfiguration.class,
 	ErrorWebFluxAutoConfiguration.class,
@@ -68,9 +72,11 @@ public class LemonReactiveAutoConfiguration {
 				.anyExchange().permitAll()
 			.and()
 				.formLogin()
-					.loginPage("/login") // Should be by default, but not providing this overwrites our AuthenticationFailureHandler, because this is called later 
+					.loginPage("/api/core/login") // Should be "/login" by default, but not providing that overwrites our AuthenticationFailureHandler, because this is called later 
 					.authenticationFailureHandler(new LemonReactiveAuthenticationFailureHandler())
+					.authenticationSuccessHandler(new WebFilterChainServerAuthenticationSuccessHandler())
 			.and()
+				.securityContextRepository(NoOpServerSecurityContextRepository.getInstance())
 				.csrf().disable()
 			.build();
 	}

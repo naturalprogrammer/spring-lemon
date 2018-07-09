@@ -12,7 +12,6 @@ import com.naturalprogrammer.spring.lemon.commons.exceptions.handlers.BadCredent
 @Configuration
 @ComponentScan(basePackageClasses=BadCredentialsExceptionHandler.class)
 @EnableAsync
-@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class LemonCommonsAutoConfiguration {
 
 	private static final Log log = LogFactory.getLog(LemonCommonsAutoConfiguration.class);
