@@ -11,4 +11,7 @@ import org.apache.commons.logging.LogFactory;
 public class LecUtils {
 	
 	private static final Log log = LogFactory.getLog(LecUtils.class);
+	// Computed authorities
+	public static final String GOOD_ADMIN = "GOOD_ADMIN";
+	public static final String GOOD_USER = "GOOD_USER";
 }

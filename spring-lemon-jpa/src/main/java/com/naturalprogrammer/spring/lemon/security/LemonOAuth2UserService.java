@@ -13,6 +13,8 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import com.naturalprogrammer.spring.lemon.LemonService;
+import com.naturalprogrammer.spring.lemon.commons.security.LemonPrincipal;
+import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
 import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
 import com.naturalprogrammer.spring.lemon.util.LemonUtils;

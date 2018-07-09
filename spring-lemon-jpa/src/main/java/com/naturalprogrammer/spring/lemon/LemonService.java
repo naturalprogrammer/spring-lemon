@@ -27,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import com.naturalprogrammer.spring.lemon.LemonProperties.Admin;
+import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser.Role;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser.SignUpValidation;
@@ -38,7 +39,6 @@ import com.naturalprogrammer.spring.lemon.mail.MailSender;
 import com.naturalprogrammer.spring.lemon.permissions.UserEditPermission;
 import com.naturalprogrammer.spring.lemon.security.JwtService;
 import com.naturalprogrammer.spring.lemon.security.LemonSecurityConfig;
-import com.naturalprogrammer.spring.lemon.security.UserDto;
 import com.naturalprogrammer.spring.lemon.util.LemonUtils;
 import com.naturalprogrammer.spring.lemon.validation.Password;
 import com.nimbusds.jwt.JWTClaimsSet;

@@ -7,7 +7,7 @@ import javax.persistence.MappedSuperclass;
 import org.springframework.data.jpa.domain.AbstractAuditable;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.naturalprogrammer.spring.lemon.security.UserDto;
+import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
 
 /**
  * Base class for all entities.

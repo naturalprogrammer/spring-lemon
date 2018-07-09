@@ -7,6 +7,8 @@ import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 
+import com.naturalprogrammer.spring.lemon.commons.security.LemonPrincipal;
+
 /**
  * Logs in or registers a user after OpenID Connect SignIn/Up
  */

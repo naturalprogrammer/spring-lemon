@@ -8,6 +8,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
+import com.naturalprogrammer.spring.lemon.commons.security.LemonPrincipal;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUserRepository;
 

@@ -26,10 +26,6 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	private static final Log log = LogFactory.getLog(LemonPermissionEvaluator.class);
 
-	// Computed authorities
-	public static final String GOOD_ADMIN = "GOOD_ADMIN";
-	public static final String GOOD_USER = "GOOD_USER";
-	
 	// JWT Token related
     public static final String TOKEN_PREFIX = "Bearer ";
     public static final String TOKEN_REQUEST_HEADER_NAME = "Authorization";

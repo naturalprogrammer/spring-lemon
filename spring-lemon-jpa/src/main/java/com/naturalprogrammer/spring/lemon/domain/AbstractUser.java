@@ -17,7 +17,7 @@ import org.apache.commons.logging.LogFactory;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
-import com.naturalprogrammer.spring.lemon.security.UserDto;
+import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
 import com.naturalprogrammer.spring.lemon.util.LemonUtils;
 import com.naturalprogrammer.spring.lemon.validation.Captcha;
 import com.naturalprogrammer.spring.lemon.validation.Password;

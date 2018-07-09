@@ -8,6 +8,7 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
+import com.naturalprogrammer.spring.lemon.commons.security.LemonPrincipal;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
 import com.naturalprogrammer.spring.lemon.util.LemonUtils;
 import com.nimbusds.jwt.JWTClaimsSet;

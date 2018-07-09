@@ -7,7 +7,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.data.domain.AuditorAware;
 
-import com.naturalprogrammer.spring.lemon.security.UserDto;
+import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
 import com.naturalprogrammer.spring.lemon.util.LemonUtils;
 
 /**

@@ -14,6 +14,7 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.naturalprogrammer.spring.lemon.LemonProperties;
+import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
 import com.naturalprogrammer.spring.lemon.util.LemonUtils;
 
 /**

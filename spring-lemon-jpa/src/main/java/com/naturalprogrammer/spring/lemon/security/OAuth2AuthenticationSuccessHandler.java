@@ -11,6 +11,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 
 import com.naturalprogrammer.spring.lemon.LemonProperties;
+import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
 import com.naturalprogrammer.spring.lemon.util.LemonUtils;
 
 /**

@@ -32,13 +32,13 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.fge.jsonpatch.JsonPatch;
 import com.github.fge.jsonpatch.JsonPatchException;
+import com.naturalprogrammer.spring.lemon.commons.security.LemonPrincipal;
+import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
 import com.naturalprogrammer.spring.lemon.domain.VersionedEntity;
 import com.naturalprogrammer.spring.lemon.exceptions.VersionException;
 import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
 import com.naturalprogrammer.spring.lemon.security.JwtService;
-import com.naturalprogrammer.spring.lemon.security.LemonPrincipal;
-import com.naturalprogrammer.spring.lemon.security.UserDto;
 import com.nimbusds.jwt.JWTClaimsSet;
 
 /**

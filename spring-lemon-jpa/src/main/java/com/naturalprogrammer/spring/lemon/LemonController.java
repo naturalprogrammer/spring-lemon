@@ -22,12 +22,12 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
+import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser.SignupInput;
 import com.naturalprogrammer.spring.lemon.domain.ChangePasswordForm;
 import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
 import com.naturalprogrammer.spring.lemon.security.JwtService;
-import com.naturalprogrammer.spring.lemon.security.UserDto;
 import com.naturalprogrammer.spring.lemon.util.LemonUtils;
 
 /**

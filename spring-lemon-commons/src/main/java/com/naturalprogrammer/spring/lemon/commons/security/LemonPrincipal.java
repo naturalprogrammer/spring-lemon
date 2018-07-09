@@ -1,4 +1,4 @@
-package com.naturalprogrammer.spring.lemon.security;
+package com.naturalprogrammer.spring.lemon.commons.security;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -14,14 +14,23 @@ import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 
+import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
+
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+
 /**
  * Spring Security Principal, implementing both OidcUser, UserDetails
  */
+@Getter @Setter @RequiredArgsConstructor
 public class LemonPrincipal<ID extends Serializable> implements OidcUser, UserDetails, CredentialsContainer {
 
 	private static final long serialVersionUID = -7849730155307434535L;
 	
-	private UserDto<ID> userDto;
+	@Getter(AccessLevel.NONE)
+	private final UserDto<ID> userDto;
 	
 	private Map<String, Object> attributes;
 	private String name;
@@ -29,11 +38,6 @@ public class LemonPrincipal<ID extends Serializable> implements OidcUser, UserDe
 	private OidcUserInfo userInfo;
 	private OidcIdToken idToken;
 	
-	public LemonPrincipal(UserDto<ID> userDto) {
-
-		this.userDto = userDto;
-	}
-
 	public UserDto<ID> currentUser() {
 		return userDto;
 	}
@@ -51,44 +55,14 @@ public class LemonPrincipal<ID extends Serializable> implements OidcUser, UserDe
 		if (userDto.isGoodUser()) {
 			
 			authorities.add(new LemonGrantedAuthority("ROLE_"
-					+ LemonSecurityConfig.GOOD_USER));
+					+ LecUtils.GOOD_USER));
 			
 			if (userDto.isGoodAdmin())
 				authorities.add(new LemonGrantedAuthority("ROLE_"
-					+ LemonSecurityConfig.GOOD_ADMIN));
+					+ LecUtils.GOOD_ADMIN));
 		}
 		
 		return authorities;	
-	}
-
-	@Override
-	public Map<String, Object> getAttributes() {
-
-		return attributes;
-	}
-
-	@Override
-	public String getName() {
-
-		return name;
-	}
-
-	@Override
-	public Map<String, Object> getClaims() {
-
-		return claims;
-	}
-
-	@Override
-	public OidcUserInfo getUserInfo() {
-
-		return userInfo;
-	}
-
-	@Override
-	public OidcIdToken getIdToken() {
-
-		return idToken;
 	}
 
 	// UserDetails ...
@@ -137,25 +111,5 @@ public class LemonPrincipal<ID extends Serializable> implements OidcUser, UserDe
 		claims = null;
 		userInfo = null;
 		idToken = null;
-	}
-
-	public void setAttributes(Map<String, Object> attributes) {
-		this.attributes = attributes;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public void setClaims(Map<String, Object> claims) {
-		this.claims = claims;
-	}
-
-	public void setUserInfo(OidcUserInfo userInfo) {
-		this.userInfo = userInfo;
-	}
-
-	public void setIdToken(OidcIdToken idToken) {
-		this.idToken = idToken;
 	}
 }

@@ -6,7 +6,7 @@ import org.springframework.security.oauth2.core.oidc.StandardClaimNames;
 import org.springframework.stereotype.Service;
 
 import com.naturalprogrammer.spring.lemon.LemonService;
-import com.naturalprogrammer.spring.lemon.security.UserDto;
+import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
 import com.naturalprogrammer.spring.lemon.util.LemonUtils;
 import com.naturalprogrammer.spring.lemondemo.entities.User;
 
