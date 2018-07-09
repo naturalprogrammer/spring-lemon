@@ -9,32 +9,29 @@ import org.springframework.boot.autoconfigure.security.reactive.ReactiveUserDeta
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.reactive.WebFluxAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.reactive.error.ErrorWebFluxAutoConfiguration;
+import org.springframework.boot.web.reactive.error.ErrorAttributes;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.config.EnableMongoAuditing;
-import org.springframework.scheduling.annotation.EnableAsync;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.web.server.SecurityWebFilterChain;
-import org.springframework.security.web.server.authentication.ServerAuthenticationEntryPointFailureHandler;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import com.naturalprogrammer.spring.lemon.exceptions.handlers.AbstractExceptionHandler;
+import com.naturalprogrammer.spring.lemon.exceptions.ErrorResponseComposer;
+import com.naturalprogrammer.spring.lemon.exceptions.LemonExceptionsAutoConfiguration;
+import com.naturalprogrammer.spring.lemonreactive.exceptions.LemonReactiveErrorAttributes;
+import com.naturalprogrammer.spring.lemonreactive.security.LemonReactiveAuthenticationFailureHandler;
 
 @Configuration
-@ComponentScan(basePackageClasses=AbstractExceptionHandler.class)
 @EnableTransactionManagement
 @EnableMongoAuditing
-@EnableAsync
-@EnableGlobalMethodSecurity(prePostEnabled = true)
 @AutoConfigureBefore({
 	WebFluxAutoConfiguration.class,
 	ErrorWebFluxAutoConfiguration.class,
 	SecurityAutoConfiguration.class,
 	ReactiveSecurityAutoConfiguration.class,
-	ReactiveUserDetailsServiceAutoConfiguration.class})
+	ReactiveUserDetailsServiceAutoConfiguration.class,
+	LemonExceptionsAutoConfiguration.class})
 public class LemonReactiveAutoConfiguration {
 	
 	private static final Log log = LogFactory.getLog(LemonReactiveAutoConfiguration.class);
@@ -42,6 +39,20 @@ public class LemonReactiveAutoConfiguration {
 	public LemonReactiveAutoConfiguration() {
 		log.info("Created");
 	}
+	
+	
+	/**
+	 * Configures an Error Attributes if missing
+	 */	
+	@Bean
+	@ConditionalOnMissingBean(ErrorAttributes.class)
+	public <T extends Throwable>
+	ErrorAttributes errorAttributes(ErrorResponseComposer<T> errorResponseComposer) {
+		
+        log.info("Configuring LemonErrorAttributes");       
+		return new LemonReactiveErrorAttributes<T>(errorResponseComposer);
+	}
+
 	
 	/**
 	 * Configures SecurityWebFilterChain if missing
@@ -57,6 +68,8 @@ public class LemonReactiveAutoConfiguration {
 				.anyExchange().permitAll()
 			.and()
 				.formLogin()
+					.loginPage("/login") // Should be by default, but not providing this overwrites our AuthenticationFailureHandler, because this is called later 
+					.authenticationFailureHandler(new LemonReactiveAuthenticationFailureHandler())
 			.and()
 				.csrf().disable()
 			.build();

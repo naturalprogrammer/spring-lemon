@@ -18,18 +18,14 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.security.access.PermissionEvaluator;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -45,7 +41,7 @@ import com.naturalprogrammer.spring.lemon.exceptions.DefaultExceptionHandlerCont
 import com.naturalprogrammer.spring.lemon.exceptions.ErrorResponseComposer;
 import com.naturalprogrammer.spring.lemon.exceptions.LemonErrorAttributes;
 import com.naturalprogrammer.spring.lemon.exceptions.LemonErrorController;
-import com.naturalprogrammer.spring.lemon.exceptions.handlers.AbstractExceptionHandler;
+import com.naturalprogrammer.spring.lemon.exceptions.LemonExceptionsAutoConfiguration;
 import com.naturalprogrammer.spring.lemon.mail.MailSender;
 import com.naturalprogrammer.spring.lemon.mail.MockMailSender;
 import com.naturalprogrammer.spring.lemon.mail.SmtpMailSender;
@@ -72,17 +68,15 @@ import com.nimbusds.jose.KeyLengthException;
  * @author Sanjay Patel
  */
 @Configuration
-@ComponentScan(basePackageClasses=AbstractExceptionHandler.class)
 @EnableSpringDataWebSupport
 @EnableTransactionManagement
 @EnableJpaAuditing
-@EnableAsync
-@EnableGlobalMethodSecurity(prePostEnabled = true)
 @AutoConfigureBefore({
 	WebMvcAutoConfiguration.class,
 	ErrorMvcAutoConfiguration.class,
 	SecurityAutoConfiguration.class,
-	SecurityFilterAutoConfiguration.class})
+	SecurityFilterAutoConfiguration.class,
+	LemonExceptionsAutoConfiguration.class})
 public class LemonAutoConfiguration {
 	
 	/**
@@ -150,18 +144,6 @@ public class LemonAutoConfiguration {
 		return new LemonAuditorAware<U, ID>(userRepository);
 	}
 
-	/**
-	 * Configures ErrorResponseComposer if missing
-	 */	
-	@Bean
-	@ConditionalOnMissingBean(ErrorResponseComposer.class)
-	public <T extends Throwable>
-	ErrorResponseComposer<T> errorResponseComposer(List<AbstractExceptionHandler<T>> handlers) {
-		
-        log.info("Configuring ErrorResponseComposer");       
-		return new ErrorResponseComposer<T>(handlers);
-	}
-	
 	/**
 	 * Configures DefaultExceptionHandlerControllerAdvice if missing
 	 */	
