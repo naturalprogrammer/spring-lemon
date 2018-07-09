@@ -1,0 +1,10 @@
+spring:
+  data:
+    mongodb:
+      database: lemon
+
+logging:
+  level:
+    root: INFO
+    org.springframework: INFO
+    com.naturalprogrammer: DEBUG
