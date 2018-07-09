@@ -1,4 +1,4 @@
-package com.naturalprogrammer.spring.lemon.mongodb;
+package com.naturalprogrammer.spring.lemonreactive;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * 
  * @author Sanjay Patel
  */
-public class LemonMongoController {
+public class LemonReactiveController {
 
-	private static final Log log = LogFactory.getLog(LemonMongoController.class);
+	private static final Log log = LogFactory.getLog(LemonReactiveController.class);
 
 	/**
 	 * A simple function for pinging this server.

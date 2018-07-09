@@ -1,4 +1,4 @@
-package com.naturalprogrammer.spring.lemon.mongodb;
+package com.naturalprogrammer.spring.lemonreactive;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -35,11 +35,11 @@ import com.naturalprogrammer.spring.lemon.exceptions.handlers.AbstractExceptionH
 	SecurityAutoConfiguration.class,
 	ReactiveSecurityAutoConfiguration.class,
 	ReactiveUserDetailsServiceAutoConfiguration.class})
-public class LemonMongoAutoConfiguration {
+public class LemonReactiveAutoConfiguration {
 	
-	private static final Log log = LogFactory.getLog(LemonMongoAutoConfiguration.class);
+	private static final Log log = LogFactory.getLog(LemonReactiveAutoConfiguration.class);
 	
-	public LemonMongoAutoConfiguration() {
+	public LemonReactiveAutoConfiguration() {
 		log.info("Created");
 	}
 	

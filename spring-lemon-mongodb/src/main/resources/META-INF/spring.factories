@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-com.naturalprogrammer.spring.lemon.mongodb.LemonMongoAutoConfiguration
+com.naturalprogrammer.spring.lemonreactive.LemonReactiveAutoConfiguration

@@ -1,4 +1,4 @@
-package com.naturalprogrammer.spring.lemon.mongodb.util;
+package com.naturalprogrammer.spring.lemonreactive.util;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -8,8 +8,8 @@ import org.apache.commons.logging.LogFactory;
  * 
  * @author Sanjay Patel
  */
-public class LemUtils {
+public class LerUtils {
 	
-	private static final Log log = LogFactory.getLog(LemUtils.class);
+	private static final Log log = LogFactory.getLog(LerUtils.class);
 
 }
