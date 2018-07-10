@@ -22,6 +22,7 @@ import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
 import com.naturalprogrammer.spring.lemon.commons.LemonProperties.Admin;
 import com.naturalprogrammer.spring.lemon.commons.mail.MailSender;
 import com.naturalprogrammer.spring.lemon.commons.security.JwtService;
+import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
 import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
 import com.naturalprogrammer.spring.lemon.commons.util.UserUtils;
 import com.naturalprogrammer.spring.lemonreactive.domain.AbstractMongoUser;
@@ -140,19 +141,22 @@ public abstract class LemonReactiveService
 		
 		log.debug("Getting context ...");
 
-//		Mono<Map<String, Object>> contextMono = Mono.fromCallable(() -> {
-//			
-//			// make the context
-//			Map<String, Object> sharedProperties = new HashMap<String, Object>(2);
-//			sharedProperties.put("reCaptchaSiteKey", properties.getRecaptcha().getSitekey());
-//			sharedProperties.put("shared", properties.getShared());
-//			
-//			Map<String, Object> context = new HashMap<>();
-//			context.put("context", sharedProperties);
-//			
-//			return context;
-//		});
+		return LerUtils.currentUser().map(currentUser -> {
+			
+			addAuthHeader(response, currentUser.getUsername(),
+				expirationMillis.orElse(properties.getJwt().getExpirationMillis()));
+			
+			Map<String, Object> context = buildContext();
+			
+			context.put("user", currentUser);
+			return context;
+			
+		}).switchIfEmpty(Mono.fromCallable(this::buildContext));
+	}
 
+
+	protected Map<String, Object> buildContext() {
+		
 		// make the context
 		Map<String, Object> sharedProperties = new HashMap<String, Object>(2);
 		sharedProperties.put("reCaptchaSiteKey", properties.getRecaptcha().getSitekey());
@@ -160,32 +164,11 @@ public abstract class LemonReactiveService
 		
 		Map<String, Object> context = new HashMap<>();
 		context.put("context", sharedProperties);
-
-		return LerUtils.currentUser().map(currentUser -> {
-			
-			addAuthHeader(response, currentUser.getUsername(),
-				expirationMillis.orElse(properties.getJwt().getExpirationMillis()));
-			
-			context.put("user", currentUser);
-			return context;
-			
-		}).switchIfEmpty(Mono.just(context));
 		
-//		return Mono.zip(currentUserMono, expirationMillis)
-//			.map(tuple -> {
-//				UserDto<ID> currentUser = tuple.getT1();
-//				Long millis = tuple.getT2();
-//				if (millis == null)
-//					millis = properties.getJwt().getExpirationMillis();
-//				if (currentUser != null)
-//					addAuthHeader(response, currentUser.getUsername(), millis);
-//				return LecUtils.mapOf(
-//						"context", sharedProperties,
-//						"user", currentUser);	
-//			});
+		return context;		
 	}
 
-    
+	
     /**
 	 * Signs up a user.
 	 */
