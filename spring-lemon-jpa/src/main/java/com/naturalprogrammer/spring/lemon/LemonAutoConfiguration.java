@@ -35,6 +35,9 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
+import com.naturalprogrammer.spring.lemon.commons.mail.MailSender;
+import com.naturalprogrammer.spring.lemon.commons.mail.MockMailSender;
+import com.naturalprogrammer.spring.lemon.commons.mail.SmtpMailSender;
 import com.naturalprogrammer.spring.lemon.commons.security.JwtService;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUserRepository;
@@ -44,9 +47,6 @@ import com.naturalprogrammer.spring.lemon.exceptions.ErrorResponseComposer;
 import com.naturalprogrammer.spring.lemon.exceptions.LemonErrorAttributes;
 import com.naturalprogrammer.spring.lemon.exceptions.LemonErrorController;
 import com.naturalprogrammer.spring.lemon.exceptions.LemonExceptionsAutoConfiguration;
-import com.naturalprogrammer.spring.lemon.mail.MailSender;
-import com.naturalprogrammer.spring.lemon.mail.MockMailSender;
-import com.naturalprogrammer.spring.lemon.mail.SmtpMailSender;
 import com.naturalprogrammer.spring.lemon.security.AuthenticationSuccessHandler;
 import com.naturalprogrammer.spring.lemon.security.JwtAuthenticationProvider;
 import com.naturalprogrammer.spring.lemon.security.LemonCorsConfig;
@@ -159,35 +159,7 @@ public class LemonAutoConfiguration {
 		
         log.info("Configuring LemonErrorController");       
 		return new LemonErrorController(errorAttributes, serverProperties, errorViewResolvers);	
-	}
-	
-	/**
-	 * Configures a MockMailSender when the property
-	 * <code>spring.mail.host</code> isn't defined.
-	 */
-	@Bean
-	@ConditionalOnMissingBean(MailSender.class)
-	@ConditionalOnProperty(name="spring.mail.host", havingValue="foo", matchIfMissing=true)
-	public MailSender<?> mockMailSender() {
-
-        log.info("Configuring MockMailSender");       
-        return new MockMailSender();
-	}
-
-	
-	/**
-	 * Configures an SmtpMailSender when the property
-	 * <code>spring.mail.host</code> is defined.
-	 */
-	@Bean
-	@ConditionalOnMissingBean(MailSender.class)
-	@ConditionalOnProperty("spring.mail.host")
-	public MailSender<?> smtpMailSender(JavaMailSender javaMailSender) {
-		
-        log.info("Configuring SmtpMailSender");       
-		return new SmtpMailSender(javaMailSender);
-	}
-	
+	}	
 
 	/**
 	 * Configures AuthenticationSuccessHandler if missing

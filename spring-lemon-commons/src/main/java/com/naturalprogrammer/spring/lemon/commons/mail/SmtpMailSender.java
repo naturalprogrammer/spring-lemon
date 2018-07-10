@@ -1,4 +1,4 @@
-package com.naturalprogrammer.spring.lemon.mail;
+package com.naturalprogrammer.spring.lemon.commons.mail;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;

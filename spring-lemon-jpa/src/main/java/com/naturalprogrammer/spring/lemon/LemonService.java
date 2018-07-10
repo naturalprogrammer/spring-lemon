@@ -28,6 +28,8 @@ import org.springframework.validation.annotation.Validated;
 
 import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
 import com.naturalprogrammer.spring.lemon.commons.LemonProperties.Admin;
+import com.naturalprogrammer.spring.lemon.commons.mail.LemonMailData;
+import com.naturalprogrammer.spring.lemon.commons.mail.MailSender;
 import com.naturalprogrammer.spring.lemon.commons.security.JwtService;
 import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
 import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
@@ -36,8 +38,6 @@ import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUserRepository;
 import com.naturalprogrammer.spring.lemon.domain.ChangePasswordForm;
 import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
-import com.naturalprogrammer.spring.lemon.mail.LemonMailData;
-import com.naturalprogrammer.spring.lemon.mail.MailSender;
 import com.naturalprogrammer.spring.lemon.permissions.UserEditPermission;
 import com.naturalprogrammer.spring.lemon.util.LemonUtils;
 import com.naturalprogrammer.spring.lemon.validation.Password;

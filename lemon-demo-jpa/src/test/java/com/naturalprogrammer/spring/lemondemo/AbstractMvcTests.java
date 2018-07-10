@@ -22,8 +22,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
+import com.naturalprogrammer.spring.lemon.commons.mail.MailSender;
 import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
-import com.naturalprogrammer.spring.lemon.mail.MailSender;
 import com.naturalprogrammer.spring.lemondemo.repositories.UserRepository;
 
 @RunWith(SpringRunner.class)

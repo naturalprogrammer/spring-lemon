@@ -1,4 +1,4 @@
-package com.naturalprogrammer.spring.lemon.mail;
+package com.naturalprogrammer.spring.lemon.commons.mail;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

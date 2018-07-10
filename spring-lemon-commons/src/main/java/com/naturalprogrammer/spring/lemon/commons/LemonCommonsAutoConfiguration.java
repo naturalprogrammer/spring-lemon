@@ -3,14 +3,19 @@ package com.naturalprogrammer.spring.lemon.commons;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.naturalprogrammer.spring.lemon.commons.exceptions.handlers.BadCredentialsExceptionHandler;
+import com.naturalprogrammer.spring.lemon.commons.mail.MailSender;
+import com.naturalprogrammer.spring.lemon.commons.mail.MockMailSender;
+import com.naturalprogrammer.spring.lemon.commons.mail.SmtpMailSender;
 import com.naturalprogrammer.spring.lemon.commons.security.JwtService;
 import com.nimbusds.jose.KeyLengthException;
 
@@ -59,4 +64,32 @@ public class LemonCommonsAutoConfiguration {
 		log.info("Configuring PasswordEncoder");		
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
+	
+	
+	/**
+	 * Configures a MockMailSender when the property
+	 * <code>spring.mail.host</code> isn't defined.
+	 */
+	@Bean
+	@ConditionalOnMissingBean(MailSender.class)
+	@ConditionalOnProperty(name="spring.mail.host", havingValue="foo", matchIfMissing=true)
+	public MailSender<?> mockMailSender() {
+
+        log.info("Configuring MockMailSender");       
+        return new MockMailSender();
+	}
+
+	
+	/**
+	 * Configures an SmtpMailSender when the property
+	 * <code>spring.mail.host</code> is defined.
+	 */
+	@Bean
+	@ConditionalOnMissingBean(MailSender.class)
+	@ConditionalOnProperty("spring.mail.host")
+	public MailSender<?> smtpMailSender(JavaMailSender javaMailSender) {
+		
+        log.info("Configuring SmtpMailSender");       
+		return new SmtpMailSender(javaMailSender);
+	}
 }
