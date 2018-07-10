@@ -6,7 +6,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 
 import com.naturalprogrammer.spring.lemon.commons.security.JwtService;
-import com.naturalprogrammer.spring.lemon.util.LemonUtils;
+import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
 import com.nimbusds.jose.KeyLengthException;
 import com.nimbusds.jwt.JWTClaimsSet;
 
@@ -29,7 +29,7 @@ public class JwtServiceTests {
 	public void testJwtParseToken() {
 		
 		String token = service1.createToken("auth", "subject", 5000L,
-				LemonUtils.mapOf("username", "abc@example.com"));
+				LecUtils.mapOf("username", "abc@example.com"));
 		JWTClaimsSet claims = service1.parseToken(token, "auth");
 		
 		Assert.assertEquals("subject", claims.getSubject());

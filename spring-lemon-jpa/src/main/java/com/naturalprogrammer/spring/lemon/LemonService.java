@@ -181,7 +181,7 @@ public abstract class LemonService
 			addAuthHeader(response, currentUser.getUsername(),
 				expirationMillis.orElse(properties.getJwt().getExpirationMillis()));
 		
-		return LemonUtils.mapOf(
+		return LecUtils.mapOf(
 				"context", sharedProperties,
 				"user", LemonUtils.currentUser());	
 	}
@@ -242,7 +242,7 @@ public abstract class LemonService
 			
 			String verificationCode = jwtService.createToken(JwtService.VERIFY_AUDIENCE,
 					user.getId().toString(), properties.getJwt().getExpirationMillis(),
-					LemonUtils.mapOf("email", user.getEmail()));
+					LecUtils.mapOf("email", user.getEmail()));
 
 			// make the link
 			String verifyLink = properties.getApplicationUrl()
@@ -573,7 +573,7 @@ public abstract class LemonService
 		
 		String changeEmailCode = jwtService.createToken(JwtService.CHANGE_EMAIL_AUDIENCE,
 				user.getId().toString(), properties.getJwt().getExpirationMillis(),
-				LemonUtils.mapOf("newEmail", user.getNewEmail()));
+				LecUtils.mapOf("newEmail", user.getNewEmail()));
 		
 		try {
 			

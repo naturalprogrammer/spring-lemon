@@ -1,6 +1,8 @@
 package com.naturalprogrammer.spring.lemonreactive;
 
 import java.io.Serializable;
+import java.util.Map;
+import java.util.Optional;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -10,6 +12,7 @@ import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.server.ServerWebExchange;
 
@@ -39,6 +42,7 @@ public class LemonReactiveController
     private JwtService jwtService;
 	private LemonReactiveService<U, ID> lemonReactiveService;
 	
+	
 	@Autowired
 	public void createLemonController(
 			LemonProperties properties,
@@ -51,7 +55,6 @@ public class LemonReactiveController
 
 		log.info("Created");
 	}
-
 
 	
 	/**
@@ -74,6 +77,25 @@ public class LemonReactiveController
 		
 		log.debug("Received a ping");
 		return Mono.empty();
+	}
+
+	
+	/**
+	 * Returns context properties needed at the client side,
+	 * current-user data and an Authorization token as a response header.
+	 */
+	@GetMapping("/context")
+	public Mono<Map<String, Object>> getContext(
+			@RequestParam Optional<Long> expirationMillis,
+			ServerHttpResponse response) {
+
+		log.debug("Getting context ");
+		
+		return lemonReactiveService
+				.getContext(expirationMillis, response)
+				.doOnNext(context -> {
+					log.debug("Returning context " + context);
+				});
 	}
 
 	

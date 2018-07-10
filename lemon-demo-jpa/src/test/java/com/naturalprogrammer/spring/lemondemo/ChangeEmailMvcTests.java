@@ -14,7 +14,6 @@ import org.springframework.http.MediaType;
 
 import com.naturalprogrammer.spring.lemon.commons.security.JwtService;
 import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
-import com.naturalprogrammer.spring.lemon.util.LemonUtils;
 import com.naturalprogrammer.spring.lemondemo.entities.User;
 
 public class ChangeEmailMvcTests extends AbstractMvcTests {
@@ -36,7 +35,7 @@ public class ChangeEmailMvcTests extends AbstractMvcTests {
 		changeEmailCode = jwtService.createToken(
 				JwtService.CHANGE_EMAIL_AUDIENCE,
 				Long.toString(UNVERIFIED_USER_ID), 60000L,
-				LemonUtils.mapOf("newEmail", NEW_EMAIL));
+				LecUtils.mapOf("newEmail", NEW_EMAIL));
 	}
 
 	@Test
@@ -79,7 +78,7 @@ public class ChangeEmailMvcTests extends AbstractMvcTests {
 		String code = jwtService.createToken(
 				"", // blank audience
 				Long.toString(UNVERIFIED_USER_ID), 60000L,
-				LemonUtils.mapOf("newEmail", NEW_EMAIL));
+				LecUtils.mapOf("newEmail", NEW_EMAIL));
 		
 		mvc.perform(post("/api/core/users/{id}/email", UNVERIFIED_USER_ID)
                 .param("code", code)
@@ -91,7 +90,7 @@ public class ChangeEmailMvcTests extends AbstractMvcTests {
 		code = jwtService.createToken(
 				JwtService.CHANGE_EMAIL_AUDIENCE,
 				Long.toString(ADMIN_ID), 60000L,
-				LemonUtils.mapOf("newEmail", NEW_EMAIL));
+				LecUtils.mapOf("newEmail", NEW_EMAIL));
 		
 		mvc.perform(post("/api/core/users/{id}/email", UNVERIFIED_USER_ID)
                 .param("code", code)
@@ -103,7 +102,7 @@ public class ChangeEmailMvcTests extends AbstractMvcTests {
 		code = jwtService.createToken(
 				JwtService.CHANGE_EMAIL_AUDIENCE,
 				Long.toString(UNVERIFIED_USER_ID), 60000L,
-				LemonUtils.mapOf("newEmail", "wrong.new.email@example.com"));
+				LecUtils.mapOf("newEmail", "wrong.new.email@example.com"));
 		
 		mvc.perform(post("/api/core/users/{id}/email", UNVERIFIED_USER_ID)
                 .param("code", code)

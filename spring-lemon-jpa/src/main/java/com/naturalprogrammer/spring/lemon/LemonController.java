@@ -25,6 +25,7 @@ import com.github.fge.jsonpatch.JsonPatchException;
 import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
 import com.naturalprogrammer.spring.lemon.commons.security.JwtService;
 import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
+import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
 import com.naturalprogrammer.spring.lemon.commons.util.UserUtils;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
 import com.naturalprogrammer.spring.lemon.domain.ChangePasswordForm;
@@ -266,7 +267,7 @@ public abstract class LemonController
 			HttpServletResponse response) {
 		
 		log.debug("Fetching a new token ... ");
-		return LemonUtils.mapOf("token", lemonService.fetchNewToken(expirationMillis, username));
+		return LecUtils.mapOf("token", lemonService.fetchNewToken(expirationMillis, username));
 	}
 
 
