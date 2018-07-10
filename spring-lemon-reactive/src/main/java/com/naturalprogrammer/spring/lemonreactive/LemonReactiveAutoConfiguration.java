@@ -1,7 +1,10 @@
 package com.naturalprogrammer.spring.lemonreactive;
 
+import java.io.Serializable;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bson.types.ObjectId;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.security.reactive.ReactiveSecurityAutoConfiguration;
@@ -15,15 +18,21 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.config.EnableMongoAuditing;
 import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.authentication.WebFilterChainServerAuthenticationSuccessHandler;
 import org.springframework.security.web.server.context.NoOpServerSecurityContextRepository;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.naturalprogrammer.spring.lemon.exceptions.ErrorResponseComposer;
 import com.naturalprogrammer.spring.lemon.exceptions.LemonExceptionsAutoConfiguration;
+import com.naturalprogrammer.spring.lemonreactive.domain.AbstractMongoUser;
+import com.naturalprogrammer.spring.lemonreactive.domain.AbstractMongoUserRepository;
 import com.naturalprogrammer.spring.lemonreactive.exceptions.LemonReactiveErrorAttributes;
 import com.naturalprogrammer.spring.lemonreactive.security.LemonReactiveAuthenticationFailureHandler;
+import com.naturalprogrammer.spring.lemonreactive.security.LemonReactiveUserDetailsService;
 
 @Configuration
 @EnableTransactionManagement
@@ -79,5 +88,27 @@ public class LemonReactiveAutoConfiguration {
 				.securityContextRepository(NoOpServerSecurityContextRepository.getInstance())
 				.csrf().disable()
 			.build();
+	}
+	
+	
+	/**
+	 * Configures UserDetailsService if missing
+	 */
+	@Bean
+	@ConditionalOnMissingBean(UserDetailsService.class)
+	public <U extends AbstractMongoUser<ID>, ID extends Serializable>
+	LemonReactiveUserDetailsService<U, ID> userDetailService(AbstractMongoUserRepository<U, ID> userRepository) {
+		
+        log.info("Configuring LemonUserDetailsService");       
+		return new LemonReactiveUserDetailsService<U, ID>(userRepository);
+	}
+
+	@Bean
+	public SimpleModule objectIdModule() {
+		
+		SimpleModule module = new SimpleModule();
+		module.addSerializer(ObjectId.class, new ToStringSerializer());
+		
+		return module;
 	}
 }

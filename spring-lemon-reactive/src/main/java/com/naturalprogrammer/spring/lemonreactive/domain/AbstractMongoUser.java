@@ -12,17 +12,26 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
 import com.naturalprogrammer.spring.lemon.commons.util.UserUtils;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter @Setter
 public abstract class AbstractMongoUser
 	<ID extends Serializable>
 	extends AbstractDocument<ID> {
 
+	// email
+	@JsonView(UserUtils.SignupInput.class)
 	@Indexed(unique = true)
 	protected String email;
 	
+	// password
+	@JsonView(UserUtils.SignupInput.class)
 	protected String password;
+	
 	protected Set<String> roles = new HashSet<>();
 	
-	@Indexed(unique = true)
+	@Indexed(unique = true, sparse = true)
 	protected String newEmail;
 	
 	@JsonIgnore

@@ -34,6 +34,7 @@ import com.github.fge.jsonpatch.JsonPatch;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.naturalprogrammer.spring.lemon.commons.security.LemonPrincipal;
 import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
+import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
 import com.naturalprogrammer.spring.lemon.domain.VersionedEntity;
 import com.naturalprogrammer.spring.lemon.exceptions.VersionException;
@@ -111,28 +112,10 @@ public class LemonUtils {
 			.getContext().getAuthentication();
 		
 		// get the user from the authentication object
-		return currentUser(auth);
+		return LecUtils.currentUser(auth);
 	}
 	
 
-	/**
-	 * Extracts the current-user from authentication object
-	 * 
-	 * @param auth
-	 * @return
-	 */
-	public static <ID extends Serializable> UserDto<ID> currentUser(Authentication auth) {
-		
-	    if (auth != null) {
-	      Object principal = auth.getPrincipal();
-	      if (principal instanceof LemonPrincipal<?>) {
-	        return ((LemonPrincipal<ID>) principal).currentUser();
-	      }
-	    }
-	    return null;	  
-	}
-	
-	
 	/**
 	 * Signs a user in
 	 * 

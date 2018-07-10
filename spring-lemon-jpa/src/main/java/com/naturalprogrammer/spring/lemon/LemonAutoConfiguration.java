@@ -28,7 +28,6 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
@@ -112,17 +111,6 @@ public class LemonAutoConfiguration {
         
         return converter;
 	}
-	
-	/**
-	 * Configures Password encoder if missing
-	 */
-	@Bean
-	@ConditionalOnMissingBean(PasswordEncoder.class)
-    public PasswordEncoder passwordEncoder() {
-	
-		log.info("Configuring PasswordEncoder");		
-        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-    }
 	
 	/**
 	 * Spring Lemon related properties

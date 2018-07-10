@@ -14,37 +14,34 @@ import com.naturalprogrammer.spring.lemonreactive.domain.AbstractMongoUserReposi
 
 import reactor.core.publisher.Mono;
 
-public class LemonReactiveUserDetailsService
-	<U extends AbstractMongoUser<ID>, ID extends Serializable> implements ReactiveUserDetailsService {
-	
+public class LemonReactiveUserDetailsService<U extends AbstractMongoUser<ID>, ID extends Serializable>
+		implements ReactiveUserDetailsService {
+
 	private static final Log log = LogFactory.getLog(LemonReactiveUserDetailsService.class);
 
-	private final AbstractMongoUserRepository<U,ID> userRepository;
-	
+	private final AbstractMongoUserRepository<U, ID> userRepository;
+
 	public LemonReactiveUserDetailsService(AbstractMongoUserRepository<U, ID> userRepository) {
-		
+
 		this.userRepository = userRepository;
 		log.info("Created");
 	}
 
 	@Override
 	public Mono<UserDetails> findByUsername(String username) {
-		
+
 		log.debug("Loading user having username: " + username);
-		
+
 		// delegates to findUserByUsername
-		return findUserByUsername(username)
-				.switchIfEmpty(Mono.defer(() -> {
-					log.debug("Could not find user " + username);
-					return Mono.error(new UsernameNotFoundException(username));
-				}))
-				.map(U::toUserDto)
-				.map(LemonPrincipal::new);
+		return findUserByUsername(username).switchIfEmpty(Mono.defer(() -> {
+			log.debug("Could not find user " + username);
+			return Mono.error(new UsernameNotFoundException(username));
+		})).map(U::toUserDto).map(LemonPrincipal::new);
 	}
 
 	/**
-	 * Finds a user by the given username. Override this
-	 * if you aren't using email as the username.
+	 * Finds a user by the given username. Override this if you aren't using email
+	 * as the username.
 	 */
 	public Mono<U> findUserByUsername(String username) {
 		return userRepository.findByEmail(username);

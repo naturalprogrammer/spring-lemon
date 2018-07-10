@@ -1,11 +1,14 @@
 package com.naturalprogrammer.spring.lemonreactive.util;
 
+import java.io.Serializable;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.userdetails.User;
+
+import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
+import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
 
 import reactor.core.publisher.Mono;
 
@@ -21,29 +24,10 @@ public class LerUtils {
 	/**
 	 * Gets the current-user
 	 */
-	public static Mono<User> currentUser() {
+	public static <ID extends Serializable> Mono<UserDto<ID>>  currentUser() {
 		
 		return ReactiveSecurityContextHolder.getContext()
 			.map(SecurityContext::getAuthentication)
-			.map(LerUtils::currentUser);
+			.map(LecUtils::currentUser);
 	}
-	
-
-	/**
-	 * Extracts the current-user from authentication object
-	 * 
-	 * @param auth
-	 * @return
-	 */
-	public static User currentUser(Authentication auth) {
-		
-	    if (auth != null) {
-	      Object principal = auth.getPrincipal();
-	      if (principal instanceof User) {
-	        return (User) principal;
-	      }
-	    }
-	    return null;	  
-	}	
-
 }
