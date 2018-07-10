@@ -11,6 +11,8 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.naturalprogrammer.spring.lemon.commons.exceptions.handlers.BadCredentialsExceptionHandler;
+import com.naturalprogrammer.spring.lemon.commons.security.JwtService;
+import com.nimbusds.jose.KeyLengthException;
 
 @Configuration
 @ComponentScan(basePackageClasses=BadCredentialsExceptionHandler.class)
@@ -34,6 +36,18 @@ public class LemonCommonsAutoConfiguration {
 		return new LemonProperties();
 	}
 	
+
+	/**
+	 * Configures JwtService if missing
+	 */
+	@Bean
+	@ConditionalOnMissingBean(JwtService.class)
+	public JwtService jwtService(LemonProperties properties) throws KeyLengthException {
+		
+        log.info("Configuring AuthenticationSuccessHandler");       
+		return new JwtService(properties.getJwt().getSecret());
+	}
+
 
 	/**
 	 * Configures Password encoder if missing

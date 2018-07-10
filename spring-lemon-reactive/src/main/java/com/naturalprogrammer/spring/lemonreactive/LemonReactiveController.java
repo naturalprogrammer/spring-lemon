@@ -6,6 +6,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -51,6 +52,19 @@ public class LemonReactiveController
 		log.info("Created");
 	}
 
+
+	
+	/**
+	 * A simple function for pinging this server.
+	 */
+	@PostMapping("/login")
+	public Mono<UserDto<ID>> login(ServerHttpResponse response) {
+		
+		log.debug("Returning current user ... ");
+		return userWithToken(response);
+	}
+
+	
 	/**
 	 * A simple function for pinging this server.
 	 */
@@ -61,18 +75,7 @@ public class LemonReactiveController
 		log.debug("Received a ping");
 		return Mono.empty();
 	}
-	
-	
-	/**
-	 * A simple function for pinging this server.
-	 */
-	@PostMapping("/login")
-	public Mono<UserDto<ID>> login() {
-		
-		log.debug("Returning current user ... ");
-		return LerUtils.currentUser();
-	}
-	
+
 	
 	/**
 	 * Signs up a user, and
@@ -90,5 +93,17 @@ public class LemonReactiveController
 
 		//return Mono.empty();
 		//return userWithToken(response);
+	}
+
+	
+	/**
+	 * returns the current user and a new authorization token in the response
+	 */
+	protected Mono<UserDto<ID>> userWithToken(ServerHttpResponse response) {
+		
+		Mono<UserDto<ID>> currentUser = LerUtils.currentUser();
+		return currentUser.doOnNext((user) -> {
+			lemonReactiveService.addAuthHeader(response, user.getUsername(), jwtExpirationMillis);			
+		});
 	}
 }
