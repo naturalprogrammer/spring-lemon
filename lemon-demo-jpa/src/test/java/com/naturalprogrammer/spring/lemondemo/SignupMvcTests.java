@@ -16,7 +16,7 @@ import org.junit.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 
-import com.naturalprogrammer.spring.lemon.security.LemonSecurityConfig;
+import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
 import com.naturalprogrammer.spring.lemon.util.LemonUtils;
 import com.naturalprogrammer.spring.lemondemo.entities.User;
 
@@ -48,7 +48,7 @@ public class SignupMvcTests extends AbstractMvcTests {
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(LemonUtils.toJson(user)))
 				.andExpect(status().is(201))
-				.andExpect(header().string(LemonSecurityConfig.TOKEN_RESPONSE_HEADER_NAME, containsString(".")))
+				.andExpect(header().string(LecUtils.TOKEN_RESPONSE_HEADER_NAME, containsString(".")))
 				.andExpect(jsonPath("$.id").exists())
 				.andExpect(jsonPath("$.password").doesNotExist())
 				.andExpect(jsonPath("$.username").value("user.foo@example.com"))

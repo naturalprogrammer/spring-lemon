@@ -1,4 +1,4 @@
-package com.naturalprogrammer.spring.lemon;
+package com.naturalprogrammer.spring.lemon.commons;
 
 import java.util.Map;
 
@@ -7,7 +7,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
-import com.naturalprogrammer.spring.lemon.security.LemonSecurityConfig;
+import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
 
 /**
  * Lemon Properties
@@ -196,7 +196,7 @@ public class LemonProperties {
 				"Referer",
 				"User-Agent",
 				"x-requested-with",
-				LemonSecurityConfig.TOKEN_REQUEST_HEADER_NAME};
+				LecUtils.TOKEN_REQUEST_HEADER_NAME};
 		
 		/**
 		 * Response headers that you want to expose to the client JavaScript programmer, e.g. Lemon-Authorization.
@@ -221,7 +221,7 @@ public class LemonProperties {
 				"X-XSS-Protection",
 				"X-Frame-Options",
 				"X-Application-Context",
-				LemonSecurityConfig.TOKEN_RESPONSE_HEADER_NAME};
+				LecUtils.TOKEN_RESPONSE_HEADER_NAME};
 		
 		/**
 		 * CORS <code>maxAge</code> long property

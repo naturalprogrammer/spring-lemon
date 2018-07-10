@@ -12,8 +12,8 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 
-import com.naturalprogrammer.spring.lemon.security.JwtService;
-import com.naturalprogrammer.spring.lemon.security.LemonSecurityConfig;
+import com.naturalprogrammer.spring.lemon.commons.security.JwtService;
+import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
 import com.naturalprogrammer.spring.lemon.util.LemonUtils;
 import com.naturalprogrammer.spring.lemondemo.entities.User;
 
@@ -39,7 +39,7 @@ public class VerificationMvcTests extends AbstractMvcTests {
                 .param("code", verificationCode)
                 .header("contentType",  MediaType.APPLICATION_FORM_URLENCODED))
                 .andExpect(status().is(200))
-				.andExpect(header().string(LemonSecurityConfig.TOKEN_RESPONSE_HEADER_NAME, containsString(".")))
+				.andExpect(header().string(LecUtils.TOKEN_RESPONSE_HEADER_NAME, containsString(".")))
 				.andExpect(jsonPath("$.id").value(UNVERIFIED_USER_ID))
 				.andExpect(jsonPath("$.roles").value(hasSize(0)))
 				.andExpect(jsonPath("$.unverified").value(false))
@@ -58,7 +58,7 @@ public class VerificationMvcTests extends AbstractMvcTests {
 		mvc.perform(post("/api/core/users/99/verification")
                 .param("code", verificationCode)
                 .header("contentType",  MediaType.APPLICATION_FORM_URLENCODED)
-				.header(LemonSecurityConfig.TOKEN_REQUEST_HEADER_NAME, tokens.get(UNVERIFIED_USER_ID)))
+				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, tokens.get(UNVERIFIED_USER_ID)))
                 .andExpect(status().is(404));
 	}
 	

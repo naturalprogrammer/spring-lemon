@@ -34,6 +34,8 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationFa
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
+import com.naturalprogrammer.spring.lemon.commons.security.JwtService;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUserRepository;
 import com.naturalprogrammer.spring.lemon.domain.LemonAuditorAware;
@@ -47,7 +49,6 @@ import com.naturalprogrammer.spring.lemon.mail.MockMailSender;
 import com.naturalprogrammer.spring.lemon.mail.SmtpMailSender;
 import com.naturalprogrammer.spring.lemon.security.AuthenticationSuccessHandler;
 import com.naturalprogrammer.spring.lemon.security.JwtAuthenticationProvider;
-import com.naturalprogrammer.spring.lemon.security.JwtService;
 import com.naturalprogrammer.spring.lemon.security.LemonCorsConfig;
 import com.naturalprogrammer.spring.lemon.security.LemonOAuth2UserService;
 import com.naturalprogrammer.spring.lemon.security.LemonOidcUserService;
@@ -110,16 +111,6 @@ public class LemonAutoConfiguration {
         converter.setJsonPrefix(JSON_PREFIX);
         
         return converter;
-	}
-	
-	/**
-	 * Spring Lemon related properties
-	 */	
-	@Bean
-	public LemonProperties lemonProperties() {
-		
-        log.info("Configuring LemonProperties");       
-		return new LemonProperties();
 	}
 	
 	/**
@@ -215,10 +206,10 @@ public class LemonAutoConfiguration {
 	@Bean
 	@ConditionalOnMissingBean(AuthenticationSuccessHandler.class)
 	public AuthenticationSuccessHandler authenticationSuccessHandler(
-			ObjectMapper objectMapper, JwtService jwtService, LemonProperties properties) {
+			ObjectMapper objectMapper, LemonService<?, ?> lemonService, LemonProperties properties) {
 		
         log.info("Configuring AuthenticationSuccessHandler");       
-		return new AuthenticationSuccessHandler(objectMapper, jwtService, properties);
+		return new AuthenticationSuccessHandler(objectMapper, lemonService, properties);
 	}
 	
 	/**

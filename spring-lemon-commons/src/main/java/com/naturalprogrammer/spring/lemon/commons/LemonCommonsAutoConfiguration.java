@@ -25,6 +25,17 @@ public class LemonCommonsAutoConfiguration {
 	
 	
 	/**
+	 * Spring Lemon related properties
+	 */	
+	@Bean
+	public LemonProperties lemonProperties() {
+		
+        log.info("Configuring LemonProperties");       
+		return new LemonProperties();
+	}
+	
+
+	/**
 	 * Configures Password encoder if missing
 	 */
 	@Bean

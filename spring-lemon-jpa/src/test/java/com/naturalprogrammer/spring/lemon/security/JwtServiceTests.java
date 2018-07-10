@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 
+import com.naturalprogrammer.spring.lemon.commons.security.JwtService;
 import com.naturalprogrammer.spring.lemon.util.LemonUtils;
 import com.nimbusds.jose.KeyLengthException;
 import com.nimbusds.jwt.JWTClaimsSet;

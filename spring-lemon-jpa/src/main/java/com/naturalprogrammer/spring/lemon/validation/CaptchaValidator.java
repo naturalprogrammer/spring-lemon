@@ -15,7 +15,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.naturalprogrammer.spring.lemon.LemonProperties;
+import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
 
 /**
  * Captcha validation constraint

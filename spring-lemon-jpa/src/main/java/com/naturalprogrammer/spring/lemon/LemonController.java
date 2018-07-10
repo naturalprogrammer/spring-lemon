@@ -22,12 +22,13 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
+import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
+import com.naturalprogrammer.spring.lemon.commons.security.JwtService;
 import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
 import com.naturalprogrammer.spring.lemon.commons.util.UserUtils;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
 import com.naturalprogrammer.spring.lemon.domain.ChangePasswordForm;
 import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
-import com.naturalprogrammer.spring.lemon.security.JwtService;
 import com.naturalprogrammer.spring.lemon.util.LemonUtils;
 
 /**
@@ -221,7 +222,7 @@ public abstract class LemonController
 		log.debug("Changing password ... ");				
 		String username = lemonService.changePassword(user, changePasswordForm);
 		
-		jwtService.addAuthHeader(response, username, jwtExpirationMillis);
+		lemonService.addAuthHeader(response, username, jwtExpirationMillis);
 	}
 
 
@@ -275,7 +276,7 @@ public abstract class LemonController
 	protected UserDto<ID> userWithToken(HttpServletResponse response) {
 		
 		UserDto<ID> currentUser = LemonUtils.currentUser();
-		jwtService.addAuthHeader(response, currentUser.getUsername(), jwtExpirationMillis);
+		lemonService.addAuthHeader(response, currentUser.getUsername(), jwtExpirationMillis);
 		return currentUser;
 	}
 }

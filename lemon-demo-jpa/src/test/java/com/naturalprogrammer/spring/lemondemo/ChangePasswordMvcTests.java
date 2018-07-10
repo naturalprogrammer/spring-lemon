@@ -12,8 +12,8 @@ import org.junit.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 
+import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
 import com.naturalprogrammer.spring.lemon.domain.ChangePasswordForm;
-import com.naturalprogrammer.spring.lemon.security.LemonSecurityConfig;
 import com.naturalprogrammer.spring.lemon.util.LemonUtils;
 
 @Sql({"/test-data/initialize.sql", "/test-data/finalize.sql"})
@@ -38,11 +38,11 @@ public class ChangePasswordMvcTests extends AbstractMvcTests {
 	public void testChangePassword() throws Exception {
 		
 		mvc.perform(post("/api/core/users/{id}/password", UNVERIFIED_USER_ID)
-				.header(LemonSecurityConfig.TOKEN_REQUEST_HEADER_NAME, tokens.get(UNVERIFIED_USER_ID))
+				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, tokens.get(UNVERIFIED_USER_ID))
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(LemonUtils.toJson(changePasswordForm(USER_PASSWORD))))
 				.andExpect(status().is(204))
-				.andExpect(header().string(LemonSecurityConfig.TOKEN_RESPONSE_HEADER_NAME, containsString(".")));
+				.andExpect(header().string(LecUtils.TOKEN_RESPONSE_HEADER_NAME, containsString(".")));
 		
 		// Ensure able to login with new password
 		login(UNVERIFIED_USER_EMAIL, NEW_PASSWORD);
@@ -55,11 +55,11 @@ public class ChangePasswordMvcTests extends AbstractMvcTests {
 	public void testAdminChangePasswordAnotherUser() throws Exception {
 		
 		mvc.perform(post("/api/core/users/{id}/password", UNVERIFIED_USER_ID)
-				.header(LemonSecurityConfig.TOKEN_REQUEST_HEADER_NAME, tokens.get(ADMIN_ID))
+				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, tokens.get(ADMIN_ID))
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(LemonUtils.toJson(changePasswordForm(ADMIN_PASSWORD))))
 				.andExpect(status().is(204))
-				.andExpect(header().string(LemonSecurityConfig.TOKEN_RESPONSE_HEADER_NAME, containsString(".")));
+				.andExpect(header().string(LecUtils.TOKEN_RESPONSE_HEADER_NAME, containsString(".")));
 		
 		// Ensure able to login with new password
 		login(UNVERIFIED_USER_EMAIL, NEW_PASSWORD);
@@ -72,7 +72,7 @@ public class ChangePasswordMvcTests extends AbstractMvcTests {
 	public void testChangePasswordUnknownId() throws Exception {
 		
 		mvc.perform(post("/api/core/users/99/password")
-				.header(LemonSecurityConfig.TOKEN_REQUEST_HEADER_NAME, tokens.get(ADMIN_ID))
+				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, tokens.get(ADMIN_ID))
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(LemonUtils.toJson(changePasswordForm(ADMIN_PASSWORD))))
 				.andExpect(status().is(404));
@@ -85,7 +85,7 @@ public class ChangePasswordMvcTests extends AbstractMvcTests {
 	public void testChangePasswordAnotherUser() throws Exception {
 		
 		mvc.perform(post("/api/core/users/{id}/password", UNVERIFIED_USER_ID)
-				.header(LemonSecurityConfig.TOKEN_REQUEST_HEADER_NAME, tokens.get(USER_ID))
+				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, tokens.get(USER_ID))
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(LemonUtils.toJson(changePasswordForm(USER_PASSWORD))))
 				.andExpect(status().is(403));
@@ -101,7 +101,7 @@ public class ChangePasswordMvcTests extends AbstractMvcTests {
 	public void testBadAdminChangePasswordAnotherUser() throws Exception {
 		
 		mvc.perform(post("/api/core/users/{id}/password", UNVERIFIED_USER_ID)
-				.header(LemonSecurityConfig.TOKEN_REQUEST_HEADER_NAME, tokens.get(UNVERIFIED_ADMIN_ID))
+				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, tokens.get(UNVERIFIED_ADMIN_ID))
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(LemonUtils.toJson(changePasswordForm(ADMIN_PASSWORD))))
 				.andExpect(status().is(403));
@@ -115,7 +115,7 @@ public class ChangePasswordMvcTests extends AbstractMvcTests {
 		
 		// All fields null
 		mvc.perform(post("/api/core/users/{id}/password", UNVERIFIED_USER_ID)
-				.header(LemonSecurityConfig.TOKEN_REQUEST_HEADER_NAME, tokens.get(UNVERIFIED_USER_ID))
+				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, tokens.get(UNVERIFIED_USER_ID))
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(LemonUtils.toJson(new ChangePasswordForm())))
 				.andExpect(status().is(422))
@@ -132,7 +132,7 @@ public class ChangePasswordMvcTests extends AbstractMvcTests {
 		form.setRetypePassword("short");
 
 		mvc.perform(post("/api/core/users/{id}/password", UNVERIFIED_USER_ID)
-				.header(LemonSecurityConfig.TOKEN_REQUEST_HEADER_NAME, tokens.get(UNVERIFIED_USER_ID))
+				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, tokens.get(UNVERIFIED_USER_ID))
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(LemonUtils.toJson(form)))
 				.andExpect(status().is(422))
@@ -146,7 +146,7 @@ public class ChangePasswordMvcTests extends AbstractMvcTests {
 		form.setRetypePassword("different-retype-password");
 
 		mvc.perform(post("/api/core/users/{id}/password", UNVERIFIED_USER_ID)
-				.header(LemonSecurityConfig.TOKEN_REQUEST_HEADER_NAME, tokens.get(UNVERIFIED_USER_ID))
+				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, tokens.get(UNVERIFIED_USER_ID))
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(LemonUtils.toJson(form)))
 				.andExpect(status().is(422))

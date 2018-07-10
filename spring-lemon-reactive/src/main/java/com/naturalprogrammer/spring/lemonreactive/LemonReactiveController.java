@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.server.ServerWebExchange;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
+import com.naturalprogrammer.spring.lemon.commons.security.JwtService;
 import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
 import com.naturalprogrammer.spring.lemon.commons.util.UserUtils;
 import com.naturalprogrammer.spring.lemonreactive.domain.AbstractMongoUser;
@@ -32,12 +34,20 @@ public class LemonReactiveController
 
 	private static final Log log = LogFactory.getLog(LemonReactiveController.class);
 
+    private long jwtExpirationMillis;
+    private JwtService jwtService;
 	private LemonReactiveService<U, ID> lemonReactiveService;
 	
 	@Autowired
-	public void createLemonController(LemonReactiveService<U, ID> lemonReactiveService) {
+	public void createLemonController(
+			LemonProperties properties,
+			LemonReactiveService<U, ID> lemonReactiveService,
+			JwtService jwtService) {
 		
+		this.jwtExpirationMillis = properties.getJwt().getExpirationMillis();
 		this.lemonReactiveService = lemonReactiveService;		
+		this.jwtService = jwtService;
+
 		log.info("Created");
 	}
 
@@ -46,9 +56,10 @@ public class LemonReactiveController
 	 */
 	@GetMapping("/ping")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void ping() {
+	public Mono<Void> ping() {
 		
 		log.debug("Received a ping");
+		return Mono.empty();
 	}
 	
 	

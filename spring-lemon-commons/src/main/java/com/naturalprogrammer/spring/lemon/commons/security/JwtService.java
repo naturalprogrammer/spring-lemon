@@ -1,15 +1,13 @@
-package com.naturalprogrammer.spring.lemon.security;
+package com.naturalprogrammer.spring.lemon.commons.security;
 
 import java.text.ParseException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.security.authentication.BadCredentialsException;
 
-import com.naturalprogrammer.spring.lemon.util.LemonUtils;
+import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
 import com.nimbusds.jose.EncryptionMethod;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWEAlgorithm;
@@ -117,11 +115,11 @@ public class JwtService {
 		try {
 			
 			JWTClaimsSet claims = jwtProcessor.process(token, null);
-			LemonUtils.ensureAuthority(audience != null &&
+			LecUtils.ensureAuthority(audience != null &&
 					claims.getAudience().contains(audience),
 						"com.naturalprogrammer.spring.wrong.audience");
 			
-			LemonUtils.ensureAuthority(claims.getExpirationTime().after(new Date()),
+			LecUtils.ensureAuthority(claims.getExpirationTime().after(new Date()),
 					"com.naturalprogrammer.spring.expiredToken");
 			
 			return claims;
@@ -140,19 +138,9 @@ public class JwtService {
 		JWTClaimsSet claims = parseToken(token, audience);
 		
 		long issueTime = (long) claims.getClaim(LEMON_IAT);
-		LemonUtils.ensureAuthority(issueTime >= issuedAfter,
+		LecUtils.ensureAuthority(issueTime >= issuedAfter,
 				"com.naturalprogrammer.spring.obsoleteToken");
 
 		return claims;
 	}	
-	
-	/**
-	 * Adds a Lemon-Authorization header to the response
-	 */
-	public void addAuthHeader(HttpServletResponse response, String username, Long expirationMillis) {
-	
-		response.addHeader(LemonSecurityConfig.TOKEN_RESPONSE_HEADER_NAME,
-				LemonSecurityConfig.TOKEN_PREFIX +
-				createToken(AUTH_AUDIENCE, username, expirationMillis));
-	}
 }

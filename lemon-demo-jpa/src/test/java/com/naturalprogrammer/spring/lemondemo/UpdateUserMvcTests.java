@@ -16,8 +16,8 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 
+import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
 import com.naturalprogrammer.spring.lemon.commons.util.UserUtils;
-import com.naturalprogrammer.spring.lemon.security.LemonSecurityConfig;
 import com.naturalprogrammer.spring.lemon.util.LemonUtils;
 import com.naturalprogrammer.spring.lemondemo.entities.User;
 
@@ -63,10 +63,10 @@ public class UpdateUserMvcTests extends AbstractMvcTests {
 		
 		mvc.perform(patch("/api/core/users/{id}", UNVERIFIED_USER_ID)
 				.contentType(MediaType.APPLICATION_JSON)
-				.header(LemonSecurityConfig.TOKEN_REQUEST_HEADER_NAME, tokens.get(UNVERIFIED_USER_ID))
+				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, tokens.get(UNVERIFIED_USER_ID))
 				.content(userPatch))
 				.andExpect(status().is(200))
-				.andExpect(header().string(LemonSecurityConfig.TOKEN_RESPONSE_HEADER_NAME, containsString(".")))
+				.andExpect(header().string(LecUtils.TOKEN_RESPONSE_HEADER_NAME, containsString(".")))
 				.andExpect(jsonPath("$.tag.name").value(UPDATED_NAME))
 				.andExpect(jsonPath("$.roles").value(hasSize(1)))
 				.andExpect(jsonPath("$.roles[0]").value("UNVERIFIED"))
@@ -83,7 +83,7 @@ public class UpdateUserMvcTests extends AbstractMvcTests {
 		// Version mismatch
 		mvc.perform(patch("/api/core/users/{id}", UNVERIFIED_USER_ID)
 				.contentType(MediaType.APPLICATION_JSON)
-				.header(LemonSecurityConfig.TOKEN_REQUEST_HEADER_NAME, tokens.get(UNVERIFIED_USER_ID))
+				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, tokens.get(UNVERIFIED_USER_ID))
 				.content(userPatch))
 				.andExpect(status().is(409));	
     }
@@ -100,10 +100,10 @@ public class UpdateUserMvcTests extends AbstractMvcTests {
 		
 		mvc.perform(patch("/api/core/users/{id}", UNVERIFIED_USER_ID)
 				.contentType(MediaType.APPLICATION_JSON)
-				.header(LemonSecurityConfig.TOKEN_REQUEST_HEADER_NAME, tokens.get(ADMIN_ID))
+				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, tokens.get(ADMIN_ID))
 				.content(userPatch))
 				.andExpect(status().is(200))
-				.andExpect(header().string(LemonSecurityConfig.TOKEN_RESPONSE_HEADER_NAME, containsString(".")))
+				.andExpect(header().string(LecUtils.TOKEN_RESPONSE_HEADER_NAME, containsString(".")))
 				.andExpect(jsonPath("$.id").value(UNVERIFIED_USER_ID))
 				.andExpect(jsonPath("$.tag.name").value(UPDATED_NAME))
 				.andExpect(jsonPath("$.roles").value(hasSize(1)))
@@ -126,7 +126,7 @@ public class UpdateUserMvcTests extends AbstractMvcTests {
     	
 		mvc.perform(patch("/api/core/users/{id}", 99)
 				.contentType(MediaType.APPLICATION_JSON)
-				.header(LemonSecurityConfig.TOKEN_REQUEST_HEADER_NAME, tokens.get(ADMIN_ID))
+				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, tokens.get(ADMIN_ID))
 				.content(userPatch))
 				.andExpect(status().is(404));
     }
@@ -140,7 +140,7 @@ public class UpdateUserMvcTests extends AbstractMvcTests {
     	
 		mvc.perform(patch("/api/core/users/{id}", ADMIN_ID)
 				.contentType(MediaType.APPLICATION_JSON)
-				.header(LemonSecurityConfig.TOKEN_REQUEST_HEADER_NAME, tokens.get(UNVERIFIED_USER_ID))
+				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, tokens.get(UNVERIFIED_USER_ID))
 				.content(userPatch))
 				.andExpect(status().is(403));
     }
@@ -154,13 +154,13 @@ public class UpdateUserMvcTests extends AbstractMvcTests {
 		
 		mvc.perform(patch("/api/core/users/{id}", UNVERIFIED_USER_ID)
 				.contentType(MediaType.APPLICATION_JSON)
-				.header(LemonSecurityConfig.TOKEN_REQUEST_HEADER_NAME, tokens.get(UNVERIFIED_ADMIN_ID))
+				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, tokens.get(UNVERIFIED_ADMIN_ID))
 				.content(userPatch))
 				.andExpect(status().is(403));
 
 		mvc.perform(patch("/api/core/users/{id}", UNVERIFIED_USER_ID)
 				.contentType(MediaType.APPLICATION_JSON)
-				.header(LemonSecurityConfig.TOKEN_REQUEST_HEADER_NAME, tokens.get(BLOCKED_ADMIN_ID))
+				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, tokens.get(BLOCKED_ADMIN_ID))
 				.content(userPatch))
 				.andExpect(status().is(403));
 	}
@@ -174,7 +174,7 @@ public class UpdateUserMvcTests extends AbstractMvcTests {
     	
 		mvc.perform(patch("/api/core/users/{id}", ADMIN_ID)
 				.contentType(MediaType.APPLICATION_JSON)
-				.header(LemonSecurityConfig.TOKEN_REQUEST_HEADER_NAME, tokens.get(ADMIN_ID))
+				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, tokens.get(ADMIN_ID))
 				.content(userPatchAdminRole))
 				.andExpect(status().is(200))
 				.andExpect(jsonPath("$.tag.name").value(UPDATED_NAME))
@@ -192,14 +192,14 @@ public class UpdateUserMvcTests extends AbstractMvcTests {
 		// Null name
 		mvc.perform(patch("/api/core/users/{id}", UNVERIFIED_USER_ID)
 				.contentType(MediaType.APPLICATION_JSON)
-				.header(LemonSecurityConfig.TOKEN_REQUEST_HEADER_NAME, tokens.get(UNVERIFIED_USER_ID))
+				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, tokens.get(UNVERIFIED_USER_ID))
 				.content(userPatchNullName))
 				.andExpect(status().is(422));
 
 		// Too long name
 		mvc.perform(patch("/api/core/users/{id}", UNVERIFIED_USER_ID)
 				.contentType(MediaType.APPLICATION_JSON)
-				.header(LemonSecurityConfig.TOKEN_REQUEST_HEADER_NAME, tokens.get(UNVERIFIED_USER_ID))
+				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, tokens.get(UNVERIFIED_USER_ID))
 				.content(userPatchLongName))
 				.andExpect(status().is(422));
     }

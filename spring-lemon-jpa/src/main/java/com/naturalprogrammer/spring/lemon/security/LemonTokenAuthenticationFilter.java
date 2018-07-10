@@ -14,6 +14,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
+
 /**
  * Filter for token authentication
  */
@@ -34,8 +36,8 @@ public class LemonTokenAuthenticationFilter	extends OncePerRequestFilter {
 	 */
 	protected boolean tokenPresent(HttpServletRequest request) {
 		
-		String header = request.getHeader(LemonSecurityConfig.TOKEN_REQUEST_HEADER_NAME);		
-		return header != null && header.startsWith(LemonSecurityConfig.TOKEN_PREFIX);
+		String header = request.getHeader(LecUtils.TOKEN_REQUEST_HEADER_NAME);		
+		return header != null && header.startsWith(LecUtils.TOKEN_PREFIX);
 	}	
 
 	@Override
@@ -48,7 +50,7 @@ public class LemonTokenAuthenticationFilter	extends OncePerRequestFilter {
 			
 			log.debug("Found a token");
 			
-		    String token = request.getHeader(LemonSecurityConfig.TOKEN_REQUEST_HEADER_NAME).substring(7);
+		    String token = request.getHeader(LecUtils.TOKEN_REQUEST_HEADER_NAME).substring(7);
 		    JwtAuthenticationToken authRequest = new JwtAuthenticationToken(token);
 		    
 		    try {

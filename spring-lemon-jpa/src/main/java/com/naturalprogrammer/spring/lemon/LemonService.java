@@ -26,8 +26,11 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
-import com.naturalprogrammer.spring.lemon.LemonProperties.Admin;
+import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
+import com.naturalprogrammer.spring.lemon.commons.LemonProperties.Admin;
+import com.naturalprogrammer.spring.lemon.commons.security.JwtService;
 import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
+import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
 import com.naturalprogrammer.spring.lemon.commons.util.UserUtils;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUserRepository;
@@ -36,8 +39,6 @@ import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
 import com.naturalprogrammer.spring.lemon.mail.LemonMailData;
 import com.naturalprogrammer.spring.lemon.mail.MailSender;
 import com.naturalprogrammer.spring.lemon.permissions.UserEditPermission;
-import com.naturalprogrammer.spring.lemon.security.JwtService;
-import com.naturalprogrammer.spring.lemon.security.LemonSecurityConfig;
 import com.naturalprogrammer.spring.lemon.util.LemonUtils;
 import com.naturalprogrammer.spring.lemon.validation.Password;
 import com.nimbusds.jwt.JWTClaimsSet;
@@ -177,8 +178,8 @@ public abstract class LemonService
 		
 		UserDto<ID> currentUser = LemonUtils.currentUser();
 		if (currentUser != null)
-			jwtService.addAuthHeader(response, currentUser.getUsername(),
-					expirationMillis.orElse(properties.getJwt().getExpirationMillis()));
+			addAuthHeader(response, currentUser.getUsername(),
+				expirationMillis.orElse(properties.getJwt().getExpirationMillis()));
 		
 		return LemonUtils.mapOf(
 				"context", sharedProperties,
@@ -334,7 +335,7 @@ public abstract class LemonService
 		
 		JWTClaimsSet claims = jwtService.parseToken(verificationCode, JwtService.VERIFY_AUDIENCE, user.getCredentialsUpdatedMillis());
 		
-		LemonUtils.ensureAuthority(
+		LecUtils.ensureAuthority(
 				claims.getSubject().equals(user.getId().toString()) &&
 				claims.getClaim("email").equals(user.getEmail()),
 				"com.naturalprogrammer.spring.wrong.verificationCode");
@@ -635,7 +636,7 @@ public abstract class LemonService
 				JwtService.CHANGE_EMAIL_AUDIENCE,
 				user.getCredentialsUpdatedMillis());
 		
-		LemonUtils.ensureAuthority(
+		LecUtils.ensureAuthority(
 				claims.getSubject().equals(user.getId().toString()) &&
 				claims.getClaim("newEmail").equals(user.getNewEmail()),
 				"com.naturalprogrammer.spring.wrong.changeEmailCode");
@@ -711,10 +712,10 @@ public abstract class LemonService
 		UserDto<ID> currentUser = LemonUtils.currentUser();
 		String username = optionalUsername.orElse(currentUser.getUsername());
 		
-		LemonUtils.ensureAuthority(currentUser.getUsername().equals(username) ||
+		LecUtils.ensureAuthority(currentUser.getUsername().equals(username) ||
 				currentUser.isGoodAdmin(), "com.naturalprogrammer.spring.notGoodAdminOrSameUser");
 		
-		return LemonSecurityConfig.TOKEN_PREFIX +
+		return LecUtils.TOKEN_PREFIX +
 				jwtService.createToken(JwtService.AUTH_AUDIENCE, username,
 				expirationMillis.orElse(properties.getJwt().getExpirationMillis()));
 	}
@@ -741,5 +742,16 @@ public abstract class LemonService
 			user.setEmail(null);
 		
 		log.debug("Hid confidential fields for user: " + user);
+	}
+
+	
+	/**
+	 * Adds a Lemon-Authorization header to the response
+	 */
+	public void addAuthHeader(HttpServletResponse response, String username, Long expirationMillis) {
+	
+		response.addHeader(LecUtils.TOKEN_RESPONSE_HEADER_NAME,
+				LecUtils.TOKEN_PREFIX +
+				jwtService.createToken(JwtService.AUTH_AUDIENCE, username, expirationMillis));
 	}
 }

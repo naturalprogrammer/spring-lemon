@@ -22,8 +22,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
+import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
 import com.naturalprogrammer.spring.lemon.mail.MailSender;
-import com.naturalprogrammer.spring.lemon.security.LemonSecurityConfig;
 import com.naturalprogrammer.spring.lemondemo.repositories.UserRepository;
 
 @RunWith(SpringRunner.class)
@@ -71,7 +71,7 @@ public abstract class AbstractMvcTests {
                 .andExpect(status().is(200))
                 .andReturn();
 
-        return result.getResponse().getHeader(LemonSecurityConfig.TOKEN_RESPONSE_HEADER_NAME);
+        return result.getResponse().getHeader(LecUtils.TOKEN_RESPONSE_HEADER_NAME);
     }
     
     @Before
@@ -89,7 +89,7 @@ public abstract class AbstractMvcTests {
 	protected void ensureTokenWorks(String token) throws Exception {
 
 		mvc.perform(get("/api/core/context")
-				.header(LemonSecurityConfig.TOKEN_REQUEST_HEADER_NAME, token))
+				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, token))
 				.andExpect(status().is(200))
 				.andExpect(jsonPath("$.user.id").value(UNVERIFIED_USER_ID));
 	}

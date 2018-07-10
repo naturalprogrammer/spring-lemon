@@ -13,7 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MvcResult;
 
-import com.naturalprogrammer.spring.lemon.security.LemonSecurityConfig;
+import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
 import com.naturalprogrammer.spring.lemondemo.entities.User;
 
 @Sql({"/test-data/initialize.sql", "/test-data/finalize.sql"})
@@ -27,7 +27,7 @@ public class LoginMvcTests extends AbstractMvcTests {
                 .param("password", ADMIN_PASSWORD)
                 .header("contentType",  MediaType.APPLICATION_FORM_URLENCODED))
                 .andExpect(status().is(200))
-				.andExpect(header().string(LemonSecurityConfig.TOKEN_RESPONSE_HEADER_NAME, containsString(".")))
+				.andExpect(header().string(LecUtils.TOKEN_RESPONSE_HEADER_NAME, containsString(".")))
 				.andExpect(jsonPath("$.id").value(ADMIN_ID))
 				.andExpect(jsonPath("$.password").doesNotExist())
 				.andExpect(jsonPath("$.username").value("admin@example.com"))
@@ -58,7 +58,7 @@ public class LoginMvcTests extends AbstractMvcTests {
 		// but, does expire after 500ms
 		Thread.sleep(501L);
 		mvc.perform(get("/api/core/ping")
-				.header(LemonSecurityConfig.TOKEN_REQUEST_HEADER_NAME, token))
+				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, token))
 				.andExpect(status().is(401));
 	}
 
@@ -75,7 +75,7 @@ public class LoginMvcTests extends AbstractMvcTests {
 		userRepository.save(user);
 		
 		mvc.perform(get("/api/core/ping")
-				.header(LemonSecurityConfig.TOKEN_REQUEST_HEADER_NAME, tokens.get(ADMIN_ID)))
+				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, tokens.get(ADMIN_ID)))
 				.andExpect(status().is(401));
 	}
 
@@ -103,7 +103,7 @@ public class LoginMvcTests extends AbstractMvcTests {
 	public void testTokenLogin() throws Exception {
 		
 		mvc.perform(get("/api/core/context")
-				.header(LemonSecurityConfig.TOKEN_REQUEST_HEADER_NAME, tokens.get(ADMIN_ID)))
+				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, tokens.get(ADMIN_ID)))
 				.andExpect(status().is(200))
 				.andExpect(jsonPath("$.user.id").value(ADMIN_ID));
 	}
@@ -112,7 +112,7 @@ public class LoginMvcTests extends AbstractMvcTests {
 	public void testTokenLoginWrongToken() throws Exception {
 		
 		mvc.perform(get("/api/core/context")
-				.header(LemonSecurityConfig.TOKEN_REQUEST_HEADER_NAME, "Bearer a-wrong-token"))
+				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, "Bearer a-wrong-token"))
 				.andExpect(status().is(401));
 	}
 	
@@ -132,6 +132,6 @@ public class LoginMvcTests extends AbstractMvcTests {
                 .header("contentType",  MediaType.APPLICATION_FORM_URLENCODED))
                 .andReturn();
 
-		return result.getResponse().getHeader(LemonSecurityConfig.TOKEN_RESPONSE_HEADER_NAME);     
+		return result.getResponse().getHeader(LecUtils.TOKEN_RESPONSE_HEADER_NAME);     
 	}
 }

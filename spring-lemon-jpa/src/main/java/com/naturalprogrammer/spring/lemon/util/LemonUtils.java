@@ -16,7 +16,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -32,6 +31,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.fge.jsonpatch.JsonPatch;
 import com.github.fge.jsonpatch.JsonPatchException;
+import com.naturalprogrammer.spring.lemon.commons.security.JwtService;
 import com.naturalprogrammer.spring.lemon.commons.security.LemonPrincipal;
 import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
 import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
@@ -39,7 +39,6 @@ import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
 import com.naturalprogrammer.spring.lemon.domain.VersionedEntity;
 import com.naturalprogrammer.spring.lemon.exceptions.VersionException;
 import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
-import com.naturalprogrammer.spring.lemon.security.JwtService;
 import com.nimbusds.jwt.JWTClaimsSet;
 
 /**
@@ -160,19 +159,6 @@ public class LemonUtils {
 			throw new BadCredentialsException(LexUtils.getMessage(messageKey));
 	}
 
-	
-	/**
-	 * Throws AccessDeniedException is not authorized
-	 * 
-	 * @param authorized
-	 * @param messageKey
-	 */
-	public static void ensureAuthority(boolean authorized, String messageKey) {
-		
-		if (!authorized)
-			throw new AccessDeniedException(LexUtils.getMessage(messageKey));
-	}
-	
 	
 	/**
 	 * A convenient method for running code

@@ -5,8 +5,8 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import com.naturalprogrammer.spring.lemon.LemonProperties;
-import com.naturalprogrammer.spring.lemon.LemonProperties.Cors;
+import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
+import com.naturalprogrammer.spring.lemon.commons.LemonProperties.Cors;
 
 /**
  * CORS Configuration

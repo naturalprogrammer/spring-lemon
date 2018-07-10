@@ -9,7 +9,7 @@ import org.junit.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 
-import com.naturalprogrammer.spring.lemon.security.LemonSecurityConfig;
+import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
 
 @Sql({"/test-data/initialize.sql", "/test-data/finalize.sql"})
 public class FetchUserMvcTests extends AbstractMvcTests {
@@ -31,7 +31,7 @@ public class FetchUserMvcTests extends AbstractMvcTests {
 		
 		// Same user logged in
 		mvc.perform(get("/api/core/users/{id}", ADMIN_ID)
-				.header(LemonSecurityConfig.TOKEN_REQUEST_HEADER_NAME, tokens.get(ADMIN_ID)))
+				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, tokens.get(ADMIN_ID)))
                 .andExpect(status().is(200))
 				.andExpect(jsonPath("$.id").value(ADMIN_ID))
 				.andExpect(jsonPath("$.email").value(ADMIN_EMAIL))
@@ -41,14 +41,14 @@ public class FetchUserMvcTests extends AbstractMvcTests {
 		
 		// Another user logged in
 		mvc.perform(get("/api/core/users/{id}", ADMIN_ID)
-				.header(LemonSecurityConfig.TOKEN_REQUEST_HEADER_NAME, tokens.get(UNVERIFIED_USER_ID)))
+				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, tokens.get(UNVERIFIED_USER_ID)))
                 .andExpect(status().is(200))
 				.andExpect(jsonPath("$.id").value(ADMIN_ID))
 				.andExpect(jsonPath("$.email").doesNotExist());
 
 		// Admin user logged in - fetching another user
 		mvc.perform(get("/api/core/users/{id}", UNVERIFIED_USER_ID)
-				.header(LemonSecurityConfig.TOKEN_REQUEST_HEADER_NAME, tokens.get(ADMIN_ID)))
+				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, tokens.get(ADMIN_ID)))
                 .andExpect(status().is(200))
 				.andExpect(jsonPath("$.id").value(UNVERIFIED_USER_ID))
 				.andExpect(jsonPath("$.email").value(UNVERIFIED_USER_EMAIL));

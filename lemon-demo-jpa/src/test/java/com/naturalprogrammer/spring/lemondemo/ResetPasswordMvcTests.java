@@ -11,8 +11,8 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 
-import com.naturalprogrammer.spring.lemon.security.JwtService;
-import com.naturalprogrammer.spring.lemon.security.LemonSecurityConfig;
+import com.naturalprogrammer.spring.lemon.commons.security.JwtService;
+import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
 
 public class ResetPasswordMvcTests extends AbstractMvcTests {
 	
@@ -41,7 +41,7 @@ public class ResetPasswordMvcTests extends AbstractMvcTests {
                 .param("newPassword", NEW_PASSWORD)
                 .header("contentType",  MediaType.APPLICATION_FORM_URLENCODED))
 		        .andExpect(status().is(200))
-				.andExpect(header().string(LemonSecurityConfig.TOKEN_RESPONSE_HEADER_NAME, containsString(".")))
+				.andExpect(header().string(LecUtils.TOKEN_RESPONSE_HEADER_NAME, containsString(".")))
 				.andExpect(jsonPath("$.id").value(ADMIN_ID));
 		
 		// New password should work

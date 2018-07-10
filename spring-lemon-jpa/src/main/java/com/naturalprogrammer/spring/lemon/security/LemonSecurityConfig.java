@@ -13,7 +13,7 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.naturalprogrammer.spring.lemon.LemonProperties;
+import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
 
 /**
  * Security configuration class. Extend it in the
@@ -26,12 +26,7 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	private static final Log log = LogFactory.getLog(LemonPermissionEvaluator.class);
 
-	// JWT Token related
-    public static final String TOKEN_PREFIX = "Bearer ";
-    public static final String TOKEN_REQUEST_HEADER_NAME = "Authorization";
-    public static final String TOKEN_RESPONSE_HEADER_NAME = "Lemon-Authorization";
-    
-    private LemonProperties properties;
+	private LemonProperties properties;
 	private UserDetailsService userDetailsService;
 	private AuthenticationSuccessHandler authenticationSuccessHandler;
 	private AuthenticationFailureHandler authenticationFailureHandler;

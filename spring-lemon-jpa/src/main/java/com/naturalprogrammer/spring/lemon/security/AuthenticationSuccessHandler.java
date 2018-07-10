@@ -13,7 +13,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.naturalprogrammer.spring.lemon.LemonProperties;
+import com.naturalprogrammer.spring.lemon.LemonService;
+import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
+import com.naturalprogrammer.spring.lemon.commons.security.JwtService;
 import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
 import com.naturalprogrammer.spring.lemon.util.LemonUtils;
 
@@ -29,13 +31,13 @@ public class AuthenticationSuccessHandler
 	private static final Log log = LogFactory.getLog(AuthenticationSuccessHandler.class);
 	
     private ObjectMapper objectMapper;    
-    private JwtService jwtService;
+    private LemonService<?, ?> lemonService;
     private long defaultExpirationMillis;
     
-	public AuthenticationSuccessHandler(ObjectMapper objectMapper, JwtService jwtService, LemonProperties properties) {
+	public AuthenticationSuccessHandler(ObjectMapper objectMapper, LemonService<?, ?> lemonService, LemonProperties properties) {
 		
 		this.objectMapper = objectMapper;
-		this.jwtService = jwtService;
+		this.lemonService = lemonService;
 		this.defaultExpirationMillis = properties.getJwt().getExpirationMillis();
 		
 		log.info("Created");
@@ -60,7 +62,7 @@ public class AuthenticationSuccessHandler
     	// get the current-user
     	UserDto<?> currentUser = LemonUtils.currentUser();
 
-    	jwtService.addAuthHeader(response, currentUser.getUsername(), expirationMillis);
+    	lemonService.addAuthHeader(response, currentUser.getUsername(), expirationMillis);
     	
     	// write current-user data to the response  
     	response.getOutputStream().print(

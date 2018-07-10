@@ -12,8 +12,8 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 
-import com.naturalprogrammer.spring.lemon.security.JwtService;
-import com.naturalprogrammer.spring.lemon.security.LemonSecurityConfig;
+import com.naturalprogrammer.spring.lemon.commons.security.JwtService;
+import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
 import com.naturalprogrammer.spring.lemon.util.LemonUtils;
 import com.naturalprogrammer.spring.lemondemo.entities.User;
 
@@ -44,10 +44,10 @@ public class ChangeEmailMvcTests extends AbstractMvcTests {
 		
 		mvc.perform(post("/api/core/users/{id}/email", UNVERIFIED_USER_ID)
                 .param("code", changeEmailCode)
-				.header(LemonSecurityConfig.TOKEN_REQUEST_HEADER_NAME, tokens.get(UNVERIFIED_USER_ID))
+				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, tokens.get(UNVERIFIED_USER_ID))
                 .header("contentType",  MediaType.APPLICATION_FORM_URLENCODED))
 		        .andExpect(status().is(200))
-				.andExpect(header().string(LemonSecurityConfig.TOKEN_RESPONSE_HEADER_NAME, containsString(".")))
+				.andExpect(header().string(LecUtils.TOKEN_RESPONSE_HEADER_NAME, containsString(".")))
 				.andExpect(jsonPath("$.id").value(UNVERIFIED_USER_ID));
 		
 		User updatedUser = userRepository.findById(UNVERIFIED_USER_ID).get();
@@ -57,7 +57,7 @@ public class ChangeEmailMvcTests extends AbstractMvcTests {
 		// Shouldn't be able to login with old token
 		mvc.perform(post("/api/core/users/{id}/email", UNVERIFIED_USER_ID)
                 .param("code", changeEmailCode)
-				.header(LemonSecurityConfig.TOKEN_REQUEST_HEADER_NAME, tokens.get(UNVERIFIED_USER_ID))
+				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, tokens.get(UNVERIFIED_USER_ID))
                 .header("contentType",  MediaType.APPLICATION_FORM_URLENCODED))
 		        .andExpect(status().is(401));
 	}
@@ -71,7 +71,7 @@ public class ChangeEmailMvcTests extends AbstractMvcTests {
 		// Blank token
 		mvc.perform(post("/api/core/users/{id}/email", UNVERIFIED_USER_ID)
                 .param("code", "")
-				.header(LemonSecurityConfig.TOKEN_REQUEST_HEADER_NAME, tokens.get(UNVERIFIED_USER_ID))
+				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, tokens.get(UNVERIFIED_USER_ID))
                 .header("contentType",  MediaType.APPLICATION_FORM_URLENCODED))
 		        .andExpect(status().is(422));
 
@@ -83,7 +83,7 @@ public class ChangeEmailMvcTests extends AbstractMvcTests {
 		
 		mvc.perform(post("/api/core/users/{id}/email", UNVERIFIED_USER_ID)
                 .param("code", code)
-				.header(LemonSecurityConfig.TOKEN_REQUEST_HEADER_NAME, tokens.get(UNVERIFIED_USER_ID))
+				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, tokens.get(UNVERIFIED_USER_ID))
                 .header("contentType",  MediaType.APPLICATION_FORM_URLENCODED))
 		        .andExpect(status().is(403));
 
@@ -95,7 +95,7 @@ public class ChangeEmailMvcTests extends AbstractMvcTests {
 		
 		mvc.perform(post("/api/core/users/{id}/email", UNVERIFIED_USER_ID)
                 .param("code", code)
-				.header(LemonSecurityConfig.TOKEN_REQUEST_HEADER_NAME, tokens.get(UNVERIFIED_USER_ID))
+				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, tokens.get(UNVERIFIED_USER_ID))
                 .header("contentType",  MediaType.APPLICATION_FORM_URLENCODED))
 		        .andExpect(status().is(403));
 		
@@ -107,7 +107,7 @@ public class ChangeEmailMvcTests extends AbstractMvcTests {
 		
 		mvc.perform(post("/api/core/users/{id}/email", UNVERIFIED_USER_ID)
                 .param("code", code)
-				.header(LemonSecurityConfig.TOKEN_REQUEST_HEADER_NAME, tokens.get(UNVERIFIED_USER_ID))
+				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, tokens.get(UNVERIFIED_USER_ID))
                 .header("contentType",  MediaType.APPLICATION_FORM_URLENCODED))
 		        .andExpect(status().is(403));
 	}
@@ -130,7 +130,7 @@ public class ChangeEmailMvcTests extends AbstractMvcTests {
 		// now ready to test!
 		mvc.perform(post("/api/core/users/{id}/email", UNVERIFIED_USER_ID)
                 .param("code", changeEmailCode)
-				.header(LemonSecurityConfig.TOKEN_REQUEST_HEADER_NAME, authToken)
+				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, authToken)
                 .header("contentType",  MediaType.APPLICATION_FORM_URLENCODED))
 		        .andExpect(status().is(403));	
 	}
@@ -144,7 +144,7 @@ public class ChangeEmailMvcTests extends AbstractMvcTests {
 
 		mvc.perform(post("/api/core/users/{id}/email", USER_ID)
                 .param("code", changeEmailCode)
-				.header(LemonSecurityConfig.TOKEN_REQUEST_HEADER_NAME, tokens.get(USER_ID))
+				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, tokens.get(USER_ID))
                 .header("contentType",  MediaType.APPLICATION_FORM_URLENCODED))
 		        .andExpect(status().is(422));
 	}
@@ -163,7 +163,7 @@ public class ChangeEmailMvcTests extends AbstractMvcTests {
 		
 		mvc.perform(post("/api/core/users/{id}/email", UNVERIFIED_USER_ID)
                 .param("code", changeEmailCode)
-				.header(LemonSecurityConfig.TOKEN_REQUEST_HEADER_NAME, tokens.get(UNVERIFIED_USER_ID))
+				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, tokens.get(UNVERIFIED_USER_ID))
                 .header("contentType",  MediaType.APPLICATION_FORM_URLENCODED))
 		        .andExpect(status().is(422));
 	}
