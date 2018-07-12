@@ -1,4 +1,4 @@
-package com.naturalprogrammer.spring.lemon.permissions;
+package com.naturalprogrammer.spring.lemon.commons.security;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

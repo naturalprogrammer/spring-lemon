@@ -24,7 +24,6 @@ import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -35,9 +34,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
-import com.naturalprogrammer.spring.lemon.commons.mail.MailSender;
-import com.naturalprogrammer.spring.lemon.commons.mail.MockMailSender;
-import com.naturalprogrammer.spring.lemon.commons.mail.SmtpMailSender;
 import com.naturalprogrammer.spring.lemon.commons.security.JwtService;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUserRepository;

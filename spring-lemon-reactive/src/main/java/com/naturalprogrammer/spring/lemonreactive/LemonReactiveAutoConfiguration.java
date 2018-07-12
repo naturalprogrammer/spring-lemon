@@ -22,7 +22,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.authentication.WebFilterChainServerAuthenticationSuccessHandler;
 import org.springframework.security.web.server.context.NoOpServerSecurityContextRepository;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
@@ -35,7 +34,6 @@ import com.naturalprogrammer.spring.lemonreactive.security.LemonReactiveAuthenti
 import com.naturalprogrammer.spring.lemonreactive.security.LemonReactiveUserDetailsService;
 
 @Configuration
-@EnableTransactionManagement
 @EnableMongoAuditing
 @EnableReactiveMethodSecurity
 @AutoConfigureBefore({

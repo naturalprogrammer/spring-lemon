@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import javax.validation.Valid;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,11 +21,13 @@ import org.springframework.validation.annotation.Validated;
 
 import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
 import com.naturalprogrammer.spring.lemon.commons.LemonProperties.Admin;
+import com.naturalprogrammer.spring.lemon.commons.mail.LemonMailData;
 import com.naturalprogrammer.spring.lemon.commons.mail.MailSender;
 import com.naturalprogrammer.spring.lemon.commons.security.JwtService;
 import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
 import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
 import com.naturalprogrammer.spring.lemon.commons.util.UserUtils;
+import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
 import com.naturalprogrammer.spring.lemonreactive.domain.AbstractMongoUser;
 import com.naturalprogrammer.spring.lemonreactive.domain.AbstractMongoUserRepository;
 import com.naturalprogrammer.spring.lemonreactive.util.LerUtils;
@@ -47,12 +50,14 @@ public abstract class LemonReactiveService
 	@Autowired
 	public void createLemonService(LemonProperties properties,
 			PasswordEncoder passwordEncoder,
+			MailSender mailSender,
 			AbstractMongoUserRepository<U, ID> userRepository,
 			ReactiveUserDetailsService userDetailsService,
 			JwtService jwtService) {
 		
 		this.properties = properties;
 		this.passwordEncoder = passwordEncoder;
+		this.mailSender = mailSender;
 		this.userRepository = userRepository;
 		this.userDetailsService = userDetailsService;
 		this.jwtService = jwtService;
@@ -173,22 +178,83 @@ public abstract class LemonReactiveService
 	 * Signs up a user.
 	 */
 	@Validated(UserUtils.SignUpValidation.class)
-	public Mono<U> signup(@Valid Mono<U> user) {
+	public Mono<UserDto<ID>> signup(@Valid Mono<U> user) {
 		
 		log.debug("Signing up user: " + user);
 		
 		return user
-//			.onErrorResume(Mono::error)
-			.doOnNext(this::encryptPassword)
-			.flatMap(userRepository::insert);
-	}
-	
-	private void encryptPassword(U user) {
-		
-		user.setPassword(passwordEncoder.encode(user.getPassword()));
+			.doOnNext(this::initUser)
+			.flatMap(userRepository::insert)
+			.doOnSuccess(this::sendVerificationMail)
+			.map(AbstractMongoUser::toUserDto);
 	}
 
+	
+	protected void initUser(U user) {
+		
+		log.debug("Initializing user: " + user);
+
+		user.setPassword(passwordEncoder.encode(user.getPassword())); // encode the password
+		makeUnverified(user); // make the user unverified
+	}	
+
+	
+	/**
+	 * Makes a user unverified
+	 */
+	protected void makeUnverified(U user) {
+		
+		user.getRoles().add(UserUtils.Role.UNVERIFIED);
+		user.setCredentialsUpdatedMillis(System.currentTimeMillis());
+	}
+	
+	
+	/**
+	 * Sends verification mail to a unverified user.
+	 */
+	protected void sendVerificationMail(final U user) {
+		try {
+			
+			log.debug("Sending verification mail to: " + user);
+			
+			String verificationCode = jwtService.createToken(JwtService.VERIFY_AUDIENCE,
+					user.getId().toString(), properties.getJwt().getExpirationMillis(),
+					LecUtils.mapOf("email", user.getEmail()));
+
+			// make the link
+			String verifyLink = properties.getApplicationUrl()
+				+ "/users/" + user.getId() + "/verification?code=" + verificationCode;
+
+			// send the mail
+			sendVerificationMail(user, verifyLink);
+
+			log.debug("Verification mail to " + user.getEmail() + " queued.");
+			
+		} catch (Throwable e) {
+			// In case of exception, just log the error and keep silent
+			log.error(ExceptionUtils.getStackTrace(e));
+		}
+	}	
+
+	
+	/**
+	 * Sends verification mail to a unverified user.
+	 * Override this method if you're using a different MailData
+	 */
+	protected void sendVerificationMail(final U user, String verifyLink) {
+		
+		// send the mail
+		mailSender.send(LemonMailData.of(user.getEmail(),
+			LexUtils.getMessage("com.naturalprogrammer.spring.verifySubject"),
+			LexUtils.getMessage(
+				"com.naturalprogrammer.spring.verifyEmail",	verifyLink)));
+	}	
+
+	
 	public void addAuthHeader(ServerHttpResponse response, String username, long expirationMillis) {
+		
+		log.debug("Adding auth header for " + username);
+		
 		response.getHeaders().add(LecUtils.TOKEN_RESPONSE_HEADER_NAME, LecUtils.TOKEN_PREFIX +
 			jwtService.createToken(JwtService.AUTH_AUDIENCE, username, expirationMillis));
 	}

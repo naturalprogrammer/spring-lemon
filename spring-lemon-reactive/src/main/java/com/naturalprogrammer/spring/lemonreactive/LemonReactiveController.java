@@ -61,10 +61,11 @@ public class LemonReactiveController
 	 * A simple function for pinging this server.
 	 */
 	@PostMapping("/login")
-	public Mono<UserDto<ID>> login(ServerHttpResponse response) {
+	public Mono<UserDto<ID>> login(ServerWebExchange exchange) {
 		
 		log.debug("Returning current user ... ");
-		return userWithToken(response);
+		long expirationMillis = exchange.getAttributeOrDefault("expirationMillis", jwtExpirationMillis);
+		return userWithToken(exchange.getResponse(), expirationMillis);
 	}
 
 	
@@ -92,10 +93,10 @@ public class LemonReactiveController
 		log.debug("Getting context ");
 		
 		return lemonReactiveService
-				.getContext(expirationMillis, response)
-				.doOnNext(context -> {
-					log.debug("Returning context " + context);
-				});
+			.getContext(expirationMillis, response)
+			.doOnNext(context -> {
+				log.debug("Returning context " + context);
+			});
 	}
 
 	
@@ -105,16 +106,16 @@ public class LemonReactiveController
 	 */
 	@PostMapping("/users")
 	@ResponseStatus(HttpStatus.CREATED)
-	protected Mono<U> signup(@RequestBody @JsonView(UserUtils.SignupInput.class)
+	protected Mono<UserDto<ID>> signup(@RequestBody @JsonView(UserUtils.SignupInput.class)
 			Mono<U> user,
-			ServerWebExchange response) {
+			ServerHttpResponse response) {
 		
 		log.debug("Signing up: " + user);
-		return lemonReactiveService.signup(user);
-		//log.debug("Signed up: " + user);
-
-		//return Mono.empty();
-		//return userWithToken(response);
+		
+		return lemonReactiveService
+			.signup(user)
+			.doOnSuccess(userDto -> lemonReactiveService
+				.addAuthHeader(response, userDto.getUsername(), jwtExpirationMillis));
 	}
 
 	
@@ -123,9 +124,20 @@ public class LemonReactiveController
 	 */
 	protected Mono<UserDto<ID>> userWithToken(ServerHttpResponse response) {
 		
+		return userWithToken(response, jwtExpirationMillis);
+	}
+
+	
+	/**
+	 * returns the current user and a new authorization token in the response
+	 */
+	protected Mono<UserDto<ID>> userWithToken(ServerHttpResponse response, long expirationMillis) {
+		
 		Mono<UserDto<ID>> currentUser = LerUtils.currentUser();
-		return currentUser.doOnNext((user) -> {
-			lemonReactiveService.addAuthHeader(response, user.getUsername(), jwtExpirationMillis);			
+		return currentUser.doOnNext(user -> {
+			
+			log.debug("Adding auth header for " + user.getUsername());
+			lemonReactiveService.addAuthHeader(response, user.getUsername(), expirationMillis);			
 		});
 	}
 }
