@@ -4,11 +4,14 @@ import java.io.Serializable;
 import java.util.Map;
 import java.util.Optional;
 
+import javax.validation.Valid;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpResponse;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -107,7 +110,7 @@ public class LemonReactiveController
 	@PostMapping("/users")
 	@ResponseStatus(HttpStatus.CREATED)
 	protected Mono<UserDto<ID>> signup(@RequestBody @JsonView(UserUtils.SignupInput.class)
-			Mono<U> user,
+			@Valid Mono<U> user,
 			ServerHttpResponse response) {
 		
 		log.debug("Signing up: " + user);

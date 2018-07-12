@@ -16,8 +16,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
 import com.naturalprogrammer.spring.lemon.commons.util.UserUtils;
+import com.naturalprogrammer.spring.lemon.commons.validation.Password;
 import com.naturalprogrammer.spring.lemon.validation.Captcha;
-import com.naturalprogrammer.spring.lemon.validation.Password;
 import com.naturalprogrammer.spring.lemon.validation.UniqueEmail;
 
 import lombok.Getter;

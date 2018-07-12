@@ -183,6 +183,7 @@ public abstract class LemonReactiveService
 		log.debug("Signing up user: " + user);
 		
 		return user
+			.onErrorResume(Mono::error)
 			.doOnNext(this::initUser)
 			.flatMap(userRepository::insert)
 			.doOnSuccess(this::sendVerificationMail)
