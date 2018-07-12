@@ -34,7 +34,6 @@ import com.naturalprogrammer.spring.lemonreactive.util.LerUtils;
 
 import reactor.core.publisher.Mono;
 
-@Validated
 public abstract class LemonReactiveService
 	<U extends AbstractMongoUser<ID>, ID extends Serializable> {
 
@@ -177,13 +176,12 @@ public abstract class LemonReactiveService
     /**
 	 * Signs up a user.
 	 */
-	@Validated(UserUtils.SignUpValidation.class)
-	public Mono<UserDto<ID>> signup(@Valid Mono<U> user) {
+	public Mono<UserDto<ID>> signup(Mono<U> user) {
 		
 		log.debug("Signing up user: " + user);
 		
 		return user
-			.onErrorResume(Mono::error)
+//			.onErrorResume(Mono::error)
 			.doOnNext(this::initUser)
 			.flatMap(userRepository::insert)
 			.doOnSuccess(this::sendVerificationMail)

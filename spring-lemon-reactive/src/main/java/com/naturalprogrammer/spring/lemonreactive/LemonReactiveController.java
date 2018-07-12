@@ -109,9 +109,7 @@ public class LemonReactiveController
 	 */
 	@PostMapping("/users")
 	@ResponseStatus(HttpStatus.CREATED)
-	protected Mono<UserDto<ID>> signup(@RequestBody @JsonView(UserUtils.SignupInput.class)
-			@Valid Mono<U> user,
-			ServerHttpResponse response) {
+	protected Mono<UserDto<ID>> signup(Mono<U> user, ServerHttpResponse response) {
 		
 		log.debug("Signing up: " + user);
 		

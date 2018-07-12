@@ -7,7 +7,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
+import com.naturalprogrammer.spring.lemon.commons.util.UserUtils;
 import com.naturalprogrammer.spring.lemon.commons.util.UserUtils.SignUpValidation;
 import com.naturalprogrammer.spring.lemondemo.domain.User;
 import com.naturalprogrammer.spring.lemonreactive.LemonReactiveController;
@@ -20,7 +22,8 @@ public class MyController extends LemonReactiveController<User, ObjectId> {
 
 	@Override
 	public Mono<UserDto<ObjectId>> signup(
-			@RequestBody @Validated(SignUpValidation.class) Mono<User> user,
+			@RequestBody @JsonView(UserUtils.SignupInput.class)
+			@Validated(SignUpValidation.class) Mono<User> user,
 			ServerHttpResponse response) {
 		
 		return super.signup(user, response);
