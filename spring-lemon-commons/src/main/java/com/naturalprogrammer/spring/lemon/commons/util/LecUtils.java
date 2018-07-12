@@ -7,6 +7,7 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 
 import com.naturalprogrammer.spring.lemon.commons.security.LemonPrincipal;
@@ -82,5 +83,18 @@ public class LecUtils {
 	    }
 	
 	    return map;
+	}
+
+
+	/**
+	 * Throws BadCredentialsException if not valid
+	 * 
+	 * @param valid
+	 * @param messageKey
+	 */
+	public static void ensureCredentials(boolean valid, String messageKey) {
+		
+		if (!valid)
+			throw new BadCredentialsException(LexUtils.getMessage(messageKey));
 	}
 }

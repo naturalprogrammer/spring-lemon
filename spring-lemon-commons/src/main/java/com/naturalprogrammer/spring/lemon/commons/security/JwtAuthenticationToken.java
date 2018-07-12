@@ -1,4 +1,4 @@
-package com.naturalprogrammer.spring.lemon.security;
+package com.naturalprogrammer.spring.lemon.commons.security;
 
 import java.util.Collection;
 

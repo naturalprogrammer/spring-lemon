@@ -14,7 +14,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -36,7 +35,6 @@ import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
 import com.naturalprogrammer.spring.lemon.domain.VersionedEntity;
 import com.naturalprogrammer.spring.lemon.exceptions.VersionException;
-import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
 import com.nimbusds.jwt.JWTClaimsSet;
 
 /**
@@ -124,19 +122,6 @@ public class LemonUtils {
 	}
 	
 	/**
-	 * Throws BadCredentialsException if not valid
-	 * 
-	 * @param valid
-	 * @param messageKey
-	 */
-	public static void ensureCredentials(boolean valid, String messageKey) {
-		
-		if (!valid)
-			throw new BadCredentialsException(LexUtils.getMessage(messageKey));
-	}
-
-	
-	/**
 	 * A convenient method for running code
 	 * after successful database commit.
 	 *  
@@ -216,7 +201,7 @@ public class LemonUtils {
 		
 		long issueTime = (long) claims.getClaim(JwtService.LEMON_IAT);
 
-		ensureCredentials(issueTime >= user.getCredentialsUpdatedMillis(),
+		LecUtils.ensureCredentials(issueTime >= user.getCredentialsUpdatedMillis(),
 				"com.naturalprogrammer.spring.obsoleteToken");
 	}
 	
