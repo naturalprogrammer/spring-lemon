@@ -12,7 +12,7 @@ public class ErrorResponse {
 	private String error;
 	private String message;
 	private Integer status; // We'd need it as integer in JSON serialization
-	private Collection<FieldError> errors;
+	private Collection<LemonFieldError> errors;
 	
 	public boolean incomplete() {
 		
@@ -43,10 +43,10 @@ public class ErrorResponse {
 	public void setStatus(Integer status) {
 		this.status = status;
 	}
-	public Collection<FieldError> getErrors() {
+	public Collection<LemonFieldError> getErrors() {
 		return errors;
 	}
-	public void setErrors(Collection<FieldError> errors) {
+	public void setErrors(Collection<LemonFieldError> errors) {
 		this.errors = errors;
 	}
 }

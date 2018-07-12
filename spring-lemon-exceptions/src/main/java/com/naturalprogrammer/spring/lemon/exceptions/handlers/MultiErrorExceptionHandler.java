@@ -7,7 +7,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
-import com.naturalprogrammer.spring.lemon.exceptions.FieldError;
+import com.naturalprogrammer.spring.lemon.exceptions.LemonFieldError;
 import com.naturalprogrammer.spring.lemon.exceptions.MultiErrorException;
 
 @Component
@@ -31,7 +31,7 @@ public class MultiErrorExceptionHandler extends AbstractExceptionHandler<MultiEr
 	}
 	
 	@Override
-	public Collection<FieldError> getErrors(MultiErrorException ex) {
+	public Collection<LemonFieldError> getErrors(MultiErrorException ex) {
 		return ex.getErrors();
 	}
 }

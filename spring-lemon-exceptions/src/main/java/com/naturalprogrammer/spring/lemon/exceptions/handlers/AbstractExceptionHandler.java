@@ -7,7 +7,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.http.HttpStatus;
 
 import com.naturalprogrammer.spring.lemon.exceptions.ErrorResponse;
-import com.naturalprogrammer.spring.lemon.exceptions.FieldError;
+import com.naturalprogrammer.spring.lemon.exceptions.LemonFieldError;
 
 /**
  * Extend this to code an exception handler
@@ -34,7 +34,7 @@ public abstract class AbstractExceptionHandler<T extends Throwable> {
 		return null;
 	}
 	
-	protected Collection<FieldError> getErrors(T ex) {
+	protected Collection<LemonFieldError> getErrors(T ex) {
 		return null;
 	}
 
