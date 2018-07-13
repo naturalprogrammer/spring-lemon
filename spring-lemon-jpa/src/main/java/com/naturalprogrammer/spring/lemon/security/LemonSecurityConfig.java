@@ -24,7 +24,7 @@ import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
  */
 public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 	
-	private static final Log log = LogFactory.getLog(LemonPermissionEvaluator.class);
+	private static final Log log = LogFactory.getLog(LemonSecurityConfig.class);
 
 	private LemonProperties properties;
 	private UserDetailsService userDetailsService;

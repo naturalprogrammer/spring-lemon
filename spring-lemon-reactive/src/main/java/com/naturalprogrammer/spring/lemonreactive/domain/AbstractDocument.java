@@ -11,6 +11,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.annotation.Version;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import com.naturalprogrammer.spring.lemon.commons.security.PermissionEvaluatorEntity;
 import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
 
 import lombok.Getter;
@@ -18,7 +19,7 @@ import lombok.Setter;
 
 @Document
 @Getter @Setter
-public abstract class AbstractDocument<ID extends Serializable> {
+public abstract class AbstractDocument<ID extends Serializable> implements PermissionEvaluatorEntity {
 	
 	@Id
 	protected ID id;
@@ -42,6 +43,7 @@ public abstract class AbstractDocument<ID extends Serializable> {
 	 * Whether the given user has the given permission for
 	 * this entity. Override this method where you need.
 	 */
+	@Override
 	public boolean hasPermission(UserDto<?> currentUser, String permission) {
 		
 		return false;		

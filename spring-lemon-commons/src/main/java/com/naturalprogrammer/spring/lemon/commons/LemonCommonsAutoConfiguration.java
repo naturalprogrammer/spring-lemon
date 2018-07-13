@@ -9,6 +9,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -17,6 +18,7 @@ import com.naturalprogrammer.spring.lemon.commons.mail.MailSender;
 import com.naturalprogrammer.spring.lemon.commons.mail.MockMailSender;
 import com.naturalprogrammer.spring.lemon.commons.mail.SmtpMailSender;
 import com.naturalprogrammer.spring.lemon.commons.security.JwtService;
+import com.naturalprogrammer.spring.lemon.commons.security.LemonPermissionEvaluator;
 import com.nimbusds.jose.KeyLengthException;
 
 @Configuration
@@ -66,6 +68,18 @@ public class LemonCommonsAutoConfiguration {
     }
 	
 	
+	/**
+	 * Configures PermissionEvaluator if missing
+	 */
+	@Bean
+	@ConditionalOnMissingBean(PermissionEvaluator.class)
+	public PermissionEvaluator permissionEvaluator() {
+		
+        log.info("Configuring LemonPermissionEvaluator");       
+		return new LemonPermissionEvaluator();
+	}
+
+
 	/**
 	 * Configures a MockMailSender when the property
 	 * <code>spring.mail.host</code> isn't defined.

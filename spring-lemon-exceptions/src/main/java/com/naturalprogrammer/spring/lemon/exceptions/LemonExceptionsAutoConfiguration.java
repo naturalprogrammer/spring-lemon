@@ -19,7 +19,6 @@ public class LemonExceptionsAutoConfiguration {
 
 	private static final Log log = LogFactory.getLog(LemonExceptionsAutoConfiguration.class);
 
-	
 	public LemonExceptionsAutoConfiguration() {
 		log.info("Created");
 	}

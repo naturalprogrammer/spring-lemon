@@ -12,9 +12,11 @@ import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.server.SecurityWebFilterChain;
+import org.springframework.security.web.server.ServerAuthenticationEntryPoint;
 import org.springframework.security.web.server.authentication.AuthenticationWebFilter;
 import org.springframework.security.web.server.authentication.ServerAuthenticationFailureHandler;
 import org.springframework.security.web.server.authentication.WebFilterChainServerAuthenticationSuccessHandler;
+import org.springframework.security.web.server.authorization.ServerAccessDeniedHandler;
 import org.springframework.security.web.server.context.NoOpServerSecurityContextRepository;
 import org.springframework.web.server.ServerWebExchange;
 
@@ -51,8 +53,12 @@ public class LemonReactiveSecurityConfig <U extends AbstractMongoUser<ID>, ID ex
 					.authenticationSuccessHandler(new WebFilterChainServerAuthenticationSuccessHandler())
 			.and()
 				.securityContextRepository(NoOpServerSecurityContextRepository.getInstance())
+			.exceptionHandling()
+				.accessDeniedHandler(accessDeniedHandler())
+				.authenticationEntryPoint(authenticationEntryPoint())
+			.and()
 				.csrf().disable()
-			.addFilterAt(tokenAuthenticationFilter(), SecurityWebFiltersOrder.AUTHENTICATION)				
+				.addFilterAt(tokenAuthenticationFilter(), SecurityWebFiltersOrder.AUTHENTICATION)				
 			.build();
 	}
 	
@@ -108,4 +114,15 @@ public class LemonReactiveSecurityConfig <U extends AbstractMongoUser<ID>, ID ex
 		
 		return (webFilterExchange, exception) -> Mono.error(exception);		
 	}
+	
+	protected ServerAccessDeniedHandler accessDeniedHandler() {
+		
+		return (webFilterExchange, exception) -> Mono.error(exception);
+	}
+	
+	protected ServerAuthenticationEntryPoint authenticationEntryPoint() {
+		
+		return (webFilterExchange, exception) -> Mono.error(exception);
+	}
+	
 }

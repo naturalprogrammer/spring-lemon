@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -18,6 +19,7 @@ import org.springframework.web.server.ServerWebExchange;
 import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
 import com.naturalprogrammer.spring.lemon.commons.security.JwtService;
 import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
+import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
 import com.naturalprogrammer.spring.lemonreactive.domain.AbstractMongoUser;
 import com.naturalprogrammer.spring.lemonreactive.util.LerUtils;
 
@@ -115,6 +117,19 @@ public class LemonReactiveController
 
 	
 	/**
+	 * Resends verification mail
+	 */
+	@PostMapping("/users/{id}/resend-verification-mail")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public Mono<Void> resendVerificationMail(@PathVariable("id") ID userId) {
+		
+		log.debug("Resending verification mail for user " + userId);
+		
+		//Mono<U> user = lemonReactiveService.findUserById(id);
+		return lemonReactiveService.resendVerificationMail(userId);
+	}	
+
+	/**
 	 * returns the current user and a new authorization token in the response
 	 */
 	protected Mono<UserDto<ID>> userWithToken(ServerHttpResponse response) {
@@ -127,12 +142,12 @@ public class LemonReactiveController
 	 * returns the current user and a new authorization token in the response
 	 */
 	protected Mono<UserDto<ID>> userWithToken(ServerHttpResponse response, long expirationMillis) {
-		
-		Mono<UserDto<ID>> currentUser = LerUtils.currentUser();
-		return currentUser.doOnNext(user -> {
-			
-			log.debug("Adding auth header for " + user.getUsername());
-			lemonReactiveService.addAuthHeader(response, user.getUsername(), expirationMillis);			
-		});
+
+		Mono<Optional<UserDto<ID>>> currentUser = LerUtils.currentUser();
+		return currentUser.map(optionalUser -> optionalUser.orElseThrow(LexUtils.notFoundSupplier()))
+			.doOnNext(user -> {
+				log.debug("Adding auth header for " + user.getUsername());
+				lemonReactiveService.addAuthHeader(response, user.getUsername(), expirationMillis);
+			});
 	}
 }

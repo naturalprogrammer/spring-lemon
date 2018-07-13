@@ -24,7 +24,6 @@ import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -48,7 +47,6 @@ import com.naturalprogrammer.spring.lemon.security.JwtAuthenticationProvider;
 import com.naturalprogrammer.spring.lemon.security.LemonCorsConfig;
 import com.naturalprogrammer.spring.lemon.security.LemonOAuth2UserService;
 import com.naturalprogrammer.spring.lemon.security.LemonOidcUserService;
-import com.naturalprogrammer.spring.lemon.security.LemonPermissionEvaluator;
 import com.naturalprogrammer.spring.lemon.security.LemonSecurityConfig;
 import com.naturalprogrammer.spring.lemon.security.LemonUserDetailsService;
 import com.naturalprogrammer.spring.lemon.security.OAuth2AuthenticationFailureHandler;
@@ -202,17 +200,6 @@ public class LemonAutoConfiguration {
         log.info("Configuring SimpleUrlAuthenticationFailureHandler");       
     	return new SimpleUrlAuthenticationFailureHandler();
     }	
-
-	/**
-	 * Configures PermissionEvaluator if missing
-	 */
-	@Bean
-	@ConditionalOnMissingBean(PermissionEvaluator.class)
-	public PermissionEvaluator permissionEvaluator() {
-		
-        log.info("Configuring LemonPermissionEvaluator");       
-		return new LemonPermissionEvaluator();
-	}
 
 	/**
 	 * Configures UserDetailsService if missing

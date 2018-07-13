@@ -2,8 +2,6 @@ package com.naturalprogrammer.spring.lemon.exceptions.handlers;
 
 import java.util.Collection;
 
-import javax.validation.ConstraintViolationException;
-
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;

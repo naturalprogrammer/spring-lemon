@@ -30,6 +30,7 @@ import com.naturalprogrammer.spring.lemonreactive.domain.AbstractMongoUserReposi
 import com.naturalprogrammer.spring.lemonreactive.util.LerUtils;
 
 import reactor.core.publisher.Mono;
+import reactor.util.function.Tuple2;
 
 public abstract class LemonReactiveService
 	<U extends AbstractMongoUser<ID>, ID extends Serializable> {
@@ -142,17 +143,17 @@ public abstract class LemonReactiveService
 		
 		log.debug("Getting context ...");
 
-		return LerUtils.currentUser().map(currentUser -> {
-			
-			addAuthHeader(response, currentUser.getUsername(),
-				expirationMillis.orElse(properties.getJwt().getExpirationMillis()));
+		return LerUtils.currentUser().map(optionalUser -> {
 			
 			Map<String, Object> context = buildContext();
+			optionalUser.ifPresent(user -> {
+				addAuthHeader(response, user.getUsername(),
+					expirationMillis.orElse(properties.getJwt().getExpirationMillis()));
+				context.put("user", user);
+			});
 			
-			context.put("user", currentUser);
-			return context;
-			
-		}).switchIfEmpty(Mono.fromCallable(this::buildContext));
+			return context;			
+		});
 	}
 
 
@@ -178,7 +179,6 @@ public abstract class LemonReactiveService
 		log.debug("Signing up user: " + user);
 		
 		return user
-//			.onErrorResume(Mono::error)
 			.doOnNext(this::initUser)
 			.flatMap(userRepository::insert)
 			.doOnSuccess(this::sendVerificationMail)
@@ -254,4 +254,45 @@ public abstract class LemonReactiveService
 		response.getHeaders().add(LecUtils.TOKEN_RESPONSE_HEADER_NAME, LecUtils.TOKEN_PREFIX +
 			jwtService.createToken(JwtService.AUTH_AUDIENCE, username, expirationMillis));
 	}
+
+
+	public Mono<U> findUserById(ID userId) {
+		
+		return userRepository
+				.findById(userId)
+				.switchIfEmpty(LerUtils.notFoundMono());
+	}
+	
+	
+	/**
+	 * Resends verification mail to the user.
+	 */
+	public Mono<Void> resendVerificationMail(ID userId) {
+		
+		return userRepository
+			.findById(userId)
+			.switchIfEmpty(LerUtils.notFoundMono())
+			.zipWith(LerUtils.currentUser())
+			.doOnNext(this::isEditable)
+			.map(Tuple2::getT1)
+			.doOnNext(this::resendVerificationMail).then();
+	}
+	
+	protected void isEditable(Tuple2<U, Optional<UserDto<Serializable>>> tuple) {
+		LecUtils.ensureAuthority(tuple.getT1().hasPermission(tuple.getT2().orElse(null), "edit"),
+				"com.naturalprogrammer.spring.notGoodAdminOrSameUser");
+	}
+	
+	/**
+	 * Resends verification mail to the user.
+	 */
+	protected void resendVerificationMail(U user) {
+
+		// must be unverified
+		LexUtils.validate(user.getRoles().contains(UserUtils.Role.UNVERIFIED),
+				"com.naturalprogrammer.spring.alreadyVerified").go();	
+
+		// send the verification mail
+		sendVerificationMail(user);
+	}	
 }
