@@ -1,7 +1,6 @@
 package com.naturalprogrammer.spring.lemonreactive.domain;
 
 import java.io.Serializable;
-import java.util.Optional;
 
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import org.springframework.data.repository.NoRepositoryBean;

@@ -1,5 +1,8 @@
 package com.naturalprogrammer.spring.lemonreactive.validation;
 
+import static org.springframework.data.mongodb.core.query.Criteria.where;
+import static org.springframework.data.mongodb.core.query.Query.query;
+
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
@@ -8,9 +11,6 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
 import com.naturalprogrammer.spring.lemonreactive.LemonReactiveService;
-import com.naturalprogrammer.spring.lemonreactive.domain.AbstractMongoUserRepository;
-import static org.springframework.data.mongodb.core.query.Criteria.where;
-import static org.springframework.data.mongodb.core.query.Query.query;
 
 /**
  * Validator for unique-email

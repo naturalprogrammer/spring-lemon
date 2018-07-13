@@ -29,7 +29,7 @@ public class LerUtils {
 	 */
 	public static <ID extends Serializable> Mono<UserDto<ID>> currentUser() {
 		
-		return ReactiveSecurityContextHolder.getContext().log()
+		return ReactiveSecurityContextHolder.getContext()
 			.map(SecurityContext::getAuthentication)
 			.map(LecUtils::currentUser);
 	}	

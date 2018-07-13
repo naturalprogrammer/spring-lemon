@@ -20,17 +20,16 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.server.SecurityWebFilterChain;
-import org.springframework.security.web.server.authentication.WebFilterChainServerAuthenticationSuccessHandler;
-import org.springframework.security.web.server.context.NoOpServerSecurityContextRepository;
 
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import com.naturalprogrammer.spring.lemon.commons.security.JwtService;
 import com.naturalprogrammer.spring.lemon.exceptions.ErrorResponseComposer;
 import com.naturalprogrammer.spring.lemon.exceptions.LemonExceptionsAutoConfiguration;
 import com.naturalprogrammer.spring.lemonreactive.domain.AbstractMongoUser;
 import com.naturalprogrammer.spring.lemonreactive.domain.AbstractMongoUserRepository;
 import com.naturalprogrammer.spring.lemonreactive.exceptions.LemonReactiveErrorAttributes;
-import com.naturalprogrammer.spring.lemonreactive.security.LemonReactiveAuthenticationFailureHandler;
+import com.naturalprogrammer.spring.lemonreactive.security.LemonReactiveSecurityConfig;
 import com.naturalprogrammer.spring.lemonreactive.security.LemonReactiveUserDetailsService;
 
 @Configuration
@@ -65,27 +64,32 @@ public class LemonReactiveAutoConfiguration {
 	}
 
 	
+
+	
+	@Bean
+	@ConditionalOnMissingBean(LemonReactiveSecurityConfig.class)
+	public <U extends AbstractMongoUser<ID>, ID extends Serializable>
+		LemonReactiveSecurityConfig<U,ID> lemonReactiveSecurityConfig(
+				JwtService jwtService,
+				LemonReactiveUserDetailsService<U, ID> userDetailsService) {
+		
+		log.info("Configuring LemonReactiveSecurityConfig ...");
+
+		return new LemonReactiveSecurityConfig<U,ID>(jwtService, userDetailsService);
+	}
+	
+	
 	/**
 	 * Configures SecurityWebFilterChain if missing
 	 */
 	@Bean
-	@ConditionalOnMissingBean(SecurityWebFilterChain.class)	
-	public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
+	public SecurityWebFilterChain springSecurityFilterChain(
+			ServerHttpSecurity http,
+			LemonReactiveSecurityConfig<?,?> securityConfig) {
 		
 		log.info("Configuring SecurityWebFilterChain ...");
 		
-		return http
-			.authorizeExchange()
-				.anyExchange().permitAll()
-			.and()
-				.formLogin()
-					.loginPage("/api/core/login") // Should be "/login" by default, but not providing that overwrites our AuthenticationFailureHandler, because this is called later 
-					.authenticationFailureHandler(new LemonReactiveAuthenticationFailureHandler())
-					.authenticationSuccessHandler(new WebFilterChainServerAuthenticationSuccessHandler())
-			.and()
-				.securityContextRepository(NoOpServerSecurityContextRepository.getInstance())
-				.csrf().disable()
-			.build();
+		return securityConfig.springSecurityFilterChain(http);
 	}
 	
 	
