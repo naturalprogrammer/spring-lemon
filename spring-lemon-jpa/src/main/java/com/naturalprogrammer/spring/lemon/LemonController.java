@@ -149,7 +149,7 @@ public abstract class LemonController
 	
 
 	/**
-	 * Resets password after it is forgotten
+	 * Resets password after it's forgotten
 	 */
 	@PostMapping("/reset-password")
 	public UserDto<ID> resetPassword(
@@ -200,7 +200,7 @@ public abstract class LemonController
 		
 		// ensure that the user exists
 		LexUtils.ensureFound(user);
-		U updatedUser = LemonUtils.applyPatch(user, patch); // create a patched form
+		U updatedUser = LecUtils.applyPatch(user, patch); // create a patched form
 		UserDto<ID> userDto = lemonService.updateUser(user, updatedUser);
 		
 		// Send a new token for logged in user in the response

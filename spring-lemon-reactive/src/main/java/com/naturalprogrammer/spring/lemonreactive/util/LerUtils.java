@@ -1,5 +1,6 @@
 package com.naturalprogrammer.spring.lemonreactive.util;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.Optional;
 
@@ -10,10 +11,13 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.security.core.context.SecurityContext;
 
+import com.github.fge.jsonpatch.JsonPatchException;
 import com.naturalprogrammer.spring.lemon.commons.security.JwtService;
 import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
 import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
+import com.naturalprogrammer.spring.lemon.exceptions.VersionException;
 import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
+import com.naturalprogrammer.spring.lemonreactive.domain.AbstractDocument;
 import com.naturalprogrammer.spring.lemonreactive.domain.AbstractMongoUser;
 import com.nimbusds.jwt.JWTClaimsSet;
 
@@ -61,7 +65,32 @@ public class LerUtils {
 				"com.naturalprogrammer.spring.obsoleteToken");
 	}
 	
+	
 	public static <T> Mono<T> notFoundMono() {
 		return (Mono<T>) NOT_FOUND_MONO;
+	}
+
+
+	/**
+	 * Throws a VersionException if the versions of the
+	 * given entities aren't same.
+	 * 
+	 * @param original
+	 * @param updated
+	 */
+	public static <ID extends Serializable>
+	void ensureCorrectVersion(AbstractDocument<ID> original, AbstractDocument<ID> updated) {
+		
+		if (original.getVersion() != updated.getVersion())
+			throw new VersionException(original.getClass().getSimpleName(), original.getId().toString());
+	}
+
+	public static<T> T applyPatch(T originalObj, String patchString) {
+
+		try {
+			return LecUtils.applyPatch(originalObj, patchString);
+		} catch (IOException | JsonPatchException e) {
+			throw new RuntimeException(e);
+		}
 	}
 }

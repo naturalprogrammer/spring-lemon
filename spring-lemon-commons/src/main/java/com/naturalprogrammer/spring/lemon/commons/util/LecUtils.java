@@ -1,5 +1,6 @@
 package com.naturalprogrammer.spring.lemon.commons.util;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -10,6 +11,12 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.TreeNode;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.fge.jsonpatch.JsonPatch;
+import com.github.fge.jsonpatch.JsonPatchException;
 import com.naturalprogrammer.spring.lemon.commons.security.LemonPrincipal;
 import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
 import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
@@ -32,7 +39,13 @@ public class LecUtils {
 	public static final String TOKEN_REQUEST_HEADER_NAME = "Authorization";
 	public static final String TOKEN_RESPONSE_HEADER_NAME = "Lemon-Authorization";
 
+	private static ObjectMapper objectMapper;
 	
+	public LecUtils(ObjectMapper objectMapper) {
+		
+		LecUtils.objectMapper = objectMapper;		
+		log.info("Created");
+	}
 	/**
 	 * Extracts the current-user from authentication object
 	 * 
@@ -97,4 +110,28 @@ public class LecUtils {
 		if (!valid)
 			throw new BadCredentialsException(LexUtils.getMessage(messageKey));
 	}
+
+	
+	/**
+	 * Applies a JsonPatch to an object
+	 */
+    @SuppressWarnings("unchecked")
+	public static <T> T applyPatch(T originalObj, String patchString)
+			throws JsonProcessingException, IOException, JsonPatchException {
+
+        // Parse the patch to JsonNode
+        JsonNode patchNode = objectMapper.readTree(patchString);
+
+        // Create the patch
+        JsonPatch patch = JsonPatch.fromJson(patchNode);
+
+        // Convert the original object to JsonNode
+        JsonNode originalObjNode = objectMapper.valueToTree(originalObj);
+
+        // Apply the patch
+        TreeNode patchedObjNode = patch.apply(originalObjNode);
+
+        // Convert the patched node to an updated obj
+        return objectMapper.treeToValue(patchedObjNode, (Class<T>) originalObj.getClass());
+    }    
 }

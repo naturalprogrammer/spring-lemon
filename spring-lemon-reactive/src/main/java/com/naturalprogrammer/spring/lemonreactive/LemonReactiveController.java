@@ -4,14 +4,19 @@ import java.io.Serializable;
 import java.util.Map;
 import java.util.Optional;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.server.ServerWebExchange;
@@ -19,7 +24,6 @@ import org.springframework.web.server.ServerWebExchange;
 import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
 import com.naturalprogrammer.spring.lemon.commons.security.JwtService;
 import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
-import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
 import com.naturalprogrammer.spring.lemonreactive.domain.AbstractMongoUser;
 import com.naturalprogrammer.spring.lemonreactive.util.LerUtils;
 
@@ -64,7 +68,10 @@ public class LemonReactiveController
 		
 		log.debug("Returning current user ... ");
 		long expirationMillis = exchange.getAttributeOrDefault("expirationMillis", jwtExpirationMillis);
-		return userWithToken(exchange.getResponse(), expirationMillis);
+		
+		Mono<Optional<UserDto<ID>>> currentUser = LerUtils.currentUser();
+		return lemonReactiveService.userWithToken(
+				currentUser.map(Optional::get), exchange.getResponse(), expirationMillis);
 	}
 
 	
@@ -109,10 +116,7 @@ public class LemonReactiveController
 		
 		log.debug("Signing up: " + user);
 		
-		return lemonReactiveService
-			.signup(user)
-			.doOnSuccess(userDto -> lemonReactiveService
-				.addAuthHeader(response, userDto.getUsername(), jwtExpirationMillis));
+		return userWithToken(lemonReactiveService.signup(user), response);
 	}
 
 	
@@ -125,29 +129,92 @@ public class LemonReactiveController
 		
 		log.debug("Resending verification mail for user " + userId);
 		
-		//Mono<U> user = lemonReactiveService.findUserById(id);
 		return lemonReactiveService.resendVerificationMail(userId);
 	}	
 
+
 	/**
-	 * returns the current user and a new authorization token in the response
+	 * Verifies current-user
 	 */
-	protected Mono<UserDto<ID>> userWithToken(ServerHttpResponse response) {
+	@PostMapping("/users/{id}/verification")
+	public Mono<UserDto<ID>> verifyUser(
+			@PathVariable ID id,
+			@RequestParam String code,
+			ServerHttpResponse response) {
 		
-		return userWithToken(response, jwtExpirationMillis);
+		log.debug("Verifying user ...");		
+		return userWithToken(lemonReactiveService.verifyUser(id, code), response);
+	}
+
+	
+	/**
+	 * The forgot Password feature
+	 */
+	@PostMapping("/forgot-password")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public Mono<Void> forgotPassword(@RequestParam String email) {
+		
+		log.debug("Received forgot password request for: " + email);				
+		return lemonReactiveService.forgotPassword(email);
+	}
+
+	
+	/**
+	 * Resets password after it's forgotten
+	 */
+	@PostMapping("/reset-password")
+	public Mono<UserDto<ID>> resetPassword(
+			@RequestParam @Valid @NotBlank String code,
+		    @RequestParam @Valid @NotBlank String newPassword,
+		    ServerHttpResponse response) {
+		
+		log.debug("Resetting password ... ");				
+		return userWithToken(lemonReactiveService.resetPassword(code, newPassword), response);
+	}
+
+	
+	/**
+	 * Fetches a user by email
+	 */
+	@PostMapping("/users/fetch-by-email")
+	public Mono<U> fetchUserByEmail(@RequestParam String email) {
+		
+		log.debug("Fetching user by email: " + email);						
+		return lemonReactiveService.fetchUserByEmail(email);
+	}
+
+	
+	/**
+	 * Fetches a user by ID
+	 */	
+	@GetMapping("/users/{id}")
+	public Mono<U> fetchUserById(@PathVariable ID id) {
+		
+		log.debug("Fetching user: " + id);				
+		return lemonReactiveService.fetchUserById(id);
+	}
+
+
+	/**
+	 * Updates a user
+	 */
+	@PatchMapping("/users/{id}")
+	public Mono<UserDto<ID>> updateUser(
+			@PathVariable ID id,
+			@RequestBody Mono<String> patch,
+			ServerHttpResponse response) {
+		
+		log.debug("Updating user ... ");
+		return userWithToken(lemonReactiveService.updateUser(id, patch), response);
 	}
 
 	
 	/**
 	 * returns the current user and a new authorization token in the response
 	 */
-	protected Mono<UserDto<ID>> userWithToken(ServerHttpResponse response, long expirationMillis) {
-
-		Mono<Optional<UserDto<ID>>> currentUser = LerUtils.currentUser();
-		return currentUser.map(optionalUser -> optionalUser.orElseThrow(LexUtils.notFoundSupplier()))
-			.doOnNext(user -> {
-				log.debug("Adding auth header for " + user.getUsername());
-				lemonReactiveService.addAuthHeader(response, user.getUsername(), expirationMillis);
-			});
+	protected Mono<UserDto<ID>> userWithToken(Mono<UserDto<ID>> userDto,
+			ServerHttpResponse response) {
+		
+		return lemonReactiveService.userWithToken(userDto, response, jwtExpirationMillis);
 	}
 }

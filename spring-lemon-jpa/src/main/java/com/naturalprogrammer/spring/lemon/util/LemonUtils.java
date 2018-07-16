@@ -22,12 +22,8 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.TreeNode;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.fge.jsonpatch.JsonPatch;
-import com.github.fge.jsonpatch.JsonPatchException;
 import com.naturalprogrammer.spring.lemon.commons.security.JwtService;
 import com.naturalprogrammer.spring.lemon.commons.security.LemonPrincipal;
 import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
@@ -149,30 +145,6 @@ public class LemonUtils {
 	}
 	
 	
-	/**
-	 * Applies a JsonPatch to an object
-	 */
-    @SuppressWarnings("unchecked")
-	public static <T> T applyPatch(T originalObj, String patchString)
-			throws JsonProcessingException, IOException, JsonPatchException {
-
-        // Parse the patch to JsonNode
-        JsonNode patchNode = objectMapper.readTree(patchString);
-
-        // Create the patch
-        JsonPatch patch = JsonPatch.fromJson(patchNode);
-
-        // Convert the original object to JsonNode
-        JsonNode originalObjNode = objectMapper.valueToTree(originalObj);
-
-        // Apply the patch
-        TreeNode patchedObjNode = patch.apply(originalObjNode);
-
-        // Convert the patched node to an updated obj
-        return objectMapper.treeToValue(patchedObjNode, (Class<T>) originalObj.getClass());
-    }
-
-    
     /**
      * Serializes an object to JSON string
      */

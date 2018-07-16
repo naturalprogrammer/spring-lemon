@@ -28,9 +28,11 @@ import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
 import com.naturalprogrammer.spring.lemonreactive.domain.AbstractMongoUser;
 import com.naturalprogrammer.spring.lemonreactive.domain.AbstractMongoUserRepository;
 import com.naturalprogrammer.spring.lemonreactive.util.LerUtils;
+import com.nimbusds.jwt.JWTClaimsSet;
 
 import reactor.core.publisher.Mono;
 import reactor.util.function.Tuple2;
+import reactor.util.function.Tuple3;
 
 public abstract class LemonReactiveService
 	<U extends AbstractMongoUser<ID>, ID extends Serializable> {
@@ -143,11 +145,12 @@ public abstract class LemonReactiveService
 		
 		log.debug("Getting context ...");
 
-		return LerUtils.currentUser().map(optionalUser -> {
+		Mono<Optional<UserDto<ID>>> userDtoMono = LerUtils.currentUser();
+		return userDtoMono.map(optionalUser -> {
 			
 			Map<String, Object> context = buildContext();
 			optionalUser.ifPresent(user -> {
-				addAuthHeader(response, user.getUsername(),
+				addAuthHeader(response, user,
 					expirationMillis.orElse(properties.getJwt().getExpirationMillis()));
 				context.put("user", user);
 			});
@@ -247,41 +250,26 @@ public abstract class LemonReactiveService
 	}	
 
 	
-	public void addAuthHeader(ServerHttpResponse response, String username, long expirationMillis) {
-		
-		log.debug("Adding auth header for " + username);
-		
-		response.getHeaders().add(LecUtils.TOKEN_RESPONSE_HEADER_NAME, LecUtils.TOKEN_PREFIX +
-			jwtService.createToken(JwtService.AUTH_AUDIENCE, username, expirationMillis));
-	}
-
-
-	public Mono<U> findUserById(ID userId) {
-		
-		return userRepository
-				.findById(userId)
-				.switchIfEmpty(LerUtils.notFoundMono());
-	}
-	
-	
 	/**
 	 * Resends verification mail to the user.
 	 */
 	public Mono<Void> resendVerificationMail(ID userId) {
 		
-		return userRepository
-			.findById(userId)
-			.switchIfEmpty(LerUtils.notFoundMono())
+		return findUserById(userId)
 			.zipWith(LerUtils.currentUser())
 			.doOnNext(this::isEditable)
 			.map(Tuple2::getT1)
 			.doOnNext(this::resendVerificationMail).then();
 	}
+
 	
 	protected void isEditable(Tuple2<U, Optional<UserDto<Serializable>>> tuple) {
-		LecUtils.ensureAuthority(tuple.getT1().hasPermission(tuple.getT2().orElse(null), "edit"),
+		LecUtils.ensureAuthority(
+				tuple.getT1().hasPermission(tuple.getT2().orElse(null),
+				UserUtils.Permission.EDIT),
 				"com.naturalprogrammer.spring.notGoodAdminOrSameUser");
 	}
+
 	
 	/**
 	 * Resends verification mail to the user.
@@ -294,5 +282,249 @@ public abstract class LemonReactiveService
 
 		// send the verification mail
 		sendVerificationMail(user);
-	}	
+	}
+
+
+	public Mono<UserDto<ID>> verifyUser(ID userId, String code) {
+		
+		log.debug("Verifying user ...");
+
+		return findUserById(userId)
+				.doOnNext(user -> this.verifyUser(user, code))
+				.flatMap(userRepository::save)
+				.map(AbstractMongoUser::toUserDto);
+	}
+
+	
+	public void verifyUser(U user, String verificationCode) {
+		
+		log.debug("Verifying user ...");
+
+		// ensure that he is unverified
+		LexUtils.validate(user.hasRole(UserUtils.Role.UNVERIFIED),
+				"com.naturalprogrammer.spring.alreadyVerified").go();	
+		
+		JWTClaimsSet claims = jwtService.parseToken(verificationCode, JwtService.VERIFY_AUDIENCE, user.getCredentialsUpdatedMillis());
+		
+		LecUtils.ensureAuthority(
+				claims.getSubject().equals(user.getId().toString()) &&
+				claims.getClaim("email").equals(user.getEmail()),
+				"com.naturalprogrammer.spring.wrong.verificationCode");
+		
+		user.getRoles().remove(UserUtils.Role.UNVERIFIED); // make him verified
+		user.setCredentialsUpdatedMillis(System.currentTimeMillis());
+	}
+
+	
+	public Mono<Void> forgotPassword(String email) {
+		
+		return findUserByEmail(email)
+				.doOnSuccess(this::mailForgotPasswordLink)
+				.then();
+	}
+
+	
+	/**
+	 * Mails the forgot password link.
+	 * 
+	 * @param user
+	 */
+	public void mailForgotPasswordLink(U user) {
+		
+		log.debug("Mailing forgot password link to user: " + user);
+
+		String forgotPasswordCode = jwtService.createToken(JwtService.FORGOT_PASSWORD_AUDIENCE,
+				user.getEmail(), properties.getJwt().getExpirationMillis());
+
+		// make the link
+		String forgotPasswordLink =	properties.getApplicationUrl()
+			    + "/reset-password?code=" + forgotPasswordCode;
+		
+		mailForgotPasswordLink(user, forgotPasswordLink);
+		
+		log.debug("Forgot password link mail queued.");
+	}
+
+	
+	/**
+	 * Mails the forgot password link.
+	 * 
+	 * Override this method if you're using a different MailData
+	 */
+	public void mailForgotPasswordLink(U user, String forgotPasswordLink) {
+		
+		// send the mail
+		mailSender.send(LemonMailData.of(user.getEmail(),
+				LexUtils.getMessage("com.naturalprogrammer.spring.forgotPasswordSubject"),
+				LexUtils.getMessage("com.naturalprogrammer.spring.forgotPasswordEmail",
+					forgotPasswordLink)));
+	}
+
+		
+	public Mono<UserDto<ID>> resetPassword(String forgotPasswordCode, String newPassword) {
+		
+		log.debug("Resetting password ...");
+
+		JWTClaimsSet claims = jwtService.parseToken(forgotPasswordCode,
+				JwtService.FORGOT_PASSWORD_AUDIENCE);
+		
+		String email = claims.getSubject();
+		
+		// fetch the user
+		return findUserByEmail(email)
+				.doOnNext(user -> resetPassword(user, claims, newPassword))
+				.flatMap(userRepository::save)
+				.map(AbstractMongoUser::toUserDto);
+	}
+	
+	
+	public void resetPassword(U user, JWTClaimsSet claims, String newPassword) {
+		
+		log.debug("Resetting password ...");
+
+		LerUtils.ensureCredentialsUpToDate(claims, user);
+		
+		// sets the password
+		user.setPassword(passwordEncoder.encode(newPassword));
+		user.setCredentialsUpdatedMillis(System.currentTimeMillis());
+		//user.setForgotPasswordCode(null);
+		
+		log.debug("Password reset.");		
+	}
+
+	/**
+	 * returns the current user and a new authorization token in the response
+	 */
+	public Mono<UserDto<ID>> userWithToken(Mono<UserDto<ID>> userDto,
+			ServerHttpResponse response, long expirationMillis) {
+
+		return userDto.doOnNext(user -> {
+			log.debug("Adding auth header for " + user.getUsername());
+			addAuthHeader(response, user, expirationMillis);
+		});
+	}
+
+	
+	protected void addAuthHeader(ServerHttpResponse response, UserDto<ID> userDto, long expirationMillis) {
+		
+		log.debug("Adding auth header for " + userDto.getUsername());
+		
+		response.getHeaders().add(LecUtils.TOKEN_RESPONSE_HEADER_NAME, LecUtils.TOKEN_PREFIX +
+			jwtService.createToken(JwtService.AUTH_AUDIENCE, userDto.getUsername(), expirationMillis));
+	}
+
+
+	public Mono<U> fetchUserByEmail(String email) {
+		
+		// fetch the user
+		return findUserByEmail(email)
+				.zipWith(LerUtils.currentUser())
+				.doOnNext(this::hideConfidentialFields)
+				.map(Tuple2::getT1);
+	}
+
+
+	public Mono<U> fetchUserById(ID userId) {
+		// fetch the user
+		return findUserById(userId)
+				.zipWith(LerUtils.currentUser())
+				.doOnNext(this::hideConfidentialFields)
+				.map(Tuple2::getT1);
+	}
+
+	
+	public Mono<UserDto<ID>> updateUser(ID userId, Mono<String> patch) {
+		
+		return Mono.zip(findUserById(userId), LerUtils.currentUser(), patch)
+			.doOnNext(this::isEditable)
+			.map((Tuple3<U, Optional<UserDto<Serializable>>, String> tuple3) ->
+				this.updateUser(tuple3.getT1(), tuple3.getT2(), tuple3.getT3()))
+			.flatMap(userRepository::save)
+			.map(user -> {
+				UserDto<ID> userDto = user.toUserDto();
+				userDto.setPassword(null);
+				return userDto;
+			});
+	}
+
+
+	protected U updateUser(U user, Optional<UserDto<Serializable>> currentUser, String patch) {
+		
+		log.debug("Updating user: " + user);
+
+		U updatedUser = LerUtils.applyPatch(user, patch); // create a patched form
+		// TODO: validate user data with validation group
+		LerUtils.ensureCorrectVersion(user, updatedUser);
+		
+		updateUserFields(user, updatedUser, currentUser.get());
+
+		log.debug("Updated user: " + user);
+		return user;
+	}
+	
+	
+	/**
+	 * Updates the fields of the users. Override this if you have more fields.
+	 */
+	protected void updateUserFields(U user, U updatedUser, UserDto<Serializable> currentUser) {
+
+		log.debug("Updating user fields for user: " + user);
+
+		// Another good admin must be logged in to edit roles
+		if (currentUser.isGoodAdmin() &&
+		   !currentUser.getId().equals(user.getId())) { 
+			
+			log.debug("Updating roles for user: " + user);
+
+			// update the roles
+			
+			if (user.getRoles().equals(updatedUser.getRoles())) // roles are same
+				return;
+			
+			if (updatedUser.hasRole(UserUtils.Role.UNVERIFIED)) {
+				
+				if (!user.hasRole(UserUtils.Role.UNVERIFIED)) {
+
+					makeUnverified(user); // make user unverified
+				}
+			} else {
+				
+				if (user.hasRole(UserUtils.Role.UNVERIFIED))
+					user.getRoles().remove(UserUtils.Role.UNVERIFIED); // make user verified
+			}
+			
+			user.setRoles(updatedUser.getRoles());
+			user.setCredentialsUpdatedMillis(System.currentTimeMillis());
+		}
+	}
+
+	
+	public Mono<U> findUserByEmail(String email) {
+		return userRepository
+				.findByEmail(email)
+				.switchIfEmpty(LerUtils.notFoundMono());
+	}
+	
+
+	public Mono<U> findUserById(ID id) {
+		return userRepository
+				.findById(id)
+				.switchIfEmpty(LerUtils.notFoundMono());
+	}
+
+	
+	/**
+	 * Hides the confidential fields before sending to client
+	 */
+	protected void hideConfidentialFields(Tuple2<U,Optional<UserDto<Serializable>>> tuple) {
+		
+		U user = tuple.getT1();
+		
+		user.setPassword(null); // JsonIgnore didn't work
+		
+		if (!user.hasPermission(tuple.getT2().orElse(null), UserUtils.Permission.EDIT))
+			user.setEmail(null);
+		
+		log.debug("Hid confidential fields for user: " + user);
+	}
 }
