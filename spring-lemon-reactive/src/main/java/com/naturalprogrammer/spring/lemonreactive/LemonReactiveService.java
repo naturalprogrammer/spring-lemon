@@ -257,13 +257,13 @@ public abstract class LemonReactiveService
 		
 		return findUserById(userId)
 			.zipWith(LerUtils.currentUser())
-			.doOnNext(this::isEditable)
+			.doOnNext(this::ensureEditable)
 			.map(Tuple2::getT1)
 			.doOnNext(this::resendVerificationMail).then();
 	}
 
 	
-	protected void isEditable(Tuple2<U, Optional<UserDto<Serializable>>> tuple) {
+	protected void ensureEditable(Tuple2<U, Optional<UserDto<Serializable>>> tuple) {
 		LecUtils.ensureAuthority(
 				tuple.getT1().hasPermission(tuple.getT2().orElse(null),
 				UserUtils.Permission.EDIT),
@@ -436,7 +436,7 @@ public abstract class LemonReactiveService
 	public Mono<UserDto<ID>> updateUser(ID userId, Mono<String> patch) {
 		
 		return Mono.zip(findUserById(userId), LerUtils.currentUser(), patch)
-			.doOnNext(this::isEditable)
+			.doOnNext(this::ensureEditable)
 			.map((Tuple3<U, Optional<UserDto<Serializable>>, String> tuple3) ->
 				this.updateUser(tuple3.getT1(), tuple3.getT2(), tuple3.getT3()))
 			.flatMap(userRepository::save)
@@ -453,10 +453,10 @@ public abstract class LemonReactiveService
 		log.debug("Updating user: " + user);
 
 		U updatedUser = LerUtils.applyPatch(user, patch); // create a patched form
-		// TODO: validate user data with validation group
+		LexUtils.validate("updatedUser", updatedUser, UserUtils.UpdateValidation.class);
 		LerUtils.ensureCorrectVersion(user, updatedUser);
 		
-		updateUserFields(user, updatedUser, currentUser.get());
+		updateUserFields(user, updatedUser, (UserDto<ID>) currentUser.get());
 
 		log.debug("Updated user: " + user);
 		return user;
@@ -466,7 +466,7 @@ public abstract class LemonReactiveService
 	/**
 	 * Updates the fields of the users. Override this if you have more fields.
 	 */
-	protected void updateUserFields(U user, U updatedUser, UserDto<Serializable> currentUser) {
+	protected void updateUserFields(U user, U updatedUser, UserDto<ID> currentUser) {
 
 		log.debug("Updating user fields for user: " + user);
 

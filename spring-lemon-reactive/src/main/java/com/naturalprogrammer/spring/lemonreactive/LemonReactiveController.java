@@ -201,7 +201,7 @@ public class LemonReactiveController
 	@PatchMapping("/users/{id}")
 	public Mono<UserDto<ID>> updateUser(
 			@PathVariable ID id,
-			@RequestBody Mono<String> patch,
+			@RequestBody @NotBlank Mono<String> patch,
 			ServerHttpResponse response) {
 		
 		log.debug("Updating user ... ");

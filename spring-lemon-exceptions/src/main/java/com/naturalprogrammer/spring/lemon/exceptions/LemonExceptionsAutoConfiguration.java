@@ -9,6 +9,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 import com.naturalprogrammer.spring.lemon.exceptions.handlers.AbstractExceptionHandler;
 import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
@@ -41,9 +42,9 @@ public class LemonExceptionsAutoConfiguration {
 	 * Configures LemonUtils
 	 */
 	@Bean
-	public LexUtils lexUtils(MessageSource messageSource) {
+	public LexUtils lexUtils(MessageSource messageSource, LocalValidatorFactoryBean validator) {
 
         log.info("Configuring LexUtils");       		
-		return new LexUtils(messageSource);
+		return new LexUtils(messageSource, validator);
 	}
 }

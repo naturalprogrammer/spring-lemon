@@ -13,12 +13,14 @@ import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.naturalprogrammer.spring.lemon.commons.exceptions.handlers.BadCredentialsExceptionHandler;
 import com.naturalprogrammer.spring.lemon.commons.mail.MailSender;
 import com.naturalprogrammer.spring.lemon.commons.mail.MockMailSender;
 import com.naturalprogrammer.spring.lemon.commons.mail.SmtpMailSender;
 import com.naturalprogrammer.spring.lemon.commons.security.JwtService;
 import com.naturalprogrammer.spring.lemon.commons.security.LemonPermissionEvaluator;
+import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
 import com.nimbusds.jose.KeyLengthException;
 
 @Configuration
@@ -105,5 +107,10 @@ public class LemonCommonsAutoConfiguration {
 		
         log.info("Configuring SmtpMailSender");       
 		return new SmtpMailSender(javaMailSender);
+	}
+	
+	@Bean
+	public LecUtils lecUtils(ObjectMapper objectMapper) {
+		return new LecUtils(objectMapper);
 	}
 }

@@ -1,15 +1,19 @@
 package com.naturalprogrammer.spring.lemon.exceptions.util;
 
+import java.util.Set;
 import java.util.function.Supplier;
 
 import javax.annotation.PostConstruct;
+import javax.validation.ConstraintViolation;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
+import com.naturalprogrammer.spring.lemon.exceptions.ExplicitConstraintViolationException;
 import com.naturalprogrammer.spring.lemon.exceptions.MultiErrorException;
 
 /**
@@ -22,6 +26,7 @@ public class LexUtils {
 	private static final Log log = LogFactory.getLog(LexUtils.class);
 
 	private static MessageSource messageSource;
+	private static LocalValidatorFactoryBean validator;
 	public static final MultiErrorException NOT_FOUND_EXCEPTION = new MultiErrorException();
 
 	/**
@@ -29,9 +34,11 @@ public class LexUtils {
 	 * 
 	 * @param messageSource
 	 */
-	public LexUtils(MessageSource messageSource) {
+	public LexUtils(MessageSource messageSource, LocalValidatorFactoryBean validator) {
 		
-		LexUtils.messageSource = messageSource;		
+		LexUtils.messageSource = messageSource;
+		LexUtils.validator = validator;
+		
 		log.info("Created");
 	}
 
@@ -62,6 +69,22 @@ public class LexUtils {
 		return messageSource.getMessage(messageKey, args,
 				LocaleContextHolder.getLocale());
 	}	
+
+	
+	/**
+	 * Creates a MultiErrorException out of the given parameters
+	 * 
+	 * @param valid			the condition to check for
+	 * @param messageKey	key of the error message
+	 * @param args			any message arguments
+	 */
+	public static <T> void validate(String name, T object, Class<?>... groups) {
+		
+		Set<ConstraintViolation<T>> violations = validator.validate(object, groups);
+		
+		if (!violations.isEmpty())			
+			throw new ExplicitConstraintViolationException(violations, name);
+	}
 
 	
 	/**

@@ -14,7 +14,7 @@ import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
 
 @Component
 @Order(Ordered.LOWEST_PRECEDENCE)
-public class ConstraintViolationExceptionHandler extends AbstractExceptionHandler<ConstraintViolationException> {
+public class ConstraintViolationExceptionHandler<E extends ConstraintViolationException> extends AbstractExceptionHandler<E> {
 
 	public ConstraintViolationExceptionHandler() {
 		
@@ -22,18 +22,22 @@ public class ConstraintViolationExceptionHandler extends AbstractExceptionHandle
 		log.info("Created");
 	}
 	
+	public ConstraintViolationExceptionHandler(String exceptionName) {
+		super(exceptionName);
+	}
+
 	@Override
-	public HttpStatus getStatus(ConstraintViolationException ex) {
+	public HttpStatus getStatus(E ex) {
 		return HttpStatus.UNPROCESSABLE_ENTITY;
 	}
 	
 	@Override
-	public Collection<LemonFieldError> getErrors(ConstraintViolationException ex) {
+	public Collection<LemonFieldError> getErrors(E ex) {
 		return LemonFieldError.getErrors(ex.getConstraintViolations());
 	}
 	
 	@Override
-	public String getMessage(ConstraintViolationException ex) {
+	public String getMessage(E ex) {
 		return LexUtils.getMessage("com.naturalprogrammer.spring.validationError");
 	}
 }

@@ -11,7 +11,7 @@ import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
  * 
  * @author Sanjay Patel
  */
-@ResponseStatus(HttpStatus.CONFLICT)
+@ResponseStatus(HttpStatus.CONFLICT) // ResponseStatus doesn't work in reactive project! 
 public class VersionException extends RuntimeException {
 
 	private static final long serialVersionUID = 6020532846519363456L;

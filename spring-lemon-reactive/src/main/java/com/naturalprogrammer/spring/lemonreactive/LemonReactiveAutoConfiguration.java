@@ -14,6 +14,7 @@ import org.springframework.boot.autoconfigure.web.reactive.WebFluxAutoConfigurat
 import org.springframework.boot.autoconfigure.web.reactive.error.ErrorWebFluxAutoConfiguration;
 import org.springframework.boot.web.reactive.error.ErrorAttributes;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.config.EnableMongoAuditing;
 import org.springframework.security.access.PermissionEvaluator;
@@ -32,6 +33,7 @@ import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
 import com.naturalprogrammer.spring.lemonreactive.domain.AbstractMongoUser;
 import com.naturalprogrammer.spring.lemonreactive.domain.AbstractMongoUserRepository;
 import com.naturalprogrammer.spring.lemonreactive.exceptions.LemonReactiveErrorAttributes;
+import com.naturalprogrammer.spring.lemonreactive.exceptions.handlers.VersionExceptionHandler;
 import com.naturalprogrammer.spring.lemonreactive.security.LemonReactiveSecurityConfig;
 import com.naturalprogrammer.spring.lemonreactive.security.LemonReactiveUserDetailsService;
 import com.naturalprogrammer.spring.lemonreactive.util.LerUtils;
@@ -46,6 +48,7 @@ import com.naturalprogrammer.spring.lemonreactive.util.LerUtils;
 	ReactiveSecurityAutoConfiguration.class,
 	ReactiveUserDetailsServiceAutoConfiguration.class,
 	LemonCommonsAutoConfiguration.class})
+@ComponentScan(basePackageClasses=VersionExceptionHandler.class)
 public class LemonReactiveAutoConfiguration {
 	
 	private static final Log log = LogFactory.getLog(LemonReactiveAutoConfiguration.class);
