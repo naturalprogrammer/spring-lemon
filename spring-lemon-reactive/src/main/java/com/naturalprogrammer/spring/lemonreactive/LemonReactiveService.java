@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -12,9 +13,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.server.reactive.ServerHttpResponse;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.util.MultiValueMap;
 
 import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
 import com.naturalprogrammer.spring.lemon.commons.LemonProperties.Admin;
@@ -28,6 +31,7 @@ import com.naturalprogrammer.spring.lemon.commons.util.UserUtils;
 import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
 import com.naturalprogrammer.spring.lemonreactive.domain.AbstractMongoUser;
 import com.naturalprogrammer.spring.lemonreactive.domain.AbstractMongoUserRepository;
+import com.naturalprogrammer.spring.lemonreactive.forms.EmailForm;
 import com.naturalprogrammer.spring.lemonreactive.util.LerUtils;
 import com.nimbusds.jwt.JWTClaimsSet;
 
@@ -566,14 +570,14 @@ public abstract class LemonReactiveService
 	}
 
 
-	public Mono<Void> requestEmailChange(ID userId, Mono<U> updatedUser) {
+	public Mono<Void> requestEmailChange(ID userId, Mono<EmailForm> emailForm) {
 		
 		return Mono.zip(findUserById(userId), LerUtils.currentUser())
 				.doOnNext(this::ensureEditable)
 				.flatMap(tuple -> Mono.zip(
 						Mono.just(tuple.getT1()),
 						findUserById(((UserDto<ID>)tuple.getT2().get()).getId()),
-						updatedUser)
+						emailForm)
 				.doOnNext(this::requestEmailChange))
 				.map(Tuple2::getT1)
 				.flatMap(userRepository::save)
@@ -581,22 +585,22 @@ public abstract class LemonReactiveService
 				.then();
 	}
 	
-	protected void requestEmailChange(Tuple3<U,U,U> tuple) {
+	protected void requestEmailChange(Tuple3<U,U,EmailForm> tuple) {
 		
 		U user = tuple.getT1();
 		U loggedIn = tuple.getT2();
-		U updatedUser = tuple.getT3();
+		EmailForm emailForm = tuple.getT3();
 		
 		log.debug("Requesting email change: " + user);
 		
 		// checks
 		LexUtils.validate("updatedUser.password",
-			passwordEncoder.matches(updatedUser.getPassword(),
+			passwordEncoder.matches(emailForm.getPassword(),
 									user.getPassword()),
 			"com.naturalprogrammer.spring.wrong.password").go();
 
 		// preserves the new email id
-		user.setNewEmail(updatedUser.getNewEmail());
+		user.setNewEmail(emailForm.getNewEmail());
 
 		log.debug("Requested email change: " + user);		
 	}
@@ -645,5 +649,75 @@ public abstract class LemonReactiveService
 				LexUtils.getMessage(
 				"com.naturalprogrammer.spring.changeEmailEmail",
 				 changeEmailLink)));
+	}
+
+
+	@PreAuthorize("isAuthenticated()")
+	public Mono<UserDto<ID>> changeEmail(ID userId, Mono<MultiValueMap<String, String>> formData) {
+		
+		log.debug("Changing email of current user ...");
+		
+		return LerUtils.currentUser()
+			.doOnNext(currentUser -> {				
+				LexUtils.validate(userId.equals(currentUser.get().getId()),
+						"com.naturalprogrammer.spring.wrong.login").go();	
+			})
+			.then(Mono.zip(findUserById(userId), formData))
+			.map(this::validateChangeEmail)
+			.flatMap(user -> Mono.zip(Mono.just(user),
+					userRepository
+						.findByEmail(user.getNewEmail())
+						.map(Optional::of)
+						.defaultIfEmpty(Optional.empty())
+					))
+			.map(this::changeEmail)
+			.flatMap(userRepository::save)
+			.map(AbstractMongoUser::toUserDto);
+	}
+
+	
+	protected U validateChangeEmail(Tuple2<U, MultiValueMap<String, String>> tuple) {
+		U user = tuple.getT1();
+		String code = tuple.getT2().getFirst("code");
+				
+		LexUtils.validate(StringUtils.isNotBlank(code),
+				"com.naturalprogrammer.spring.blank", "code").go();
+
+		LexUtils.validate(StringUtils.isNotBlank(user.getNewEmail()),
+				"com.naturalprogrammer.spring.blank.newEmail").go();
+		
+		JWTClaimsSet claims = jwtService.parseToken(code,
+				JwtService.CHANGE_EMAIL_AUDIENCE,
+				user.getCredentialsUpdatedMillis());
+		
+		LecUtils.ensureAuthority(
+				claims.getSubject().equals(user.getId().toString()) &&
+				claims.getClaim("newEmail").equals(user.getNewEmail()),
+				"com.naturalprogrammer.spring.wrong.changeEmailCode");
+		
+		return user;		
+	}
+
+	
+	protected U changeEmail(Tuple2<U, Optional<U>> tuple) {
+		
+		U user = tuple.getT1();
+		Optional<U> anotherUserWithSameEmail = tuple.getT2();
+		
+		// Ensure that the email would be unique 
+		LexUtils.validate(!anotherUserWithSameEmail.isPresent(),
+				"com.naturalprogrammer.spring.duplicate.email").go();	
+		
+		// update the fields
+		user.setEmail(user.getNewEmail());
+		user.setNewEmail(null);
+		//user.setChangeEmailCode(null);
+		user.setCredentialsUpdatedMillis(System.currentTimeMillis());
+		
+		// make the user verified if he is not
+		if (user.hasRole(UserUtils.Role.UNVERIFIED))
+			user.getRoles().remove(UserUtils.Role.UNVERIFIED);
+		
+		return user;
 	}
 }

@@ -18,5 +18,4 @@ public interface AbstractMongoUserRepository
 	extends ReactiveMongoRepository<U, ID> {
 	
 	Mono<U> findByEmail(String email);
-	U findFirstByEmail(String email);
 }

@@ -12,7 +12,6 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpResponse;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,8 +25,8 @@ import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
 import com.naturalprogrammer.spring.lemon.commons.domain.ChangePasswordForm;
 import com.naturalprogrammer.spring.lemon.commons.security.JwtService;
 import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
-import com.naturalprogrammer.spring.lemon.commons.util.UserUtils;
 import com.naturalprogrammer.spring.lemonreactive.domain.AbstractMongoUser;
+import com.naturalprogrammer.spring.lemonreactive.forms.EmailForm;
 import com.naturalprogrammer.spring.lemonreactive.util.LerUtils;
 
 import reactor.core.publisher.Mono;
@@ -232,11 +231,26 @@ public class LemonReactiveController
 	@PostMapping("/users/{id}/email-change-request")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public Mono<Void> requestEmailChange(@PathVariable ID id,
-			@RequestBody @Validated(UserUtils.ChangeEmailValidation.class)
-			Mono<U> updatedUser) {
+			@RequestBody @Valid	Mono<EmailForm> emailForm) {
 		
 		log.debug("Requesting email change ... ");				
-		return lemonReactiveService.requestEmailChange(id, updatedUser);
+		return lemonReactiveService.requestEmailChange(id, emailForm);
+	}	
+
+
+	/**
+	 * Changes the email
+	 */
+	@PostMapping("/users/{userId}/email")
+	public Mono<UserDto<ID>> changeEmail(
+			@PathVariable ID userId,
+			ServerWebExchange exchange) {
+		
+		log.debug("Changing email of user ...");
+		return userWithToken(lemonReactiveService.changeEmail(
+				userId,
+				exchange.getFormData()),
+			exchange.getResponse());
 	}
 
 	
