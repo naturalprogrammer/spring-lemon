@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import com.naturalprogrammer.spring.lemon.commons.security.LemonPrincipal;
+import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
 import com.naturalprogrammer.spring.lemonreactive.domain.AbstractMongoUser;
 import com.naturalprogrammer.spring.lemonreactive.domain.AbstractMongoUserRepository;
 
@@ -35,7 +36,8 @@ public class LemonReactiveUserDetailsService<U extends AbstractMongoUser<ID>, ID
 		// delegates to findUserByUsername
 		return findUserByUsername(username).switchIfEmpty(Mono.defer(() -> {
 			log.debug("Could not find user " + username);
-			return Mono.error(new UsernameNotFoundException(username));
+			return Mono.error(new UsernameNotFoundException(
+				LexUtils.getMessage("com.naturalprogrammer.spring.userNotFound", username)));
 		})).map(U::toUserDto).map(LemonPrincipal::new);
 	}
 

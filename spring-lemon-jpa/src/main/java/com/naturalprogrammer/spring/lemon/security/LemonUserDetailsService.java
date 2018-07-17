@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import com.naturalprogrammer.spring.lemon.commons.security.LemonPrincipal;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUserRepository;
+import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
 
 /**
  * UserDetailsService, as required by Spring Security.
@@ -39,7 +40,8 @@ implements UserDetailsService {
 		
 		// delegates to findUserByUsername
 		U user = findUserByUsername(username)
-			.orElseThrow(() -> new UsernameNotFoundException(username));
+			.orElseThrow(() -> new UsernameNotFoundException(
+				LexUtils.getMessage("com.naturalprogrammer.spring.userNotFound", username)));
 
 		log.debug("Loaded user having username: " + username);
 

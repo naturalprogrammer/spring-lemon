@@ -22,6 +22,7 @@ import org.springframework.util.MultiValueMap;
 import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
 import com.naturalprogrammer.spring.lemon.commons.LemonProperties.Admin;
 import com.naturalprogrammer.spring.lemon.commons.domain.ChangePasswordForm;
+import com.naturalprogrammer.spring.lemon.commons.domain.ResetPasswordForm;
 import com.naturalprogrammer.spring.lemon.commons.mail.LemonMailData;
 import com.naturalprogrammer.spring.lemon.commons.mail.MailSender;
 import com.naturalprogrammer.spring.lemon.commons.security.JwtService;
@@ -38,6 +39,7 @@ import com.nimbusds.jwt.JWTClaimsSet;
 import reactor.core.publisher.Mono;
 import reactor.util.function.Tuple2;
 import reactor.util.function.Tuple3;
+import reactor.util.function.Tuples;
 
 public abstract class LemonReactiveService
 	<U extends AbstractMongoUser<ID>, ID extends Serializable> {
@@ -290,20 +292,26 @@ public abstract class LemonReactiveService
 	}
 
 
-	public Mono<UserDto<ID>> verifyUser(ID userId, String code) {
+	public Mono<UserDto<ID>> verifyUser(ID userId, Mono<MultiValueMap<String, String>> formData) {
 		
 		log.debug("Verifying user ...");
 
-		return findUserById(userId)
-				.doOnNext(user -> this.verifyUser(user, code))
+		return Mono.zip(findUserById(userId), formData)
+				.map(this::verifyUser)
 				.flatMap(userRepository::save)
 				.map(AbstractMongoUser::toUserDto);
 	}
 
 	
-	public void verifyUser(U user, String verificationCode) {
+	public U verifyUser(Tuple2<U, MultiValueMap<String,String>> tuple) {
 		
 		log.debug("Verifying user ...");
+		
+		U user = tuple.getT1();
+		String verificationCode = tuple.getT2().getFirst("code");
+
+		LexUtils.validate(StringUtils.isNotBlank(verificationCode),
+				"com.naturalprogrammer.spring.blank", "code").go();
 
 		// ensure that he is unverified
 		LexUtils.validate(user.hasRole(UserUtils.Role.UNVERIFIED),
@@ -318,12 +326,19 @@ public abstract class LemonReactiveService
 		
 		user.getRoles().remove(UserUtils.Role.UNVERIFIED); // make him verified
 		user.setCredentialsUpdatedMillis(System.currentTimeMillis());
+		
+		return user;
 	}
 
 	
-	public Mono<Void> forgotPassword(String email) {
+	public Mono<Void> forgotPassword(Mono<MultiValueMap<String, String>> formData) {
 		
-		return findUserByEmail(email)
+		return formData.map(data -> {			
+			String email = data.getFirst("email");
+			LexUtils.validate(StringUtils.isNotBlank(email),
+					"com.naturalprogrammer.spring.blank", "email").go();
+			return email;
+		}).flatMap(this::findUserByEmail)
 				.doOnSuccess(this::mailForgotPasswordLink)
 				.then();
 	}
@@ -366,35 +381,47 @@ public abstract class LemonReactiveService
 	}
 
 		
-	public Mono<UserDto<ID>> resetPassword(String forgotPasswordCode, String newPassword) {
+	public Mono<UserDto<ID>> resetPassword(Mono<ResetPasswordForm> resetPasswordForm) {
 		
-		log.debug("Resetting password ...");
+		return resetPasswordForm.map(form -> {
+			
+			log.debug("Resetting password ...");
 
-		JWTClaimsSet claims = jwtService.parseToken(forgotPasswordCode,
-				JwtService.FORGOT_PASSWORD_AUDIENCE);
-		
-		String email = claims.getSubject();
-		
-		// fetch the user
-		return findUserByEmail(email)
-				.doOnNext(user -> resetPassword(user, claims, newPassword))
-				.flatMap(userRepository::save)
-				.map(AbstractMongoUser::toUserDto);
+			JWTClaimsSet claims = jwtService.parseToken(form.getCode(),
+					JwtService.FORGOT_PASSWORD_AUDIENCE);
+			
+			String email = claims.getSubject();
+			
+			return Tuples.of(email, claims, form.getNewPassword());
+		})
+		.flatMap(tuple -> Mono.zip(
+				findUserByEmail(tuple.getT1()),
+				Mono.just(tuple.getT2()),
+				Mono.just(tuple.getT3()))
+		)
+		.map(this::resetPassword)
+		.flatMap(userRepository::save)
+		.map(AbstractMongoUser::toUserDto);
 	}
 	
 	
-	public void resetPassword(U user, JWTClaimsSet claims, String newPassword) {
+	public U resetPassword(Tuple3<U, JWTClaimsSet, String> tuple) {
 		
 		log.debug("Resetting password ...");
 
+		U user = tuple.getT1();
+		JWTClaimsSet claims = tuple.getT2();
+		String newPassword = tuple.getT3();
+		
 		LerUtils.ensureCredentialsUpToDate(claims, user);
 		
 		// sets the password
 		user.setPassword(passwordEncoder.encode(newPassword));
 		user.setCredentialsUpdatedMillis(System.currentTimeMillis());
-		//user.setForgotPasswordCode(null);
 		
-		log.debug("Password reset.");		
+		log.debug("Password reset.");
+		
+		return user;
 	}
 
 	/**
@@ -419,10 +446,20 @@ public abstract class LemonReactiveService
 	}
 
 
-	public Mono<U> fetchUserByEmail(String email) {
+	public Mono<U> fetchUserByEmail(Mono<MultiValueMap<String, String>> formData) {
 		
 		// fetch the user
-		return findUserByEmail(email)
+		return formData
+				.map(data -> {
+					
+					String email = data.getFirst("email");
+					
+					LexUtils.validate(StringUtils.isNotBlank(email),
+							"com.naturalprogrammer.spring.blank", "email").go();
+					
+					return email;
+				})			
+				.flatMap(this::findUserByEmail)
 				.zipWith(LerUtils.currentUser())
 				.doOnNext(this::hideConfidentialFields)
 				.map(Tuple2::getT1);

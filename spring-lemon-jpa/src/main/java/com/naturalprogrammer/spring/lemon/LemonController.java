@@ -24,6 +24,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
 import com.naturalprogrammer.spring.lemon.commons.domain.ChangePasswordForm;
+import com.naturalprogrammer.spring.lemon.commons.domain.ResetPasswordForm;
 import com.naturalprogrammer.spring.lemon.commons.security.JwtService;
 import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
 import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
@@ -153,12 +154,11 @@ public abstract class LemonController
 	 */
 	@PostMapping("/reset-password")
 	public UserDto<ID> resetPassword(
-			@RequestParam String code,
-		    @RequestParam String newPassword,
+			@RequestBody ResetPasswordForm form,
 			HttpServletResponse response) {
 		
 		log.debug("Resetting password ... ");				
-		lemonService.resetPassword(code, newPassword);
+		lemonService.resetPassword(form);
 		
 		return userWithToken(response);
 	}

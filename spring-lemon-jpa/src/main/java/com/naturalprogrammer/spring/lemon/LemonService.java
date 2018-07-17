@@ -29,6 +29,7 @@ import org.springframework.validation.annotation.Validated;
 import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
 import com.naturalprogrammer.spring.lemon.commons.LemonProperties.Admin;
 import com.naturalprogrammer.spring.lemon.commons.domain.ChangePasswordForm;
+import com.naturalprogrammer.spring.lemon.commons.domain.ResetPasswordForm;
 import com.naturalprogrammer.spring.lemon.commons.mail.LemonMailData;
 import com.naturalprogrammer.spring.lemon.commons.mail.MailSender;
 import com.naturalprogrammer.spring.lemon.commons.security.JwtService;
@@ -36,7 +37,6 @@ import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
 import com.naturalprogrammer.spring.lemon.commons.security.UserEditPermission;
 import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
 import com.naturalprogrammer.spring.lemon.commons.util.UserUtils;
-import com.naturalprogrammer.spring.lemon.commons.validation.Password;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUserRepository;
 import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
@@ -412,13 +412,11 @@ public abstract class LemonService
 	 * Resets the password.
 	 */
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
-	public void resetPassword(
-			@Valid @NotBlank String forgotPasswordCode,
-			@Valid @Password String newPassword) {
+	public void resetPassword(@Valid ResetPasswordForm form) {
 		
 		log.debug("Resetting password ...");
 
-		JWTClaimsSet claims = jwtService.parseToken(forgotPasswordCode,
+		JWTClaimsSet claims = jwtService.parseToken(form.getCode(),
 				JwtService.FORGOT_PASSWORD_AUDIENCE);
 		
 		String email = claims.getSubject();
@@ -428,7 +426,7 @@ public abstract class LemonService
 		LemonUtils.ensureCredentialsUpToDate(claims, user);
 		
 		// sets the password
-		user.setPassword(passwordEncoder.encode(newPassword));
+		user.setPassword(passwordEncoder.encode(form.getNewPassword()));
 		user.setCredentialsUpdatedMillis(System.currentTimeMillis());
 		//user.setForgotPasswordCode(null);
 		

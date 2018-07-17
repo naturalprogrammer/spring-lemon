@@ -23,6 +23,7 @@ import org.springframework.web.server.ServerWebExchange;
 
 import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
 import com.naturalprogrammer.spring.lemon.commons.domain.ChangePasswordForm;
+import com.naturalprogrammer.spring.lemon.commons.domain.ResetPasswordForm;
 import com.naturalprogrammer.spring.lemon.commons.security.JwtService;
 import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
 import com.naturalprogrammer.spring.lemonreactive.domain.AbstractMongoUser;
@@ -141,11 +142,11 @@ public class LemonReactiveController
 	@PostMapping("/users/{id}/verification")
 	public Mono<UserDto<ID>> verifyUser(
 			@PathVariable ID id,
-			@RequestParam String code,
-			ServerHttpResponse response) {
+			ServerWebExchange exchange) {
 		
 		log.debug("Verifying user ...");		
-		return userWithToken(lemonReactiveService.verifyUser(id, code), response);
+		return userWithToken(lemonReactiveService.verifyUser(id, exchange.getFormData()),
+				exchange.getResponse());
 	}
 
 	
@@ -154,10 +155,10 @@ public class LemonReactiveController
 	 */
 	@PostMapping("/forgot-password")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public Mono<Void> forgotPassword(@RequestParam String email) {
+	public Mono<Void> forgotPassword(ServerWebExchange exchange) {
 		
-		log.debug("Received forgot password request for: " + email);				
-		return lemonReactiveService.forgotPassword(email);
+		log.debug("Received forgot password request ... " );				
+		return lemonReactiveService.forgotPassword(exchange.getFormData());
 	}
 
 	
@@ -166,12 +167,11 @@ public class LemonReactiveController
 	 */
 	@PostMapping("/reset-password")
 	public Mono<UserDto<ID>> resetPassword(
-			@RequestParam @Valid @NotBlank String code,
-		    @RequestParam @Valid @NotBlank String newPassword,
+			@RequestBody @Valid Mono<ResetPasswordForm> form,
 		    ServerHttpResponse response) {
 		
 		log.debug("Resetting password ... ");				
-		return userWithToken(lemonReactiveService.resetPassword(code, newPassword), response);
+		return userWithToken(lemonReactiveService.resetPassword(form), response);
 	}
 
 	
@@ -179,10 +179,10 @@ public class LemonReactiveController
 	 * Fetches a user by email
 	 */
 	@PostMapping("/users/fetch-by-email")
-	public Mono<U> fetchUserByEmail(@RequestParam String email) {
+	public Mono<U> fetchUserByEmail(ServerWebExchange exchange) {
 		
-		log.debug("Fetching user by email: " + email);						
-		return lemonReactiveService.fetchUserByEmail(email);
+		log.debug("Fetching user by email ... ");						
+		return lemonReactiveService.fetchUserByEmail(exchange.getFormData());
 	}
 
 	
