@@ -1,6 +1,7 @@
 package com.naturalprogrammer.spring.lemonreactive;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -18,6 +19,7 @@ import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.server.ServerWebExchange;
 
 import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
 import com.naturalprogrammer.spring.lemon.commons.LemonProperties.Admin;
@@ -756,5 +758,30 @@ public abstract class LemonReactiveService
 			user.getRoles().remove(UserUtils.Role.UNVERIFIED);
 		
 		return user;
+	}
+
+
+	@PreAuthorize("isAuthenticated()")
+	public Mono<Map<String, String>> fetchNewToken(ServerWebExchange exchange) {
+		
+		return Mono.zip(LerUtils.currentUser(), exchange.getFormData()).map(tuple -> {
+				
+			UserDto<ID> currentUser = (UserDto<ID>) tuple.getT1().get();
+			
+			String username = tuple.getT2().getFirst("username");
+			if (StringUtils.isNotBlank(username))
+				username = currentUser.getUsername();
+			
+			long expirationMillis = properties.getJwt().getExpirationMillis();
+			String expirationMillisStr = tuple.getT2().getFirst("expirationMillis");
+			if (StringUtils.isNotBlank(expirationMillisStr))
+				expirationMillis = Long.parseLong(expirationMillisStr);
+			
+			LecUtils.ensureAuthority(currentUser.getUsername().equals(username) ||
+					currentUser.isGoodAdmin(), "com.naturalprogrammer.spring.notGoodAdminOrSameUser");
+			
+			return Collections.singletonMap("token", LecUtils.TOKEN_PREFIX +
+					jwtService.createToken(JwtService.AUTH_AUDIENCE, username, expirationMillis));			
+		});
 	}
 }

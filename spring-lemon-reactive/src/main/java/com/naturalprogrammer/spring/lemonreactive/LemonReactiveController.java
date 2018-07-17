@@ -255,6 +255,20 @@ public class LemonReactiveController
 
 	
 	/**
+	 * Fetch a new token - for session sliding, switch user etc.
+	 */
+	@PostMapping("/fetch-new-auth-token")
+	public Mono<Map<String, String>> fetchNewToken(ServerWebExchange exchange) {
+		
+		log.debug("Fetching a new token ... ");
+		
+		return lemonReactiveService.fetchNewToken(exchange);
+		
+		//return LecUtils.mapOf("token", lemonService.fetchNewToken(expirationMillis, username));
+	}
+
+	
+	/**
 	 * returns the current user and a new authorization token in the response
 	 */
 	protected Mono<UserDto<ID>> userWithToken(Mono<UserDto<ID>> userDto,
