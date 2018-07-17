@@ -61,6 +61,7 @@ public class LemonReactiveSecurityConfig <U extends AbstractMongoUser<ID>, ID ex
 				.addFilterAt(tokenAuthenticationFilter(), SecurityWebFiltersOrder.AUTHENTICATION)				
 			.build();
 	}
+
 	
 	/**
 	 * Override this to change login URL
