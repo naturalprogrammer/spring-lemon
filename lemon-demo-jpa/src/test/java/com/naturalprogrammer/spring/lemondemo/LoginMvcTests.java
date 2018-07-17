@@ -22,7 +22,7 @@ public class LoginMvcTests extends AbstractMvcTests {
 	@Test
 	public void testLogin() throws Exception {
 		
-		mvc.perform(post("/login")
+		mvc.perform(post("/api/core/login")
                 .param("username", ADMIN_EMAIL)
                 .param("password", ADMIN_PASSWORD)
                 .header("contentType",  MediaType.APPLICATION_FORM_URLENCODED))
@@ -82,7 +82,7 @@ public class LoginMvcTests extends AbstractMvcTests {
 	@Test
 	public void testLoginWrongPassword() throws Exception {
 		
-		mvc.perform(post("/login")
+		mvc.perform(post("/api/core/login")
                 .param("username", ADMIN_EMAIL)
                 .param("password", "wrong-password")
                 .header("contentType",  MediaType.APPLICATION_FORM_URLENCODED))
@@ -92,7 +92,7 @@ public class LoginMvcTests extends AbstractMvcTests {
 	@Test
 	public void testLoginBlankPassword() throws Exception {
 		
-		mvc.perform(post("/login")
+		mvc.perform(post("/api/core/login")
                 .param("username", ADMIN_EMAIL)
                 .param("password", "")
                 .header("contentType",  MediaType.APPLICATION_FORM_URLENCODED))
@@ -125,7 +125,7 @@ public class LoginMvcTests extends AbstractMvcTests {
 	
 	private String login(String username, String password, long expirationMillis) throws Exception {
 		
-		MvcResult result = mvc.perform(post("/login")
+		MvcResult result = mvc.perform(post("/api/core/login")
                 .param("username", ADMIN_EMAIL)
                 .param("password", ADMIN_PASSWORD)
                 .param("expirationMillis", Long.toString(expirationMillis))

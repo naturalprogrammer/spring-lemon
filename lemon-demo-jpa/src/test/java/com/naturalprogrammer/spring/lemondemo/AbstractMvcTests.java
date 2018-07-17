@@ -64,7 +64,7 @@ public abstract class AbstractMvcTests {
     
     protected String login(String userName, String password) throws Exception {
 
-        MvcResult result = mvc.perform(post("/login")
+        MvcResult result = mvc.perform(post("/api/core/login")
                 .param("username", userName)
                 .param("password", password)
                 .header("contentType",  MediaType.APPLICATION_FORM_URLENCODED))

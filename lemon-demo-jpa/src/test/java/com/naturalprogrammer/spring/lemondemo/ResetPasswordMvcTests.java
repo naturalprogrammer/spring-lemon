@@ -11,8 +11,11 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.naturalprogrammer.spring.lemon.commons.domain.ResetPasswordForm;
 import com.naturalprogrammer.spring.lemon.commons.security.JwtService;
 import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
+import com.naturalprogrammer.spring.lemon.util.LemonUtils;
 
 public class ResetPasswordMvcTests extends AbstractMvcTests {
 	
@@ -37,9 +40,8 @@ public class ResetPasswordMvcTests extends AbstractMvcTests {
 		//Thread.sleep(1001L);
 		
 		mvc.perform(post("/api/core/reset-password")
-                .param("code", forgotPasswordCode)
-                .param("newPassword", NEW_PASSWORD)
-                .header("contentType",  MediaType.APPLICATION_FORM_URLENCODED))
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(form(forgotPasswordCode, NEW_PASSWORD)))
 		        .andExpect(status().is(200))
 				.andExpect(header().string(LecUtils.TOKEN_RESPONSE_HEADER_NAME, containsString(".")))
 				.andExpect(jsonPath("$.id").value(ADMIN_ID));
@@ -49,9 +51,8 @@ public class ResetPasswordMvcTests extends AbstractMvcTests {
 		
 	    // Repeating shouldn't work
 		mvc.perform(post("/api/core/reset-password")
-                .param("code", forgotPasswordCode)
-                .param("newPassword", NEW_PASSWORD)
-                .header("contentType",  MediaType.APPLICATION_FORM_URLENCODED))
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(form(forgotPasswordCode, NEW_PASSWORD)))
 		        .andExpect(status().is(401));
 	}
 	
@@ -60,23 +61,29 @@ public class ResetPasswordMvcTests extends AbstractMvcTests {
 		
 		// Wrong code
 		mvc.perform(post("/api/core/reset-password")
-                .param("code", "wrong-code")
-                .param("newPassword", "abc99!")
-                .header("contentType",  MediaType.APPLICATION_FORM_URLENCODED))
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(form("wrong-code", "abc99!")))
 		        .andExpect(status().is(401));
 
 		// Blank password
 		mvc.perform(post("/api/core/reset-password")
-                .param("code", forgotPasswordCode)
-                .param("newPassword", "")
-                .header("contentType",  MediaType.APPLICATION_FORM_URLENCODED))
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(form(forgotPasswordCode, "")))
 		        .andExpect(status().is(422));
 
 		// Invalid password
 		mvc.perform(post("/api/core/reset-password")
-                .param("code", forgotPasswordCode)
-                .param("newPassword", "abc")
-                .header("contentType",  MediaType.APPLICATION_FORM_URLENCODED))
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(form(forgotPasswordCode, "abc")))
 		        .andExpect(status().is(422));
+	}
+	
+	private String form(String code, String newPassword) throws JsonProcessingException {
+		
+		ResetPasswordForm form = new ResetPasswordForm();
+		form.setCode(code);
+		form.setNewPassword(newPassword);
+		
+		return LemonUtils.toJson(form);
 	}
 }
