@@ -48,7 +48,7 @@ public class LemonReactiveSecurityConfig <U extends AbstractMongoUser<ID>, ID ex
 				.anyExchange().permitAll()
 			.and()
 				.formLogin()
-					.loginPage("/api/core/login") // Should be "/login" by default, but not providing that overwrites our AuthenticationFailureHandler, because this is called later 
+					.loginPage(loginPage()) // Should be "/login" by default, but not providing that overwrites our AuthenticationFailureHandler, because this is called later 
 					.authenticationFailureHandler(authenticationFailureHandler())
 					.authenticationSuccessHandler(new WebFilterChainServerAuthenticationSuccessHandler())
 			.and()
@@ -61,6 +61,17 @@ public class LemonReactiveSecurityConfig <U extends AbstractMongoUser<ID>, ID ex
 				.addFilterAt(tokenAuthenticationFilter(), SecurityWebFiltersOrder.AUTHENTICATION)				
 			.build();
 	}
+	
+	/**
+	 * Override this to change login URL
+	 * 
+	 * @return
+	 */
+	protected String loginPage() {
+		
+		return "/api/core/login";
+	}
+
 	
 	protected AuthenticationWebFilter tokenAuthenticationFilter() {
 		

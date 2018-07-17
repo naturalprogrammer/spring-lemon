@@ -99,6 +99,7 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 		
 		http
 		.formLogin() // form login
+			.loginPage(loginPage())
 			
 			/******************************************
 			 * Setting a successUrl would redirect the user there. Instead,
@@ -114,6 +115,16 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
         	.failureHandler(authenticationFailureHandler);
 	}
 
+	
+	/**
+	 * Override this to change login URL
+	 * 
+	 * @return
+	 */
+	protected String loginPage() {
+		
+		return "/api/core/login";
+	}
 
 	/**
 	 * Logout related configuration
