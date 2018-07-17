@@ -1,0 +1,102 @@
+<div class="row" ng-controller="SignupCtrl">
+
+        <div class="col-md-7"><!-- sign up -->
+
+        <div class="panel panel-success">
+            <div class="panel-heading">
+                <h3 class="panel-title">Don't have an account? Please sign up</h3>
+            </div>
+            <div class="panel-body">
+
+                <p class="text-right"><em>View <a ng-href="/privacy">privacy policy</a></em></p>
+
+                <form name="form" novalidate ng-submit="signup()" class="form-horizontal" role="form" >
+
+                  <messages-alert messages="form.serverErrors" kind="danger"></messages-alert>
+
+                  <div class="form-group">
+                      <label for="signupEmail" class="col-md-3 control-label">Email</label>
+                      <div class="col-md-9">
+                         <input ng-model="user.email" name="email" type="email" required server-validation minlength="4" maxlength="100" class="form-control" id="signupEmail" placeholder="you@example.com">
+                         <div ng-show="form.email.$invalid" class="text-danger">
+
+                           <div ng-messages="form.email.$error" role="alert">
+                             <div ng-message="required">Please provide your email</div>
+                             <div ng-message="email">This is not a valid email</div>
+                           </div>
+
+                           <messages messages="form.serverFieldErrors.email"></messages>
+                         </div>
+                      </div>
+                  </div>
+
+                  <div class="form-group">
+                      <label for="signupName" class="col-md-3 control-label">Name</label>
+                      <div class="col-md-9">
+                          <input ng-model="user.name" name="name" type="text" required server-validation minlength="1" maxlength="100" class="form-control" id="signupName" placeholder="Your Name">
+                          <div ng-show="form.name.$invalid" class="text-danger">
+                            <div ng-show="form.name.$error.required">Tell us your name.</div>
+                            <messages messages="form.serverFieldErrors.name"></messages>
+                          </div>
+                        </div>
+                  </div>
+
+                  <div class="form-group">
+                      <label for="signupPassword" class="col-md-3 control-label">Password</label>
+                      <div class="col-md-9">
+                        <input ng-model="user.password" name="password" type="password" required minlength="6" maxlength="30" class="form-control" id="signupPassword" placeholder="Password">
+
+                        <div ng-show="form.password.$invalid" class="text-danger">
+                          <div ng-messages="form.password.$error" role="alert">
+                            <div ng-message="required">Please provide a password</div>
+                            <div ng-message="minlength, maxlength">
+                              Your email must be between 6 and 30 characters long
+                            </div>
+                          </div>
+                          <messages messages="form.serverFieldErrors.password"></messages>
+                        </div>
+                      </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="col-md-3 control-label">Are you a robot?</label>
+                    <div class="col-md-9">
+                      <div
+                        vc-recaptcha
+                        theme="'light'"
+                        key="context.reCaptchaSiteKey"
+                        on-create="setWidgetId(widgetId)"
+                        on-success="setResponse(response)"
+                        style="transform:scale(0.87);transform-origin:0 0"
+                        ></div>
+                      <!-- https://www.geekgoddess.com/how-to-resize-the-google-nocaptcha-recaptcha/ -->
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                      <div class="col-md-offset-3 col-md-9">
+                          <div class="checkbox">
+                              <label>
+                                  <input ng-model="agree" type="checkbox" required> I agree to the <a ng-href="/tos">terms of service</a>
+                              </label>
+                          </div>
+                      </div>
+                  </div>
+
+                  <div class="form-group">
+                      <div class="col-md-offset-3 col-md-9">
+                        <button name="join" ng-disabled="form.$invalid || !agree" type="submit" class="btn btn-success">Sign up</button>
+                        <!-- <button name="join" ng-disabled="!agree" type="submit" class="btn btn-success">Sign up</button> -->
+                      </div>
+                  </div>
+
+                </form>
+
+            </div>
+        </div>
+
+    </div><!-- end sign up with email/password-->
+
+    <div class="col-md-5">Some text ...</div>
+
+</div>

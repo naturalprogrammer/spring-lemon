@@ -1,0 +1,11 @@
+# Redirecting to /
+# See http://stackoverflow.com/questions/16569841#25961313
+
+RewriteEngine On
+Options FollowSymLinks
+
+RewriteBase /
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ /#/$1 [L]

@@ -1,0 +1,10 @@
+<div ng-switch on="permitted()">
+    <div ng-switch-when="true" ng-transclude>
+      <!-- secured content goes here -->
+    </div>
+    <div ng-switch-default>
+        You are not permitted to access this content.
+        Like to <a href="#" ng-click="authService.showLoginDialog()">Sign in</a> or
+          <a ng-href="/signup">Sign up</a>?
+    </div>
+</div>

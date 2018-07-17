@@ -1,0 +1,25 @@
+{
+  "name": "angular-sample",
+  "version": "0.0.0",
+  "dependencies": {
+    "angular": "~1.4.14",
+    "angular-animate": "~1.4.14",
+    "angular-cookies": "~1.4.14",
+    "angular-resource": "~1.4.14",
+    "angular-route": "~1.4.14",
+    "angular-sanitize": "~1.4.14",
+    "angular-touch": "~1.4.14",
+    "angular-bootstrap": "~0.13.4",
+    "angular-recaptcha": "~4.0",
+    "angular-messages": "~1.4.14",
+    "jquery": "~2.1.4"
+  },
+  "devDependencies": {
+    "angular-mocks": "~1.4.14"
+  },
+  "appPath": "app",
+  "moduleName": "angularSampleApp",
+  "resolutions": {
+    "angular": "~1.4.14"
+  }
+}

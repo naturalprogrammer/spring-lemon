@@ -1,0 +1,60 @@
+<div class="panel panel-success">
+
+  <div class="panel-heading">
+    <h3 class="panel-title">Request for changing email from {{user.email}}</h3>
+  </div>
+  <div class="panel-body">
+
+    <form name="form" class="form-horizontal" role="form" novalidate ng-submit="requestChange()">
+
+      <messages-alert messages="form.serverErrors" kind="danger"></messages-alert>
+
+      <div class="form-group">
+        <label for="newEmail" class="col-lg-3 control-label">Enter new email</label>
+
+        <div class="col-lg-9">
+
+          <input id="newEmail" ng-model="user.newEmail" name="newEmail" type="email" server-validation required minlength="4" maxlength="250" class="form-control" />
+
+          <div ng-show="form.newEmail.$invalid" class="text-danger">
+
+            <div ng-messages="form.newEmail.$error" role="alert">
+              <div ng-message="required">Please provide the new email address</div>
+              <div ng-message="minlength, maxlength">
+                Email must be between 4 and 250 characters long
+              </div>
+            </div>
+
+            <messages messages="form.serverFieldErrors.newEmail"></messages>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="password" class="col-lg-3 control-label">Please provide your password</label>
+        <div class="col-lg-9">
+          <input id="password" ng-model="user.password" name="password" type="password" server-validation required minlength="6" maxlength="30" class="form-control" />
+          <div ng-show="form.password.$invalid" class="text-danger">
+
+            <div ng-messages="form.password.$error" role="alert">
+              <div ng-message="required">Please provide your password</div>
+              <div ng-message="minlength, maxlength">
+                Password must be between 6 and 30 characters long
+              </div>
+            </div>
+
+            <messages messages="form.serverFieldErrors.password"></messages>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="col-lg-offset-3 col-lg-9">
+          <button ng-disabled="form.$invalid" type="submit" class="btn btn-primary">Request change</button>
+        </div>
+      </div>
+
+    </form>
+
+  </div>
+</div>

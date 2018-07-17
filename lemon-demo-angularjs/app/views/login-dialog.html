@@ -1,0 +1,40 @@
+<div ng-controller="LoginCtrl">
+
+  <div class="modal-header">
+    <h3 class="modal-title">Please login</h3>
+  </div>
+  <div class="modal-body" >
+
+    <messages-alert messages="errors" kind="danger"></messages-alert>
+
+    <form id="loginForm" class="form-horizontal" role="form"
+          ng-submit="login()" novalidate>
+
+      <div class="form-group">
+        <label for="loginUsername" class="col-sm-3 control-label">Username</label>
+        <div class="col-sm-9">
+          <input ng-model="credentials.username" type="text" id="loginUsername" class="form-control" placeholder="you@example.com">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="loginPassword" class="col-sm-3 control-label">Password</label>
+        <div class="col-sm-9">
+          <input ng-model="credentials.password" type="password" id="loginPassword" class="form-control">
+        </div>
+      </div>
+
+    </form>
+  </div>
+  <div class="modal-footer">
+
+    <div class="btn-group" role="group" aria-label="Social Login" style="display:block">
+      <button class="btn btn-default" ng-click="facebookLogin()">Facebook</button>
+      <button class="btn btn-default" ng-click="googleLogin()">Google</button>
+    </div>
+
+    <button ng-disabled="form.$invalid" type="submit" class="btn btn-primary" form="loginForm">OK</button>
+    <button class="btn btn-default" ng-click="forgotPassword()">Forgot Password</button>
+    <button class="btn btn-default" ng-click="cancel()">Cancel</button>
+  </div>
+</div>

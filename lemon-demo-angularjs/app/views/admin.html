@@ -1,0 +1,39 @@
+<secured permitted="permitted">
+
+  <div class="panel panel-success" ng-controller="AdminCtrl" >
+
+    <div class="panel-heading">
+      <h3 class="panel-title">Admin Dashboard</h3>
+    </div>
+    <div class="panel-body">
+
+      <form name="form" novalidate class="form-horizontal" role="form" ng-submit="fetchUser()">
+
+        <messages-alert messages="form.serverErrors" kind="danger"></messages-alert>
+
+        <div class="form-group">
+          <label for="email" class="col-md-3 control-label">Email id</label>
+          <div class="col-md-9">
+            <input id="email" ng-model="email" name="email" type="email" required server-validation minlength="4" maxlength="100" class="form-control" placeholder="you@example.com">
+            <div ng-show="form.email.$invalid" class="text-danger">
+              <div ng-messages="form.email.$error" role="alert">
+                <div ng-message="required">Please provide your email</div>
+                <div ng-message="email">This is not a valid email</div>
+              </div>
+              <messages messages="form.serverFieldErrors.email"></messages>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="col-md-offset-3 col-md-9">
+            <button type="submit" ng-disabled="form.$invalid" class="btn btn-success">Fetch user</button>
+          </div>
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+
+</secured>

@@ -1,0 +1,167 @@
+<!doctype html>
+<html class="no-js">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    <!-- build:css(.) styles/vendor.css -->
+    <!-- bower:css -->
+    <!-- endbower -->
+    <!-- endbuild -->
+    <!-- build:css(.tmp) styles/main.css -->
+    <link rel="stylesheet" href="/styles/main.css"><!-- Sanjay added the / before styles to make the path absolute so that URLs like http://localhost:9000/users/bc5ab7b4-0018-420b-8b0c-73fce86067b0/verify do not have issues -->
+    <!-- endbuild -->
+
+    <base href="/">
+
+    <style type="text/css"><!-- https://spring.io/guides/tutorials/spring-security-and-angular-js/ -->
+      [ng\:cloak], [ng-cloak], .ng-cloak {
+        display: none !important;
+      }
+    </style>
+
+    <!-- Include the JS ReCaptcha API -->
+    <script src="//www.google.com/recaptcha/api.js?render=explicit&onload=vcRecaptchaApiLoaded" async defer></script>
+
+  </head>
+  <body ng-controller="AppCtrl" ng-cloak class="ng-cloak">
+    <!--[if lt IE 7]>
+      <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
+
+    <!-- Add your site or application content here -->
+    <div class="header">
+      <div class="navbar navbar-default" role="navigation">
+        <div class="container">
+          <div class="navbar-header">
+
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#js-navbar-collapse">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+
+            <a class="navbar-brand" href="/">angularSample</a>
+          </div>
+
+          <div class="collapse navbar-collapse" id="js-navbar-collapse">
+
+            <ul class="nav navbar-nav">
+              <li ng-class="{ active: abUtil.isActive('HOME')}"><a href="/">Home</a></li>
+              <li ng-class="{ active: abUtil.isActive('ABOUT')}"><a ng-href="/about">About</a></li>
+              <li ng-class="{ active: abUtil.isActive('CONTACT')}"><a ng-href="/">Contact</a></li>
+            </ul>
+
+            <ul class="nav navbar-nav navbar-right">
+              <li ng-if="!authService.isAuthenticated()" ng-class="{ active: abUtil.isActive('SIGNUP')}">
+                <a ng-href="/signup">Sign up <span class="glyphicon glyphicon-list-alt"></span></a>
+              </li>
+              <li ng-if="!authService.isAuthenticated()">
+                <a href="#" ng-click="authService.showLoginDialog()">Sign in <span class="glyphicon glyphicon-log-in"></span></a>
+              </li>
+              <li ng-if="authService.isAuthenticated()" class="dropdown" dropdown>
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" dropdown-toggle>
+                  <span class="glyphicon glyphicon-user"></span>
+                  <span>{{ authService.user.tag.name }}</span> <b class="caret"></b>
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a href="/users/{{authService.user.id}}"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
+                  <li><a href="#" ng-click="authService.logout()"><span class="glyphicon glyphicon-log-out"></span> Sign out</a></li>
+                  <li ng-if="authService.hasAnyRole(authService.userRoles.ADMIN)" role="presentation" class="divider"></li>
+                  <li ng-if="authService.hasAnyRole(authService.userRoles.ADMIN)">
+                    <a href="/admin"><span class="glyphicon glyphicon-wrench"></span> Admin</a>
+                  </li>
+
+                </ul>
+              </li>
+            </ul>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+
+      <alert ng-if="unverified()">
+        Your email is UNVERIFIED. A verification mail has been sent to your email id.<br/>
+        <a href='#' ng-click='resendVerificationMail()'>Resend verification mail</a>.
+      </alert>
+
+      <messages-alert messages="alerts.getAlerts()" kind="{{alerts.getKind()}}"></messages-alert>
+
+      <div ng-view=""></div>
+    </div>
+
+    <div class="footer">
+      <div class="container">
+        <p><span class="glyphicon glyphicon-heart"></span> from the Yeoman team</p>
+      </div>
+    </div>
+
+
+    <!-- Google Analytics: change UA-XXXXX-X to be your site's ID
+     <script>
+       !function(A,n,g,u,l,a,r){A.GoogleAnalyticsObject=l,A[l]=A[l]||function(){
+       (A[l].q=A[l].q||[]).push(arguments)},A[l].l=+new Date,a=n.createElement(g),
+       r=n.getElementsByTagName(g)[0],a.src=u,r.parentNode.insertBefore(a,r)
+       }(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+       ga('create', 'UA-XXXXX-X');
+       ga('send', 'pageview');
+    </script> -->
+
+    <!-- build:js(.) scripts/vendor.js -->
+    <!-- bower:js -->
+    <script src="bower_components/jquery/dist/jquery.js"></script>
+    <script src="bower_components/angular/angular.js"></script>
+    <script src="bower_components/angular-animate/angular-animate.js"></script>
+    <script src="bower_components/angular-cookies/angular-cookies.js"></script>
+    <script src="bower_components/angular-resource/angular-resource.js"></script>
+    <script src="bower_components/angular-route/angular-route.js"></script>
+    <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
+    <script src="bower_components/angular-touch/angular-touch.js"></script>
+    <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+    <script src="bower_components/angular-recaptcha/release/angular-recaptcha.js"></script>
+    <script src="bower_components/angular-messages/angular-messages.js"></script>
+    <!-- endbower -->
+    <!-- endbuild -->
+
+        <!-- build:js({.tmp,app}) scripts/scripts.js -->
+        <script src="scripts/app.js"></script>
+        <script src="scripts/controllers/main.js"></script>
+        <script src="scripts/controllers/about.js"></script>
+        <script src="scripts/controllers/signup.js"></script>
+        <script src="scripts/services/alerts.js"></script>
+        <script src="scripts/directives/servervalidation.js"></script>
+        <script src="scripts/directives/messages.js"></script>
+        <script src="scripts/directives/messagesalert.js"></script>
+        <script src="scripts/controllers/app.js"></script>
+        <script src="scripts/services/formservice.js"></script>
+        <script src="scripts/services/authservice.js"></script>
+        <script src="scripts/controllers/login.js"></script>
+        <script src="scripts/directives/secured.js"></script>
+        <script src="scripts/services/abutil.js"></script>
+        <script src="scripts/controllers/admin.js"></script>
+        <<script src="scripts/services/authinterceptor.js"></script>
+        <script src="scripts/controllers/verify.js"></script>
+        <script src="scripts/controllers/forgot-password.js"></script>
+        <script src="scripts/controllers/reset-password.js"></script>
+        <script src="scripts/directives/compare-to.js"></script>
+        <script src="scripts/controllers/profile.js"></script>
+        <script src="scripts/controllers/api-key.js"></script>
+        <script src="scripts/services/user-service.js"></script>
+        <script src="scripts/controllers/edit-user.js"></script>
+        <script src="scripts/controllers/change-password.js"></script>
+        <script src="scripts/controllers/change-email-request.js"></script>
+        <script src="scripts/controllers/change-email.js"></script>
+        <script src="scripts/controllers/social-login-success.js"></script>
+        <!-- endbuild -->
+</body>
+</html>

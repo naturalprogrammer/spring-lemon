@@ -1,0 +1,27 @@
+<div class="panel panel-success">
+
+  <div class="panel-heading">
+    <h3 class="panel-title">Profile</h3>
+  </div>
+
+  <div class="panel-body">
+    <dl class="dl-horizontal">
+      <dt>Name</dt>
+      <dd>{{user.name}}</dd>
+      <dt>Email</dt>
+      <dd>{{user.email}}</dd>
+      <dt>Roles</dt>
+      <dd>{{user.rolesStr()}}</dd>
+
+    </dl>
+
+  </div>
+  <div ng-if="user.editable" class="panel-footer">
+
+    <a class="btn btn-link" ng-href="{{user.editLink()}}">Edit</a>
+    <a class="btn btn-link" ng-href="{{user.changePasswordLink()}}">Change password</a>
+    <a class="btn btn-link" ng-href="{{user.changeEmailLink()}}">Change email id</a>
+    <a class="btn btn-link" href="#" ng-if="user.unverified" ng-click="resendVerificationMail(user.id)">Resend verification mail</a>
+    <a class="btn btn-link" ng-href="{{user.apiKeyLink()}}">API Key</a>
+  </div>
+</div>
