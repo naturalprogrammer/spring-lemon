@@ -46,7 +46,7 @@
 					},
 					"response": [
 						{
-							"id": "dc13c098-4ab6-4708-9a22-4c6647aa1698",
+							"id": "94e97d70-c5b8-46d1-9a0a-fdd64c888f71",
 							"name": "Ping",
 							"originalRequest": {
 								"method": "GET",
@@ -205,11 +205,13 @@
 							]
 						},
 						"url": {
-							"raw": "{{lemonDemoUrl}}/login",
+							"raw": "{{lemonDemoUrl}}/api/core/login",
 							"host": [
 								"{{lemonDemoUrl}}"
 							],
 							"path": [
+								"api",
+								"core",
 								"login"
 							]
 						},
@@ -217,7 +219,7 @@
 					},
 					"response": [
 						{
-							"id": "e6eefb5e-b4a3-4b42-b9ad-2d2e6dbfb48d",
+							"id": "fd19ca94-a61e-4af6-8831-97d2ed9a07b7",
 							"name": "Login",
 							"originalRequest": {
 								"method": "POST",
@@ -252,11 +254,13 @@
 									]
 								},
 								"url": {
-									"raw": "{{lemonDemoUrl}}/login",
+									"raw": "{{lemonDemoUrl}}/api/core/login",
 									"host": [
 										"{{lemonDemoUrl}}"
 									],
 									"path": [
+										"api",
+										"core",
 										"login"
 									]
 								}
@@ -330,7 +334,7 @@
 							"body": "{\"id\":9,\"username\":\"admin@example.com\",\"roles\":[\"ADMIN\"],\"tag\":{\"name\":\"Administrator\"},\"unverified\":false,\"blocked\":false,\"admin\":true,\"goodUser\":true,\"goodAdmin\":true}"
 						},
 						{
-							"id": "e3a0b42d-4ad2-46bd-aa6e-ef47d47c60c2",
+							"id": "5badab55-018e-4fd7-baf4-31c9f6541643",
 							"name": "Login with wrong credentials",
 							"originalRequest": {
 								"method": "POST",
@@ -365,11 +369,13 @@
 									]
 								},
 								"url": {
-									"raw": "{{lemonDemoUrl}}/login",
+									"raw": "{{lemonDemoUrl}}/api/core/login",
 									"host": [
 										"{{lemonDemoUrl}}"
 									],
 									"path": [
+										"api",
+										"core",
 										"login"
 									]
 								}
@@ -486,7 +492,7 @@
 					},
 					"response": [
 						{
-							"id": "123567f0-1a53-4fe1-b75d-3775da8559e1",
+							"id": "be379d95-60bb-4066-af3c-1303bc1f879f",
 							"name": "Get context with Authorization header",
 							"originalRequest": {
 								"method": "GET",
@@ -618,7 +624,7 @@
 							"body": "{\"context\":{\"reCaptchaSiteKey\":\"6LdwxRcUAAAAABkhOGWQXhl9FsR27D5YUJRuGzx0\",\"shared\":{\"fooBar\":\"123...\"}},\"user\":{\"id\":2,\"username\":\"skpatel20@gmail.com\",\"roles\":[\"UNVERIFIED\"],\"tag\":{\"name\":\"Sanjay Patel\"},\"unverified\":true,\"blocked\":false,\"admin\":false,\"goodUser\":false,\"goodAdmin\":false}}"
 						},
 						{
-							"id": "6f023dfc-2374-4155-86b7-236b150c427e",
+							"id": "4b46a9e7-8fc7-4c28-aa3d-f8da31ac72af",
 							"name": "Get context using a wrong Authorization token",
 							"originalRequest": {
 								"method": "GET",
@@ -744,7 +750,7 @@
 							"body": "{\"timestamp\":\"2018-03-03T06:21:34.748+0000\",\"status\":401,\"error\":\"Unauthorized\",\"message\":\"Authentication Failed: Invalid JWT serialization: Missing dot delimiter(s)\",\"path\":\"/api/core/context\"}"
 						},
 						{
-							"id": "761ee1eb-aaa5-48ae-ac7b-d91a666f7ae1",
+							"id": "90c0d043-46b7-4b23-9dca-2d12f0278ab4",
 							"name": "Get context without Authorization header",
 							"originalRequest": {
 								"method": "GET",
@@ -975,7 +981,7 @@
 					},
 					"response": [
 						{
-							"id": "e7d318ce-ae30-4120-a3b2-4207ffcf6661",
+							"id": "c76cf940-d63b-4692-8fa5-bf1eb6a808d2",
 							"name": "Sign up with invalid data",
 							"originalRequest": {
 								"method": "POST",
@@ -1100,7 +1106,7 @@
 							"body": "{\"exception\":\"ConstraintViolationException\",\"error\":\"Unprocessable Entity\",\"message\":\"Validation Error\",\"status\":422,\"errors\":[{\"field\":\"user.email\",\"code\":\"{com.naturalprogrammer.spring.invalid.email}\",\"message\":\"Not a well formed email address\"},{\"field\":\"user.password\",\"code\":\"{com.naturalprogrammer.spring.invalid.password.size}\",\"message\":\"Password must be between 6 and 50 characters\"},{\"field\":\"user.name\",\"code\":\"{blank.name}\",\"message\":\"Name required\"},{\"field\":\"user.email\",\"code\":\"{com.naturalprogrammer.spring.invalid.email.size}\",\"message\":\"Email must be between 4 and 250 characters\"}]}"
 						},
 						{
-							"id": "ee65ea2e-743a-4135-bbab-fad97ce3c06f",
+							"id": "23eba689-6667-49f7-b1ef-501148a40922",
 							"name": "Sign up",
 							"originalRequest": {
 								"method": "POST",
@@ -1275,7 +1281,7 @@
 					},
 					"response": [
 						{
-							"id": "7b70613c-b89e-45e4-b641-4ccfbde839d8",
+							"id": "bf12db2b-2585-4ca2-a709-65604a2398d8",
 							"name": "Resend verification mail",
 							"originalRequest": {
 								"method": "POST",
@@ -1434,7 +1440,7 @@
 					},
 					"response": [
 						{
-							"id": "79277fc4-5434-4863-99b7-cf4529a4cbcf",
+							"id": "faaee1e5-9286-4611-889e-260834a7205b",
 							"name": "Verify User",
 							"originalRequest": {
 								"method": "POST",
@@ -1599,7 +1605,7 @@
 					},
 					"response": [
 						{
-							"id": "b7913835-3286-4c8f-b2c8-56f8432bf971",
+							"id": "dfa67f50-9db1-4801-94dd-b7bba429f4c9",
 							"name": "Forgot password",
 							"originalRequest": {
 								"method": "POST",
@@ -1719,25 +1725,12 @@
 						"header": [
 							{
 								"key": "Content-Type",
-								"value": "application/x-www-form-urlencoded"
+								"value": "application/json"
 							}
 						],
 						"body": {
-							"mode": "urlencoded",
-							"urlencoded": [
-								{
-									"key": "newPassword",
-									"value": "a-new-password",
-									"description": "",
-									"type": "text"
-								},
-								{
-									"key": "code",
-									"value": "eyJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwiYWxnIjoiZGlyIn0..HoDu5pdYAx8fS7p9PKCl5g.jRNA1Vu0ZydW9G4bDd6f7GirpNahXtytXke9i7M5xmrsTqUvCitotGwOm3NwhmyIUcBeRTS53lx1SCxDa8cuv9McD2v2exRfKhnNu1i7cG1E10Cmb4m9nuDuAP2LviXpUOLJyYUFRGrxQOrCwwkMNQ.iN6xYjU1Xe-w9O4VDKDEOA",
-									"description": "",
-									"type": "text"
-								}
-							]
+							"mode": "raw",
+							"raw": "{\n\t\"newPassword\": \"a-new-password\",\n\t\"code\": \"eyJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwiYWxnIjoiZGlyIn0..HoDu5pdYAx8fS7p9PKCl5g.jRNA1Vu0ZydW9G4bDd6f7GirpNahXtytXke9i7M5xmrsTqUvCitotGwOm3NwhmyIUcBeRTS53lx1SCxDa8cuv9McD2v2exRfKhnNu1i7cG1E10Cmb4m9nuDuAP2LviXpUOLJyYUFRGrxQOrCwwkMNQ.iN6xYjU1Xe-w9O4VDKDEOA\"\n}"
 						},
 						"url": {
 							"raw": "{{lemonDemoUrl}}/api/core/reset-password",
@@ -1754,35 +1747,19 @@
 					},
 					"response": [
 						{
-							"id": "bbc954f4-d67a-421c-9045-58cf125ecd31",
+							"id": "e34d5413-6cf8-40d5-8d17-1dbf7bde7af5",
 							"name": "Reset password",
 							"originalRequest": {
 								"method": "POST",
 								"header": [
 									{
 										"key": "Content-Type",
-										"type": "text",
-										"name": "Content-Type",
-										"value": "application/x-www-form-urlencoded",
-										"disabled": false
+										"value": "application/json"
 									}
 								],
 								"body": {
-									"mode": "urlencoded",
-									"urlencoded": [
-										{
-											"key": "newPassword",
-											"value": "a-new-password",
-											"description": "",
-											"type": "text"
-										},
-										{
-											"key": "code",
-											"value": "eyJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwiYWxnIjoiZGlyIn0..HoDu5pdYAx8fS7p9PKCl5g.jRNA1Vu0ZydW9G4bDd6f7GirpNahXtytXke9i7M5xmrsTqUvCitotGwOm3NwhmyIUcBeRTS53lx1SCxDa8cuv9McD2v2exRfKhnNu1i7cG1E10Cmb4m9nuDuAP2LviXpUOLJyYUFRGrxQOrCwwkMNQ.iN6xYjU1Xe-w9O4VDKDEOA",
-											"description": "",
-											"type": "text"
-										}
-									]
+									"mode": "raw",
+									"raw": "{\n\t\"newPassword\": \"a-new-password\",\n\t\"code\": \"eyJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwiYWxnIjoiZGlyIn0..HoDu5pdYAx8fS7p9PKCl5g.jRNA1Vu0ZydW9G4bDd6f7GirpNahXtytXke9i7M5xmrsTqUvCitotGwOm3NwhmyIUcBeRTS53lx1SCxDa8cuv9McD2v2exRfKhnNu1i7cG1E10Cmb4m9nuDuAP2LviXpUOLJyYUFRGrxQOrCwwkMNQ.iN6xYjU1Xe-w9O4VDKDEOA\"\n}"
 								},
 								"url": {
 									"raw": "{{lemonDemoUrl}}/api/core/reset-password",
@@ -1929,7 +1906,7 @@
 					},
 					"response": [
 						{
-							"id": "d1ccdda8-bf5d-446a-a468-e1fbc607e26c",
+							"id": "a5278a35-86da-4ead-b2d3-9860c1861687",
 							"name": "Fetch user by email - Others",
 							"originalRequest": {
 								"method": "POST",
@@ -2042,7 +2019,7 @@
 							"body": "{\"id\":11,\"version\":2,\"roles\":[],\"name\":\"Sample User\",\"new\":false}"
 						},
 						{
-							"id": "5595f812-2a4f-4360-bf32-f1813a22a6f3",
+							"id": "c45a4fbc-9a0b-4397-8a0a-ce8d363efe99",
 							"name": "Fetch user by email - Self or Admin",
 							"originalRequest": {
 								"method": "POST",
@@ -2205,7 +2182,7 @@
 					},
 					"response": [
 						{
-							"id": "2448a1cc-627d-4d23-a10f-fa4f6d32efc7",
+							"id": "2dce2342-b2e3-4269-a343-7727addd2e67",
 							"name": "Fetch user by ID - Self or Admin",
 							"originalRequest": {
 								"method": "GET",
@@ -2331,7 +2308,7 @@
 							"body": "{\"id\":2,\"version\":2,\"email\":\"skpatel20+lemon1842637@example.com\",\"roles\":[],\"name\":\"Sample User\",\"new\":false}"
 						},
 						{
-							"id": "7288f472-5f1e-437a-be18-bd3e0e11d789",
+							"id": "faf6cfba-2759-4a2d-b983-2e6a7a442260",
 							"name": "Fetch user by ID - Others",
 							"originalRequest": {
 								"method": "GET",
@@ -2502,7 +2479,7 @@
 					},
 					"response": [
 						{
-							"id": "9c1fc11b-c7e2-4406-9db2-07325bdd6da2",
+							"id": "380c4cbe-efd5-4bdc-9c2d-54af1ff78f54",
 							"name": "Update user",
 							"originalRequest": {
 								"method": "PATCH",
@@ -2689,7 +2666,7 @@
 					},
 					"response": [
 						{
-							"id": "81590aa2-a281-4755-bf43-568fc79f82b1",
+							"id": "2f63c1e3-be33-47ca-8275-7efd188c19d3",
 							"name": "Change password",
 							"originalRequest": {
 								"method": "POST",
@@ -2871,7 +2848,7 @@
 					},
 					"response": [
 						{
-							"id": "f7320de8-3bd4-45ac-851a-9b4db1870fe5",
+							"id": "290c8a5c-a3fd-4a5b-a6ae-4b76c894494c",
 							"name": "Requesting for changing email",
 							"originalRequest": {
 								"method": "POST",
@@ -3052,7 +3029,7 @@
 					},
 					"response": [
 						{
-							"id": "09ead591-4e70-4726-b240-f29b5e0f16af",
+							"id": "e26ba30b-8978-4c97-8709-1972ca5a56a7",
 							"name": "Change email",
 							"originalRequest": {
 								"method": "POST",
@@ -3236,7 +3213,7 @@
 					},
 					"response": [
 						{
-							"id": "af5ab736-94b8-4ef8-9f43-c240d1331df1",
+							"id": "8ff37fe9-e010-4add-9f79-b7298de2d943",
 							"name": "Fetch new token",
 							"originalRequest": {
 								"method": "POST",
