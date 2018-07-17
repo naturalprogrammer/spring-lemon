@@ -1,8 +1,8 @@
-package com.naturalprogrammer.spring.lemon.domain;
+package com.naturalprogrammer.spring.lemon.commons.domain;
 
 import com.naturalprogrammer.spring.lemon.commons.validation.Password;
-import com.naturalprogrammer.spring.lemon.validation.RetypePassword;
-import com.naturalprogrammer.spring.lemon.validation.RetypePasswordForm;
+import com.naturalprogrammer.spring.lemon.commons.validation.RetypePassword;
+import com.naturalprogrammer.spring.lemon.commons.validation.RetypePasswordForm;
 
 /**
  * Change password form.

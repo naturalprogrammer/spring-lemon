@@ -18,6 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
 import com.naturalprogrammer.spring.lemon.commons.LemonProperties.Admin;
+import com.naturalprogrammer.spring.lemon.commons.domain.ChangePasswordForm;
 import com.naturalprogrammer.spring.lemon.commons.mail.LemonMailData;
 import com.naturalprogrammer.spring.lemon.commons.mail.MailSender;
 import com.naturalprogrammer.spring.lemon.commons.security.JwtService;
@@ -526,5 +527,41 @@ public abstract class LemonReactiveService
 			user.setEmail(null);
 		
 		log.debug("Hid confidential fields for user: " + user);
+	}
+
+
+	public Mono<UserDto<ID>> changePassword(ID userId, Mono<ChangePasswordForm> changePasswordForm) {
+		
+		return Mono.zip(findUserById(userId), LerUtils.currentUser())
+				.doOnNext(this::ensureEditable)
+				.flatMap(tuple -> Mono.zip(
+						Mono.just(tuple.getT1()),
+						findUserById(((UserDto<ID>)tuple.getT2().get()).getId()),
+						changePasswordForm)
+				.doOnNext(this::changePassword))
+				.map(Tuple2::getT1)
+				.flatMap(userRepository::save)
+				.map(AbstractMongoUser::toUserDto);
+	}
+	
+	protected void changePassword(Tuple3<U,U,ChangePasswordForm> tuple) {
+		
+		U user = tuple.getT1();
+		U loggedIn = tuple.getT2();
+		ChangePasswordForm changePasswordForm = tuple.getT3();
+		
+		log.debug("Changing password for user: " + user);
+		
+		String oldPassword = loggedIn.getPassword();
+
+		LexUtils.validate("changePasswordForm.oldPassword",
+			passwordEncoder.matches(changePasswordForm.getOldPassword(),
+					oldPassword),
+			"com.naturalprogrammer.spring.wrong.password").go();
+		
+		// sets the password
+		user.setPassword(passwordEncoder.encode(changePasswordForm.getPassword()));
+		user.setCredentialsUpdatedMillis(System.currentTimeMillis());
+		log.debug("Changed password for user: " + user);
 	}
 }

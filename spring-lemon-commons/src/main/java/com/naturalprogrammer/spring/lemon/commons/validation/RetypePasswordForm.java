@@ -1,4 +1,4 @@
-package com.naturalprogrammer.spring.lemon.validation;
+package com.naturalprogrammer.spring.lemon.commons.validation;
 
 /**
  * A form using RetypePassword constraint

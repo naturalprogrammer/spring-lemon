@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.server.ServerWebExchange;
 
 import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
+import com.naturalprogrammer.spring.lemon.commons.domain.ChangePasswordForm;
 import com.naturalprogrammer.spring.lemon.commons.security.JwtService;
 import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
 import com.naturalprogrammer.spring.lemonreactive.domain.AbstractMongoUser;
@@ -209,6 +210,20 @@ public class LemonReactiveController
 	}
 
 	
+	/**
+	 * Changes password
+	 */
+	@PostMapping("/users/{id}/password")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public Mono<Void> changePassword(@PathVariable ID id,
+			@RequestBody @Valid Mono<ChangePasswordForm> changePasswordForm,
+			ServerHttpResponse response) {
+		
+		log.debug("Changing password ... ");
+		return userWithToken(lemonReactiveService.changePassword(id, changePasswordForm), response).then();
+	}
+
+
 	/**
 	 * returns the current user and a new authorization token in the response
 	 */
