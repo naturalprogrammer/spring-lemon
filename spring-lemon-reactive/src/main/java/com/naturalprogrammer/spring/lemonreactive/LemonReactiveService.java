@@ -564,4 +564,86 @@ public abstract class LemonReactiveService
 		user.setCredentialsUpdatedMillis(System.currentTimeMillis());
 		log.debug("Changed password for user: " + user);
 	}
+
+
+	public Mono<Void> requestEmailChange(ID userId, Mono<U> updatedUser) {
+		
+		return Mono.zip(findUserById(userId), LerUtils.currentUser())
+				.doOnNext(this::ensureEditable)
+				.flatMap(tuple -> Mono.zip(
+						Mono.just(tuple.getT1()),
+						findUserById(((UserDto<ID>)tuple.getT2().get()).getId()),
+						updatedUser)
+				.doOnNext(this::requestEmailChange))
+				.map(Tuple2::getT1)
+				.flatMap(userRepository::save)
+				.doOnNext(this::mailChangeEmailLink)
+				.then();
+	}
+	
+	protected void requestEmailChange(Tuple3<U,U,U> tuple) {
+		
+		U user = tuple.getT1();
+		U loggedIn = tuple.getT2();
+		U updatedUser = tuple.getT3();
+		
+		log.debug("Requesting email change: " + user);
+		
+		// checks
+		LexUtils.validate("updatedUser.password",
+			passwordEncoder.matches(updatedUser.getPassword(),
+									user.getPassword()),
+			"com.naturalprogrammer.spring.wrong.password").go();
+
+		// preserves the new email id
+		user.setNewEmail(updatedUser.getNewEmail());
+
+		log.debug("Requested email change: " + user);		
+	}
+	
+	
+	/**
+	 * Mails the change-email verification link to the user.
+	 */
+	protected void mailChangeEmailLink(U user) {
+		
+		String changeEmailCode = jwtService.createToken(JwtService.CHANGE_EMAIL_AUDIENCE,
+				user.getId().toString(), properties.getJwt().getExpirationMillis(),
+				LecUtils.mapOf("newEmail", user.getNewEmail()));
+		
+		try {
+			
+			log.debug("Mailing change email link to user: " + user);
+
+			// make the link
+			String changeEmailLink = properties.getApplicationUrl()
+				    + "/users/" + user.getId()
+					+ "/change-email?code=" + changeEmailCode;
+			
+			// mail it
+			mailChangeEmailLink(user, changeEmailLink);
+			
+			log.debug("Change email link mail queued.");
+			
+		} catch (Throwable e) {
+			// In case of exception, just log the error and keep silent			
+			log.error(ExceptionUtils.getStackTrace(e));
+		}
+	}
+	
+	
+	/**
+	 * Mails the change-email verification link to the user.
+	 * 
+	 * Override this method if you're using a different MailData
+	 */
+	protected void mailChangeEmailLink(U user, String changeEmailLink) {
+		
+		mailSender.send(LemonMailData.of(user.getNewEmail(),
+				LexUtils.getMessage(
+				"com.naturalprogrammer.spring.changeEmailSubject"),
+				LexUtils.getMessage(
+				"com.naturalprogrammer.spring.changeEmailEmail",
+				 changeEmailLink)));
+	}
 }
