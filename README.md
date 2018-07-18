@@ -30,9 +30,9 @@ Watch [this video tutorial](https://www.naturalprogrammer.com/p/spring-lemon-res
 1. _Getting started guide_
    1. [Book](https://github.com/naturalprogrammer/spring-lemon/wiki/Getting-Started-With-Spring-Lemon)
    1. [Video Tutorial](https://www.naturalprogrammer.com/p/spring-lemon-restful-web-services-development)
-1. _[Example application](https://github.com/naturalprogrammer/lemon-demo)_ — A sample application using Spring Lemon. Quite similar to the one developed in the above [getting started guide](https://github.com/naturalprogrammer/spring-lemon/wiki/Getting-Started-With-Spring-Lemon), but additionally has automated tests.
+1. _[Example application](https://github.com/naturalprogrammer/spring-lemon/tree/master/lemon-demo-jpa)_ — A sample application using Spring Lemon. Quite similar to the one developed in the above [getting started guide](https://github.com/naturalprogrammer/spring-lemon/wiki/Getting-Started-With-Spring-Lemon), but additionally has automated tests.
 1. _[API documentation](https://documenter.getpostman.com/view/305915/RVu2mqEH)_ of the above application.
-1. _[Example Angular 1.x front-end application](https://github.com/naturalprogrammer/lemon-demo-angular1)_ — A sample AngularJS 1.x front-end. It'll work both for the application developed in the above [getting started guide](https://documenter.getpostman.com/view/305915/lemondemo/RVnPL46k) as well as the [Lemon Demo application](https://github.com/naturalprogrammer/lemon-demo). 
+1. _[Example AngularJS front-end application](https://github.com/naturalprogrammer/spring-lemon/tree/master/lemon-demo-angularjs)_ — A sample AngularJS 1.x front-end. It'll work both for the application developed in the above [getting started guide](https://github.com/naturalprogrammer/spring-lemon/wiki/Getting-Started-With-Spring-Lemon) as well as the [Lemon Demo application](https://github.com/naturalprogrammer/spring-lemon/tree/master/lemon-demo-jpa). See the [Getting Started Guide](https://github.com/naturalprogrammer/spring-lemon/wiki/Getting-Started-With-Spring-Lemon) on how to use it.
 1. _Mastering Spring RESTful Web Services Development_ — Ultimate course to master REST API development using Spring. Also covers Spring Lemon in depth. A must guide if you want to become an expert Spring developer, whether you use Spring Lemon or not. [Click here](https://www.naturalprogrammer.com/p/spring-restful-web-services-tutorial-i) to get part I now for FREE!
 
 ## Help and Support
@@ -40,6 +40,6 @@ Watch [this video tutorial](https://www.naturalprogrammer.com/p/spring-lemon-res
 1. [Submit an issue](https://github.com/naturalprogrammer/spring-lemon/issues) for any bug or enhancement. Please check first that the issue isn't already reported earlier.
 1. Mentoring, training and professional help is provided by [naturalprogrammer.com](http://www.naturalprogrammer.com/consulting/).
 
-## Releases
+## Releases and Breaking Changes
 
 1. See [here](https://github.com/naturalprogrammer/spring-lemon/releases).
