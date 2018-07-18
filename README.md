@@ -34,6 +34,11 @@ Watch [this video tutorial](https://www.naturalprogrammer.com/p/spring-lemon-res
 1. _[API documentation](https://documenter.getpostman.com/view/305915/RVu2mqEH)_ of the above application.
 1. _[Example AngularJS front-end application](https://github.com/naturalprogrammer/spring-lemon/tree/master/lemon-demo-angularjs)_ — A sample AngularJS 1.x front-end. It'll work both for the application developed in the above [getting started guide](https://github.com/naturalprogrammer/spring-lemon/wiki/Getting-Started-With-Spring-Lemon) as well as the [Lemon Demo application](https://github.com/naturalprogrammer/spring-lemon/tree/master/lemon-demo-jpa). See the [Getting Started Guide](https://github.com/naturalprogrammer/spring-lemon/wiki/Getting-Started-With-Spring-Lemon) on how to use it.
 1. _[Spring Framework Recipes For Real World Application Development](https://www.naturalprogrammer.com/p/spring-framework-book-of-best-practices)_ — a live book discussing key real-world topics on developing Spring applications and APIs. Includes key Spring Lemon topics. [Click here](https://www.naturalprogrammer.com/p/spring-framework-book-of-best-practices) to get it now for FREE!
+1. Video tutorials coming soon:
+   1. Spring Framework 5 REST API Development — A Complete Blueprint For Real-World Developers
+   1. Spring WebFlux Reactive REST API Development — A Complete Blueprint For Real-World Developers
+   1. Real World Microservices Using Spring Cloud — A Rapid Course
+   1. Register [here](https://www.naturalprogrammer.com/p/spring-framework-book-of-best-practices) to get notified when the above courses get released
 
 ## Help and Support
 1. Community help is available at [stackoverflow.com](http://stackoverflow.com/questions/tagged/spring-lemon), under the `spring-lemon` tag. Do not miss to tag the questions with `spring-lemon`!
