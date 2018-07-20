@@ -95,8 +95,12 @@ public abstract class LemonReactiveService
 			.findByUsername(properties.getAdmin().getUsername()) // Check if the user already exists
 			.doOnError(e -> e instanceof UsernameNotFoundException, e -> {
 				// Doesn't exist. So, create it.
+				log.debug("Creating first admin ... ");
 		    	U user = createAdminUser();
-		    	userRepository.insert(user).subscribe();								
+		    	userRepository.insert(user).doOnError(err -> {
+		    		log.warn("Error creating initial admin " + err);
+		    	}).subscribe();
+				log.debug("Created first admin.");		    	
 			}).subscribe();
 	}
 

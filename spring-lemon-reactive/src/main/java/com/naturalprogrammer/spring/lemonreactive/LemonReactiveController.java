@@ -74,7 +74,11 @@ public class LemonReactiveController
 		
 		Mono<Optional<UserDto<ID>>> currentUser = LerUtils.currentUser();
 		return lemonReactiveService.userWithToken(
-				currentUser.map(Optional::get), exchange.getResponse(), expirationMillis);
+				currentUser.map(optionalUser -> {
+					UserDto<ID> user = optionalUser.get();
+					user.setPassword(null);
+					return user;
+				}), exchange.getResponse(), expirationMillis);
 	}
 
 	

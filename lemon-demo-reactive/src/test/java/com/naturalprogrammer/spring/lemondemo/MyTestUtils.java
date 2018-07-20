@@ -3,12 +3,17 @@ package com.naturalprogrammer.spring.lemondemo;
 import static com.naturalprogrammer.spring.lemondemo.controllers.MyController.BASE_URI;
 import static org.springframework.web.reactive.function.BodyInserters.fromFormData;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.test.web.reactive.server.WebTestClient;
@@ -16,10 +21,11 @@ import org.springframework.test.web.reactive.server.WebTestClient.ResponseSpec;
 
 import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
 import com.naturalprogrammer.spring.lemondemo.domain.User;
-import com.naturalprogrammer.spring.lemondemo.repositories.UserRepository;
 
 @Component
 public class MyTestUtils {
+	
+	private static Log log = LogFactory.getLog(MyTestUtils.class);
 
 	public static final ObjectId ADMIN_ID = ObjectId.get();
 	public static final ObjectId UNVERIFIED_ADMIN_ID = ObjectId.get();
@@ -43,7 +49,7 @@ public class MyTestUtils {
 	private PasswordEncoder passwordEncoder;
 	
 	@Autowired
-	private UserRepository userRepository;
+	private MongoTemplate mongoTemplate;
 
 	public MyTestUtils(ApplicationContext context) {
 		CLIENT = WebTestClient.bindToApplicationContext(context).build();
@@ -80,17 +86,20 @@ public class MyTestUtils {
 //
 	public void initDatabase() {
 
-		userRepository.deleteAll().subscribe(v -> {
-			createUser(ADMIN_ID, ADMIN_EMAIL, ADMIN_PASSWORD, "Admin 1");
-			createUser(UNVERIFIED_ADMIN_ID, "unverifiedadmin@example.com", ADMIN_PASSWORD, "Unverified Admin");
-			createUser(BLOCKED_ADMIN_ID, "blockedadmin@example.com", ADMIN_PASSWORD, "Blocked Admin");
-			createUser(USER_ID, "user@example.com", USER_PASSWORD, "User");
-			createUser(UNVERIFIED_USER_ID, UNVERIFIED_USER_EMAIL, USER_PASSWORD, "Unverified User");
-			createUser(BLOCKED_USER_ID, "blockeduser@example.com", USER_PASSWORD, "Blocked User");			
-		});
+		mongoTemplate.dropCollection("usr");
+		log.debug("Creating users ... ");
+		
+		createUser(ADMIN_ID, ADMIN_EMAIL, ADMIN_PASSWORD, "Admin 1", "ADMIN");
+		createUser(UNVERIFIED_ADMIN_ID, "unverifiedadmin@example.com", ADMIN_PASSWORD, "Unverified Admin", "ADMIN", "UNVERIFIED");
+		createUser(BLOCKED_ADMIN_ID, "blockedadmin@example.com", ADMIN_PASSWORD, "Blocked Admin", "ADMIN", "BLOCKED");
+		createUser(USER_ID, "user@example.com", USER_PASSWORD, "User");
+		createUser(UNVERIFIED_USER_ID, UNVERIFIED_USER_EMAIL, USER_PASSWORD, "Unverified User", "UNVERIFIED");
+		createUser(BLOCKED_USER_ID, "blockeduser@example.com", USER_PASSWORD, "Blocked User", "BLOCKED");			
+
+		log.debug("Created users.");
 	}
 
-	private void createUser(ObjectId id, String email, String password, String name) {
+	private void createUser(ObjectId id, String email, String password, String name, String... roles) {
 		
 		User user = new User();
 		user.setId(id);
@@ -99,9 +108,9 @@ public class MyTestUtils {
 		user.setName(name);
 		user.setCredentialsUpdatedMillis(0L);
 		user.setVersion(1L);
+		user.setRoles(new HashSet<String>(Arrays.asList(roles)));
 		
-		userRepository.insert(user).subscribe(u -> {
-			TOKENS.put(u.getId(), login(u.getEmail(), password));
-		});
+		mongoTemplate.insert(user);
+		TOKENS.put(user.getId(), login(user.getEmail(), password));
 	}
 }

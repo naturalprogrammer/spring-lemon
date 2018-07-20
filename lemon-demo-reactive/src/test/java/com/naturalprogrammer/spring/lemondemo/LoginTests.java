@@ -25,7 +25,6 @@ public class LoginTests extends AbstractTests {
 				assertEquals(ADMIN_ID, user.getId());
 				assertNull(user.getPassword());
 				assertEquals("admin@example.com", user.getUsername());
-				assertEquals("admin@example.com", user.getRoles());
 				assertEquals(1, user.getRoles().size());
 				assertTrue(user.getRoles().contains("ADMIN"));
 				assertEquals("Admin 1", user.getTag().getName());
