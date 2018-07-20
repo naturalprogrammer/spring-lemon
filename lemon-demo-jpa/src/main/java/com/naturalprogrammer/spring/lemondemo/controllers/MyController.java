@@ -7,7 +7,9 @@ import com.naturalprogrammer.spring.lemon.LemonController;
 import com.naturalprogrammer.spring.lemondemo.entities.User;
 
 @RestController
-@RequestMapping("/api/core")
+@RequestMapping(MyController.BASE_URI)
 public class MyController extends LemonController<User, Long> {
+	
+	public static final String BASE_URI = "/api/core";
 
 }

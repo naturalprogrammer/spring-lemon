@@ -17,8 +17,10 @@ import com.naturalprogrammer.spring.lemonreactive.LemonReactiveController;
 import reactor.core.publisher.Mono;
 
 @RestController
-@RequestMapping("/api/core")
+@RequestMapping(MyController.BASE_URI)
 public class MyController extends LemonReactiveController<User, ObjectId> {
+
+	public static final String BASE_URI = "/api/core";
 
 	@Override
 	public Mono<UserDto<ObjectId>> signup(

@@ -17,7 +17,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter @Setter @NoArgsConstructor
+@Getter @Setter
 @TypeAlias("User")
 @Document(collection = "usr")
 public class User extends AbstractMongoUser<ObjectId> {
@@ -25,25 +25,11 @@ public class User extends AbstractMongoUser<ObjectId> {
     public static final int NAME_MIN = 1;
     public static final int NAME_MAX = 50;
 
+    @Getter @Setter
 	public static class Tag implements Serializable {
 		
 		private static final long serialVersionUID = -2129078111926834670L;
-
 		private String name;
-
-		public String getName() {
-			return name;
-		}
-
-		public void setName(String name) {
-			this.name = name;
-		}
-	}
-
-	public User(String email, String password, String name) {
-		this.email = email;
-		this.password = password;
-		this.name = name;
 	}
 
 	@JsonView(UserUtils.SignupInput.class)
