@@ -10,10 +10,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.web.reactive.function.BodyInserters.fromFormData;
 
 import org.junit.Test;
@@ -55,7 +51,7 @@ public class LoginTests extends AbstractTests {
 		Thread.sleep(501L);
 		
 		CLIENT.get()
-			.uri("/api/core/ping")
+			.uri(BASE_URI + "/ping")
 			.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, token)
 			.exchange()
 			.expectStatus().isUnauthorized();
@@ -70,7 +66,7 @@ public class LoginTests extends AbstractTests {
 		mongoTemplate.save(user);
 		
 		CLIENT.get()
-			.uri("/api/core/ping")
+			.uri(BASE_URI + "/ping")
 			.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, TOKENS.get(ADMIN_ID))
 			.exchange()
 			.expectStatus().isUnauthorized();
@@ -96,7 +92,7 @@ public class LoginTests extends AbstractTests {
 	@Test
 	public void testTokenLogin() {
 		
-		CLIENT.get().uri("/api/core/context")
+		CLIENT.get().uri(BASE_URI + "/context")
 			.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, TOKENS.get(ADMIN_ID))
 			.exchange()
 				.expectStatus().isOk()
@@ -108,7 +104,7 @@ public class LoginTests extends AbstractTests {
 	@Test
 	public void testTokenLoginWrongToken() {
 		
-		CLIENT.get().uri("/api/core/context")
+		CLIENT.get().uri(BASE_URI + "/context")
 			.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, "Bearer a-wrong-token")
 			.exchange()
 				.expectStatus().isUnauthorized();
