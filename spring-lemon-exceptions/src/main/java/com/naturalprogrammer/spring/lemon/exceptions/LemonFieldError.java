@@ -12,11 +12,16 @@ import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.support.WebExchangeBindException;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 /**
  * Holds a field or form error
  * 
  * @author Sanjay Patel
  */
+@Getter @NoArgsConstructor @AllArgsConstructor
 public class LemonFieldError {
 	
 	// Name of the field. Null in case of a form level error. 
@@ -28,25 +33,6 @@ public class LemonFieldError {
 	// Error message
 	private String message;
 	
-	
-	public LemonFieldError(String field, String code, String message) {
-		this.field = field;
-		this.code = code;
-		this.message = message;
-	}
-
-	public String getField() {
-		return field;
-	}
-
-	public String getCode() {
-		return code;
-	}
-
-	public String getMessage() {
-		return message;
-	}
-
 	@Override
 	public String toString() {
 		return "FieldError {field=" + field + ", code=" + code + ", message=" + message + "}";

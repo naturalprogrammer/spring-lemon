@@ -142,6 +142,7 @@ public class ChangePasswordMvcTests extends AbstractMvcTests {
 						 "changePasswordForm.retypePassword",
 						 "changePasswordForm.password")));
 		
+		// different retype-password
 		form = changePasswordForm(USER_PASSWORD);
 		form.setRetypePassword("different-retype-password");
 
