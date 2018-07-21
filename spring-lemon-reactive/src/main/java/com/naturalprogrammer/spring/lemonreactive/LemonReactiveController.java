@@ -12,6 +12,9 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpResponse;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.ReactiveSecurityContextHolder;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,10 +28,10 @@ import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
 import com.naturalprogrammer.spring.lemon.commons.domain.ChangePasswordForm;
 import com.naturalprogrammer.spring.lemon.commons.domain.ResetPasswordForm;
 import com.naturalprogrammer.spring.lemon.commons.security.JwtService;
+import com.naturalprogrammer.spring.lemon.commons.security.LemonPrincipal;
 import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
 import com.naturalprogrammer.spring.lemonreactive.domain.AbstractMongoUser;
 import com.naturalprogrammer.spring.lemonreactive.forms.EmailForm;
-import com.naturalprogrammer.spring.lemonreactive.util.LerUtils;
 
 import reactor.core.publisher.Mono;
 
@@ -72,13 +75,15 @@ public class LemonReactiveController
 		log.debug("Returning current user ... ");
 		long expirationMillis = exchange.getAttributeOrDefault("expirationMillis", jwtExpirationMillis);
 		
-		Mono<Optional<UserDto<ID>>> currentUser = LerUtils.currentUser();
-		return lemonReactiveService.userWithToken(
-				currentUser.map(optionalUser -> {
-					UserDto<ID> user = optionalUser.get();
-					user.setPassword(null);
-					return user;
-				}), exchange.getResponse(), expirationMillis);
+		Mono<UserDto<ID>> currentUser =				
+			ReactiveSecurityContextHolder.getContext()
+				.map(SecurityContext::getAuthentication)
+				.map(Authentication::getPrincipal)
+				.cast(LemonPrincipal.class)
+				.doOnNext(LemonPrincipal::eraseCredentials)
+				.map(LemonPrincipal::currentUser);
+		
+		return lemonReactiveService.userWithToken(currentUser, exchange.getResponse(), expirationMillis);
 	}
 
 	
