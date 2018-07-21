@@ -58,7 +58,8 @@ public class LemonReactiveSecurityConfig <U extends AbstractMongoUser<ID>, ID ex
 				.authenticationEntryPoint(authenticationEntryPoint())
 			.and()
 				.csrf().disable()
-				.addFilterAt(tokenAuthenticationFilter(), SecurityWebFiltersOrder.AUTHENTICATION)				
+				.addFilterAt(tokenAuthenticationFilter(), SecurityWebFiltersOrder.AUTHENTICATION)
+			.logout().disable()
 			.build();
 	}
 
