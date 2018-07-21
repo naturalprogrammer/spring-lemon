@@ -2,6 +2,7 @@ package com.naturalprogrammer.spring.lemon.commons;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -21,11 +22,14 @@ import com.naturalprogrammer.spring.lemon.commons.mail.SmtpMailSender;
 import com.naturalprogrammer.spring.lemon.commons.security.JwtService;
 import com.naturalprogrammer.spring.lemon.commons.security.LemonPermissionEvaluator;
 import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
+import com.naturalprogrammer.spring.lemon.exceptions.LemonExceptionsAutoConfiguration;
 import com.nimbusds.jose.KeyLengthException;
 
 @Configuration
 @ComponentScan(basePackageClasses=BadCredentialsExceptionHandler.class)
 @EnableAsync
+@AutoConfigureBefore({
+	LemonExceptionsAutoConfiguration.class})
 public class LemonCommonsAutoConfiguration {
 
 	private static final Log log = LogFactory.getLog(LemonCommonsAutoConfiguration.class);

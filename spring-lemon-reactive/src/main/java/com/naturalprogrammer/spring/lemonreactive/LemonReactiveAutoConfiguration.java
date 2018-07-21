@@ -9,7 +9,6 @@ import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.security.reactive.ReactiveSecurityAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.reactive.ReactiveUserDetailsServiceAutoConfiguration;
-import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.reactive.WebFluxAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.reactive.error.ErrorWebFluxAutoConfiguration;
 import org.springframework.boot.web.reactive.error.ErrorAttributes;
@@ -44,7 +43,7 @@ import com.naturalprogrammer.spring.lemonreactive.util.LerUtils;
 @AutoConfigureBefore({
 	WebFluxAutoConfiguration.class,
 	ErrorWebFluxAutoConfiguration.class,
-	SecurityAutoConfiguration.class,
+//	SecurityAutoConfiguration.class,
 	ReactiveSecurityAutoConfiguration.class,
 	ReactiveUserDetailsServiceAutoConfiguration.class,
 	LemonCommonsAutoConfiguration.class})

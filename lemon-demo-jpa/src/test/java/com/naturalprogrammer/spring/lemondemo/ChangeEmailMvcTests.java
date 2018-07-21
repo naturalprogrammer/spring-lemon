@@ -84,7 +84,7 @@ public class ChangeEmailMvcTests extends AbstractMvcTests {
                 .param("code", code)
 				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, tokens.get(UNVERIFIED_USER_ID))
                 .header("contentType",  MediaType.APPLICATION_FORM_URLENCODED))
-		        .andExpect(status().is(403));
+		        .andExpect(status().is(401));
 
 		// Wrong userId subject
 		code = jwtService.createToken(
@@ -131,7 +131,7 @@ public class ChangeEmailMvcTests extends AbstractMvcTests {
                 .param("code", changeEmailCode)
 				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, authToken)
                 .header("contentType",  MediaType.APPLICATION_FORM_URLENCODED))
-		        .andExpect(status().is(403));	
+		        .andExpect(status().is(401));	
 	}
 	
 	/**

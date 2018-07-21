@@ -32,6 +32,7 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationFa
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.naturalprogrammer.spring.lemon.commons.LemonCommonsAutoConfiguration;
 import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
 import com.naturalprogrammer.spring.lemon.commons.security.JwtService;
 import com.naturalprogrammer.spring.lemon.commons.validation.RetypePasswordValidator;
@@ -42,7 +43,6 @@ import com.naturalprogrammer.spring.lemon.exceptions.DefaultExceptionHandlerCont
 import com.naturalprogrammer.spring.lemon.exceptions.ErrorResponseComposer;
 import com.naturalprogrammer.spring.lemon.exceptions.LemonErrorAttributes;
 import com.naturalprogrammer.spring.lemon.exceptions.LemonErrorController;
-import com.naturalprogrammer.spring.lemon.exceptions.LemonExceptionsAutoConfiguration;
 import com.naturalprogrammer.spring.lemon.security.AuthenticationSuccessHandler;
 import com.naturalprogrammer.spring.lemon.security.JwtAuthenticationProvider;
 import com.naturalprogrammer.spring.lemon.security.LemonCorsConfig;
@@ -71,7 +71,7 @@ import com.naturalprogrammer.spring.lemon.validation.UniqueEmailValidator;
 	ErrorMvcAutoConfiguration.class,
 	SecurityAutoConfiguration.class,
 	SecurityFilterAutoConfiguration.class,
-	LemonExceptionsAutoConfiguration.class})
+	LemonCommonsAutoConfiguration.class})
 public class LemonAutoConfiguration {
 	
 	/**

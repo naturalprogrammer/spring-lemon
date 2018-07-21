@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.security.authentication.BadCredentialsException;
 
 import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
@@ -35,6 +37,8 @@ import com.nimbusds.jwt.proc.DefaultJWTProcessor;
  * https://connect2id.com/products/nimbus-jose-jwt/examples/validating-jwt-access-tokens
  */
 public class JwtService {
+	
+	private static final Log log = LogFactory.getLog(JwtService.class);
 	
 	public static final String LEMON_IAT = "lemon-iat";
     public static final String AUTH_AUDIENCE = "auth";
@@ -115,11 +119,17 @@ public class JwtService {
 		try {
 			
 			JWTClaimsSet claims = jwtProcessor.process(token, null);
-			LecUtils.ensureAuthority(audience != null &&
+			LecUtils.ensureCredentials(audience != null &&
 					claims.getAudience().contains(audience),
 						"com.naturalprogrammer.spring.wrong.audience");
 			
-			LecUtils.ensureAuthority(claims.getExpirationTime().after(new Date()),
+			long expirationTime = claims.getExpirationTime().getTime();
+			long currentTime = System.currentTimeMillis();
+			
+			log.debug("Parsing JWT. Expiration time = " + expirationTime
+					+ ". Current time = " + currentTime);
+			
+			LecUtils.ensureCredentials(expirationTime >= currentTime,
 					"com.naturalprogrammer.spring.expiredToken");
 			
 			return claims;
@@ -138,7 +148,7 @@ public class JwtService {
 		JWTClaimsSet claims = parseToken(token, audience);
 		
 		long issueTime = (long) claims.getClaim(LEMON_IAT);
-		LecUtils.ensureAuthority(issueTime >= issuedAfter,
+		LecUtils.ensureCredentials(issueTime >= issuedAfter,
 				"com.naturalprogrammer.spring.obsoleteToken");
 
 		return claims;

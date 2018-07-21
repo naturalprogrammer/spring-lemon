@@ -34,6 +34,7 @@ import com.naturalprogrammer.spring.lemonreactive.domain.AbstractMongoUser;
 import com.naturalprogrammer.spring.lemonreactive.forms.EmailForm;
 
 import reactor.core.publisher.Mono;
+import reactor.util.function.Tuple2;
 
 /**
  * The Lemon Mongo API. See the
@@ -73,17 +74,19 @@ public class LemonReactiveController
 	public Mono<UserDto<ID>> login(ServerWebExchange exchange) {
 		
 		log.debug("Returning current user ... ");
-		long expirationMillis = exchange.getAttributeOrDefault("expirationMillis", jwtExpirationMillis);
 		
-		Mono<UserDto<ID>> currentUser =				
-			ReactiveSecurityContextHolder.getContext()
+		return ReactiveSecurityContextHolder.getContext()
 				.map(SecurityContext::getAuthentication)
 				.map(Authentication::getPrincipal)
 				.cast(LemonPrincipal.class)
 				.doOnNext(LemonPrincipal::eraseCredentials)
-				.map(LemonPrincipal::currentUser);
-		
-		return lemonReactiveService.userWithToken(currentUser, exchange.getResponse(), expirationMillis);
+				.map(LemonPrincipal::currentUser)
+				.zipWith(exchange.getFormData())
+				.doOnNext(tuple -> {					
+					long expirationMillis = lemonReactiveService.getExpirationMillis(tuple.getT2());
+					lemonReactiveService.addAuthHeader(exchange.getResponse(), tuple.getT1(), expirationMillis);
+				})
+				.map(Tuple2::getT1);
 	}
 
 	

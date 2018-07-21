@@ -82,7 +82,7 @@ public class VerificationMvcTests extends AbstractMvcTests {
 		mvc.perform(post("/api/core/users/{userId}/verification", UNVERIFIED_USER_ID)
                 .param("code", token)
                 .header("contentType",  MediaType.APPLICATION_FORM_URLENCODED))
-                .andExpect(status().is(403));
+                .andExpect(status().is(401));
 		
 		// Wrong email
 		token = jwtService.createToken(JwtService.VERIFY_AUDIENCE,
@@ -101,7 +101,7 @@ public class VerificationMvcTests extends AbstractMvcTests {
 		mvc.perform(post("/api/core/users/{userId}/verification", UNVERIFIED_USER_ID)
                 .param("code", token)
                 .header("contentType",  MediaType.APPLICATION_FORM_URLENCODED))
-                .andExpect(status().is(403));
+                .andExpect(status().is(401));
 	}
 	
 	@Test
@@ -116,6 +116,6 @@ public class VerificationMvcTests extends AbstractMvcTests {
 		mvc.perform(post("/api/core/users/{userId}/verification", UNVERIFIED_USER_ID)
                 .param("code", verificationCode)
                 .header("contentType",  MediaType.APPLICATION_FORM_URLENCODED))
-                .andExpect(status().is(403));
+                .andExpect(status().is(401));
 	}
 }

@@ -776,10 +776,7 @@ public abstract class LemonReactiveService
 			if (StringUtils.isNotBlank(username))
 				username = currentUser.getUsername();
 			
-			long expirationMillis = properties.getJwt().getExpirationMillis();
-			String expirationMillisStr = tuple.getT2().getFirst("expirationMillis");
-			if (StringUtils.isNotBlank(expirationMillisStr))
-				expirationMillis = Long.parseLong(expirationMillisStr);
+			long expirationMillis = getExpirationMillis(tuple.getT2());
 			
 			LecUtils.ensureAuthority(currentUser.getUsername().equals(username) ||
 					currentUser.isGoodAdmin(), "com.naturalprogrammer.spring.notGoodAdminOrSameUser");
@@ -787,5 +784,16 @@ public abstract class LemonReactiveService
 			return Collections.singletonMap("token", LecUtils.TOKEN_PREFIX +
 					jwtService.createToken(JwtService.AUTH_AUDIENCE, username, expirationMillis));			
 		});
+	}
+	
+	
+	public long getExpirationMillis(MultiValueMap<String, String> formData) {
+		
+		long expirationMillis = properties.getJwt().getExpirationMillis();
+		String expirationMillisStr = formData.getFirst("expirationMillis");
+		if (StringUtils.isNotBlank(expirationMillisStr))
+			expirationMillis = Long.parseLong(expirationMillisStr);
+		
+		return expirationMillis;
 	}
 }

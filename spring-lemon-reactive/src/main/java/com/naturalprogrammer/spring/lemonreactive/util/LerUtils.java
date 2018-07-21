@@ -61,6 +61,9 @@ public class LerUtils {
 		
 		long issueTime = (long) claims.getClaim(JwtService.LEMON_IAT);
 
+		log.debug("Ensuring credentials up to date. Issue time = "
+				+ issueTime + ". User's credentials updated at" + user.getCredentialsUpdatedMillis());
+		
 		LecUtils.ensureCredentials(issueTime >= user.getCredentialsUpdatedMillis(),
 				"com.naturalprogrammer.spring.obsoleteToken");
 	}

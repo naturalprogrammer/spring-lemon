@@ -1,8 +1,7 @@
-package com.naturalprogrammer.spring.lemon.security;
+package com.naturalprogrammer.lemon.commons.security;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 
 import com.naturalprogrammer.spring.lemon.commons.security.JwtService;
@@ -36,14 +35,14 @@ public class JwtServiceTests {
 		Assert.assertEquals("abc@example.com", claims.getClaim("username"));
 	}
 
-	@Test(expected = AccessDeniedException.class)
+	@Test(expected = BadCredentialsException.class)
 	public void testJwtParseTokenWrongAudience() {
 		
 		String token = service1.createToken("auth", "subject", 5000L);
 		service1.parseToken(token, "auth2");
 	}
 	
-	@Test(expected = AccessDeniedException.class)
+	@Test(expected = BadCredentialsException.class)
 	public void testJwtParseTokenExpired() throws InterruptedException {
 		
 		String token = service1.createToken("auth", "subject", 1L);
@@ -58,7 +57,7 @@ public class JwtServiceTests {
 		service2.parseToken(token, "auth");
 	}
 
-	@Test(expected = AccessDeniedException.class)
+	@Test(expected = BadCredentialsException.class)
 	public void testParseTokenCutoffTime() throws InterruptedException {
 
 		String token = service1.createToken("auth", "subject", 5000L);
