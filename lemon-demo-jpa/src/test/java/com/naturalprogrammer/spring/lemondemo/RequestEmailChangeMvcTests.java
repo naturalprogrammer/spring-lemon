@@ -101,10 +101,6 @@ public class RequestEmailChangeMvcTests extends AbstractMvcTests {
 	 * A bad admin trying to change the email id
 	 * of another user
 	 */
-	/**
-	 * A non-admin should not be able to request changing
-	 * the email id of another user
-	 */
 	@Test
 	public void testBadAdminRequestEmailChangeAnotherUser() throws Exception {
 		
@@ -140,7 +136,7 @@ public class RequestEmailChangeMvcTests extends AbstractMvcTests {
 		updatedUser.setPassword("");
 		updatedUser.setNewEmail("");
 		
-    	// try with null newEmail and password
+    	// try with blank newEmail and password
 		mvc.perform(post("/api/core/users/{id}/email-change-request", UNVERIFIED_USER_ID)
 				.contentType(MediaType.APPLICATION_JSON)
 				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, tokens.get(UNVERIFIED_USER_ID))

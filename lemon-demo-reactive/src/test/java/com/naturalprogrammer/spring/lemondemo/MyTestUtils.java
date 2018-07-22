@@ -1,8 +1,5 @@
 package com.naturalprogrammer.spring.lemondemo;
 
-import static com.naturalprogrammer.spring.lemondemo.MyTestUtils.ADMIN_ID;
-import static com.naturalprogrammer.spring.lemondemo.MyTestUtils.CLIENT;
-import static com.naturalprogrammer.spring.lemondemo.MyTestUtils.TOKENS;
 import static com.naturalprogrammer.spring.lemondemo.controllers.MyController.BASE_URI;
 import static org.springframework.web.reactive.function.BodyInserters.fromFormData;
 
@@ -26,8 +23,6 @@ import org.springframework.test.web.reactive.server.WebTestClient.ResponseSpec;
 import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
 import com.naturalprogrammer.spring.lemondemo.domain.User;
 import com.naturalprogrammer.spring.lemondemo.dto.TestUserDto;
-
-import reactor.test.StepVerifier;
 
 @Component
 public class MyTestUtils {
@@ -57,7 +52,7 @@ public class MyTestUtils {
 	
 	@Autowired
 	private MongoTemplate mongoTemplate;
-
+	
 	public MyTestUtils(ApplicationContext context) {
 		CLIENT = WebTestClient
 					.bindToApplicationContext(context)
@@ -118,7 +113,6 @@ public class MyTestUtils {
 
 		log.debug("Created users.");
 	}
-
 
 	private void createUser(ObjectId id, String email, String password, String name, String... roles) {
 		

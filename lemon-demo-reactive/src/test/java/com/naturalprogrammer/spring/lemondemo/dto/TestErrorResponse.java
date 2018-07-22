@@ -2,8 +2,6 @@ package com.naturalprogrammer.spring.lemondemo.dto;
 
 import java.util.Collection;
 
-import com.naturalprogrammer.spring.lemon.exceptions.LemonFieldError;
-
 import lombok.Getter;
 import lombok.Setter;
 

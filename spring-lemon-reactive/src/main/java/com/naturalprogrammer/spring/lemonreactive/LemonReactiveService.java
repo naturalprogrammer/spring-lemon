@@ -637,7 +637,7 @@ public abstract class LemonReactiveService
 		log.debug("Requesting email change: " + user);
 		
 		// checks
-		LexUtils.validate("updatedUser.password",
+		LexUtils.validate("emailFormMono.password",
 			passwordEncoder.matches(emailForm.getPassword(),
 									user.getPassword()),
 			"com.naturalprogrammer.spring.wrong.password").go();

@@ -10,12 +10,12 @@ import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.reactive.server.EntityExchangeResult;
 
-import com.naturalprogrammer.spring.lemon.exceptions.ErrorResponse;
-import com.naturalprogrammer.spring.lemon.exceptions.LemonFieldError;
+import com.naturalprogrammer.spring.lemon.commons.mail.MailSender;
 import com.naturalprogrammer.spring.lemondemo.dto.TestErrorResponse;
 import com.naturalprogrammer.spring.lemondemo.dto.TestLemonFieldError;
 
@@ -34,6 +34,9 @@ public abstract class AbstractTests {
 	@Autowired
 	protected MyTestUtils testUtils;
 	
+    @MockBean
+    protected MailSender<?> mailSender;
+
 	@Before
 	public void initialize() {
 		
