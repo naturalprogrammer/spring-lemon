@@ -76,12 +76,7 @@ public class LemonUtils {
 	 */
 	public static <ID extends Serializable> UserDto<ID> currentUser() {
 		
-		// get the authentication object
-		Authentication auth = SecurityContextHolder
-			.getContext().getAuthentication();
-		
-		// get the user from the authentication object
-		return LecUtils.currentUser(auth);
+		return LecUtils.currentUser(SecurityContextHolder.getContext());
 	}
 	
 

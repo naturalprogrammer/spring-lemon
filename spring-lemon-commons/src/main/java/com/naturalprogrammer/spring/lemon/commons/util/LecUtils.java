@@ -10,6 +10,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.TreeNode;
@@ -46,6 +47,20 @@ public class LecUtils {
 		LecUtils.objectMapper = objectMapper;		
 		log.info("Created");
 	}
+	
+	
+	/**
+	 * Extracts the current-user from authentication object
+	 * 
+	 * @param auth
+	 * @return
+	 */
+	public static <ID extends Serializable> UserDto<ID> currentUser(SecurityContext context) {
+		
+		return currentUser(context.getAuthentication());
+	}
+
+	
 	/**
 	 * Extracts the current-user from authentication object
 	 * 
