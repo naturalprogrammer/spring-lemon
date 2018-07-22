@@ -4,6 +4,7 @@ spring:
   data:
     mongodb:
       database: lemon
+      
   security:
     oauth2:
       client:

@@ -24,11 +24,7 @@ public class BasicTests extends AbstractTests {
 	@Test
 	public void testGetContextLoggedIn() throws Exception {
 		
-		CLIENT.get()
-			.uri(BASE_URI + "/context")
-				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, TOKENS.get(ADMIN_ID))
-				.exchange()
-				.expectStatus().isOk()
+		testUtils.contextResponse(TOKENS.get(ADMIN_ID))
 				.expectHeader().exists(LecUtils.TOKEN_RESPONSE_HEADER_NAME)
 				.expectBody()
 					.jsonPath("$.context.reCaptchaSiteKey").exists()

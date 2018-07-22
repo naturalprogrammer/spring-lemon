@@ -1,4 +1,4 @@
-package com.naturalprogrammer.spring.lemondemo;
+package com.naturalprogrammer.spring.lemondemo.dto;
 
 import java.util.HashSet;
 import java.util.Set;

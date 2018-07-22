@@ -16,6 +16,7 @@ import org.junit.Test;
 
 import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
 import com.naturalprogrammer.spring.lemondemo.domain.User;
+import com.naturalprogrammer.spring.lemondemo.dto.TestUserDto;
 
 public class LoginTests extends AbstractTests {
 

@@ -18,7 +18,7 @@ import org.springframework.http.MediaType;
 
 import com.naturalprogrammer.spring.lemon.commons.domain.ChangePasswordForm;
 import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
-import com.naturalprogrammer.spring.lemon.exceptions.ErrorResponse;
+import com.naturalprogrammer.spring.lemondemo.dto.TestErrorResponse;
 
 import reactor.core.publisher.Mono;
 
@@ -137,7 +137,7 @@ public class ChangePasswordTests extends AbstractTests {
 		.exchange()
 			.expectStatus().isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY)
 			.expectHeader().doesNotExist(LecUtils.TOKEN_RESPONSE_HEADER_NAME)
-			.expectBody(ErrorResponse.class)
+			.expectBody(TestErrorResponse.class)
 			.consumeWith(errorResponseResult -> {				
 				assertErrors(errorResponseResult,
 						"changePasswordFormMono.oldPassword",
@@ -163,7 +163,7 @@ public class ChangePasswordTests extends AbstractTests {
 		.exchange()
 			.expectStatus().isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY)
 			.expectHeader().doesNotExist(LecUtils.TOKEN_RESPONSE_HEADER_NAME)
-			.expectBody(ErrorResponse.class)
+			.expectBody(TestErrorResponse.class)
 			.consumeWith(errorResponseResult -> {				
 				assertErrors(errorResponseResult,
 						"changePasswordFormMono.oldPassword",
@@ -187,7 +187,7 @@ public class ChangePasswordTests extends AbstractTests {
 		.exchange()
 			.expectStatus().isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY)
 			.expectHeader().doesNotExist(LecUtils.TOKEN_RESPONSE_HEADER_NAME)
-			.expectBody(ErrorResponse.class)
+			.expectBody(TestErrorResponse.class)
 			.consumeWith(errorResponseResult -> {				
 				assertErrors(errorResponseResult,
 						"changePasswordFormMono.retypePassword",

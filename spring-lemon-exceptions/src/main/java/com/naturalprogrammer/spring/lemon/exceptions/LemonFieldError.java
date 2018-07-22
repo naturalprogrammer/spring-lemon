@@ -15,13 +15,14 @@ import org.springframework.web.bind.support.WebExchangeBindException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 /**
  * Holds a field or form error
  * 
  * @author Sanjay Patel
  */
-@Getter @NoArgsConstructor @AllArgsConstructor
+@Getter @AllArgsConstructor @ToString
 public class LemonFieldError {
 	
 	// Name of the field. Null in case of a form level error. 
@@ -32,12 +33,6 @@ public class LemonFieldError {
 	
 	// Error message
 	private String message;
-	
-	@Override
-	public String toString() {
-		return "FieldError {field=" + field + ", code=" + code + ", message=" + message + "}";
-	}
-
 
 	/**
 	 * Converts a set of ConstraintViolations

@@ -773,7 +773,7 @@ public abstract class LemonReactiveService
 			UserDto<ID> currentUser = (UserDto<ID>) tuple.getT1().get();
 			
 			String username = tuple.getT2().getFirst("username");
-			if (StringUtils.isNotBlank(username))
+			if (StringUtils.isBlank(username))
 				username = currentUser.getUsername();
 			
 			long expirationMillis = getExpirationMillis(tuple.getT2());

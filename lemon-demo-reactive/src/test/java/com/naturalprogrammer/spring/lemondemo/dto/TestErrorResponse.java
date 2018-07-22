@@ -1,6 +1,8 @@
-package com.naturalprogrammer.spring.lemon.exceptions;
+package com.naturalprogrammer.spring.lemondemo.dto;
 
 import java.util.Collection;
+
+import com.naturalprogrammer.spring.lemon.exceptions.LemonFieldError;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -10,16 +12,11 @@ import lombok.Setter;
  * in case of errors
  */
 @Getter @Setter
-public class ErrorResponse {
+public class TestErrorResponse {
 	
 	private String exception;
 	private String error;
 	private String message;
 	private Integer status; // We'd need it as integer in JSON serialization
-	private Collection<LemonFieldError> errors;
-	
-	public boolean incomplete() {
-		
-		return message == null || status == null;
-	}
+	private Collection<TestLemonFieldError> errors;
 }

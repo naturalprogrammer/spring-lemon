@@ -16,6 +16,8 @@ import org.springframework.test.web.reactive.server.EntityExchangeResult;
 
 import com.naturalprogrammer.spring.lemon.exceptions.ErrorResponse;
 import com.naturalprogrammer.spring.lemon.exceptions.LemonFieldError;
+import com.naturalprogrammer.spring.lemondemo.dto.TestErrorResponse;
+import com.naturalprogrammer.spring.lemondemo.dto.TestLemonFieldError;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest({
@@ -39,13 +41,13 @@ public abstract class AbstractTests {
 	}
 	
 
-	protected void assertErrors(EntityExchangeResult<ErrorResponse> errorResponseResult, String... fields) {
+	protected void assertErrors(EntityExchangeResult<TestErrorResponse> errorResponseResult, String... fields) {
 		
-		ErrorResponse response = errorResponseResult.getResponseBody();
+		TestErrorResponse response = errorResponseResult.getResponseBody();
 		assertEquals(fields.length, response.getErrors().size());
 		
 		assertTrue(response.getErrors().stream()
-				.map(LemonFieldError::getField).collect(Collectors.toSet())
+				.map(TestLemonFieldError::getField).collect(Collectors.toSet())
 				.containsAll(Arrays.asList(fields)));
 	}
 }

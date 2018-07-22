@@ -1,8 +1,12 @@
 package com.naturalprogrammer.spring.lemondemo;
 
+import static com.naturalprogrammer.spring.lemondemo.MyTestUtils.ADMIN_ID;
+import static com.naturalprogrammer.spring.lemondemo.MyTestUtils.CLIENT;
+import static com.naturalprogrammer.spring.lemondemo.MyTestUtils.TOKENS;
 import static com.naturalprogrammer.spring.lemondemo.controllers.MyController.BASE_URI;
 import static org.springframework.web.reactive.function.BodyInserters.fromFormData;
 
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -21,6 +25,9 @@ import org.springframework.test.web.reactive.server.WebTestClient.ResponseSpec;
 
 import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
 import com.naturalprogrammer.spring.lemondemo.domain.User;
+import com.naturalprogrammer.spring.lemondemo.dto.TestUserDto;
+
+import reactor.test.StepVerifier;
 
 @Component
 public class MyTestUtils {
@@ -52,7 +59,11 @@ public class MyTestUtils {
 	private MongoTemplate mongoTemplate;
 
 	public MyTestUtils(ApplicationContext context) {
-		CLIENT = WebTestClient.bindToApplicationContext(context).build();
+		CLIENT = WebTestClient
+					.bindToApplicationContext(context)
+					.configureClient()
+					.responseTimeout(Duration.ofHours(1L))
+					.build();
 	}
 
     public String login(String userName, String password) {
@@ -73,7 +84,16 @@ public class MyTestUtils {
                 .exchange();
     }
 
-//    @Override
+    public ResponseSpec contextResponse(String token) {
+
+		return CLIENT.get()
+			.uri(BASE_URI + "/context")
+				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, token)
+				.exchange()
+				.expectStatus().isOk();
+    }
+
+    //    @Override
 //	public void run(String... args) throws Exception {
 //    	
 //		TOKENS.put(ADMIN_ID, login(ADMIN_EMAIL, ADMIN_PASSWORD));

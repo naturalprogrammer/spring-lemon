@@ -7,6 +7,7 @@ import org.apache.commons.logging.LogFactory;
 import org.bson.types.ObjectId;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.mongo.MongoReactiveAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.reactive.ReactiveSecurityAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.reactive.ReactiveUserDetailsServiceAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.reactive.WebFluxAutoConfiguration;
@@ -41,6 +42,7 @@ import com.naturalprogrammer.spring.lemonreactive.util.LerUtils;
 @EnableMongoAuditing
 @EnableReactiveMethodSecurity
 @AutoConfigureBefore({
+	MongoReactiveAutoConfiguration.class,
 	WebFluxAutoConfiguration.class,
 	ErrorWebFluxAutoConfiguration.class,
 //	SecurityAutoConfiguration.class,
