@@ -67,20 +67,6 @@ public class SignupMvcTests extends AbstractMvcTests {
 		Assert.assertNotEquals("user123", userRepository.findByEmail("user.foo@example.com").get().getPassword());
 	}
 	
-//	@Test
-//	public void testSignupLoggedIn() throws Exception {
-//		
-//		String adminToken = login("admin@example.com", "admin!");
-//
-//		User user = new User("user1@example.com", "user123", "User 1");
-//
-//		mvc.perform(post("/api/core/users")
-//				.header(LemonSecurityConfig.TOKEN_REQUEST_HEADER_NAME, adminToken)
-//				.contentType(MediaType.APPLICATION_JSON)
-//				.content(LemonUtils.toJson(user)))
-//				.andExpect(status().is(403));
-//	}
-//	
 	@Test
 	public void testSignupDuplicateEmail() throws Exception {
 		

@@ -197,7 +197,8 @@ public abstract class LemonReactiveService
 		return user
 			.doOnNext(this::initUser)
 			.flatMap(userRepository::insert)
-			.doOnSuccess(this::sendVerificationMail)
+			.doOnNext(this::sendVerificationMail)
+			.doOnNext(AbstractMongoUser::eraseCredentials)
 			.map(AbstractMongoUser::toUserDto);
 	}
 
@@ -568,7 +569,7 @@ public abstract class LemonReactiveService
 		
 		U user = tuple.getT1();
 		
-		user.setPassword(null); // JsonIgnore didn't work
+		user.eraseCredentials();
 		
 		if (!user.hasPermission(tuple.getT2().orElse(null), UserUtils.Permission.EDIT))
 			user.setEmail(null);

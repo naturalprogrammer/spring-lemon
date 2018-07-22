@@ -6,6 +6,7 @@ import java.util.Set;
 
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.security.core.CredentialsContainer;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
@@ -20,7 +21,7 @@ import lombok.Setter;
 @Getter @Setter
 public abstract class AbstractMongoUser
 	<ID extends Serializable>
-	extends AbstractDocument<ID> {
+	extends AbstractDocument<ID> implements CredentialsContainer {
 
 	// email
 	@JsonView(UserUtils.SignupInput.class)
@@ -106,5 +107,10 @@ public abstract class AbstractMongoUser
 	protected Serializable toTag() {
 		
 		return null;
+	}
+
+	@Override
+	public void eraseCredentials() {
+		password = null;
 	}
 }
