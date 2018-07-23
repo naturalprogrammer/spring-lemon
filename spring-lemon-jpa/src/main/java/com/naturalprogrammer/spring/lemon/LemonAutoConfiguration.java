@@ -284,7 +284,7 @@ public class LemonAutoConfiguration {
 			ObjectMapper objectMapper) {
 
         log.info("Configuring LemonUtil");       		
-		return new LemonUtils(applicationContext, objectMapper);
+		return new LemonUtils();
 	}
 	
 	/**

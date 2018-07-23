@@ -2,18 +2,26 @@ package com.naturalprogrammer.spring.lemon.commons.util;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
+import java.util.UUID;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.core.io.Resource;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.TreeNode;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.fge.jsonpatch.JsonPatch;
@@ -40,11 +48,15 @@ public class LecUtils {
 	public static final String TOKEN_REQUEST_HEADER_NAME = "Authorization";
 	public static final String TOKEN_RESPONSE_HEADER_NAME = "Lemon-Authorization";
 
-	private static ObjectMapper objectMapper;
+	public static ApplicationContext applicationContext;
+	public static ObjectMapper objectMapper;
 	
-	public LecUtils(ObjectMapper objectMapper) {
+	public LecUtils(ApplicationContext applicationContext,
+		ObjectMapper objectMapper) {
 		
-		LecUtils.objectMapper = objectMapper;		
+		LecUtils.applicationContext = applicationContext;
+		LecUtils.objectMapper = objectMapper;
+		
 		log.info("Created");
 	}
 	
@@ -148,5 +160,62 @@ public class LecUtils {
 
         // Convert the patched node to an updated obj
         return objectMapper.treeToValue(patchedObjNode, (Class<T>) originalObj.getClass());
-    }    
+    }
+
+
+	/**
+	 * Reads a resource into a String
+	 */
+	public static String toStr(Resource resource) throws IOException {
+		
+		String text = null;
+	    try (Scanner scanner = new Scanner(resource.getInputStream(), StandardCharsets.UTF_8.name())) {
+	        text = scanner.useDelimiter("\\A").next();
+	    }
+	    
+	    return text;
+	}
+	
+	public static ObjectMapper mapper() {
+		
+		return objectMapper;
+	}
+
+
+	/**
+	 * Gets the reference to an application-context bean
+	 *  
+	 * @param clazz	the type of the bean
+	 */
+	public static <T> T getBean(Class<T> clazz) {
+		return applicationContext.getBean(clazz);
+	}
+
+
+	/**
+	 * Generates a random unique string
+	 */
+	public static String uid() {
+		
+		return UUID.randomUUID().toString();
+	}
+
+
+	/**
+	 * Serializes an object to JSON string
+	 */
+	public static <T> String toJson(T obj) throws JsonProcessingException {
+	
+		return objectMapper.writeValueAsString(obj);
+	}
+
+
+	/**
+	 * Deserializes a JSON String
+	 */
+	public static <T> T fromJson(String json, Class<T> clazz)
+			throws JsonParseException, JsonMappingException, IOException {
+	
+		return objectMapper.readValue(json, clazz);
+	}
 }

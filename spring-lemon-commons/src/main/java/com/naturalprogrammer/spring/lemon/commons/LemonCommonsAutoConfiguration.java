@@ -5,6 +5,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -114,7 +115,7 @@ public class LemonCommonsAutoConfiguration {
 	}
 	
 	@Bean
-	public LecUtils lecUtils(ObjectMapper objectMapper) {
-		return new LecUtils(objectMapper);
+	public LecUtils lecUtils(ApplicationContext applicationContext, ObjectMapper objectMapper) {
+		return new LecUtils(applicationContext, objectMapper);
 	}
 }

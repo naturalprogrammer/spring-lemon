@@ -15,9 +15,9 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import com.naturalprogrammer.spring.lemon.LemonService;
 import com.naturalprogrammer.spring.lemon.commons.security.LemonPrincipal;
 import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
+import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
 import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
-import com.naturalprogrammer.spring.lemon.util.LemonUtils;
 
 /**
  * Logs in or registers a user after OAuth2 SignIn/Up
@@ -67,7 +67,7 @@ public class LemonOAuth2UserService<U extends AbstractUser<U,ID>, ID extends Ser
 			// register a new user
 			U newUser = lemonService.newUser();
 			newUser.setEmail(email);
-			newUser.setPassword(passwordEncoder.encode(LemonUtils.uid()));
+			newUser.setPassword(passwordEncoder.encode(LecUtils.uid()));
 			
 			lemonService.fillAdditionalFields(registrationId, newUser, attributes);
 			lemonService.save(newUser);

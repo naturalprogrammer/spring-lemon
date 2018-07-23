@@ -1,11 +1,7 @@
 package com.naturalprogrammer.spring.lemon.util;
 
-import java.io.IOException;
 import java.io.Serializable;
-import java.nio.charset.StandardCharsets;
 import java.util.Optional;
-import java.util.Scanner;
-import java.util.UUID;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -13,16 +9,12 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationContext;
-import org.springframework.core.io.Resource;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.support.TransactionSynchronizationAdapter;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.naturalprogrammer.spring.lemon.commons.security.JwtService;
 import com.naturalprogrammer.spring.lemon.commons.security.LemonPrincipal;
@@ -42,34 +34,11 @@ public class LemonUtils {
 	
 	private static final Log log = LogFactory.getLog(LemonUtils.class);
 
-	private static ApplicationContext applicationContext;
-	private static ObjectMapper objectMapper;
-	
-	public LemonUtils(ApplicationContext applicationContext,
-		ObjectMapper objectMapper) {
-		
-		LemonUtils.applicationContext = applicationContext;
-		LemonUtils.objectMapper = objectMapper;
+	public LemonUtils() {
 		
 		log.info("Created");
 	}
 
-
-	public static ObjectMapper getMapper() {
-		
-		return objectMapper;
-	}
-	
-	
-	/**
-	 * Gets the reference to an application-context bean
-	 *  
-	 * @param clazz	the type of the bean
-	 */
-	public static <T> T getBean(Class<T> clazz) {
-		return applicationContext.getBean(clazz);
-	}
-	
 
 	/**
 	 * Gets the current-user
@@ -132,34 +101,6 @@ public class LemonUtils {
 
 	
 	/**
-	 * Generates a random unique string
-	 */
-	public static String uid() {
-		
-		return UUID.randomUUID().toString();
-	}
-	
-	
-    /**
-     * Serializes an object to JSON string
-     */
-	public static <T> String toJson(T obj) throws JsonProcessingException {
-
-		return objectMapper.writeValueAsString(obj);
-	}
-	
-	
-	/**
-	 * Deserializes a JSON String
-	 */
-	public static <T> T fromJson(String json, Class<T> clazz)
-			throws JsonParseException, JsonMappingException, IOException {
-
-		return objectMapper.readValue(json, clazz);
-	}
-
-	
-	/**
 	 * Throws BadCredentialsException if 
 	 * user's credentials were updated after the JWT was issued
 	 */
@@ -172,20 +113,6 @@ public class LemonUtils {
 				"com.naturalprogrammer.spring.obsoleteToken");
 	}
 	
-	
-	/**
-	 * Reads a resource into a String
-	 */
-	public static String toString(Resource resource) throws IOException {
-		
-		String text = null;
-	    try (Scanner scanner = new Scanner(resource.getInputStream(), StandardCharsets.UTF_8.name())) {
-	        text = scanner.useDelimiter("\\A").next();
-	    }
-	    
-	    return text;
-	}
-
 	
 	/**
 	 * Fetches a cookie from the request
