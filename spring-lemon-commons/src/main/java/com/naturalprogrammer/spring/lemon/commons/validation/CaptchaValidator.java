@@ -1,4 +1,4 @@
-package com.naturalprogrammer.spring.lemon.validation;
+package com.naturalprogrammer.spring.lemon.commons.validation;
 
 import java.util.Collection;
 

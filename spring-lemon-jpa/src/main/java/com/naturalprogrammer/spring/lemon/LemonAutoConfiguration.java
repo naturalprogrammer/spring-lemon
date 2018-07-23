@@ -35,6 +35,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.naturalprogrammer.spring.lemon.commons.LemonCommonsAutoConfiguration;
 import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
 import com.naturalprogrammer.spring.lemon.commons.security.JwtService;
+import com.naturalprogrammer.spring.lemon.commons.validation.CaptchaValidator;
 import com.naturalprogrammer.spring.lemon.commons.validation.RetypePasswordValidator;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUserRepository;
@@ -53,7 +54,6 @@ import com.naturalprogrammer.spring.lemon.security.LemonUserDetailsService;
 import com.naturalprogrammer.spring.lemon.security.OAuth2AuthenticationFailureHandler;
 import com.naturalprogrammer.spring.lemon.security.OAuth2AuthenticationSuccessHandler;
 import com.naturalprogrammer.spring.lemon.util.LemonUtils;
-import com.naturalprogrammer.spring.lemon.validation.CaptchaValidator;
 import com.naturalprogrammer.spring.lemon.validation.UniqueEmailValidator;
 
 /**

@@ -10,7 +10,16 @@
 angular.module('appBoot')
   .factory('formService', function($http, $location, alerts) {
 
-    /**
+	 var serialize = function(obj) {
+		  var str = [];
+		  for (var p in obj)
+		    if (obj.hasOwnProperty(p)) {
+		      str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+		    }
+		  return str.join("&");
+		}
+
+	 /**
      * Creates the array if not already present
      *
      * @param obj
@@ -30,6 +39,8 @@ angular.module('appBoot')
         switch (errorData.exception) {
 
           case 'ConstraintViolationException': // server side JSR-303 errors
+          case 'ExplicitConstraintViolationException': // server side JSR-303 errors
+          case 'WebExchangeBindException': // server side JSR-303 errors
           case 'MultiErrorException': // server side form errors manually thrown
 
             angular.forEach(errorData.errors, function(error) { // for each fields
@@ -72,7 +83,7 @@ angular.module('appBoot')
       if (method === 'post' || method === 'put' || method === 'patch') {
 
         if (options.asParam) // data should be sent as params
-          return $http[method](serverUrl + url, null, {params: options.data});
+          return $http[method](serverUrl + url, serialize(options.data), {headers: {'Content-Type': 'application/x-www-form-urlencoded'}});
 
         return $http[method](serverUrl + url, options.data);
       }

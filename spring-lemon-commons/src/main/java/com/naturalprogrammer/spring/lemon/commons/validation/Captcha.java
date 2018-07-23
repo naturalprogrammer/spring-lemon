@@ -1,4 +1,4 @@
-package com.naturalprogrammer.spring.lemon.validation;
+package com.naturalprogrammer.spring.lemon.commons.validation;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

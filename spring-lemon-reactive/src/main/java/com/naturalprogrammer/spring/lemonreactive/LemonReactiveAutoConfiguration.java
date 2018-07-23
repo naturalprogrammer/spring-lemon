@@ -7,6 +7,7 @@ import org.apache.commons.logging.LogFactory;
 import org.bson.types.ObjectId;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.mongo.MongoReactiveAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.reactive.ReactiveSecurityAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.reactive.ReactiveUserDetailsServiceAutoConfiguration;
@@ -27,6 +28,7 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.naturalprogrammer.spring.lemon.commons.LemonCommonsAutoConfiguration;
+import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
 import com.naturalprogrammer.spring.lemon.commons.security.JwtService;
 import com.naturalprogrammer.spring.lemon.exceptions.ErrorResponseComposer;
 import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
@@ -34,6 +36,7 @@ import com.naturalprogrammer.spring.lemonreactive.domain.AbstractMongoUser;
 import com.naturalprogrammer.spring.lemonreactive.domain.AbstractMongoUserRepository;
 import com.naturalprogrammer.spring.lemonreactive.exceptions.LemonReactiveErrorAttributes;
 import com.naturalprogrammer.spring.lemonreactive.exceptions.handlers.VersionExceptionHandler;
+import com.naturalprogrammer.spring.lemonreactive.security.LemonReactiveCorsConfig;
 import com.naturalprogrammer.spring.lemonreactive.security.LemonReactiveSecurityConfig;
 import com.naturalprogrammer.spring.lemonreactive.security.LemonReactiveUserDetailsService;
 import com.naturalprogrammer.spring.lemonreactive.util.LerUtils;
@@ -115,6 +118,20 @@ public class LemonReactiveAutoConfiguration {
 		return new LemonReactiveUserDetailsService<U, ID>(userRepository);
 	}
 
+
+	/**
+	 * Configures LemonCorsConfig if missing and lemon.cors.allowed-origins is provided
+	 */
+	@Bean
+	@ConditionalOnProperty(name="lemon.cors.allowed-origins")
+	@ConditionalOnMissingBean(LemonReactiveCorsConfig.class)
+	public LemonReactiveCorsConfig lemonCorsConfig(LemonProperties properties) {
+		
+        log.info("Configuring LemonCorsConfig");       
+		return new LemonReactiveCorsConfig(properties);		
+	}
+
+	
 	@Bean
 	public SimpleModule objectIdModule() {
 		
