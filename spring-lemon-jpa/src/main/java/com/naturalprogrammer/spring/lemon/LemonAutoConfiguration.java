@@ -44,8 +44,8 @@ import com.naturalprogrammer.spring.lemon.exceptions.DefaultExceptionHandlerCont
 import com.naturalprogrammer.spring.lemon.exceptions.ErrorResponseComposer;
 import com.naturalprogrammer.spring.lemon.exceptions.LemonErrorAttributes;
 import com.naturalprogrammer.spring.lemon.exceptions.LemonErrorController;
-import com.naturalprogrammer.spring.lemon.security.LemonAuthenticationSuccessHandler;
 import com.naturalprogrammer.spring.lemon.security.JwtAuthenticationProvider;
+import com.naturalprogrammer.spring.lemon.security.LemonAuthenticationSuccessHandler;
 import com.naturalprogrammer.spring.lemon.security.LemonCorsConfig;
 import com.naturalprogrammer.spring.lemon.security.LemonOAuth2UserService;
 import com.naturalprogrammer.spring.lemon.security.LemonOidcUserService;
