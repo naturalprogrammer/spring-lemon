@@ -43,12 +43,4 @@ public class User extends AbstractMongoUser<ObjectId> {
 		tag.setName(name);
 		return tag;
 	}
-	
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 }

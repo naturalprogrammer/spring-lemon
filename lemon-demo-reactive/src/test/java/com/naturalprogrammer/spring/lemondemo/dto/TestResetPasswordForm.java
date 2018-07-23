@@ -1,9 +1,5 @@
 package com.naturalprogrammer.spring.lemondemo.dto;
 
-import javax.validation.constraints.NotBlank;
-
-import com.naturalprogrammer.spring.lemon.commons.validation.Password;
-
 import lombok.Getter;
 import lombok.Setter;
 

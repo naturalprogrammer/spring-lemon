@@ -5,5 +5,6 @@ import lombok.Setter;
 
 @Getter @Setter
 public class TestToken {
+	
 	private String token;
 }

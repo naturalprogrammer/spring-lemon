@@ -9,8 +9,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import org.junit.Test;
 import org.springframework.http.HttpHeaders;
 
-import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
-
 public class ResendVerificationMailMvcTests extends AbstractMvcTests {
 
 	@Test

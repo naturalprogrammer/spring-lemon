@@ -10,8 +10,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 
-import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
-
 @Sql({"/test-data/initialize.sql", "/test-data/finalize.sql"})
 public class FetchUserMvcTests extends AbstractMvcTests {
 	

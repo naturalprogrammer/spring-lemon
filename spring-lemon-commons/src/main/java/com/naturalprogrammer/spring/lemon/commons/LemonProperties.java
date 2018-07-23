@@ -10,6 +10,9 @@ import org.springframework.validation.annotation.Validated;
 
 import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * Lemon Properties
  * 
@@ -17,6 +20,7 @@ import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
  */
 @Validated
 @ConfigurationProperties(prefix="lemon")
+@Getter @Setter
 public class LemonProperties {
 	
     private static final Log log = LogFactory.getLog(LemonProperties.class);
@@ -66,72 +70,13 @@ public class LemonProperties {
 
 
 	/**************************
-	 * Gettrer and setters
-	 **************************/
-	public Recaptcha getRecaptcha() {
-		return recaptcha;
-	}
-
-	public void setRecaptcha(Recaptcha recaptcha) {
-		this.recaptcha = recaptcha;
-	}
-
-
-	public Cors getCors() {
-		return cors;
-	}
-
-	public void setCors(Cors cors) {
-		this.cors = cors;
-	}
-
-    public Admin getAdmin() {
-		return admin;
-	}
-
-	public void setAdmin(Admin admin) {
-		this.admin = admin;
-	}
-
-    public Map<String, Object> getShared() {
-		return shared;
-	}
-
-	public void setShared(Map<String, Object> shared) {
-		this.shared = shared;
-	}
-
-	public String getApplicationUrl() {
-		return applicationUrl;
-	}
-
-	public void setApplicationUrl(String applicationUrl) {
-		this.applicationUrl = applicationUrl;
-	}
-
-	public String getOauth2AuthenticationSuccessUrl() {
-		return oauth2AuthenticationSuccessUrl;
-	}
-
-	public void setOauth2AuthenticationSuccessUrl(String oauth2AuthenticationSuccessUrl) {
-		this.oauth2AuthenticationSuccessUrl = oauth2AuthenticationSuccessUrl;
-	}
-
-	public Jwt getJwt() {
-		return jwt;
-	}
-
-	public void setJwt(Jwt jwt) {
-		this.jwt = jwt;
-	}
-	
-	/**************************
 	 * Static classes
 	 *************************/
 
 	/**
      * Recaptcha related properties
      */
+	@Getter @Setter
 	public static class Recaptcha {
     	
 		/**
@@ -143,28 +88,13 @@ public class LemonProperties {
          * Google ReCaptcha Secret Key
          */
     	private String secretkey;
-
-		public String getSitekey() {
-			return sitekey;
-		}
-
-		public void setSitekey(String sitekey) {
-			this.sitekey = sitekey;
-		}
-
-		public String getSecretkey() {
-			return secretkey;
-		}
-
-		public void setSecretkey(String secretkey) {
-			this.secretkey = secretkey;
-		}
     }
 	
 	
     /**
      * CORS configuration related properties
      */
+	@Getter @Setter
 	public static class Cors {
 		
 		/**
@@ -228,47 +158,6 @@ public class LemonProperties {
 		 * CORS <code>maxAge</code> long property
 		 */
 		private long maxAge = 3600L;
-
-		public String[] getAllowedOrigins() {
-			return allowedOrigins;
-		}
-
-		public void setAllowedOrigins(String[] allowedOrigins) {
-			this.allowedOrigins = allowedOrigins;
-		}
-
-		public String[] getAllowedMethods() {
-			return allowedMethods;
-		}
-
-		public void setAllowedMethods(String[] allowedMethods) {
-			this.allowedMethods = allowedMethods;
-		}
-
-		public String[] getAllowedHeaders() {
-			return allowedHeaders;
-		}
-
-		public void setAllowedHeaders(String[] allowedHeaders) {
-			this.allowedHeaders = allowedHeaders;
-		}
-
-		public String[] getExposedHeaders() {
-			return exposedHeaders;
-		}
-
-		public void setExposedHeaders(String[] exposedHeaders) {
-			this.exposedHeaders = exposedHeaders;
-		}
-
-		public long getMaxAge() {
-			return maxAge;
-		}
-
-		public void setMaxAge(long maxAge) {
-			this.maxAge = maxAge;
-		}
-		
     }
 
 	
@@ -277,6 +166,7 @@ public class LemonProperties {
 	 * 
 	 * @author Sanjay Patel
 	 */
+	@Getter @Setter
 	public static class Admin {
 		
 		/**
@@ -288,22 +178,6 @@ public class LemonProperties {
 		 * Password of the initial Admin user to be created 
 		 */		
 		private String password;
-
-		public String getUsername() {
-			return username;
-		}
-
-		public void setUsername(String username) {
-			this.username = username;
-		}
-
-		public String getPassword() {
-			return password;
-		}
-
-		public void setPassword(String password) {
-			this.password = password;
-		}		
 	}
 	
 	/**
@@ -311,6 +185,7 @@ public class LemonProperties {
 	 * 
 	 * @author Sanjay Patel
 	 */
+	@Getter @Setter
 	public static class Jwt {
 		
 		/**
@@ -327,29 +202,5 @@ public class LemonProperties {
 		 * Expiration milliseconds for short-lived tokens and cookies
 		 */
 		private int shortLivedMillis = 120000; // Two minutes
-		
-		public String getSecret() {
-			return secret;
-		}
-		
-		public void setSecret(String secret) {
-			this.secret = secret;
-		}
-		
-		public long getExpirationMillis() {
-			return expirationMillis;
-		}
-		
-		public void setExpirationMillis(long expirationMillis) {
-			this.expirationMillis = expirationMillis;
-		}
-
-		public int getShortLivedMillis() {
-			return shortLivedMillis;
-		}
-
-		public void setShortLivedMillis(int shortLivedMillis) {
-			this.shortLivedMillis = shortLivedMillis;
-		}
 	}	
 }

@@ -7,12 +7,15 @@ import org.springframework.http.HttpStatus;
 
 import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
 
+import lombok.Getter;
+
 /**
  * An exception class which can contain multiple errors.
  * Used for validation, in service classes.
  * 
  * @author Sanjay Patel
  */
+@Getter
 public class MultiErrorException extends RuntimeException {
 
 	private static final long serialVersionUID = 6020532846519363456L;
@@ -71,16 +74,4 @@ public class MultiErrorException extends RuntimeException {
 		// return the first message
 		return errors.get(0).getMessage();
 	}
-
-	public HttpStatus getStatus() {
-		return status;
-	}
-
-	public void setStatus(HttpStatus status) {
-		this.status = status;
-	}
-	
-	public List<LemonFieldError> getErrors() {
-		return errors;
-	}	
 }

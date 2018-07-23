@@ -12,8 +12,13 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.naturalprogrammer.spring.lemon.commons.util.UserUtils;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 @Entity
 @Table(name="usr")
+@Getter @Setter @NoArgsConstructor
 public class User extends AbstractUser<User,Long> {
 
     private static final long serialVersionUID = 2716710947175132319L;
@@ -21,23 +26,13 @@ public class User extends AbstractUser<User,Long> {
     public static final int NAME_MIN = 1;
     public static final int NAME_MAX = 50;
 
+    @Getter @Setter
 	public static class Tag implements Serializable {
 		
 		private static final long serialVersionUID = -2129078111926834670L;
-
 		private String name;
-
-		public String getName() {
-			return name;
-		}
-
-		public void setName(String name) {
-			this.name = name;
-		}
 	}
 
-	public User() {}
-	
 	public User(String email, String password, String name) {
 		this.email = email;
 		this.password = password;
@@ -57,12 +52,4 @@ public class User extends AbstractUser<User,Long> {
 		tag.setName(name);
 		return tag;
 	}
-	
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 }

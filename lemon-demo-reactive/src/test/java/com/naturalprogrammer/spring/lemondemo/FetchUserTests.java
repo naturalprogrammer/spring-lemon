@@ -15,8 +15,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
-
 public class FetchUserTests extends AbstractTests {
 
 	@Test
