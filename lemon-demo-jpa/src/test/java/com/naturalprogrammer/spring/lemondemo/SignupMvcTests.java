@@ -17,7 +17,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 
 import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
-import com.naturalprogrammer.spring.lemon.util.LemonUtils;
 import com.naturalprogrammer.spring.lemondemo.entities.User;
 
 @Sql({"/test-data/initialize.sql", "/test-data/finalize.sql"})
@@ -30,7 +29,7 @@ public class SignupMvcTests extends AbstractMvcTests {
 
 		mvc.perform(post("/api/core/users")
 				.contentType(MediaType.APPLICATION_JSON)
-				.content(LemonUtils.toJson(invalidUser)))
+				.content(LecUtils.toJson(invalidUser)))
 				.andExpect(status().is(422))
 				.andExpect(jsonPath("$.errors[*].field").value(hasSize(4)))
 				.andExpect(jsonPath("$.errors[*].field").value(hasItems(
@@ -46,7 +45,7 @@ public class SignupMvcTests extends AbstractMvcTests {
 
 		mvc.perform(post("/api/core/users")
 				.contentType(MediaType.APPLICATION_JSON)
-				.content(LemonUtils.toJson(user)))
+				.content(LecUtils.toJson(user)))
 				.andExpect(status().is(201))
 				.andExpect(header().string(LecUtils.TOKEN_RESPONSE_HEADER_NAME, containsString(".")))
 				.andExpect(jsonPath("$.id").exists())
@@ -74,7 +73,7 @@ public class SignupMvcTests extends AbstractMvcTests {
 
 		mvc.perform(post("/api/core/users")
 				.contentType(MediaType.APPLICATION_JSON)
-				.content(LemonUtils.toJson(user)))
+				.content(LecUtils.toJson(user)))
 				.andExpect(status().is(422));
 		
 		verify(mailSender, never()).send(any());

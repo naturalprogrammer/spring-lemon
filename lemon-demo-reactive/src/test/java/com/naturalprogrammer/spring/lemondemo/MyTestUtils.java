@@ -122,7 +122,6 @@ public class MyTestUtils {
 		user.setPassword(passwordEncoder.encode(password));
 		user.setName(name);
 		user.setCredentialsUpdatedMillis(0L);
-		user.setVersion(1L);
 		user.setRoles(new HashSet<String>(Arrays.asList(roles)));
 		
 		mongoTemplate.insert(user);

@@ -14,7 +14,6 @@ import org.springframework.test.context.jdbc.Sql;
 
 import com.naturalprogrammer.spring.lemon.commons.domain.ChangePasswordForm;
 import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
-import com.naturalprogrammer.spring.lemon.util.LemonUtils;
 
 @Sql({"/test-data/initialize.sql", "/test-data/finalize.sql"})
 public class ChangePasswordMvcTests extends AbstractMvcTests {
@@ -40,7 +39,7 @@ public class ChangePasswordMvcTests extends AbstractMvcTests {
 		mvc.perform(post("/api/core/users/{id}/password", UNVERIFIED_USER_ID)
 				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, tokens.get(UNVERIFIED_USER_ID))
 				.contentType(MediaType.APPLICATION_JSON)
-				.content(LemonUtils.toJson(changePasswordForm(USER_PASSWORD))))
+				.content(LecUtils.toJson(changePasswordForm(USER_PASSWORD))))
 				.andExpect(status().is(204))
 				.andExpect(header().string(LecUtils.TOKEN_RESPONSE_HEADER_NAME, containsString(".")));
 		
@@ -57,7 +56,7 @@ public class ChangePasswordMvcTests extends AbstractMvcTests {
 		mvc.perform(post("/api/core/users/{id}/password", UNVERIFIED_USER_ID)
 				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, tokens.get(ADMIN_ID))
 				.contentType(MediaType.APPLICATION_JSON)
-				.content(LemonUtils.toJson(changePasswordForm(ADMIN_PASSWORD))))
+				.content(LecUtils.toJson(changePasswordForm(ADMIN_PASSWORD))))
 				.andExpect(status().is(204))
 				.andExpect(header().string(LecUtils.TOKEN_RESPONSE_HEADER_NAME, containsString(".")));
 		
@@ -74,7 +73,7 @@ public class ChangePasswordMvcTests extends AbstractMvcTests {
 		mvc.perform(post("/api/core/users/99/password")
 				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, tokens.get(ADMIN_ID))
 				.contentType(MediaType.APPLICATION_JSON)
-				.content(LemonUtils.toJson(changePasswordForm(ADMIN_PASSWORD))))
+				.content(LecUtils.toJson(changePasswordForm(ADMIN_PASSWORD))))
 				.andExpect(status().is(404));
 	}
 	
@@ -87,7 +86,7 @@ public class ChangePasswordMvcTests extends AbstractMvcTests {
 		mvc.perform(post("/api/core/users/{id}/password", UNVERIFIED_USER_ID)
 				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, tokens.get(USER_ID))
 				.contentType(MediaType.APPLICATION_JSON)
-				.content(LemonUtils.toJson(changePasswordForm(USER_PASSWORD))))
+				.content(LecUtils.toJson(changePasswordForm(USER_PASSWORD))))
 				.andExpect(status().is(403));
 		
 		// Ensure password didn't change
@@ -103,7 +102,7 @@ public class ChangePasswordMvcTests extends AbstractMvcTests {
 		mvc.perform(post("/api/core/users/{id}/password", UNVERIFIED_USER_ID)
 				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, tokens.get(UNVERIFIED_ADMIN_ID))
 				.contentType(MediaType.APPLICATION_JSON)
-				.content(LemonUtils.toJson(changePasswordForm(ADMIN_PASSWORD))))
+				.content(LecUtils.toJson(changePasswordForm(ADMIN_PASSWORD))))
 				.andExpect(status().is(403));
 		
 		// Ensure password didn't change
@@ -117,7 +116,7 @@ public class ChangePasswordMvcTests extends AbstractMvcTests {
 		mvc.perform(post("/api/core/users/{id}/password", UNVERIFIED_USER_ID)
 				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, tokens.get(UNVERIFIED_USER_ID))
 				.contentType(MediaType.APPLICATION_JSON)
-				.content(LemonUtils.toJson(new ChangePasswordForm())))
+				.content(LecUtils.toJson(new ChangePasswordForm())))
 				.andExpect(status().is(422))
 				.andExpect(jsonPath("$.errors[*].field").value(hasSize(3)))
 				.andExpect(jsonPath("$.errors[*].field").value(hasItems(
@@ -134,7 +133,7 @@ public class ChangePasswordMvcTests extends AbstractMvcTests {
 		mvc.perform(post("/api/core/users/{id}/password", UNVERIFIED_USER_ID)
 				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, tokens.get(UNVERIFIED_USER_ID))
 				.contentType(MediaType.APPLICATION_JSON)
-				.content(LemonUtils.toJson(form)))
+				.content(LecUtils.toJson(form)))
 				.andExpect(status().is(422))
 				.andExpect(jsonPath("$.errors[*].field").value(hasSize(3)))
 				.andExpect(jsonPath("$.errors[*].field").value(hasItems(
@@ -149,7 +148,7 @@ public class ChangePasswordMvcTests extends AbstractMvcTests {
 		mvc.perform(post("/api/core/users/{id}/password", UNVERIFIED_USER_ID)
 				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, tokens.get(UNVERIFIED_USER_ID))
 				.contentType(MediaType.APPLICATION_JSON)
-				.content(LemonUtils.toJson(form)))
+				.content(LecUtils.toJson(form)))
 				.andExpect(status().is(422))
 				.andExpect(jsonPath("$.errors[*].field").value(hasSize(2)))
 				.andExpect(jsonPath("$.errors[*].field").value(hasItems(

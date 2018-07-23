@@ -18,7 +18,6 @@ import org.springframework.test.context.jdbc.Sql;
 
 import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
 import com.naturalprogrammer.spring.lemon.commons.util.UserUtils;
-import com.naturalprogrammer.spring.lemon.util.LemonUtils;
 import com.naturalprogrammer.spring.lemondemo.entities.User;
 
 @Sql({"/test-data/initialize.sql", "/test-data/finalize.sql"})
@@ -33,22 +32,22 @@ public class UpdateUserMvcTests extends AbstractMvcTests {
 	
 	@Value("classpath:/update-user/patch-update-user.json")
 	public void setUserPatch(Resource patch) throws IOException {
-		this.userPatch = LemonUtils.toString(patch);
+		this.userPatch = LecUtils.toStr(patch);
 	}
 	
 	@Value("classpath:/update-user/patch-admin-role.json")
 	public void setUserPatchAdminRole(Resource patch) throws IOException {
-		this.userPatchAdminRole = LemonUtils.toString(patch);;
+		this.userPatchAdminRole = LecUtils.toStr(patch);;
 	}
 
 	@Value("classpath:/update-user/patch-null-name.json")
 	public void setUserPatchNullName(Resource patch) throws IOException {
-		this.userPatchNullName = LemonUtils.toString(patch);;
+		this.userPatchNullName = LecUtils.toStr(patch);;
 	}
 
 	@Value("classpath:/update-user/patch-long-name.json")
 	public void setUserPatchLongName(Resource patch) throws IOException {
-		this.userPatchLongName = LemonUtils.toString(patch);;
+		this.userPatchLongName = LecUtils.toStr(patch);;
 	}
 
 	/**

@@ -11,7 +11,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
 
 import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
-import com.naturalprogrammer.spring.lemon.util.LemonUtils;
 
 public class FetchNewTokenMvcTests extends AbstractMvcTests {
 	
@@ -38,7 +37,7 @@ public class FetchNewTokenMvcTests extends AbstractMvcTests {
 				.andExpect(jsonPath("$.token").value(containsString(".")))
 				.andReturn();
 
-		Response response = LemonUtils.fromJson(result.getResponse().getContentAsString(), Response.class);
+		Response response = LecUtils.fromJson(result.getResponse().getContentAsString(), Response.class);
 		ensureTokenWorks(response.getToken());
 	}
 	
@@ -52,7 +51,7 @@ public class FetchNewTokenMvcTests extends AbstractMvcTests {
                 .andExpect(status().is(200))
 				.andReturn();
 
-		Response response = LemonUtils.fromJson(result.getResponse().getContentAsString(), Response.class);
+		Response response = LecUtils.fromJson(result.getResponse().getContentAsString(), Response.class);
 		ensureTokenWorks(response.getToken());
 
 		Thread.sleep(1001L);
@@ -73,7 +72,7 @@ public class FetchNewTokenMvcTests extends AbstractMvcTests {
                 .andExpect(status().is(200))
 				.andReturn();
 
-		Response response = LemonUtils.fromJson(result.getResponse().getContentAsString(), Response.class);
+		Response response = LecUtils.fromJson(result.getResponse().getContentAsString(), Response.class);
 		ensureTokenWorks(response.getToken());
 	}
 	

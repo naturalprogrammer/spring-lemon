@@ -15,7 +15,6 @@ import org.springframework.http.MediaType;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
-import com.naturalprogrammer.spring.lemon.util.LemonUtils;
 import com.naturalprogrammer.spring.lemondemo.entities.User;
 
 public class RequestEmailChangeMvcTests extends AbstractMvcTests {
@@ -37,7 +36,7 @@ public class RequestEmailChangeMvcTests extends AbstractMvcTests {
 		mvc.perform(post("/api/core/users/{id}/email-change-request", UNVERIFIED_USER_ID)
 				.contentType(MediaType.APPLICATION_JSON)
 				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, tokens.get(UNVERIFIED_USER_ID))
-				.content(LemonUtils.toJson(form())))
+				.content(LecUtils.toJson(form())))
 				.andExpect(status().is(204));
 		
 		verify(mailSender).send(any());
@@ -56,7 +55,7 @@ public class RequestEmailChangeMvcTests extends AbstractMvcTests {
 		mvc.perform(post("/api/core/users/{id}/email-change-request", UNVERIFIED_USER_ID)
 				.contentType(MediaType.APPLICATION_JSON)
 				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, tokens.get(ADMIN_ID))
-				.content(LemonUtils.toJson(form())))
+				.content(LecUtils.toJson(form())))
 				.andExpect(status().is(204));
 		
 		User updatedUser = userRepository.findById(UNVERIFIED_USER_ID).get();
@@ -72,7 +71,7 @@ public class RequestEmailChangeMvcTests extends AbstractMvcTests {
 		mvc.perform(post("/api/core/users/99/email-change-request")
 				.contentType(MediaType.APPLICATION_JSON)
 				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, tokens.get(ADMIN_ID))
-				.content(LemonUtils.toJson(form())))
+				.content(LecUtils.toJson(form())))
 				.andExpect(status().is(404));
 		
 		verify(mailSender, never()).send(any());
@@ -88,7 +87,7 @@ public class RequestEmailChangeMvcTests extends AbstractMvcTests {
 		mvc.perform(post("/api/core/users/{id}/email-change-request", ADMIN_ID)
 				.contentType(MediaType.APPLICATION_JSON)
 				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, tokens.get(USER_ID))
-				.content(LemonUtils.toJson(form())))
+				.content(LecUtils.toJson(form())))
 				.andExpect(status().is(403));
 		
 		verify(mailSender, never()).send(any());
@@ -107,7 +106,7 @@ public class RequestEmailChangeMvcTests extends AbstractMvcTests {
 		mvc.perform(post("/api/core/users/{id}/email-change-request", ADMIN_ID)
 				.contentType(MediaType.APPLICATION_JSON)
 				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, tokens.get(UNVERIFIED_ADMIN_ID))
-				.content(LemonUtils.toJson(form())))
+				.content(LecUtils.toJson(form())))
 				.andExpect(status().is(403));
 		
 		verify(mailSender, never()).send(any());
@@ -125,7 +124,7 @@ public class RequestEmailChangeMvcTests extends AbstractMvcTests {
 		mvc.perform(post("/api/core/users/{id}/email-change-request", UNVERIFIED_USER_ID)
 				.contentType(MediaType.APPLICATION_JSON)
 				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, tokens.get(UNVERIFIED_USER_ID))
-				.content(LemonUtils.toJson(new User())))
+				.content(LecUtils.toJson(new User())))
 				.andExpect(status().is(422))
 				.andExpect(jsonPath("$.errors[*].field").value(hasSize(2)))
 				.andExpect(jsonPath("$.errors[*].field").value(hasItems(
@@ -140,7 +139,7 @@ public class RequestEmailChangeMvcTests extends AbstractMvcTests {
 		mvc.perform(post("/api/core/users/{id}/email-change-request", UNVERIFIED_USER_ID)
 				.contentType(MediaType.APPLICATION_JSON)
 				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, tokens.get(UNVERIFIED_USER_ID))
-				.content(LemonUtils.toJson(updatedUser)))
+				.content(LecUtils.toJson(updatedUser)))
 				.andExpect(status().is(422))
 				.andExpect(jsonPath("$.errors[*].field").value(hasSize(4)))
 				.andExpect(jsonPath("$.errors[*].field").value(hasItems(
@@ -153,7 +152,7 @@ public class RequestEmailChangeMvcTests extends AbstractMvcTests {
 		mvc.perform(post("/api/core/users/{id}/email-change-request", UNVERIFIED_USER_ID)
 				.contentType(MediaType.APPLICATION_JSON)
 				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, tokens.get(UNVERIFIED_USER_ID))
-				.content(LemonUtils.toJson(updatedUser)))
+				.content(LecUtils.toJson(updatedUser)))
 				.andExpect(status().is(422))
 				.andExpect(jsonPath("$.errors[*].field").value(hasSize(1)))
 				.andExpect(jsonPath("$.errors[*].field").value(hasItems("updatedUser.newEmail")));
@@ -164,7 +163,7 @@ public class RequestEmailChangeMvcTests extends AbstractMvcTests {
 		mvc.perform(post("/api/core/users/{id}/email-change-request", UNVERIFIED_USER_ID)
 				.contentType(MediaType.APPLICATION_JSON)
 				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, tokens.get(UNVERIFIED_USER_ID))
-				.content(LemonUtils.toJson(updatedUser)))
+				.content(LecUtils.toJson(updatedUser)))
 				.andExpect(status().is(422))
 				.andExpect(jsonPath("$.errors[*].field").value(hasSize(1)))
 				.andExpect(jsonPath("$.errors[*].field").value(hasItems("updatedUser.password")));
@@ -175,7 +174,7 @@ public class RequestEmailChangeMvcTests extends AbstractMvcTests {
 		mvc.perform(post("/api/core/users/{id}/email-change-request", UNVERIFIED_USER_ID)
 				.contentType(MediaType.APPLICATION_JSON)
 				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, tokens.get(UNVERIFIED_USER_ID))
-				.content(LemonUtils.toJson(updatedUser)))
+				.content(LecUtils.toJson(updatedUser)))
 				.andExpect(status().is(422))
 				.andExpect(jsonPath("$.errors[*].field").value(hasSize(1)))
 				.andExpect(jsonPath("$.errors[*].field").value(hasItems("updatedUser.password")));
@@ -186,7 +185,7 @@ public class RequestEmailChangeMvcTests extends AbstractMvcTests {
 		mvc.perform(post("/api/core/users/{id}/email-change-request", UNVERIFIED_USER_ID)
 				.contentType(MediaType.APPLICATION_JSON)
 				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, tokens.get(UNVERIFIED_USER_ID))
-				.content(LemonUtils.toJson(updatedUser)))
+				.content(LecUtils.toJson(updatedUser)))
 				.andExpect(status().is(422))
 				.andExpect(jsonPath("$.errors[*].field").value(hasSize(1)))
 				.andExpect(jsonPath("$.errors[*].field").value(hasItems("updatedUser.newEmail")));

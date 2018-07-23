@@ -15,7 +15,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.naturalprogrammer.spring.lemon.commons.domain.ResetPasswordForm;
 import com.naturalprogrammer.spring.lemon.commons.security.JwtService;
 import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
-import com.naturalprogrammer.spring.lemon.util.LemonUtils;
 
 public class ResetPasswordMvcTests extends AbstractMvcTests {
 	
@@ -84,6 +83,6 @@ public class ResetPasswordMvcTests extends AbstractMvcTests {
 		form.setCode(code);
 		form.setNewPassword(newPassword);
 		
-		return LemonUtils.toJson(form);
+		return LecUtils.toJson(form);
 	}
 }
