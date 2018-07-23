@@ -24,16 +24,16 @@ import com.naturalprogrammer.spring.lemon.util.LemonUtils;
  * 
  * @author Sanjay Patel
  */
-public class AuthenticationSuccessHandler
+public class LemonAuthenticationSuccessHandler
 	extends SimpleUrlAuthenticationSuccessHandler {
 	
-	private static final Log log = LogFactory.getLog(AuthenticationSuccessHandler.class);
+	private static final Log log = LogFactory.getLog(LemonAuthenticationSuccessHandler.class);
 	
     private ObjectMapper objectMapper;    
     private LemonService<?, ?> lemonService;
     private long defaultExpirationMillis;
     
-	public AuthenticationSuccessHandler(ObjectMapper objectMapper, LemonService<?, ?> lemonService, LemonProperties properties) {
+	public LemonAuthenticationSuccessHandler(ObjectMapper objectMapper, LemonService<?, ?> lemonService, LemonProperties properties) {
 		
 		this.objectMapper = objectMapper;
 		this.lemonService = lemonService;

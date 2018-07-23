@@ -28,7 +28,7 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	private LemonProperties properties;
 	private UserDetailsService userDetailsService;
-	private AuthenticationSuccessHandler authenticationSuccessHandler;
+	private LemonAuthenticationSuccessHandler authenticationSuccessHandler;
 	private AuthenticationFailureHandler authenticationFailureHandler;
 	private LemonOidcUserService oidcUserService;
 	private LemonOAuth2UserService<?, ?> oauth2UserService;
@@ -39,7 +39,7 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	@Autowired
 	public void createLemonSecurityConfig(LemonProperties properties, UserDetailsService userDetailsService,
-			AuthenticationSuccessHandler authenticationSuccessHandler, AuthenticationFailureHandler authenticationFailureHandler,
+			LemonAuthenticationSuccessHandler authenticationSuccessHandler, AuthenticationFailureHandler authenticationFailureHandler,
 			LemonOidcUserService oidcUserService,
 			LemonOAuth2UserService<?, ?> oauth2UserService,
 			OAuth2AuthenticationSuccessHandler<?> oauth2AuthenticationSuccessHandler,

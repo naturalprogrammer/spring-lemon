@@ -44,7 +44,7 @@ import com.naturalprogrammer.spring.lemon.exceptions.DefaultExceptionHandlerCont
 import com.naturalprogrammer.spring.lemon.exceptions.ErrorResponseComposer;
 import com.naturalprogrammer.spring.lemon.exceptions.LemonErrorAttributes;
 import com.naturalprogrammer.spring.lemon.exceptions.LemonErrorController;
-import com.naturalprogrammer.spring.lemon.security.AuthenticationSuccessHandler;
+import com.naturalprogrammer.spring.lemon.security.LemonAuthenticationSuccessHandler;
 import com.naturalprogrammer.spring.lemon.security.JwtAuthenticationProvider;
 import com.naturalprogrammer.spring.lemon.security.LemonCorsConfig;
 import com.naturalprogrammer.spring.lemon.security.LemonOAuth2UserService;
@@ -159,12 +159,12 @@ public class LemonAutoConfiguration {
 	 * Configures AuthenticationSuccessHandler if missing
 	 */
 	@Bean
-	@ConditionalOnMissingBean(AuthenticationSuccessHandler.class)
-	public AuthenticationSuccessHandler authenticationSuccessHandler(
+	@ConditionalOnMissingBean(LemonAuthenticationSuccessHandler.class)
+	public LemonAuthenticationSuccessHandler authenticationSuccessHandler(
 			ObjectMapper objectMapper, LemonService<?, ?> lemonService, LemonProperties properties) {
 		
         log.info("Configuring AuthenticationSuccessHandler");       
-		return new AuthenticationSuccessHandler(objectMapper, lemonService, properties);
+		return new LemonAuthenticationSuccessHandler(objectMapper, lemonService, properties);
 	}
 	
 	/**
