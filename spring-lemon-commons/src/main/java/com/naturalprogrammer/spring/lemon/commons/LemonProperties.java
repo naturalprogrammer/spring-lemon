@@ -5,6 +5,7 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.http.HttpHeaders;
 import org.springframework.validation.annotation.Validated;
 
 import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
@@ -196,7 +197,7 @@ public class LemonProperties {
 				"Referer",
 				"User-Agent",
 				"x-requested-with",
-				LecUtils.TOKEN_REQUEST_HEADER_NAME};
+				HttpHeaders.AUTHORIZATION};
 		
 		/**
 		 * Response headers that you want to expose to the client JavaScript programmer, e.g. Lemon-Authorization.

@@ -13,6 +13,7 @@ import static org.junit.Assert.assertTrue;
 import static org.springframework.web.reactive.function.BodyInserters.fromFormData;
 
 import org.junit.Test;
+import org.springframework.http.HttpHeaders;
 
 import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
 import com.naturalprogrammer.spring.lemondemo.domain.User;
@@ -53,7 +54,7 @@ public class LoginTests extends AbstractTests {
 		
 		CLIENT.get()
 			.uri(BASE_URI + "/ping")
-			.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, token)
+			.header(HttpHeaders.AUTHORIZATION, token)
 			.exchange()
 			.expectStatus().isUnauthorized();
 	}
@@ -68,7 +69,7 @@ public class LoginTests extends AbstractTests {
 		
 		CLIENT.get()
 			.uri(BASE_URI + "/ping")
-			.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, TOKENS.get(ADMIN_ID))
+			.header(HttpHeaders.AUTHORIZATION, TOKENS.get(ADMIN_ID))
 			.exchange()
 			.expectStatus().isUnauthorized();
 	}
@@ -94,7 +95,7 @@ public class LoginTests extends AbstractTests {
 	public void testTokenLogin() {
 		
 		CLIENT.get().uri(BASE_URI + "/context")
-			.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, TOKENS.get(ADMIN_ID))
+			.header(HttpHeaders.AUTHORIZATION, TOKENS.get(ADMIN_ID))
 			.exchange()
 				.expectStatus().isOk()
 				.expectBody()
@@ -106,7 +107,7 @@ public class LoginTests extends AbstractTests {
 	public void testTokenLoginWrongToken() {
 		
 		CLIENT.get().uri(BASE_URI + "/context")
-			.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, "Bearer a-wrong-token")
+			.header(HttpHeaders.AUTHORIZATION, "Bearer a-wrong-token")
 			.exchange()
 				.expectStatus().isUnauthorized();
 	}

@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.Test;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MvcResult;
@@ -58,7 +59,7 @@ public class LoginMvcTests extends AbstractMvcTests {
 		// but, does expire after 500ms
 		Thread.sleep(501L);
 		mvc.perform(get("/api/core/ping")
-				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, token))
+				.header(HttpHeaders.AUTHORIZATION, token))
 				.andExpect(status().is(401));
 	}
 
@@ -75,7 +76,7 @@ public class LoginMvcTests extends AbstractMvcTests {
 		userRepository.save(user);
 		
 		mvc.perform(get("/api/core/ping")
-				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, tokens.get(ADMIN_ID)))
+				.header(HttpHeaders.AUTHORIZATION, tokens.get(ADMIN_ID)))
 				.andExpect(status().is(401));
 	}
 
@@ -103,7 +104,7 @@ public class LoginMvcTests extends AbstractMvcTests {
 	public void testTokenLogin() throws Exception {
 		
 		mvc.perform(get("/api/core/context")
-				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, tokens.get(ADMIN_ID)))
+				.header(HttpHeaders.AUTHORIZATION, tokens.get(ADMIN_ID)))
 				.andExpect(status().is(200))
 				.andExpect(jsonPath("$.user.id").value(ADMIN_ID));
 	}
@@ -112,7 +113,7 @@ public class LoginMvcTests extends AbstractMvcTests {
 	public void testTokenLoginWrongToken() throws Exception {
 		
 		mvc.perform(get("/api/core/context")
-				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, "Bearer a-wrong-token"))
+				.header(HttpHeaders.AUTHORIZATION, "Bearer a-wrong-token"))
 				.andExpect(status().is(401));
 	}
 	

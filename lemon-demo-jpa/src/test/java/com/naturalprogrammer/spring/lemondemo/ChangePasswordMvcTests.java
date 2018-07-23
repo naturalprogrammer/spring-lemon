@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.Test;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 
@@ -37,7 +38,7 @@ public class ChangePasswordMvcTests extends AbstractMvcTests {
 	public void testChangePassword() throws Exception {
 		
 		mvc.perform(post("/api/core/users/{id}/password", UNVERIFIED_USER_ID)
-				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, tokens.get(UNVERIFIED_USER_ID))
+				.header(HttpHeaders.AUTHORIZATION, tokens.get(UNVERIFIED_USER_ID))
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(LecUtils.toJson(changePasswordForm(USER_PASSWORD))))
 				.andExpect(status().is(204))
@@ -54,7 +55,7 @@ public class ChangePasswordMvcTests extends AbstractMvcTests {
 	public void testAdminChangePasswordAnotherUser() throws Exception {
 		
 		mvc.perform(post("/api/core/users/{id}/password", UNVERIFIED_USER_ID)
-				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, tokens.get(ADMIN_ID))
+				.header(HttpHeaders.AUTHORIZATION, tokens.get(ADMIN_ID))
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(LecUtils.toJson(changePasswordForm(ADMIN_PASSWORD))))
 				.andExpect(status().is(204))
@@ -71,7 +72,7 @@ public class ChangePasswordMvcTests extends AbstractMvcTests {
 	public void testChangePasswordUnknownId() throws Exception {
 		
 		mvc.perform(post("/api/core/users/99/password")
-				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, tokens.get(ADMIN_ID))
+				.header(HttpHeaders.AUTHORIZATION, tokens.get(ADMIN_ID))
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(LecUtils.toJson(changePasswordForm(ADMIN_PASSWORD))))
 				.andExpect(status().is(404));
@@ -84,7 +85,7 @@ public class ChangePasswordMvcTests extends AbstractMvcTests {
 	public void testChangePasswordAnotherUser() throws Exception {
 		
 		mvc.perform(post("/api/core/users/{id}/password", UNVERIFIED_USER_ID)
-				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, tokens.get(USER_ID))
+				.header(HttpHeaders.AUTHORIZATION, tokens.get(USER_ID))
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(LecUtils.toJson(changePasswordForm(USER_PASSWORD))))
 				.andExpect(status().is(403));
@@ -100,7 +101,7 @@ public class ChangePasswordMvcTests extends AbstractMvcTests {
 	public void testBadAdminChangePasswordAnotherUser() throws Exception {
 		
 		mvc.perform(post("/api/core/users/{id}/password", UNVERIFIED_USER_ID)
-				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, tokens.get(UNVERIFIED_ADMIN_ID))
+				.header(HttpHeaders.AUTHORIZATION, tokens.get(UNVERIFIED_ADMIN_ID))
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(LecUtils.toJson(changePasswordForm(ADMIN_PASSWORD))))
 				.andExpect(status().is(403));
@@ -114,7 +115,7 @@ public class ChangePasswordMvcTests extends AbstractMvcTests {
 		
 		// All fields null
 		mvc.perform(post("/api/core/users/{id}/password", UNVERIFIED_USER_ID)
-				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, tokens.get(UNVERIFIED_USER_ID))
+				.header(HttpHeaders.AUTHORIZATION, tokens.get(UNVERIFIED_USER_ID))
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(LecUtils.toJson(new ChangePasswordForm())))
 				.andExpect(status().is(422))
@@ -131,7 +132,7 @@ public class ChangePasswordMvcTests extends AbstractMvcTests {
 		form.setRetypePassword("short");
 
 		mvc.perform(post("/api/core/users/{id}/password", UNVERIFIED_USER_ID)
-				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, tokens.get(UNVERIFIED_USER_ID))
+				.header(HttpHeaders.AUTHORIZATION, tokens.get(UNVERIFIED_USER_ID))
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(LecUtils.toJson(form)))
 				.andExpect(status().is(422))
@@ -146,7 +147,7 @@ public class ChangePasswordMvcTests extends AbstractMvcTests {
 		form.setRetypePassword("different-retype-password");
 
 		mvc.perform(post("/api/core/users/{id}/password", UNVERIFIED_USER_ID)
-				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, tokens.get(UNVERIFIED_USER_ID))
+				.header(HttpHeaders.AUTHORIZATION, tokens.get(UNVERIFIED_USER_ID))
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(LecUtils.toJson(form)))
 				.andExpect(status().is(422))

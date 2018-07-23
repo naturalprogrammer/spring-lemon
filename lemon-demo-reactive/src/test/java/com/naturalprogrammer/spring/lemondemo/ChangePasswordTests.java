@@ -13,6 +13,7 @@ import static com.naturalprogrammer.spring.lemondemo.controllers.MyController.BA
 
 import org.bson.types.ObjectId;
 import org.junit.Test;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -43,7 +44,7 @@ public class ChangePasswordTests extends AbstractTests {
 	public void testChangePassword() throws Exception {
 		
 		CLIENT.post().uri(BASE_URI + "/users/{id}/password", UNVERIFIED_USER_ID)
-				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, TOKENS.get(UNVERIFIED_USER_ID))
+				.header(HttpHeaders.AUTHORIZATION, TOKENS.get(UNVERIFIED_USER_ID))
 				.contentType(MediaType.APPLICATION_JSON)
 				.body(Mono.just(changePasswordForm(USER_PASSWORD)), ChangePasswordForm.class)
 			.exchange()
@@ -62,7 +63,7 @@ public class ChangePasswordTests extends AbstractTests {
 	public void testAdminChangePasswordAnotherUser() throws Exception {
 		
 		CLIENT.post().uri(BASE_URI + "/users/{id}/password", UNVERIFIED_USER_ID)
-			.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, TOKENS.get(ADMIN_ID))
+			.header(HttpHeaders.AUTHORIZATION, TOKENS.get(ADMIN_ID))
 			.contentType(MediaType.APPLICATION_JSON)
 			.body(Mono.just(changePasswordForm(ADMIN_PASSWORD)), ChangePasswordForm.class)
 		.exchange()
@@ -80,7 +81,7 @@ public class ChangePasswordTests extends AbstractTests {
 	public void testChangePasswordUnknownId() throws Exception {
 		
 		CLIENT.post().uri(BASE_URI + "/users/{id}/password", ObjectId.get())
-			.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, TOKENS.get(ADMIN_ID))
+			.header(HttpHeaders.AUTHORIZATION, TOKENS.get(ADMIN_ID))
 			.contentType(MediaType.APPLICATION_JSON)
 			.body(Mono.just(changePasswordForm(ADMIN_PASSWORD)), ChangePasswordForm.class)
 		.exchange()
@@ -95,7 +96,7 @@ public class ChangePasswordTests extends AbstractTests {
 	public void testChangePasswordAnotherUser() throws Exception {
 		
 		CLIENT.post().uri(BASE_URI + "/users/{id}/password", UNVERIFIED_USER_ID)
-			.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, TOKENS.get(USER_ID))
+			.header(HttpHeaders.AUTHORIZATION, TOKENS.get(USER_ID))
 			.contentType(MediaType.APPLICATION_JSON)
 			.body(Mono.just(changePasswordForm(USER_PASSWORD)), ChangePasswordForm.class)
 		.exchange()
@@ -114,7 +115,7 @@ public class ChangePasswordTests extends AbstractTests {
 	public void testBadAdminChangePasswordAnotherUser() throws Exception {
 		
 		CLIENT.post().uri(BASE_URI + "/users/{id}/password", UNVERIFIED_USER_ID)
-			.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, TOKENS.get(UNVERIFIED_ADMIN_ID))
+			.header(HttpHeaders.AUTHORIZATION, TOKENS.get(UNVERIFIED_ADMIN_ID))
 			.contentType(MediaType.APPLICATION_JSON)
 			.body(Mono.just(changePasswordForm(ADMIN_PASSWORD)), ChangePasswordForm.class)
 		.exchange()
@@ -131,7 +132,7 @@ public class ChangePasswordTests extends AbstractTests {
 		
 		//@formatter:off
 		CLIENT.post().uri(BASE_URI + "/users/{id}/password", UNVERIFIED_USER_ID)
-			.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, TOKENS.get(ADMIN_ID))
+			.header(HttpHeaders.AUTHORIZATION, TOKENS.get(ADMIN_ID))
 			.contentType(MediaType.APPLICATION_JSON)
 			.body(Mono.just(new ChangePasswordForm()), ChangePasswordForm.class)
 		.exchange()
@@ -157,7 +158,7 @@ public class ChangePasswordTests extends AbstractTests {
 
 		//@formatter:off
 		CLIENT.post().uri(BASE_URI + "/users/{id}/password", UNVERIFIED_USER_ID)
-			.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, TOKENS.get(ADMIN_ID))
+			.header(HttpHeaders.AUTHORIZATION, TOKENS.get(ADMIN_ID))
 			.contentType(MediaType.APPLICATION_JSON)
 			.body(Mono.just(form), ChangePasswordForm.class)
 		.exchange()
@@ -181,7 +182,7 @@ public class ChangePasswordTests extends AbstractTests {
 
 		//@formatter:off
 		CLIENT.post().uri(BASE_URI + "/users/{id}/password", UNVERIFIED_USER_ID)
-			.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, TOKENS.get(ADMIN_ID))
+			.header(HttpHeaders.AUTHORIZATION, TOKENS.get(ADMIN_ID))
 			.contentType(MediaType.APPLICATION_JSON)
 			.body(Mono.just(form), ChangePasswordForm.class)
 		.exchange()

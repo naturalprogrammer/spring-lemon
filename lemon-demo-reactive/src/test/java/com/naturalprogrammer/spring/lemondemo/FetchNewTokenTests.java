@@ -11,6 +11,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.springframework.web.reactive.function.BodyInserters.fromFormData;
 
 import org.junit.Test;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.EntityExchangeResult;
 
@@ -25,7 +26,7 @@ public class FetchNewTokenTests extends AbstractTests {
 		
 		CLIENT.post().uri(BASE_URI + "/fetch-new-auth-token")
 			.contentType(MediaType.APPLICATION_FORM_URLENCODED)
-			.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, TOKENS.get(UNVERIFIED_USER_ID))
+			.header(HttpHeaders.AUTHORIZATION, TOKENS.get(UNVERIFIED_USER_ID))
 			.exchange()
 			.expectStatus().isOk()
 			.expectBody(TestToken.class)
@@ -38,7 +39,7 @@ public class FetchNewTokenTests extends AbstractTests {
 		
 		CLIENT.post().uri(BASE_URI + "/fetch-new-auth-token")
 		.contentType(MediaType.APPLICATION_FORM_URLENCODED)
-		.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, TOKENS.get(UNVERIFIED_USER_ID))
+		.header(HttpHeaders.AUTHORIZATION, TOKENS.get(UNVERIFIED_USER_ID))
 		.body(fromFormData("expirationMillis", "1000"))
 		.exchange()
 		.expectStatus().isOk()
@@ -56,7 +57,7 @@ public class FetchNewTokenTests extends AbstractTests {
 			
 			CLIENT.get()
 				.uri(BASE_URI + "/context")
-					.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, token.getToken())
+					.header(HttpHeaders.AUTHORIZATION, token.getToken())
 					.exchange()
 				.expectStatus().isUnauthorized();			
 		});
@@ -67,7 +68,7 @@ public class FetchNewTokenTests extends AbstractTests {
 		
 		CLIENT.post().uri(BASE_URI + "/fetch-new-auth-token")
 		.contentType(MediaType.APPLICATION_FORM_URLENCODED)
-		.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, TOKENS.get(ADMIN_ID))
+		.header(HttpHeaders.AUTHORIZATION, TOKENS.get(ADMIN_ID))
 		.body(fromFormData("username", UNVERIFIED_USER_EMAIL))
 		.exchange()
 		.expectStatus().isOk()
@@ -81,7 +82,7 @@ public class FetchNewTokenTests extends AbstractTests {
 		
 		CLIENT.post().uri(BASE_URI + "/fetch-new-auth-token")
 		.contentType(MediaType.APPLICATION_FORM_URLENCODED)
-		.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, TOKENS.get(UNVERIFIED_USER_ID))
+		.header(HttpHeaders.AUTHORIZATION, TOKENS.get(UNVERIFIED_USER_ID))
 		.body(fromFormData("username", ADMIN_EMAIL))
 		.exchange()
 		.expectStatus().isForbidden()

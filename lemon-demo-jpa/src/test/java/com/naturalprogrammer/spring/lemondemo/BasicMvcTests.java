@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.Test;
+import org.springframework.http.HttpHeaders;
 import org.springframework.test.context.jdbc.Sql;
 
 import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
@@ -25,7 +26,7 @@ public class BasicMvcTests extends AbstractMvcTests {
 	public void testGetContextLoggedIn() throws Exception {
 		
 		mvc.perform(get("/api/core/context")
-				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, tokens.get(ADMIN_ID)))
+				.header(HttpHeaders.AUTHORIZATION, tokens.get(ADMIN_ID)))
 				.andExpect(status().is(200))
 				.andExpect(header().string(LecUtils.TOKEN_RESPONSE_HEADER_NAME, containsString(".")))
 				.andExpect(jsonPath("$.context.reCaptchaSiteKey").isString())

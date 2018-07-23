@@ -16,6 +16,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -89,7 +90,7 @@ public abstract class AbstractMvcTests {
 	protected void ensureTokenWorks(String token) throws Exception {
 
 		mvc.perform(get("/api/core/context")
-				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, token))
+				.header(HttpHeaders.AUTHORIZATION, token))
 				.andExpect(status().is(200))
 				.andExpect(jsonPath("$.user.id").value(UNVERIFIED_USER_ID));
 	}

@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.Test;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -31,7 +32,7 @@ public class FetchNewTokenMvcTests extends AbstractMvcTests {
 	public void testFetchNewToken() throws Exception {
 		
 		MvcResult result = mvc.perform(post("/api/core/fetch-new-auth-token")
-				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, tokens.get(UNVERIFIED_USER_ID))
+				.header(HttpHeaders.AUTHORIZATION, tokens.get(UNVERIFIED_USER_ID))
                 .header("contentType",  MediaType.APPLICATION_FORM_URLENCODED))
                 .andExpect(status().is(200))
 				.andExpect(jsonPath("$.token").value(containsString(".")))
@@ -45,7 +46,7 @@ public class FetchNewTokenMvcTests extends AbstractMvcTests {
 	public void testFetchNewTokenExpiration() throws Exception {
 		
 		MvcResult result = mvc.perform(post("/api/core/fetch-new-auth-token")
-				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, tokens.get(UNVERIFIED_USER_ID))
+				.header(HttpHeaders.AUTHORIZATION, tokens.get(UNVERIFIED_USER_ID))
 		        .param("expirationMillis", "1000")
                 .header("contentType",  MediaType.APPLICATION_FORM_URLENCODED))
                 .andExpect(status().is(200))
@@ -56,7 +57,7 @@ public class FetchNewTokenMvcTests extends AbstractMvcTests {
 
 		Thread.sleep(1001L);
 		mvc.perform(get("/api/core/context")
-				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME,
+				.header(HttpHeaders.AUTHORIZATION,
 						LecUtils.TOKEN_PREFIX + response.getToken()))
 				.andExpect(status().is(401));
 		
@@ -66,7 +67,7 @@ public class FetchNewTokenMvcTests extends AbstractMvcTests {
 	public void testFetchNewTokenByAdminForAnotherUser() throws Exception {
 		
 		MvcResult result = mvc.perform(post("/api/core/fetch-new-auth-token")
-				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, tokens.get(ADMIN_ID))
+				.header(HttpHeaders.AUTHORIZATION, tokens.get(ADMIN_ID))
 		        .param("username", UNVERIFIED_USER_EMAIL)
                 .header("contentType",  MediaType.APPLICATION_FORM_URLENCODED))
                 .andExpect(status().is(200))
@@ -80,7 +81,7 @@ public class FetchNewTokenMvcTests extends AbstractMvcTests {
 	public void testFetchNewTokenByNonAdminForAnotherUser() throws Exception {
 		
 		mvc.perform(post("/api/core/fetch-new-auth-token")
-				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, tokens.get(UNVERIFIED_USER_ID))
+				.header(HttpHeaders.AUTHORIZATION, tokens.get(UNVERIFIED_USER_ID))
 		        .param("username", ADMIN_EMAIL)
                 .header("contentType",  MediaType.APPLICATION_FORM_URLENCODED))
                 .andExpect(status().is(403));

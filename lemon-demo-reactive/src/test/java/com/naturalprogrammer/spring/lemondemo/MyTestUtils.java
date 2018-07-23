@@ -15,6 +15,7 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.test.web.reactive.server.WebTestClient;
@@ -83,7 +84,7 @@ public class MyTestUtils {
 
 		return CLIENT.get()
 			.uri(BASE_URI + "/context")
-				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, token)
+				.header(HttpHeaders.AUTHORIZATION, token)
 				.exchange()
 				.expectStatus().isOk();
     }

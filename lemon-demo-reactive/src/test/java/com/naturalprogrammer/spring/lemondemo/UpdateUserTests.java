@@ -15,6 +15,7 @@ import org.bson.types.ObjectId;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient.ResponseSpec;
@@ -193,7 +194,7 @@ public class UpdateUserTests extends AbstractTests {
 		
 		return CLIENT.patch().uri(BASE_URI + "/users/{id}", userId)
 				.contentType(MediaType.APPLICATION_JSON)
-				.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, TOKENS.get(loggedInId))
+				.header(HttpHeaders.AUTHORIZATION, TOKENS.get(loggedInId))
 				.body(BodyInserters.fromResource(patch))
 			.exchange();
 

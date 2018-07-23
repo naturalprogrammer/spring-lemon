@@ -14,6 +14,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.web.reactive.server.WebTestClient.ResponseSpec;
 
@@ -113,7 +114,7 @@ public class ChangeEmailTests extends AbstractTests {
 		String authToken = testUtils.login(UNVERIFIED_USER_EMAIL, USER_PASSWORD);
 		
 		CLIENT.post().uri(BASE_URI + "/users/{id}/email", UNVERIFIED_USER_ID)
-			.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, authToken)
+			.header(HttpHeaders.AUTHORIZATION, authToken)
 	        .body(fromFormData("code", changeEmailCode))
 	        .exchange()
 				.expectStatus().isUnauthorized();
@@ -127,7 +128,7 @@ public class ChangeEmailTests extends AbstractTests {
 	public void testChangeEmailWithoutAnyRequest() throws Exception {
 
 		CLIENT.post().uri(BASE_URI + "/users/{id}/email", USER_ID)
-			.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, TOKENS.get(USER_ID))
+			.header(HttpHeaders.AUTHORIZATION, TOKENS.get(USER_ID))
 	        .body(fromFormData("code", changeEmailCode))
         .exchange()
         	.expectStatus().isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY);
@@ -153,7 +154,7 @@ public class ChangeEmailTests extends AbstractTests {
 	private ResponseSpec changeEmailResponse(String code) {
 		
 		return CLIENT.post().uri(BASE_URI + "/users/{id}/email", UNVERIFIED_USER_ID)
-			.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, TOKENS.get(UNVERIFIED_USER_ID))
+			.header(HttpHeaders.AUTHORIZATION, TOKENS.get(UNVERIFIED_USER_ID))
 	        .body(fromFormData("code", code))
         .exchange();
 	}

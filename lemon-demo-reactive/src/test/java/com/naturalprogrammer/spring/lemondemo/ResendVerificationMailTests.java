@@ -14,6 +14,7 @@ import static org.mockito.Mockito.verify;
 
 import org.bson.types.ObjectId;
 import org.junit.Test;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.web.reactive.server.WebTestClient.ResponseSpec;
 
@@ -96,7 +97,7 @@ public class ResendVerificationMailTests extends AbstractTests {
 	private ResponseSpec resendVerificationMail(ObjectId userId, ObjectId loggedInId) {
 		
 		return CLIENT.post().uri(BASE_URI + "/users/{id}/resend-verification-mail", userId)
-			.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, TOKENS.get(loggedInId))
+			.header(HttpHeaders.AUTHORIZATION, TOKENS.get(loggedInId))
 			.exchange();
 
 	}

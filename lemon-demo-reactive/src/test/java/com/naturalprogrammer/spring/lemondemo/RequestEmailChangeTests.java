@@ -17,6 +17,7 @@ import static org.mockito.Mockito.verify;
 import org.bson.types.ObjectId;
 import org.junit.Assert;
 import org.junit.Test;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient.BodySpec;
@@ -47,7 +48,7 @@ public class RequestEmailChangeTests extends AbstractTests {
 	public void testRequestEmailChange() {
 		
 		CLIENT.post().uri(BASE_URI + "/users/{id}/email-change-request", UNVERIFIED_USER_ID)
-			.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, TOKENS.get(UNVERIFIED_USER_ID))
+			.header(HttpHeaders.AUTHORIZATION, TOKENS.get(UNVERIFIED_USER_ID))
 			.contentType(MediaType.APPLICATION_JSON)
 			.body(Mono.just(form()), TestEmailForm.class)
 		.exchange()
@@ -68,7 +69,7 @@ public class RequestEmailChangeTests extends AbstractTests {
 	public void testGoodAdminRequestEmailChange() throws Exception {
 		
 		CLIENT.post().uri(BASE_URI + "/users/{id}/email-change-request", UNVERIFIED_USER_ID)
-			.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, TOKENS.get(ADMIN_ID))
+			.header(HttpHeaders.AUTHORIZATION, TOKENS.get(ADMIN_ID))
 			.contentType(MediaType.APPLICATION_JSON)
 			.body(Mono.just(form()), TestEmailForm.class)
 		.exchange()
@@ -86,7 +87,7 @@ public class RequestEmailChangeTests extends AbstractTests {
 	public void testRequestEmailChangeUnknownUser() throws Exception {
 		
 		CLIENT.post().uri(BASE_URI + "/users/{id}/email-change-request", ObjectId.get())
-			.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, TOKENS.get(ADMIN_ID))
+			.header(HttpHeaders.AUTHORIZATION, TOKENS.get(ADMIN_ID))
 			.contentType(MediaType.APPLICATION_JSON)
 			.body(Mono.just(form()), TestEmailForm.class)
 		.exchange()
@@ -104,7 +105,7 @@ public class RequestEmailChangeTests extends AbstractTests {
 	public void testNonAdminRequestEmailChangeAnotherUser() throws Exception {
 		
 		CLIENT.post().uri(BASE_URI + "/users/{id}/email-change-request", ADMIN_ID)
-			.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, TOKENS.get(USER_ID))
+			.header(HttpHeaders.AUTHORIZATION, TOKENS.get(USER_ID))
 			.contentType(MediaType.APPLICATION_JSON)
 			.body(Mono.just(form()), TestEmailForm.class)
 		.exchange()
@@ -123,7 +124,7 @@ public class RequestEmailChangeTests extends AbstractTests {
 	public void testBadAdminRequestEmailChangeAnotherUser() throws Exception {
 		
 		CLIENT.post().uri(BASE_URI + "/users/{id}/email-change-request", ADMIN_ID)
-			.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, TOKENS.get(UNVERIFIED_ADMIN_ID))
+			.header(HttpHeaders.AUTHORIZATION, TOKENS.get(UNVERIFIED_ADMIN_ID))
 			.contentType(MediaType.APPLICATION_JSON)
 			.body(Mono.just(form()), TestEmailForm.class)
 		.exchange()
@@ -212,7 +213,7 @@ public class RequestEmailChangeTests extends AbstractTests {
 		
 		//@formatter:off
 		return CLIENT.post().uri(BASE_URI + "/users/{id}/email-change-request", UNVERIFIED_USER_ID)
-			.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, TOKENS.get(UNVERIFIED_USER_ID))
+			.header(HttpHeaders.AUTHORIZATION, TOKENS.get(UNVERIFIED_USER_ID))
 			.contentType(MediaType.APPLICATION_JSON)
 			.body(Mono.just(form), TestEmailForm.class)
 		.exchange()

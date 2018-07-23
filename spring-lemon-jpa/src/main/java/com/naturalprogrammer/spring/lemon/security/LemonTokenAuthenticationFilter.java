@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -37,7 +38,7 @@ public class LemonTokenAuthenticationFilter	extends OncePerRequestFilter {
 	 */
 	protected boolean tokenPresent(HttpServletRequest request) {
 		
-		String header = request.getHeader(LecUtils.TOKEN_REQUEST_HEADER_NAME);		
+		String header = request.getHeader(HttpHeaders.AUTHORIZATION);		
 		return header != null && header.startsWith(LecUtils.TOKEN_PREFIX);
 	}	
 
@@ -51,7 +52,7 @@ public class LemonTokenAuthenticationFilter	extends OncePerRequestFilter {
 			
 			log.debug("Found a token");
 			
-		    String token = request.getHeader(LecUtils.TOKEN_REQUEST_HEADER_NAME).substring(7);
+		    String token = request.getHeader(HttpHeaders.AUTHORIZATION).substring(7);
 		    JwtAuthenticationToken authRequest = new JwtAuthenticationToken(token);
 		    
 		    try {

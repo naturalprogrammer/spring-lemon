@@ -11,6 +11,7 @@ import static org.springframework.web.reactive.function.BodyInserters.fromFormDa
 
 import org.bson.types.ObjectId;
 import org.junit.Test;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -37,7 +38,7 @@ public class FetchUserTests extends AbstractTests {
 		
 		// Same user logged in
 		CLIENT.get().uri(BASE_URI + "/users/{id}", ADMIN_ID)
-		.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, TOKENS.get(ADMIN_ID))
+		.header(HttpHeaders.AUTHORIZATION, TOKENS.get(ADMIN_ID))
 		.exchange()
 		.expectStatus().isOk()
 		.expectBody()
@@ -49,7 +50,7 @@ public class FetchUserTests extends AbstractTests {
 
 		// Another user logged in
 		CLIENT.get().uri(BASE_URI + "/users/{id}", ADMIN_ID)
-		.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, TOKENS.get(UNVERIFIED_USER_ID))
+		.header(HttpHeaders.AUTHORIZATION, TOKENS.get(UNVERIFIED_USER_ID))
 		.exchange()
 		.expectStatus().isOk()
 		.expectBody()
@@ -58,7 +59,7 @@ public class FetchUserTests extends AbstractTests {
 		
 		// Admin user logged in - fetching another user
 		CLIENT.get().uri(BASE_URI + "/users/{id}", UNVERIFIED_USER_ID)
-		.header(LecUtils.TOKEN_REQUEST_HEADER_NAME, TOKENS.get(ADMIN_ID))
+		.header(HttpHeaders.AUTHORIZATION, TOKENS.get(ADMIN_ID))
 		.exchange()
 		.expectStatus().isOk()
 		.expectBody()
