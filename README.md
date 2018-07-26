@@ -1,5 +1,7 @@
 # Spring Lemon
 
+> Take our in-depth consulting/training on Spring and minimize your development cost. [Contact us](https://www.naturalprogrammer.com/) for details.
+
 When developing **real-world** Spring REST services for JavaScript web applications, mobile clients or any consumer, you face many challenges, such as
 
 1. How to make the API truly _stateless_, using token authentication, session sliding etc.
@@ -11,6 +13,7 @@ When developing **real-world** Spring REST services for JavaScript web applicati
 1. How to do _Captcha validation_.
 1. How to properly organize _application properties_.
 1. How to use _PATCH_ and _JsonPatch_ to handle partial updates correctly.
+1. How to do all the above reactively, using WebFlux and WebFlux security.
 
 Coding all the above effectively needs in-depth knowledge of Spring. It also takes a lot of development time and effort, and needs to be properly maintained as new versions of Spring modules come out.
 
