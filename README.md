@@ -27,7 +27,7 @@ Watch [this video tutorial](https://www.naturalprogrammer.com/p/spring-lemon-res
 
 ## Documentation and Resources
 
-> _Our [Spring Framework Recipes For Real World Application Development](https://www.naturalprogrammer.com/p/spring-framework-book-of-best-practices) — a live book discussing key real-world topics on developing Spring applications and APIs, including many Spring Lemon topics — is now available for FREE._
+> _Our [Spring Framework Recipes For Real World Application Development](https://www.naturalprogrammer.com/p/spring-framework-book-of-best-practices) — a live book discussing key real-world topics on developing Spring applications and APIs, including many Spring Lemon topics — is now available. [Click here](https://www.naturalprogrammer.com/p/spring-framework-book-of-best-practices) to get it now for FREE._
 
 1. Feature demo: https://youtu.be/6mNg-Feq8CY
 1. _Getting started guide_
