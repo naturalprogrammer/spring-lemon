@@ -1,6 +1,6 @@
 # Spring Lemon
 
-> Minimize your development cost by taking our in-depth consulting/training on Spring. [Click here](https://www.naturalprogrammer.com/) for details.
+> Minimize your development cost with our intensive consulting/training on Spring — [click here](https://www.naturalprogrammer.com/) for details.
 
 When developing **real-world** Spring REST services for JavaScript web applications, mobile clients or any consumer, you face many challenges, such as
 
