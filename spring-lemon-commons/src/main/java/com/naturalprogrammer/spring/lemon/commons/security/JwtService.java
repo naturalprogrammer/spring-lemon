@@ -41,11 +41,12 @@ public class JwtService {
 	private static final Log log = LogFactory.getLog(JwtService.class);
 	
 	public static final String LEMON_IAT = "lemon-iat";
-    public static final String AUTH_AUDIENCE = "auth";
+	public static final String USER_CLAIM = "user";
+
+	public static final String AUTH_AUDIENCE = "auth";
     public static final String VERIFY_AUDIENCE = "verify";
     public static final String FORGOT_PASSWORD_AUDIENCE = "forgot-password";
 	public static final String CHANGE_EMAIL_AUDIENCE = "change-email";
-	public static final String SELF_SUFFICIENT = "sufficient";
 	
     private DirectEncrypter encrypter;
     private JWEHeader header = new JWEHeader(JWEAlgorithm.DIR, EncryptionMethod.A128CBC_HS256);
