@@ -48,12 +48,12 @@ public abstract class LemonReactiveService
 
     private static final Log log = LogFactory.getLog(LemonReactiveService.class);
     
-	private LemonProperties properties;
-	private PasswordEncoder passwordEncoder;
-    private MailSender mailSender;
-	private AbstractMongoUserRepository<U, ID> userRepository;
-	private ReactiveUserDetailsService userDetailsService;
-	private JwtService jwtService;
+	protected LemonProperties properties;
+	protected PasswordEncoder passwordEncoder;
+	protected MailSender mailSender;
+	protected AbstractMongoUserRepository<U, ID> userRepository;
+	protected ReactiveUserDetailsService userDetailsService;
+	protected JwtService jwtService;
 
 	@Autowired
 	public void createLemonService(LemonProperties properties,

@@ -48,10 +48,9 @@ public class LemonReactiveController
 
 	private static final Log log = LogFactory.getLog(LemonReactiveController.class);
 
-    private long jwtExpirationMillis;
-    private JwtService jwtService;
-	private LemonReactiveService<U, ID> lemonReactiveService;
-	
+    protected long jwtExpirationMillis;
+    protected JwtService jwtService;
+	protected LemonReactiveService<U, ID> lemonReactiveService;	
 	
 	@Autowired
 	public void createLemonController(

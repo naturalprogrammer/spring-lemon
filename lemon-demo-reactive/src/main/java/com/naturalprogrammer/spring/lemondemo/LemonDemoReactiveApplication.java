@@ -13,15 +13,5 @@ public class LemonDemoReactiveApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(LemonDemoReactiveApplication.class, args);
-	}
-	
-	@Bean
-	public SimpleModule objectIdModule() {
-		
-		SimpleModule module = new SimpleModule();
-		module.setMixInAnnotation(User.class, AbstractMongoUser.class);
-		//module.addSerializer(ObjectId.class, new ToStringSerializer());
-		
-		return module;
-	}
+	}	
 }

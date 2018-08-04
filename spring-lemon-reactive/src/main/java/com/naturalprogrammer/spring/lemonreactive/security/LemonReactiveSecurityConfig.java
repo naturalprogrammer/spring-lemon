@@ -130,12 +130,12 @@ public class LemonReactiveSecurityConfig <U extends AbstractMongoUser<ID>, ID ex
 	
 	protected ServerAccessDeniedHandler accessDeniedHandler() {
 		
-		return (webFilterExchange, exception) -> Mono.error(exception);
+		return (exchange, exception) -> Mono.error(exception);
 	}
 	
 	protected ServerAuthenticationEntryPoint authenticationEntryPoint() {
 		
-		return (webFilterExchange, exception) -> Mono.error(exception);
+		return (exchange, exception) -> Mono.error(exception);
 	}
 	
 }
