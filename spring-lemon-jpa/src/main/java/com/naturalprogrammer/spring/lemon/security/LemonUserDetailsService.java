@@ -33,7 +33,7 @@ implements UserDetailsService {
 	}
 	
 	@Override
-	public LemonPrincipal<ID> loadUserByUsername(String username)
+	public LemonPrincipal loadUserByUsername(String username)
 			throws UsernameNotFoundException {
 		
 		log.debug("Loading user having username: " + username);
@@ -45,7 +45,7 @@ implements UserDetailsService {
 
 		log.debug("Loaded user having username: " + username);
 
-		return new LemonPrincipal<>(user.toUserDto());
+		return new LemonPrincipal(user.toUserDto());
 	}
 
 	/**

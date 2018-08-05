@@ -41,7 +41,7 @@ public class LemonUtils {
 	/**
 	 * Gets the current-user
 	 */
-	public static <ID extends Serializable> UserDto<ID> currentUser() {
+	public static <ID extends Serializable> UserDto currentUser() {
 		
 		return LecUtils.currentUser(SecurityContextHolder.getContext());
 	}
@@ -55,7 +55,7 @@ public class LemonUtils {
 	public static <U extends AbstractUser<U,ID>, ID extends Serializable>
 	void login(U user) {
 		
-		LemonPrincipal<ID> principal = new LemonPrincipal<>(user.toUserDto());
+		LemonPrincipal principal = new LemonPrincipal(user.toUserDto());
 
 		Authentication authentication = // make the authentication object
 	    	new UsernamePasswordAuthenticationToken(principal, null, principal.getAuthorities());

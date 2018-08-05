@@ -1,6 +1,5 @@
 package com.naturalprogrammer.spring.lemon.commons.security;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
@@ -25,12 +24,12 @@ import lombok.Setter;
  * Spring Security Principal, implementing both OidcUser, UserDetails
  */
 @Getter @Setter @RequiredArgsConstructor
-public class LemonPrincipal<ID extends Serializable> implements OidcUser, UserDetails, CredentialsContainer {
+public class LemonPrincipal implements OidcUser, UserDetails, CredentialsContainer {
 
 	private static final long serialVersionUID = -7849730155307434535L;
 	
 	@Getter(AccessLevel.NONE)
-	private final UserDto<ID> userDto;
+	private final UserDto userDto;
 	
 	private Map<String, Object> attributes;
 	private String name;
@@ -38,7 +37,7 @@ public class LemonPrincipal<ID extends Serializable> implements OidcUser, UserDe
 	private OidcUserInfo userInfo;
 	private OidcIdToken idToken;
 	
-	public UserDto<ID> currentUser() {
+	public UserDto currentUser() {
 		return userDto;
 	}
 

@@ -53,7 +53,7 @@ public class LemonOAuth2UserService<U extends AbstractUser<U,ID>, ID extends Ser
 	 * Builds the security principal from the given userReqest.
 	 * Registers the user if not already reqistered
 	 */
-	public LemonPrincipal<ID> buildPrincipal(OAuth2User oath2User, String registrationId) {
+	public LemonPrincipal buildPrincipal(OAuth2User oath2User, String registrationId) {
 		
 		Map<String, Object> attributes = oath2User.getAttributes();
 		String email = lemonService.getOAuth2Email(registrationId, attributes);
@@ -85,8 +85,8 @@ public class LemonOAuth2UserService<U extends AbstractUser<U,ID>, ID extends Ser
 			return newUser;
     	});
     	
-    	UserDto<ID> userDto = user.toUserDto();
-		LemonPrincipal<ID> principal = new LemonPrincipal<>(userDto);
+    	UserDto userDto = user.toUserDto();
+		LemonPrincipal principal = new LemonPrincipal(userDto);
 		principal.setAttributes(attributes);
 		principal.setName(oath2User.getName());
 		

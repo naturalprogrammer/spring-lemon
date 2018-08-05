@@ -7,6 +7,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.data.domain.AuditorAware;
 
+import com.naturalprogrammer.spring.lemon.LemonService;
 import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
 import com.naturalprogrammer.spring.lemon.util.LemonUtils;
 
@@ -23,22 +24,22 @@ implements AuditorAware<U> {
 	
     private static final Log log = LogFactory.getLog(LemonAuditorAware.class);
     
-    private AbstractUserRepository<U,ID> userRepository;
+    private LemonService<U,ID> lemonService;
     
-	public LemonAuditorAware(AbstractUserRepository<U,ID> userRepository) {
+	public LemonAuditorAware(LemonService<U,ID> lemonService) {
 		
-		this.userRepository = userRepository;
+		this.lemonService = lemonService;
 		log.info("Created");
 	}
 
 	@Override
 	public Optional<U> getCurrentAuditor() {
 		
-		UserDto<ID> currentUser = LemonUtils.currentUser();
+		UserDto currentUser = LemonUtils.currentUser();
 		
 		if (currentUser == null)
 			return Optional.empty();
 		
-		return userRepository.findById(currentUser.getId());
+		return lemonService.findUserById(currentUser.getId());
 	}	
 }

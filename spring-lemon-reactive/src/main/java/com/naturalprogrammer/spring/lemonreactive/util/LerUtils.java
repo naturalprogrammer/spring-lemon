@@ -41,11 +41,11 @@ public class LerUtils {
 	/**
 	 * Gets the current-user
 	 */
-	public static <ID extends Serializable> Mono<Optional<UserDto<ID>>> currentUser() {
+	public static <ID extends Serializable> Mono<Optional<UserDto>> currentUser() {
 		
 		return ReactiveSecurityContextHolder.getContext()
 			.map(LecUtils::currentUser)
-			.map(user -> Optional.of((UserDto<ID>) user))
+			.map(user -> Optional.of(user))
 			.defaultIfEmpty(Optional.empty());
 	}	
 

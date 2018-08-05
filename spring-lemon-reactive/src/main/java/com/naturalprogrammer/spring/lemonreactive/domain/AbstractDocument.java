@@ -44,7 +44,7 @@ public abstract class AbstractDocument<ID extends Serializable> implements Permi
 	 * this entity. Override this method where you need.
 	 */
 	@Override
-	public boolean hasPermission(UserDto<?> currentUser, String permission) {
+	public boolean hasPermission(UserDto currentUser, String permission) {
 		
 		return false;		
 	}

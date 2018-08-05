@@ -176,7 +176,7 @@ public abstract class LemonService
 		sharedProperties.put("reCaptchaSiteKey", properties.getRecaptcha().getSitekey());
 		sharedProperties.put("shared", properties.getShared());
 		
-		UserDto<ID> currentUser = LemonUtils.currentUser();
+		UserDto currentUser = LemonUtils.currentUser();
 		if (currentUser != null)
 			addAuthHeader(response, currentUser.getUsername(),
 				expirationMillis.orElse(properties.getJwt().getExpirationMillis()));
@@ -449,7 +449,7 @@ public abstract class LemonService
 	@UserEditPermission
 	@Validated(UserUtils.UpdateValidation.class)
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
-	public UserDto<ID> updateUser(U user, @Valid U updatedUser) {
+	public UserDto updateUser(U user, @Valid U updatedUser) {
 		
 		log.debug("Updating user: " + user);
 
@@ -462,7 +462,7 @@ public abstract class LemonService
 		
 		log.debug("Updated user: " + user);
 		
-		UserDto<ID> userDto = user.toUserDto();
+		UserDto userDto = user.toUserDto();
 		userDto.setPassword(null);
 		return userDto;
 	}
@@ -478,8 +478,8 @@ public abstract class LemonService
 		log.debug("Changing password for user: " + user);
 		
 		// Get the old password of the logged in user (logged in user may be an ADMIN)
-		UserDto<ID> currentUser = LemonUtils.currentUser();
-		U loggedIn = userRepository.findById(currentUser.getId()).get();
+		UserDto currentUser = LemonUtils.currentUser();
+		U loggedIn = userRepository.findById(toId(currentUser.getId())).get();
 		String oldPassword = loggedIn.getPassword();
 
 		// checks
@@ -499,16 +499,18 @@ public abstract class LemonService
 	}
 
 
+	protected abstract ID toId(String id);
+
 	/**
 	 * Updates the fields of the users. Override this if you have more fields.
 	 */
-	protected void updateUserFields(U user, U updatedUser, UserDto<ID> currentUser) {
+	protected void updateUserFields(U user, U updatedUser, UserDto currentUser) {
 
 		log.debug("Updating user fields for user: " + user);
 
 		// Another good admin must be logged in to edit roles
 		if (currentUser.isGoodAdmin() &&
-		   !currentUser.getId().equals(user.getId())) { 
+		   !currentUser.getId().equals(user.getId().toString())) { 
 			
 			log.debug("Updating roles for user: " + user);
 
@@ -620,9 +622,9 @@ public abstract class LemonService
 		log.debug("Changing email of current user ...");
 
 		// fetch the current-user
-		UserDto<ID> currentUser = LemonUtils.currentUser();
+		UserDto currentUser = LemonUtils.currentUser();
 		
-		LexUtils.validate(userId.equals(currentUser.getId()),
+		LexUtils.validate(userId.equals(toId(currentUser.getId())),
 			"com.naturalprogrammer.spring.wrong.login").go();
 		
 		U user = userRepository.findById(userId).orElseThrow(LexUtils.notFoundSupplier());
@@ -707,7 +709,7 @@ public abstract class LemonService
 	public String fetchNewToken(Optional<Long> expirationMillis,
 			Optional<String> optionalUsername) {
 		
-		UserDto<ID> currentUser = LemonUtils.currentUser();
+		UserDto currentUser = LemonUtils.currentUser();
 		String username = optionalUsername.orElse(currentUser.getUsername());
 		
 		LecUtils.ensureAuthority(currentUser.getUsername().equals(username) ||
@@ -751,5 +753,9 @@ public abstract class LemonService
 		response.addHeader(LecUtils.TOKEN_RESPONSE_HEADER_NAME,
 				LecUtils.TOKEN_PREFIX +
 				jwtService.createToken(JwtService.AUTH_AUDIENCE, username, expirationMillis));
+	}
+	
+	public Optional<U> findUserById(String id) {
+		return userRepository.findById(toId(id));
 	}
 }

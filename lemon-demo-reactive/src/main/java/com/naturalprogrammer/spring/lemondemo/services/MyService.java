@@ -26,9 +26,14 @@ public class MyService extends LemonReactiveService<User, ObjectId> {
     }
     
 	@Override
-    protected void updateUserFields(User user, User updatedUser, UserDto<ObjectId> currentUser) {
+    protected void updateUserFields(User user, User updatedUser, UserDto currentUser) {
 
         super.updateUserFields(user, updatedUser, currentUser);
         user.setName(updatedUser.getName());
     }
+
+	@Override
+	protected ObjectId toId(String id) {
+		return new ObjectId(id);
+	}
 }

@@ -59,7 +59,7 @@ public class LemonAuthenticationSuccessHandler
     			defaultExpirationMillis : Long.valueOf(expirationMillisStr);
  
     	// get the current-user
-    	UserDto<?> currentUser = LemonUtils.currentUser();
+    	UserDto currentUser = LemonUtils.currentUser();
 
     	lemonService.addAuthHeader(response, currentUser.getUsername(), expirationMillis);
     	

@@ -26,7 +26,7 @@ public class LemonEntity<U extends AbstractUser<U,ID>, ID extends Serializable> 
 	 * this entity. Override this method where you need.
 	 */
 	@Override
-	public boolean hasPermission(UserDto<?> user, String permission) {
+	public boolean hasPermission(UserDto user, String permission) {
 		return false;
 	}
 	

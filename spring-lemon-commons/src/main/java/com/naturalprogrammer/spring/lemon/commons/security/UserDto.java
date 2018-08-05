@@ -14,9 +14,9 @@ import lombok.Setter;
  * mainly used for holding logged-in user data 
  */
 @Getter @Setter
-public class UserDto<ID extends Serializable> {
+public class UserDto {
 
-	private ID id;
+	private String id;
 	private String username;
 	private String password;
 	private Set<String> roles = new HashSet<String>();

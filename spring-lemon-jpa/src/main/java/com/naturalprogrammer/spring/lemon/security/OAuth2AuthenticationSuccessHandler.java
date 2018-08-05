@@ -41,7 +41,7 @@ public class OAuth2AuthenticationSuccessHandler<ID extends Serializable>
 	protected String determineTargetUrl(HttpServletRequest request,
 			HttpServletResponse response) {
 		
-		UserDto<ID> currentUser = LemonUtils.currentUser();
+		UserDto currentUser = LemonUtils.currentUser();
 		
 		String shortLivedAuthToken = jwtService.createToken(
 				JwtService.AUTH_AUDIENCE,

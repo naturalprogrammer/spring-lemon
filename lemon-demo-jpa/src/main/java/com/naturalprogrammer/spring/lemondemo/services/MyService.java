@@ -21,14 +21,14 @@ public class MyService extends LemonService<User, Long> {
     }
 
 	@Override
-    protected void updateUserFields(User user, User updatedUser, UserDto<Long> currentUser) {
+    protected void updateUserFields(User user, User updatedUser, UserDto currentUser) {
 
         super.updateUserFields(user, updatedUser, currentUser);
 
         user.setName(updatedUser.getName());
 
         LemonUtils.afterCommit(() -> {
-            if (currentUser.getId().equals(user.getId()))
+            if (currentUser.getId().equals(user.getId().toString()))
                 currentUser.setTag(user.toTag());
         });
     }
@@ -63,4 +63,10 @@ public class MyService extends LemonService<User, Long> {
     	
     	user.setName((String) attributes.get(nameKey));
     }
+
+	@Override
+	protected Long toId(String id) {
+		
+		return Long.valueOf(id);
+	}
 }

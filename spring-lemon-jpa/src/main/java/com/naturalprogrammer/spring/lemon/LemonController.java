@@ -97,7 +97,7 @@ public abstract class LemonController
 	 */
 	@PostMapping("/users")
 	@ResponseStatus(HttpStatus.CREATED)
-	public UserDto<ID> signup(@RequestBody @JsonView(UserUtils.SignupInput.class) U user,
+	public UserDto signup(@RequestBody @JsonView(UserUtils.SignupInput.class) U user,
 			HttpServletResponse response) {
 		
 		log.debug("Signing up: " + user);
@@ -125,7 +125,7 @@ public abstract class LemonController
 	 * Verifies current-user
 	 */
 	@PostMapping("/users/{id}/verification")
-	public UserDto<ID> verifyUser(
+	public UserDto verifyUser(
 			@PathVariable ID id,
 			@RequestParam String code,
 			HttpServletResponse response) {
@@ -153,7 +153,7 @@ public abstract class LemonController
 	 * Resets password after it's forgotten
 	 */
 	@PostMapping("/reset-password")
-	public UserDto<ID> resetPassword(
+	public UserDto resetPassword(
 			@RequestBody ResetPasswordForm form,
 			HttpServletResponse response) {
 		
@@ -190,7 +190,7 @@ public abstract class LemonController
 	 * Updates a user
 	 */
 	@PatchMapping("/users/{id}")
-	public UserDto<ID> updateUser(
+	public UserDto updateUser(
 			@PathVariable("id") U user,
 			@RequestBody String patch,
 			HttpServletResponse response)
@@ -201,7 +201,7 @@ public abstract class LemonController
 		// ensure that the user exists
 		LexUtils.ensureFound(user);
 		U updatedUser = LecUtils.applyPatch(user, patch); // create a patched form
-		UserDto<ID> userDto = lemonService.updateUser(user, updatedUser);
+		UserDto userDto = lemonService.updateUser(user, updatedUser);
 		
 		// Send a new token for logged in user in the response
 		userWithToken(response);
@@ -244,7 +244,7 @@ public abstract class LemonController
 	 * Changes the email
 	 */
 	@PostMapping("/users/{userId}/email")
-	public UserDto<ID> changeEmail(
+	public UserDto changeEmail(
 			@PathVariable ID userId,
 			@RequestParam String code,
 			HttpServletResponse response) {
@@ -274,9 +274,9 @@ public abstract class LemonController
 	/**
 	 * returns the current user and a new authorization token in the response
 	 */
-	protected UserDto<ID> userWithToken(HttpServletResponse response) {
+	protected UserDto userWithToken(HttpServletResponse response) {
 		
-		UserDto<ID> currentUser = LemonUtils.currentUser();
+		UserDto currentUser = LemonUtils.currentUser();
 		lemonService.addAuthHeader(response, currentUser.getUsername(), jwtExpirationMillis);
 		return currentUser;
 	}

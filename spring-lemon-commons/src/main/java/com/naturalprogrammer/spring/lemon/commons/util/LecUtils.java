@@ -67,7 +67,7 @@ public class LecUtils {
 	 * @param auth
 	 * @return
 	 */
-	public static <ID extends Serializable> UserDto<ID> currentUser(SecurityContext context) {
+	public static <ID extends Serializable> UserDto currentUser(SecurityContext context) {
 		
 		return currentUser(context.getAuthentication());
 	}
@@ -79,12 +79,12 @@ public class LecUtils {
 	 * @param auth
 	 * @return
 	 */
-	public static <ID extends Serializable> UserDto<ID> currentUser(Authentication auth) {
+	public static <ID extends Serializable> UserDto currentUser(Authentication auth) {
 		
 	    if (auth != null) {
 	      Object principal = auth.getPrincipal();
-	      if (principal instanceof LemonPrincipal<?>) {
-	        return ((LemonPrincipal<ID>) principal).currentUser();
+	      if (principal instanceof LemonPrincipal) {
+	        return ((LemonPrincipal) principal).currentUser();
 	      }
 	    }
 	    return null;	  

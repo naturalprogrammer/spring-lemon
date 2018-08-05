@@ -44,7 +44,7 @@ public class UserUtils {
 	public interface SignupInput {
 	}
 
-	public static <ID> boolean hasPermission(ID id, UserDto<?> currentUser, String permission) {
+	public static <ID> boolean hasPermission(ID id, UserDto currentUser, String permission) {
 
 		log.debug("Computing " + permission + " permission for User " + id + "\n  Logged in user: " + currentUser);
 
@@ -53,7 +53,7 @@ public class UserUtils {
 			if (currentUser == null)
 				return false;
 
-			boolean isSelf = currentUser.getId().equals(id);
+			boolean isSelf = currentUser.getId().equals(id.toString());
 			return isSelf || currentUser.isGoodAdmin(); // self or admin;
 		}
 

@@ -95,9 +95,9 @@ public class LemonReactiveSecurityConfig <U extends AbstractMongoUser<ID>, ID ex
 			
 			JWTClaimsSet claims = jwtService.parseToken(token, JwtService.AUTH_AUDIENCE);
 			
-			UserDto<ID> userDto = getUserDto(claims);
+			UserDto userDto = getUserDto(claims);
 			
-			Mono<UserDto<ID>> userDtoMono;
+			Mono<UserDto> userDtoMono;
 			
 			if (userDto == null) {
 				
@@ -113,13 +113,13 @@ public class LemonReactiveSecurityConfig <U extends AbstractMongoUser<ID>, ID ex
 			} else
 				userDtoMono = Mono.just(userDto);
 			
-			return userDtoMono.map(LemonPrincipal<ID>::new)
-					.doOnNext(LemonPrincipal<ID>::eraseCredentials)
+			return userDtoMono.map(LemonPrincipal::new)
+					.doOnNext(LemonPrincipal::eraseCredentials)
 					.map(principal -> new JwtAuthenticationToken(principal, token, principal.getAuthorities()));		
 		};
 	}
 
-	protected UserDto<ID> getUserDto(JWTClaimsSet claims) {
+	protected UserDto getUserDto(JWTClaimsSet claims) {
 
 		return null;
 	}

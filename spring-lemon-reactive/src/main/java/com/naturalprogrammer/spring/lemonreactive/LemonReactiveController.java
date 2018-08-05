@@ -70,7 +70,7 @@ public class LemonReactiveController
 	 * A simple function for pinging this server.
 	 */
 	@PostMapping("/login")
-	public Mono<UserDto<ID>> login(ServerWebExchange exchange) {
+	public Mono<UserDto> login(ServerWebExchange exchange) {
 		
 		log.debug("Returning current user ... ");
 		
@@ -126,7 +126,7 @@ public class LemonReactiveController
 	 */
 	@PostMapping("/users")
 	@ResponseStatus(HttpStatus.CREATED)
-	protected Mono<UserDto<ID>> signup(Mono<U> user, ServerHttpResponse response) {
+	protected Mono<UserDto> signup(Mono<U> user, ServerHttpResponse response) {
 		
 		log.debug("Signing up: " + user);
 		
@@ -151,7 +151,7 @@ public class LemonReactiveController
 	 * Verifies current-user
 	 */
 	@PostMapping("/users/{id}/verification")
-	public Mono<UserDto<ID>> verifyUser(
+	public Mono<UserDto> verifyUser(
 			@PathVariable ID id,
 			ServerWebExchange exchange) {
 		
@@ -177,7 +177,7 @@ public class LemonReactiveController
 	 * Resets password after it's forgotten
 	 */
 	@PostMapping("/reset-password")
-	public Mono<UserDto<ID>> resetPassword(
+	public Mono<UserDto> resetPassword(
 			@RequestBody @Valid Mono<ResetPasswordForm> form,
 		    ServerHttpResponse response) {
 		
@@ -212,7 +212,7 @@ public class LemonReactiveController
 	 * Updates a user
 	 */
 	@PatchMapping(value = "/users/{id}")
-	public Mono<UserDto<ID>> updateUser(
+	public Mono<UserDto> updateUser(
 			@PathVariable ID id,
 			@RequestBody @NotBlank Mono<String> patch,
 			ServerHttpResponse response) {
@@ -253,7 +253,7 @@ public class LemonReactiveController
 	 * Changes the email
 	 */
 	@PostMapping("/users/{userId}/email")
-	public Mono<UserDto<ID>> changeEmail(
+	public Mono<UserDto> changeEmail(
 			@PathVariable ID userId,
 			ServerWebExchange exchange) {
 		
@@ -282,7 +282,7 @@ public class LemonReactiveController
 	/**
 	 * returns the current user and a new authorization token in the response
 	 */
-	protected Mono<UserDto<ID>> userWithToken(Mono<UserDto<ID>> userDto,
+	protected Mono<UserDto> userWithToken(Mono<UserDto> userDto,
 			ServerHttpResponse response) {
 		
 		return lemonReactiveService.userWithToken(userDto, response, jwtExpirationMillis);

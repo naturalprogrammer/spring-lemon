@@ -23,7 +23,7 @@ public class MyController extends LemonReactiveController<User, ObjectId> {
 	public static final String BASE_URI = "/api/core";
 
 	@Override
-	public Mono<UserDto<ObjectId>> signup(
+	public Mono<UserDto> signup(
 			@RequestBody @JsonView(UserUtils.SignupInput.class)
 			@Validated(SignUpValidation.class) Mono<User> user,
 			ServerHttpResponse response) {

@@ -158,7 +158,7 @@ public abstract class LemonReactiveService
 		
 		log.debug("Getting context ...");
 
-		Mono<Optional<UserDto<ID>>> userDtoMono = LerUtils.currentUser();
+		Mono<Optional<UserDto>> userDtoMono = LerUtils.currentUser();
 		return userDtoMono.map(optionalUser -> {
 			
 			Map<String, Object> context = buildContext();
@@ -190,7 +190,7 @@ public abstract class LemonReactiveService
     /**
 	 * Signs up a user.
 	 */
-	public Mono<UserDto<ID>> signup(Mono<U> user) {
+	public Mono<UserDto> signup(Mono<U> user) {
 		
 		log.debug("Signing up user: " + user);
 		
@@ -277,7 +277,7 @@ public abstract class LemonReactiveService
 	}
 
 	
-	protected void ensureEditable(Tuple2<U, Optional<UserDto<Serializable>>> tuple) {
+	protected void ensureEditable(Tuple2<U, Optional<UserDto>> tuple) {
 		LecUtils.ensureAuthority(
 				tuple.getT1().hasPermission(tuple.getT2().orElse(null),
 				UserUtils.Permission.EDIT),
@@ -299,7 +299,7 @@ public abstract class LemonReactiveService
 	}
 
 
-	public Mono<UserDto<ID>> verifyUser(ID userId, Mono<MultiValueMap<String, String>> formData) {
+	public Mono<UserDto> verifyUser(ID userId, Mono<MultiValueMap<String, String>> formData) {
 		
 		log.debug("Verifying user ...");
 
@@ -388,7 +388,7 @@ public abstract class LemonReactiveService
 	}
 
 		
-	public Mono<UserDto<ID>> resetPassword(Mono<ResetPasswordForm> resetPasswordForm) {
+	public Mono<UserDto> resetPassword(Mono<ResetPasswordForm> resetPasswordForm) {
 		
 		return resetPasswordForm.map(form -> {
 			
@@ -434,7 +434,7 @@ public abstract class LemonReactiveService
 	/**
 	 * returns the current user and a new authorization token in the response
 	 */
-	public Mono<UserDto<ID>> userWithToken(Mono<UserDto<ID>> userDto,
+	public Mono<UserDto> userWithToken(Mono<UserDto> userDto,
 			ServerHttpResponse response, long expirationMillis) {
 
 		return userDto.doOnNext(user -> {
@@ -444,7 +444,7 @@ public abstract class LemonReactiveService
 	}
 
 	
-	protected void addAuthHeader(ServerHttpResponse response, UserDto<ID> userDto, long expirationMillis) {
+	protected void addAuthHeader(ServerHttpResponse response, UserDto userDto, long expirationMillis) {
 		
 		log.debug("Adding auth header for " + userDto.getUsername());
 		
@@ -482,22 +482,22 @@ public abstract class LemonReactiveService
 	}
 
 	
-	public Mono<UserDto<ID>> updateUser(ID userId, Mono<String> patch) {
+	public Mono<UserDto> updateUser(ID userId, Mono<String> patch) {
 		
 		return Mono.zip(findUserById(userId), LerUtils.currentUser(), patch)
 			.doOnNext(this::ensureEditable)
-			.map((Tuple3<U, Optional<UserDto<Serializable>>, String> tuple3) ->
+			.map((Tuple3<U, Optional<UserDto>, String> tuple3) ->
 				this.updateUser(tuple3.getT1(), tuple3.getT2(), tuple3.getT3()))
 			.flatMap(userRepository::save)
 			.map(user -> {
-				UserDto<ID> userDto = user.toUserDto();
+				UserDto userDto = user.toUserDto();
 				userDto.setPassword(null);
 				return userDto;
 			});
 	}
 
 
-	protected U updateUser(U user, Optional<UserDto<Serializable>> currentUser, String patch) {
+	protected U updateUser(U user, Optional<UserDto> currentUser, String patch) {
 		
 		log.debug("Updating user: " + user);
 
@@ -505,7 +505,7 @@ public abstract class LemonReactiveService
 		LexUtils.validate("updatedUser", updatedUser, UserUtils.UpdateValidation.class);
 		LerUtils.ensureCorrectVersion(user, updatedUser);
 		
-		updateUserFields(user, updatedUser, (UserDto<ID>) currentUser.get());
+		updateUserFields(user, updatedUser, currentUser.get());
 
 		log.debug("Updated user: " + user);
 		return user;
@@ -515,13 +515,13 @@ public abstract class LemonReactiveService
 	/**
 	 * Updates the fields of the users. Override this if you have more fields.
 	 */
-	protected void updateUserFields(U user, U updatedUser, UserDto<ID> currentUser) {
+	protected void updateUserFields(U user, U updatedUser, UserDto currentUser) {
 
 		log.debug("Updating user fields for user: " + user);
 
 		// Another good admin must be logged in to edit roles
 		if (currentUser.isGoodAdmin() &&
-		   !currentUser.getId().equals(user.getId())) { 
+		   !currentUser.getId().equals(user.getId().toString())) { 
 			
 			log.debug("Updating roles for user: " + user);
 
@@ -565,7 +565,7 @@ public abstract class LemonReactiveService
 	/**
 	 * Hides the confidential fields before sending to client
 	 */
-	protected void hideConfidentialFields(Tuple2<U,Optional<UserDto<Serializable>>> tuple) {
+	protected void hideConfidentialFields(Tuple2<U,Optional<UserDto>> tuple) {
 		
 		U user = tuple.getT1();
 		
@@ -578,13 +578,13 @@ public abstract class LemonReactiveService
 	}
 
 
-	public Mono<UserDto<ID>> changePassword(ID userId, Mono<ChangePasswordForm> changePasswordForm) {
+	public Mono<UserDto> changePassword(ID userId, Mono<ChangePasswordForm> changePasswordForm) {
 		
 		return Mono.zip(findUserById(userId), LerUtils.currentUser())
 				.doOnNext(this::ensureEditable)
 				.flatMap(tuple -> Mono.zip(
 						Mono.just(tuple.getT1()),
-						findUserById(((UserDto<ID>)tuple.getT2().get()).getId()),
+						findUserById(toId(tuple.getT2().get().getId())),
 						changePasswordForm)
 				.doOnNext(this::changePassword))
 				.map(Tuple2::getT1)
@@ -620,7 +620,7 @@ public abstract class LemonReactiveService
 				.doOnNext(this::ensureEditable)
 				.flatMap(tuple -> Mono.zip(
 						Mono.just(tuple.getT1()),
-						findUserById(((UserDto<ID>)tuple.getT2().get()).getId()),
+						findUserById(toId(tuple.getT2().get().getId())),
 						emailForm)
 				.doOnNext(this::requestEmailChange))
 				.map(Tuple2::getT1)
@@ -629,6 +629,8 @@ public abstract class LemonReactiveService
 				.then();
 	}
 	
+	protected abstract ID toId(String id);
+
 	protected void requestEmailChange(Tuple3<U,U,EmailForm> tuple) {
 		
 		U user = tuple.getT1();
@@ -697,13 +699,13 @@ public abstract class LemonReactiveService
 
 
 	@PreAuthorize("isAuthenticated()")
-	public Mono<UserDto<ID>> changeEmail(ID userId, Mono<MultiValueMap<String, String>> formData) {
+	public Mono<UserDto> changeEmail(ID userId, Mono<MultiValueMap<String, String>> formData) {
 		
 		log.debug("Changing email of current user ...");
 		
 		return LerUtils.currentUser()
 			.doOnNext(currentUser -> {				
-				LexUtils.validate(userId.equals(currentUser.get().getId()),
+				LexUtils.validate(userId.equals(toId(currentUser.get().getId())),
 						"com.naturalprogrammer.spring.wrong.login").go();	
 			})
 			.then(Mono.zip(findUserById(userId), formData))
@@ -771,7 +773,7 @@ public abstract class LemonReactiveService
 		
 		return Mono.zip(LerUtils.currentUser(), exchange.getFormData()).map(tuple -> {
 				
-			UserDto<ID> currentUser = (UserDto<ID>) tuple.getT1().get();
+			UserDto currentUser = (UserDto) tuple.getT1().get();
 			
 			String username = tuple.getT2().getFirst("username");
 			if (StringUtils.isBlank(username))

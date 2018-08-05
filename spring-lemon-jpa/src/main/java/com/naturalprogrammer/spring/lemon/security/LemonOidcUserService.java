@@ -28,7 +28,7 @@ public class LemonOidcUserService extends OidcUserService {
 	public OidcUser loadUser(OidcUserRequest userRequest) throws OAuth2AuthenticationException {
 		
 		OidcUser oidcUser = super.loadUser(userRequest);
-		LemonPrincipal<?> principal = oauth2UserService.buildPrincipal(oidcUser,
+		LemonPrincipal principal = oauth2UserService.buildPrincipal(oidcUser,
 			userRequest.getClientRegistration().getRegistrationId());
 		
 		principal.setClaims(oidcUser.getClaims());

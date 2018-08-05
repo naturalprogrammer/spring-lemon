@@ -80,7 +80,7 @@ extends VersionedEntity<U, ID> {
 	 * on this entity. 
 	 */
 	@Override
-	public boolean hasPermission(UserDto<?> currentUser, String permission) {
+	public boolean hasPermission(UserDto currentUser, String permission) {
 		
 		return UserUtils.hasPermission(getId(), currentUser, permission);		
 	}
@@ -98,11 +98,11 @@ extends VersionedEntity<U, ID> {
 	/**
 	 * Makes a User DTO
 	 */
-	public UserDto<ID> toUserDto() {
+	public UserDto toUserDto() {
 		
-		UserDto<ID> userDto = new UserDto<>();
+		UserDto userDto = new UserDto();
 		
-		userDto.setId(getId());
+		userDto.setId(getId().toString());
 		userDto.setUsername(email);
 		userDto.setPassword(password);
 		userDto.setRoles(roles);

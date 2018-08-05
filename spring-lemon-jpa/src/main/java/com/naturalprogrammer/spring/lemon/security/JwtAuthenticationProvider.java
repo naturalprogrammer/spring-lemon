@@ -50,7 +50,7 @@ public class JwtAuthenticationProvider
         log.debug("User found ...");
 
         LemonUtils.ensureCredentialsUpToDate(claims, user);
-        LemonPrincipal<ID> principal = new LemonPrincipal<ID>(user.toUserDto());
+        LemonPrincipal principal = new LemonPrincipal(user.toUserDto());
         		
         return new JwtAuthenticationToken(principal, token, principal.getAuthorities());
 	}
