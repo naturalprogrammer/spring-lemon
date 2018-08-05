@@ -87,17 +87,7 @@ public abstract class AbstractMongoUser
 		userDto.setRoles(roles);
 		userDto.setTag(toTag());
 		
-		boolean unverified = hasRole(UserUtils.Role.UNVERIFIED);
-		boolean blocked = hasRole(UserUtils.Role.BLOCKED);
-		boolean admin = hasRole(UserUtils.Role.ADMIN);
-		boolean goodUser = !(unverified || blocked);
-		boolean goodAdmin = goodUser && admin;
-
-		userDto.setAdmin(admin);
-		userDto.setBlocked(blocked);
-		userDto.setGoodAdmin(goodAdmin);
-		userDto.setGoodUser(goodUser);
-		userDto.setUnverified(unverified);
+		userDto.initialize();
 		
 		return userDto;
 	}

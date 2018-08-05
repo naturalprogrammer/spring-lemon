@@ -23,6 +23,7 @@ import org.springframework.web.server.ServerWebExchange;
 import com.naturalprogrammer.spring.lemon.commons.security.JwtAuthenticationToken;
 import com.naturalprogrammer.spring.lemon.commons.security.JwtService;
 import com.naturalprogrammer.spring.lemon.commons.security.LemonPrincipal;
+import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
 import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
 import com.naturalprogrammer.spring.lemonreactive.domain.AbstractMongoUser;
 import com.naturalprogrammer.spring.lemonreactive.util.LerUtils;
@@ -36,8 +37,8 @@ public class LemonReactiveSecurityConfig <U extends AbstractMongoUser<ID>, ID ex
 
 	private static final Log log = LogFactory.getLog(LemonReactiveSecurityConfig.class);
 	
-	private JwtService jwtService;
-	private LemonReactiveUserDetailsService<U, ID> userDetailsService;
+	protected JwtService jwtService;
+	protected LemonReactiveUserDetailsService<U, ID> userDetailsService;
 
 	public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
 		
@@ -94,20 +95,35 @@ public class LemonReactiveSecurityConfig <U extends AbstractMongoUser<ID>, ID ex
 			
 			JWTClaimsSet claims = jwtService.parseToken(token, JwtService.AUTH_AUDIENCE);
 			
-	        String username = claims.getSubject();
-	        
-			return userDetailsService.findUserByUsername(username)
+			UserDto<ID> userDto = getUserDto(claims);
+			
+			Mono<UserDto<ID>> userDtoMono;
+			
+			if (userDto == null) {
+				
+		        String username = claims.getSubject();
+
+				userDtoMono = userDetailsService.findUserByUsername(username)
 					.switchIfEmpty(Mono.defer(() -> Mono.error(new UsernameNotFoundException(username))))
 					.doOnNext(user -> {
 				        log.debug("User found ...");
 				        LerUtils.ensureCredentialsUpToDate(claims, user);
 					})
-					.map(AbstractMongoUser::toUserDto)
-					.map(LemonPrincipal<ID>::new)
+					.map(AbstractMongoUser::toUserDto);
+			} else
+				userDtoMono = Mono.just(userDto);
+			
+			return userDtoMono.map(LemonPrincipal<ID>::new)
 					.doOnNext(LemonPrincipal<ID>::eraseCredentials)
 					.map(principal -> new JwtAuthenticationToken(principal, token, principal.getAuthorities()));		
 		};
 	}
+
+	protected UserDto<ID> getUserDto(JWTClaimsSet claims) {
+
+		return null;
+	}
+
 
 	protected Function<ServerWebExchange, Mono<Authentication>> tokenAuthenticationConverter() {
 		
