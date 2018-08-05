@@ -7,6 +7,8 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.boot.web.servlet.error.DefaultErrorAttributes;
 import org.springframework.web.context.request.WebRequest;
 
+import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
+
 /**
  * Used for handling exceptions that can't be handled by
  * <code>DefaultExceptionHandlerControllerAdvice</code>,
@@ -50,15 +52,15 @@ public class LemonErrorAttributes<T extends Throwable> extends DefaultErrorAttri
 		
 		Throwable ex = getError(request);
 		
-		if (ex == null) // sometimes getError may return null,
-			return;     // in which case, we can't add any more details
-		
-		errorAttributes.put("exception", ex.getClass().getSimpleName());
+		errorAttributes.put("exception", LexUtils.getRootExceptionName(ex));
 		
 		errorResponseComposer.compose((T)ex).ifPresent(errorResponse -> {
 			
 			// check for null - errorResponse may have left something for the DefaultErrorAttributes
 			
+			if (errorResponse.getException() != null) // In case of deserialized exception from Feign
+				errorAttributes.put("exception", errorResponse.getException());
+
 			if (errorResponse.getMessage() != null)
 				errorAttributes.put("message", errorResponse.getMessage());
 			

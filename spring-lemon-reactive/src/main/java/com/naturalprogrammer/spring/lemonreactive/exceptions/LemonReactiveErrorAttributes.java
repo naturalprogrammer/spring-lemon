@@ -8,6 +8,7 @@ import org.springframework.boot.web.reactive.error.DefaultErrorAttributes;
 import org.springframework.web.reactive.function.server.ServerRequest;
 
 import com.naturalprogrammer.spring.lemon.exceptions.ErrorResponseComposer;
+import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
 
 public class LemonReactiveErrorAttributes<T extends Throwable> extends DefaultErrorAttributes {
 	
@@ -42,12 +43,15 @@ public class LemonReactiveErrorAttributes<T extends Throwable> extends DefaultEr
 		
 		Throwable ex = getError(request);
 		
-		errorAttributes.put("exception", ex.getClass().getSimpleName());
+		errorAttributes.put("exception", LexUtils.getRootExceptionName(ex));
 		
 		errorResponseComposer.compose((T)ex).ifPresent(errorResponse -> {
 			
 			// check for nulls - errorResponse may have left something for the DefaultErrorAttributes
 			
+			if (errorResponse.getException() != null) // In case of deserialized exception from Feign
+				errorAttributes.put("exception", errorResponse.getException());
+
 			if (errorResponse.getMessage() != null)
 				errorAttributes.put("message", errorResponse.getMessage());
 			

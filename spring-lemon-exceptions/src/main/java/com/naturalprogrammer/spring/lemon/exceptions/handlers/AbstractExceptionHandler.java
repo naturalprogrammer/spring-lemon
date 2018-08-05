@@ -51,16 +51,6 @@ public abstract class AbstractExceptionHandler<T extends Throwable> {
 		}
 		
 		errorResponse.setErrors(getErrors(ex));
-		errorResponse.setException(getRootException(ex));
-		
 		return errorResponse;
-	}
-
-	private String getRootException(Throwable ex) {
-		
-		while(ex.getCause() != null)
-			ex = ex.getCause();
-		
-		return ex.getClass().getSimpleName();
 	}
 }

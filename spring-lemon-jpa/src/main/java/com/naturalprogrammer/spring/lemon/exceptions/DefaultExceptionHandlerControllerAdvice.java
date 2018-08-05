@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
+
 /**
  * Handles exceptions thrown from in controllers or inner routines
  */
@@ -44,7 +46,7 @@ public class DefaultExceptionHandlerControllerAdvice<T extends Throwable> {
     	log.warn("Handling exception", ex);
     	
     	// We didn't do this inside compose because LemonErrorAttributes would do it differently
-    	errorResponse.setException(ex.getClass().getSimpleName());
+    	errorResponse.setException(LexUtils.getRootExceptionName(ex));
 
         return new ResponseEntity<ErrorResponse>(errorResponse, HttpStatus.valueOf(errorResponse.getStatus()));
     }
