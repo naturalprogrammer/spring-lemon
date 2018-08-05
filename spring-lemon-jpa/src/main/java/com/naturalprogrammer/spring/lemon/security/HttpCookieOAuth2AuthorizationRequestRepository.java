@@ -13,6 +13,7 @@ import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequ
 import org.springframework.util.Assert;
 
 import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
+import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
 import com.naturalprogrammer.spring.lemon.util.LemonUtils;
 
 /**
@@ -59,7 +60,7 @@ public class HttpCookieOAuth2AuthorizationRequestRepository implements Authoriza
 			return;
 		}
 		
-		Cookie cookie = new Cookie(AUTHORIZATION_REQUEST_COOKIE_NAME, serialize(authorizationRequest));
+		Cookie cookie = new Cookie(AUTHORIZATION_REQUEST_COOKIE_NAME, LecUtils.serialize(authorizationRequest));
 		cookie.setPath("/");
 		cookie.setHttpOnly(true);
 		cookie.setMaxAge(cookieExpirySecs);
@@ -101,15 +102,8 @@ public class HttpCookieOAuth2AuthorizationRequestRepository implements Authoriza
 				}
 	}
 
-	private String serialize(OAuth2AuthorizationRequest authorizationRequest) {
-		
-		return Base64.getUrlEncoder().encodeToString(
-				SerializationUtils.serialize(authorizationRequest));
-	}
-
 	private OAuth2AuthorizationRequest deserialize(Cookie cookie) {
 		
-		return SerializationUtils.deserialize(
-				Base64.getUrlDecoder().decode(cookie.getValue()));
+		return LecUtils.deserialize(cookie.getValue());
 	}
 }
