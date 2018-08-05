@@ -1,4 +1,4 @@
-package com.naturalprogrammer.spring.lemonreactive.exceptions;
+package com.naturalprogrammer.spring.lemon.commonsreactive.exceptions;
 
 import java.util.Map;
 

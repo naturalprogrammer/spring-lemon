@@ -1,4 +1,4 @@
-package com.naturalprogrammer.spring.lemonreactive.security;
+package com.naturalprogrammer.spring.lemon.commonsreactive.security;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
