@@ -14,8 +14,10 @@ import lombok.Setter;
  * mainly used for holding logged-in user data 
  */
 @Getter @Setter
-public class UserDto {
+public class UserDto implements Serializable {
 
+	private static final long serialVersionUID = -9134054705405149534L;
+	
 	private String id;
 	private String username;
 	private String password;

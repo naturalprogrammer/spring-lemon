@@ -121,7 +121,12 @@ public class LemonReactiveSecurityConfig <U extends AbstractMongoUser<ID>, ID ex
 
 	protected UserDto getUserDto(JWTClaimsSet claims) {
 
-		return null;
+		Object userClaim = claims.getClaim(JwtService.USER_CLAIM);
+		
+		if (userClaim == null)
+			return null;
+		
+		return LecUtils.deserialize((String) userClaim);
 	}
 
 

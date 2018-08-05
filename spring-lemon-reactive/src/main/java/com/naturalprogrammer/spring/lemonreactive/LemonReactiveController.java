@@ -277,6 +277,17 @@ public class LemonReactiveController
 		
 		//return LecUtils.mapOf("token", lemonService.fetchNewToken(expirationMillis, username));
 	}
+	
+	
+	/**
+	 * Fetch a self-sufficient token with embedded UserDto - for interservice communications
+	 */
+	@GetMapping("/fetch-full-token")
+	public Mono<Map<String, String>> fetchFullToken() {
+		
+		log.debug("Fetching a micro token");
+		return lemonReactiveService.fetchFullToken();
+	}	
 
 	
 	/**

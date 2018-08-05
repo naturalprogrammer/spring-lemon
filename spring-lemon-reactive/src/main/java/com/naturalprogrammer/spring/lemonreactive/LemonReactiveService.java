@@ -790,6 +790,25 @@ public abstract class LemonReactiveService
 	}
 	
 	
+	@PreAuthorize("isAuthenticated()")
+	public Mono<Map<String, String>> fetchFullToken() {
+
+		return LerUtils.currentUser().map(optionalUser -> {
+			
+			UserDto currentUser = optionalUser.get();
+			
+			Map<String, Object> claimMap = Collections.singletonMap(JwtService.USER_CLAIM, LecUtils.serialize(currentUser));
+			
+			Map<String, String> tokenMap = Collections.singletonMap("token", LecUtils.TOKEN_PREFIX +
+				jwtService.createToken(JwtService.AUTH_AUDIENCE, currentUser.getUsername(),
+						Long.valueOf(properties.getJwt().getShortLivedMillis()),
+						claimMap));
+			
+			return tokenMap;
+		});
+	}
+
+
 	public long getExpirationMillis(MultiValueMap<String, String> formData) {
 		
 		long expirationMillis = properties.getJwt().getExpirationMillis();
