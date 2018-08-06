@@ -118,28 +118,21 @@ public class JwtService {
 	 */
 	public JWTClaimsSet parseToken(String token, String audience) {
 
-		try {
-			
-			JWTClaimsSet claims = jwtProcessor.process(token, null);
-			LecUtils.ensureCredentials(audience != null &&
-					claims.getAudience().contains(audience),
-						"com.naturalprogrammer.spring.wrong.audience");
-			
-			long expirationTime = claims.getExpirationTime().getTime();
-			long currentTime = System.currentTimeMillis();
-			
-			log.debug("Parsing JWT. Expiration time = " + expirationTime
-					+ ". Current time = " + currentTime);
-			
-			LecUtils.ensureCredentials(expirationTime >= currentTime,
-					"com.naturalprogrammer.spring.expiredToken");
-			
-			return claims;
-			
-		} catch (ParseException | BadJOSEException | JOSEException e) {
-
-			throw new BadCredentialsException(e.getMessage());
-		}
+		JWTClaimsSet claims = parseToken(token);
+		LecUtils.ensureCredentials(audience != null &&
+				claims.getAudience().contains(audience),
+					"com.naturalprogrammer.spring.wrong.audience");
+		
+		long expirationTime = claims.getExpirationTime().getTime();
+		long currentTime = System.currentTimeMillis();
+		
+		log.debug("Parsing JWT. Expiration time = " + expirationTime
+				+ ". Current time = " + currentTime);
+		
+		LecUtils.ensureCredentials(expirationTime >= currentTime,
+				"com.naturalprogrammer.spring.expiredToken");
+		
+		return claims;
 	}
 	
 	/**
@@ -154,5 +147,29 @@ public class JwtService {
 				"com.naturalprogrammer.spring.obsoleteToken");
 
 		return claims;
-	}	
+	}
+
+	/**
+	 * Parses a token
+	 */
+	public JWTClaimsSet parseToken(String token) {
+		
+		try {
+			
+			return jwtProcessor.process(token, null);
+			
+		} catch (ParseException | BadJOSEException | JOSEException e) {
+			
+			throw new BadCredentialsException(e.getMessage());
+		}
+	}
+	
+	/**
+	 * Parses a claim
+	 */
+	public <T> T parseClaim(String token, String claim) {
+		
+		JWTClaimsSet claims = parseToken(token);
+		return (T) claims.getClaim(claim);
+	}
 }

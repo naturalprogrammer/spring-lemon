@@ -103,7 +103,7 @@ public class LemonCommonsReactiveSecurityConfig {
 	 */
 	protected Mono<UserDto> fetchUserDto(JWTClaimsSet claims) {
 		return Mono.error(new AuthenticationCredentialsNotFoundException(
-				LexUtils.getMessage("com.naturalprogrammer.spring.userNotFound", "ABSENT")));
+				LexUtils.getMessage("com.naturalprogrammer.spring.userClaimAbsent")));
 	}
 
 	protected UserDto getUserDto(JWTClaimsSet claims) {
@@ -127,7 +127,7 @@ public class LemonCommonsReactiveSecurityConfig {
 			if(authorization == null || !authorization.startsWith(LecUtils.TOKEN_PREFIX))
 				return Mono.empty();
 
-			return Mono.just(new JwtAuthenticationToken(authorization.substring(7)));		
+			return Mono.just(new JwtAuthenticationToken(authorization.substring(LecUtils.TOKEN_PREFIX_LENGTH)));		
 		};
 	}
 	

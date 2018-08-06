@@ -19,10 +19,8 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.TreeNode;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.fge.jsonpatch.JsonPatch;
@@ -46,7 +44,9 @@ public class LecUtils {
 	
 	// JWT Token related
 	public static final String TOKEN_PREFIX = "Bearer ";
+	public static final int TOKEN_PREFIX_LENGTH = 7;
 	public static final String TOKEN_RESPONSE_HEADER_NAME = "Lemon-Authorization";
+
 
 	public static ApplicationContext applicationContext;
 	public static ObjectMapper objectMapper;
@@ -204,19 +204,32 @@ public class LecUtils {
 	/**
 	 * Serializes an object to JSON string
 	 */
-	public static <T> String toJson(T obj) throws JsonProcessingException {
+	public static <T> String toJson(T obj) {
 	
-		return objectMapper.writeValueAsString(obj);
+		try {
+			
+			return objectMapper.writeValueAsString(obj);
+			
+		} catch (JsonProcessingException e) {
+			
+			throw new RuntimeException(e);
+		}
 	}
 
 
 	/**
 	 * Deserializes a JSON String
 	 */
-	public static <T> T fromJson(String json, Class<T> clazz)
-			throws JsonParseException, JsonMappingException, IOException {
+	public static <T> T fromJson(String json, Class<T> clazz) {
 	
-		return objectMapper.readValue(json, clazz);
+		try {
+			
+			return objectMapper.readValue(json, clazz);
+			
+		} catch (IOException e) {
+			
+			throw new RuntimeException(e);
+		}
 	}
 	
 	/**

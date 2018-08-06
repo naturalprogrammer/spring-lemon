@@ -792,13 +792,17 @@ public abstract class LemonReactiveService
 	
 	
 	@PreAuthorize("isAuthenticated()")
-	public Mono<Map<String, String>> fetchFullToken() {
+	public Mono<Map<String, String>> fetchFullToken(String authHeader) {
 
+		LecUtils.ensureCredentials(jwtService.parseClaim(authHeader.substring(LecUtils.TOKEN_PREFIX_LENGTH),
+				JwtService.USER_CLAIM) == null,	"com.naturalprogrammer.spring.fullTokenNotAllowed");
+		
 		return LecrUtils.currentUser().map(optionalUser -> {
 			
 			UserDto currentUser = optionalUser.get();
 			
-			Map<String, Object> claimMap = Collections.singletonMap(JwtService.USER_CLAIM, LecUtils.serialize(currentUser));
+			Map<String, Object> claimMap = Collections.singletonMap(JwtService.USER_CLAIM,
+					LecUtils.serialize(currentUser)); // Not serializing converts it to a JsonNode
 			
 			Map<String, String> tokenMap = Collections.singletonMap("token", LecUtils.TOKEN_PREFIX +
 				jwtService.createToken(JwtService.AUTH_AUDIENCE, currentUser.getUsername(),

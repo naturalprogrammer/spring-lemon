@@ -10,6 +10,7 @@ import javax.validation.constraints.NotBlank;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.security.core.Authentication;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.server.ServerWebExchange;
@@ -283,10 +285,10 @@ public class LemonReactiveController
 	 * Fetch a self-sufficient token with embedded UserDto - for interservice communications
 	 */
 	@GetMapping("/fetch-full-token")
-	public Mono<Map<String, String>> fetchFullToken() {
+	public Mono<Map<String, String>> fetchFullToken(@RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) {
 		
 		log.debug("Fetching a micro token");
-		return lemonReactiveService.fetchFullToken();
+		return lemonReactiveService.fetchFullToken(authHeader);
 	}	
 
 	

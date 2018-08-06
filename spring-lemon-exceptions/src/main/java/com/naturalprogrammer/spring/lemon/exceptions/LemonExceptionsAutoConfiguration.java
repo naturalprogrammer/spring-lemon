@@ -2,9 +2,13 @@ package com.naturalprogrammer.spring.lemon.exceptions;
 
 import java.util.List;
 
+import javax.validation.Validator;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.validation.ValidationAutoConfiguration;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -15,6 +19,7 @@ import com.naturalprogrammer.spring.lemon.exceptions.handlers.AbstractExceptionH
 import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
 
 @Configuration
+@AutoConfigureBefore({ValidationAutoConfiguration.class})
 @ComponentScan(basePackageClasses=AbstractExceptionHandler.class)
 public class LemonExceptionsAutoConfiguration {
 
@@ -47,4 +52,16 @@ public class LemonExceptionsAutoConfiguration {
         log.info("Configuring LexUtils");       		
 		return new LexUtils(messageSource, validator);
 	}
+	
+	/**
+	 * Merge ValidationMessages.properties into messages.properties
+	 */	
+    @Bean
+	@ConditionalOnMissingBean(Validator.class)
+    public Validator validator(MessageSource messageSource) {
+
+        LocalValidatorFactoryBean localValidatorFactoryBean = new LocalValidatorFactoryBean();
+        localValidatorFactoryBean.setValidationMessageSource(messageSource);
+        return localValidatorFactoryBean;
+    }
 }
