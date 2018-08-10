@@ -2,7 +2,7 @@
 
 > Minimize your development cost with our intensive consulting/training on Spring — [click here](https://www.naturalprogrammer.com/) for details.
 
-When developing **real-world** Spring REST services for JavaScript web applications, mobile clients or any consumer, you face many challenges, such as
+When developing **real-world** Spring REST APIs and microservices, you'd face many challenges like
 
 1. How to make the API truly _stateless_, using token authentication, session sliding etc.
 1. How to configure Spring Security to suit API development, e.g. returning _200_ or _401_ responses on login, configuring _CORS_, _JSON vulnerability protection_, etc.
@@ -15,11 +15,11 @@ When developing **real-world** Spring REST services for JavaScript web applicati
 1. How to use _PATCH_ and _JsonPatch_ to handle partial updates correctly.
 1. How to do all the above reactively, using WebFlux and WebFlux security.
 
-Coding all the above effectively needs in-depth knowledge of Spring. It also takes a lot of development time and effort, and needs to be properly maintained as new versions of Spring modules come out.
+Coding all the above correctly needs in-depth knowledge of Spring. It also takes a lot of development time and effort, and needs to be properly maintained as new versions of Spring modules come out.
 
-To relieve you of this non-trivial job, we thought to bring out **Spring Lemon**, a tiny open source library holding all these common configuration and components, and a production grade user module with all the abovementioned features.
+**Spring Lemon** relieves you of all this burden. It's a tiny open source library holding all these common configuration and components, and also a production grade user module with all the abovementioned features.
 
-Even if you don't plan to use Spring Lemon, it's a good example application to learn from, because it showcases the essential best practices for developing elegant web services using Spring.
+Even if you don't plan to use Spring Lemon, it's a good example application to learn from, because it showcases the essential best practices for developing elegant web services and microservices using Spring.
 
 Most Spring Boot applications can use Spring Lemon straight away, with some simple configurations. But, if you don't find it suitable for your application, feel free to fork it, or just roll out your own library by learning its patterns and practices. Better yet, be a contributor!
 
@@ -36,12 +36,13 @@ Watch [this video tutorial](https://www.naturalprogrammer.com/p/spring-lemon-res
 1. _[Example application](https://github.com/naturalprogrammer/spring-lemon/tree/master/lemon-demo-jpa)_ — A sample application using Spring Lemon. Quite similar to the one developed in the above [getting started guide](https://github.com/naturalprogrammer/spring-lemon/wiki/Getting-Started-With-Spring-Lemon), but additionally has automated tests.
 1. _[API documentation](https://documenter.getpostman.com/view/305915/RVu2mqEH)_ of the above application.
 1. _[Example AngularJS front-end application](https://github.com/naturalprogrammer/spring-lemon/tree/master/lemon-demo-angularjs)_ — A sample AngularJS 1.x front-end. It'll work both for the application developed in the above [getting started guide](https://github.com/naturalprogrammer/spring-lemon/wiki/Getting-Started-With-Spring-Lemon) as well as the [Lemon Demo application](https://github.com/naturalprogrammer/spring-lemon/tree/master/lemon-demo-jpa). See the [Getting Started Guide](https://github.com/naturalprogrammer/spring-lemon/wiki/Getting-Started-With-Spring-Lemon) on how to use it.
-1. _[Spring Framework Recipes For Real World Application Development](https://www.naturalprogrammer.com/p/spring-framework-book-of-best-practices)_ — a live book discussing key real-world topics on developing Spring applications and APIs. Includes key Spring Lemon topics. [Click here](https://www.naturalprogrammer.com/p/spring-framework-book-of-best-practices) to get it now for FREE!
+1. _[Example reactive microservices](https://github.com/naturalprogrammer/np-microservices-sample-02) using Spring Lemon, and its [configuration repo](https://github.com/naturalprogrammer/np-microservices-sample-02-config)_ — A sample reactive microservices application depicting how easy it is to develop reactive microservices using Spring Lemon.
+1. _[Spring Framework Recipes For Real World Application Development](https://www.naturalprogrammer.com/p/spring-framework-book-of-best-practices)_ — a live book discussing key real-world topics on developing Spring applications, APIs and microservoces. Includes key Spring Lemon topics. [Click here](https://www.naturalprogrammer.com/p/spring-framework-book-of-best-practices) to get it now for FREE!
 1. Video tutorials coming soon:
    1. Spring Framework 5 REST API Development — A Complete Blueprint For Real-World Developers
    1. Spring WebFlux Reactive REST API Development — A Complete Blueprint For Real-World Developers
    1. Real World Microservices Using Spring Cloud — A Rapid Course
-   1. Register [here](https://www.naturalprogrammer.com/p/spring-framework-book-of-best-practices) to get notified when the above courses get released
+   1. Join [here](https://www.naturalprogrammer.com/p/spring-framework-book-of-best-practices) to get notified when the above courses get released
 
 ## Help and Support
 1. Community help is available at [stackoverflow.com](http://stackoverflow.com/questions/tagged/spring-lemon), under the `spring-lemon` tag. Do not miss to tag the questions with `spring-lemon`!
