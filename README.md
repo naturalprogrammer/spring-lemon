@@ -1,6 +1,6 @@
 # Spring Lemon
 
-> Minimize your development cost with our intensive consulting/training on Spring — [click here](https://www.naturalprogrammer.com/) for details.
+> Minimize your development cost with our intensive consulting/training — [click here](https://www.naturalprogrammer.com/) for details.
 
 When developing **real-world** Spring REST APIs and microservices, you face many challenges like
 
