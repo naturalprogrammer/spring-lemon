@@ -2,7 +2,7 @@
 
 > Minimize your development cost with our intensive consulting/training on Spring — [click here](https://www.naturalprogrammer.com/) for details.
 
-When developing **real-world** Spring REST APIs and microservices, you'd face many challenges like
+When developing **real-world** Spring REST APIs and microservices, you face many challenges like
 
 1. How to make the API truly _stateless_, using token authentication, session sliding etc.
 1. How to configure Spring Security to suit API development, e.g. returning _200_ or _401_ responses on login, configuring _CORS_, _JSON vulnerability protection_, etc.
@@ -15,7 +15,7 @@ When developing **real-world** Spring REST APIs and microservices, you'd face ma
 1. How to use _PATCH_ and _JsonPatch_ to handle partial updates correctly.
 1. How to do all the above reactively, using WebFlux and WebFlux security.
 
-Coding all the above correctly needs in-depth knowledge of Spring. It also takes a lot of development time and effort, and needs to be properly maintained as new versions of Spring modules come out.
+Coding all this rightly needs in-depth knowledge of Spring. It also takes a lot of development time and effort, and needs to be properly maintained as new versions of Spring modules come out.
 
 **Spring Lemon** relieves you of all this burden. It's a tiny open source library holding all these common configuration and components, and also a production grade user module with all the abovementioned features.
 
@@ -27,7 +27,7 @@ Watch [this video tutorial](https://www.naturalprogrammer.com/p/spring-lemon-res
 
 ## Documentation and Resources
 
-> _Our [Spring Framework Recipes For Real World Application Development](https://www.naturalprogrammer.com/p/spring-framework-book-of-best-practices) — a live book discussing key real-world topics on developing Spring applications and APIs, including many Spring Lemon topics — is now available for FREE. [Click here](https://www.naturalprogrammer.com/p/spring-framework-book-of-best-practices) to get it._
+> _Our [Spring Framework Recipes For Real World Application Development](https://www.naturalprogrammer.com/p/spring-framework-book-of-best-practices) — a live book discussing key real-world topics on developing Spring applications and APIs — is now available for FREE. [Click here](https://www.naturalprogrammer.com/p/spring-framework-book-of-best-practices) to get it._
 
 1. Feature demo: https://youtu.be/6mNg-Feq8CY
 1. _Getting started guide_
@@ -37,7 +37,7 @@ Watch [this video tutorial](https://www.naturalprogrammer.com/p/spring-lemon-res
 1. _[API documentation](https://documenter.getpostman.com/view/305915/RVu2mqEH)_ of the above application.
 1. _[Example AngularJS front-end application](https://github.com/naturalprogrammer/spring-lemon/tree/master/lemon-demo-angularjs)_ — A sample AngularJS 1.x front-end. It'll work both for the application developed in the above [getting started guide](https://github.com/naturalprogrammer/spring-lemon/wiki/Getting-Started-With-Spring-Lemon) as well as the [Lemon Demo application](https://github.com/naturalprogrammer/spring-lemon/tree/master/lemon-demo-jpa). See the [Getting Started Guide](https://github.com/naturalprogrammer/spring-lemon/wiki/Getting-Started-With-Spring-Lemon) on how to use it.
 1. _[Example reactive microservices](https://github.com/naturalprogrammer/np-microservices-sample-02) using Spring Lemon, and its [configuration repo](https://github.com/naturalprogrammer/np-microservices-sample-02-config)_ — A sample reactive microservices application depicting how easy it is to develop reactive microservices using Spring Lemon.
-1. _[Spring Framework Recipes For Real World Application Development](https://www.naturalprogrammer.com/p/spring-framework-book-of-best-practices)_ — a live book discussing key real-world topics on developing Spring applications, APIs and microservoces. Includes key Spring Lemon topics. [Click here](https://www.naturalprogrammer.com/p/spring-framework-book-of-best-practices) to get it now for FREE!
+1. _[Spring Framework Recipes For Real World Application Development](https://www.naturalprogrammer.com/p/spring-framework-book-of-best-practices)_ — a live book discussing key real-world topics on developing Spring applications, APIs and microservoces. Includes many Spring Lemon topics. [Click here](https://www.naturalprogrammer.com/p/spring-framework-book-of-best-practices) to get it now for FREE!
 1. Video tutorials coming soon:
    1. Spring Framework 5 REST API Development — A Complete Blueprint For Real-World Developers
    1. Spring WebFlux Reactive REST API Development — A Complete Blueprint For Real-World Developers
