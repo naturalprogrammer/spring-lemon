@@ -35,13 +35,12 @@ public class LemonReactiveSecurityConfig <U extends AbstractMongoUser<ID>, ID ex
 	 * Configure form login
 	 */
 	@Override
-	protected ServerHttpSecurity formLogin(ServerHttpSecurity http) {
+	protected void formLogin(ServerHttpSecurity http) {
 		
-		return http.formLogin()
-					.loginPage(loginPage()) // Should be "/login" by default, but not providing that overwrites our AuthenticationFailureHandler, because this is called later 
-					.authenticationFailureHandler(authenticationFailureHandler())
-					.authenticationSuccessHandler(new WebFilterChainServerAuthenticationSuccessHandler())
-				.and();
+		http.formLogin()
+			.loginPage(loginPage()) // Should be "/login" by default, but not providing that overwrites our AuthenticationFailureHandler, because this is called later 
+			.authenticationFailureHandler(authenticationFailureHandler())
+			.authenticationSuccessHandler(new WebFilterChainServerAuthenticationSuccessHandler());
 	}
 
 	/**

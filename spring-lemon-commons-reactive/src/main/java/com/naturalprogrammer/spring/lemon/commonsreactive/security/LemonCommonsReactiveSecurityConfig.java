@@ -40,11 +40,11 @@ public class LemonCommonsReactiveSecurityConfig {
 		
 		log.info("Configuring SecurityWebFilterChain ...");
 		
-		return formLogin(http)
-			.authorizeExchange()
-				.anyExchange().permitAll()
-			.and()
-				.securityContextRepository(NoOpServerSecurityContextRepository.getInstance())
+		formLogin(http); // Configure form login
+		authorizeExchange(http); // configure authorization
+
+		return http
+			.securityContextRepository(NoOpServerSecurityContextRepository.getInstance())
 			.exceptionHandling()
 				.accessDeniedHandler(accessDeniedHandler())
 				.authenticationEntryPoint(authenticationEntryPoint())
@@ -55,13 +55,22 @@ public class LemonCommonsReactiveSecurityConfig {
 			.build();
 	}
 
-	
 	/**
-	 * Configure form login - only in the auth service
+	 * Override this to configure authorization
 	 */
-	protected ServerHttpSecurity formLogin(ServerHttpSecurity http) {
+	protected void authorizeExchange(ServerHttpSecurity http) {
 		
-		return http;
+		http.authorizeExchange()
+			.anyExchange().permitAll();
+	}
+
+
+	/**
+	 * Configures form login
+	 */
+	protected void formLogin(ServerHttpSecurity http) {
+		
+		// Bypass here. Form login is needed only in the auth service
 	}
 
 

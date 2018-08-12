@@ -69,7 +69,7 @@ public class LemonReactiveController
 
 	
 	/**
-	 * A simple function for pinging this server.
+	 * Afgter a successful login, returns the current user with an authorization header.
 	 */
 	@PostMapping("/login")
 	public Mono<UserDto> login(ServerWebExchange exchange) {
