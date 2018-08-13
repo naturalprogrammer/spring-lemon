@@ -33,7 +33,7 @@ Watch [this video tutorial](https://www.naturalprogrammer.com/p/spring-lemon-res
 1. _Getting started guide_
    1. [Book](https://github.com/naturalprogrammer/spring-lemon/wiki/Getting-Started-With-Spring-Lemon)
    1. [Video Tutorial](https://www.naturalprogrammer.com/p/spring-lemon-restful-web-services-development)
-1. _[Example application](https://github.com/naturalprogrammer/spring-lemon/tree/master/lemon-demo-jpa)_ — A sample application using Spring Lemon. Quite similar to the one developed in the above [getting started guide](https://github.com/naturalprogrammer/spring-lemon/wiki/Getting-Started-With-Spring-Lemon), but additionally has automated tests.
+1. _Example applications_ — [Non-reactive](https://github.com/naturalprogrammer/spring-lemon/tree/master/lemon-demo-jpa) and [reactive](https://github.com/naturalprogrammer/spring-lemon/tree/master/lemon-demo-reactive) sample applications using Spring Lemon. Quite similar to the one developed in the above [getting started guide](https://github.com/naturalprogrammer/spring-lemon/wiki/Getting-Started-With-Spring-Lemon), but additionally have automated tests.
 1. _[API documentation](https://documenter.getpostman.com/view/305915/RVu2mqEH)_ of the above application.
 1. _[Example AngularJS front-end application](https://github.com/naturalprogrammer/spring-lemon/tree/master/lemon-demo-angularjs)_ — A sample AngularJS 1.x front-end. It'll work both for the application developed in the above [getting started guide](https://github.com/naturalprogrammer/spring-lemon/wiki/Getting-Started-With-Spring-Lemon) as well as the [Lemon Demo application](https://github.com/naturalprogrammer/spring-lemon/tree/master/lemon-demo-jpa). See the [Getting Started Guide](https://github.com/naturalprogrammer/spring-lemon/wiki/Getting-Started-With-Spring-Lemon) on how to use it.
 1. _[Example reactive microservices](https://github.com/naturalprogrammer/np-microservices-sample-02) using Spring Lemon, and its [configuration repo](https://github.com/naturalprogrammer/np-microservices-sample-02-config)_ — A sample reactive microservices application depicting how easy it is to develop reactive microservices using Spring Lemon.
@@ -41,8 +41,8 @@ Watch [this video tutorial](https://www.naturalprogrammer.com/p/spring-lemon-res
 1. Video tutorials coming soon:
    1. Spring Framework 5 REST API Development — A Complete Blueprint For Real-World Developers
    1. Spring WebFlux Reactive REST API Development — A Complete Blueprint For Real-World Developers
-   1. Real World Microservices Using Spring Cloud — A Rapid Course
-   1. Join [here](https://www.naturalprogrammer.com/p/spring-framework-book-of-best-practices) to get notified when the above courses get released
+   1. Microservices Using Spring Cloud — A Rapid Course For Real World Developers
+   1. Join [here](https://www.naturalprogrammer.com/p/spring-framework-book-of-best-practices) to get notified and avail heavy discounts when the above courses get released
 
 ## Help and Support
 1. Community help is available at [stackoverflow.com](http://stackoverflow.com/questions/tagged/spring-lemon), under the `spring-lemon` tag. Do not miss to tag the questions with `spring-lemon`!
