@@ -5,8 +5,10 @@ spring:
   jpa:
     hibernate:
       use-new-id-generator-mappings: false
+    properties:
+      hibernate.jdbc.lob.non_contextual_creation: true
   datasource:
-    url: jdbc:mysql://localhost:3306/lemon?useSSL=false
+    url: jdbc:postgresql://localhost:5432/lemondb
     username: lemon
     password: lemon
   security:
