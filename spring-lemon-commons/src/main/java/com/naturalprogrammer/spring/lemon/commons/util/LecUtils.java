@@ -25,9 +25,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.fge.jsonpatch.JsonPatch;
 import com.github.fge.jsonpatch.JsonPatchException;
+import com.naturalprogrammer.spring.lemon.commons.security.JwtService;
 import com.naturalprogrammer.spring.lemon.commons.security.LemonPrincipal;
 import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
 import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
+import com.nimbusds.jwt.JWTClaimsSet;
 
 /**
  * Useful helper methods
@@ -249,4 +251,15 @@ public class LecUtils {
 		return SerializationUtils.deserialize(
 				Base64.getUrlDecoder().decode(serializedObj));
     }
+
+
+	public static UserDto getUserDto(JWTClaimsSet claims) {
+
+		Object userClaim = claims.getClaim(JwtService.USER_CLAIM);
+		
+		if (userClaim == null)
+			return null;
+		
+		return LecUtils.deserialize((String) userClaim);
+	}
 }

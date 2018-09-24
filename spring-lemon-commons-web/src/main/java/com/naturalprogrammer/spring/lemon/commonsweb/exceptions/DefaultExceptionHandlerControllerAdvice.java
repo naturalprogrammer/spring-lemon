@@ -1,4 +1,4 @@
-package com.naturalprogrammer.spring.lemon.exceptions;
+package com.naturalprogrammer.spring.lemon.commonsweb.exceptions;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.naturalprogrammer.spring.lemon.exceptions.ErrorResponse;
+import com.naturalprogrammer.spring.lemon.exceptions.ErrorResponseComposer;
 import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
 
 /**

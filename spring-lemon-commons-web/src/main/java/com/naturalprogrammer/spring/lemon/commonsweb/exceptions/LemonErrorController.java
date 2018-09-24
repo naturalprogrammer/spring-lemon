@@ -1,4 +1,4 @@
-package com.naturalprogrammer.spring.lemon.exceptions;
+package com.naturalprogrammer.spring.lemon.commonsweb.exceptions;
 
 import java.util.List;
 import java.util.Map;

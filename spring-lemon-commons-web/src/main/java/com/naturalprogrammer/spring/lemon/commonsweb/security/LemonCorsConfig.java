@@ -1,4 +1,4 @@
-package com.naturalprogrammer.spring.lemon.security;
+package com.naturalprogrammer.spring.lemon.commonsweb.security;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

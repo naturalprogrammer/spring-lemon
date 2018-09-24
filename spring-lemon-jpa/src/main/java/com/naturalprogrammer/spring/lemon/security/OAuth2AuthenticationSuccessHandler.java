@@ -13,6 +13,7 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
 import com.naturalprogrammer.spring.lemon.commons.security.JwtService;
 import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
+import com.naturalprogrammer.spring.lemon.commonsweb.util.LecwUtils;
 import com.naturalprogrammer.spring.lemon.util.LemonUtils;
 
 /**
@@ -48,7 +49,7 @@ public class OAuth2AuthenticationSuccessHandler<ID extends Serializable>
 				currentUser.getUsername(),
 				(long) properties.getJwt().getShortLivedMillis());
 
-		String targetUrl = LemonUtils.fetchCookie(request,
+		String targetUrl = LecwUtils.fetchCookie(request,
 				HttpCookieOAuth2AuthorizationRequestRepository.LEMON_REDIRECT_URI_COOKIE_PARAM_NAME)
 				.map(Cookie::getValue)
 				.orElse(properties.getOauth2AuthenticationSuccessUrl());

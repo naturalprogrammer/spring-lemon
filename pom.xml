@@ -22,6 +22,7 @@
 	<modules>
 		<module>spring-lemon-exceptions</module>
 		<module>spring-lemon-commons</module>
+		<module>spring-lemon-commons-web</module>
 		<module>spring-lemon-commons-reactive</module>
 		<module>spring-lemon-jpa</module>
 		<module>spring-lemon-reactive</module>
@@ -79,13 +80,6 @@
 
 		</plugins>
 	</build>
-
-	<repositories>
-		<repository>
-			<id>jitpack.io</id>
-			<url>https://jitpack.io</url>
-		</repository>
-	</repositories>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

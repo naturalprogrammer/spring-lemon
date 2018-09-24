@@ -1,4 +1,4 @@
-package com.naturalprogrammer.spring.lemon.exceptions;
+package com.naturalprogrammer.spring.lemon.commonsweb.exceptions;
 
 import java.util.Map;
 
@@ -7,6 +7,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.boot.web.servlet.error.DefaultErrorAttributes;
 import org.springframework.web.context.request.WebRequest;
 
+import com.naturalprogrammer.spring.lemon.exceptions.ErrorResponseComposer;
 import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
 
 /**

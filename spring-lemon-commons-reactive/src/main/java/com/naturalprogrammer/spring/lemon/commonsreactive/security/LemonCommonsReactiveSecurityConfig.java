@@ -93,7 +93,7 @@ public class LemonCommonsReactiveSecurityConfig {
 			
 			JWTClaimsSet claims = jwtService.parseToken(token, JwtService.AUTH_AUDIENCE);
 			
-			UserDto userDto = getUserDto(claims);
+			UserDto userDto = LecUtils.getUserDto(claims);
 			
 			Mono<UserDto> userDtoMono = userDto == null ?
 					fetchUserDto(claims) : Mono.just(userDto);
@@ -114,17 +114,6 @@ public class LemonCommonsReactiveSecurityConfig {
 		return Mono.error(new AuthenticationCredentialsNotFoundException(
 				LexUtils.getMessage("com.naturalprogrammer.spring.userClaimAbsent")));
 	}
-
-	protected UserDto getUserDto(JWTClaimsSet claims) {
-
-		Object userClaim = claims.getClaim(JwtService.USER_CLAIM);
-		
-		if (userClaim == null)
-			return null;
-		
-		return LecUtils.deserialize((String) userClaim);
-	}
-
 
 	protected Function<ServerWebExchange, Mono<Authentication>> tokenAuthenticationConverter() {
 		

@@ -1,4 +1,4 @@
-package com.naturalprogrammer.spring.lemon.security;
+package com.naturalprogrammer.spring.lemon.commonsweb.security;
 
 import java.io.IOException;
 

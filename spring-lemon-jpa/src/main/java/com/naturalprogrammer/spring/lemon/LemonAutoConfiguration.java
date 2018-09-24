@@ -37,19 +37,20 @@ import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
 import com.naturalprogrammer.spring.lemon.commons.security.JwtService;
 import com.naturalprogrammer.spring.lemon.commons.validation.CaptchaValidator;
 import com.naturalprogrammer.spring.lemon.commons.validation.RetypePasswordValidator;
+import com.naturalprogrammer.spring.lemon.commonsweb.LemonCommonsWebAutoConfiguration;
+import com.naturalprogrammer.spring.lemon.commonsweb.exceptions.DefaultExceptionHandlerControllerAdvice;
+import com.naturalprogrammer.spring.lemon.commonsweb.exceptions.LemonErrorAttributes;
+import com.naturalprogrammer.spring.lemon.commonsweb.exceptions.LemonErrorController;
+import com.naturalprogrammer.spring.lemon.commonsweb.security.LemonCorsConfig;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUserRepository;
 import com.naturalprogrammer.spring.lemon.domain.LemonAuditorAware;
-import com.naturalprogrammer.spring.lemon.exceptions.DefaultExceptionHandlerControllerAdvice;
 import com.naturalprogrammer.spring.lemon.exceptions.ErrorResponseComposer;
-import com.naturalprogrammer.spring.lemon.exceptions.LemonErrorAttributes;
-import com.naturalprogrammer.spring.lemon.exceptions.LemonErrorController;
-import com.naturalprogrammer.spring.lemon.security.JwtAuthenticationProvider;
+import com.naturalprogrammer.spring.lemon.security.JpaJwtAuthenticationProvider;
 import com.naturalprogrammer.spring.lemon.security.LemonAuthenticationSuccessHandler;
-import com.naturalprogrammer.spring.lemon.security.LemonCorsConfig;
 import com.naturalprogrammer.spring.lemon.security.LemonOAuth2UserService;
 import com.naturalprogrammer.spring.lemon.security.LemonOidcUserService;
-import com.naturalprogrammer.spring.lemon.security.LemonSecurityConfig;
+import com.naturalprogrammer.spring.lemon.security.LemonJpaSecurityConfig;
 import com.naturalprogrammer.spring.lemon.security.LemonUserDetailsService;
 import com.naturalprogrammer.spring.lemon.security.OAuth2AuthenticationFailureHandler;
 import com.naturalprogrammer.spring.lemon.security.OAuth2AuthenticationSuccessHandler;
@@ -62,16 +63,14 @@ import com.naturalprogrammer.spring.lemon.validation.UniqueEmailValidator;
  * @author Sanjay Patel
  */
 @Configuration
-@EnableSpringDataWebSupport
 @EnableTransactionManagement
 @EnableJpaAuditing
-@EnableGlobalMethodSecurity(prePostEnabled = true)
 @AutoConfigureBefore({
 	WebMvcAutoConfiguration.class,
 	ErrorMvcAutoConfiguration.class,
 	SecurityAutoConfiguration.class,
 	SecurityFilterAutoConfiguration.class,
-	LemonCommonsAutoConfiguration.class})
+	LemonCommonsWebAutoConfiguration.class})
 public class LemonAutoConfiguration {
 	
 	/**
@@ -255,25 +254,25 @@ public class LemonAutoConfiguration {
 	 * Configures JwtAuthenticationProvider if missing
 	 */
 	@Bean
-	@ConditionalOnMissingBean(JwtAuthenticationProvider.class)	
+	@ConditionalOnMissingBean(JpaJwtAuthenticationProvider.class)	
 	public <U extends AbstractUser<U,ID>, ID extends Serializable>
-		JwtAuthenticationProvider<U,ID> jwtAuthenticationProvider(
+		JpaJwtAuthenticationProvider<U,ID> jwtAuthenticationProvider(
 			JwtService jwtService,
 			LemonUserDetailsService<U, ID> userDetailsService) {
 		
         log.info("Configuring JwtAuthenticationProvider");       
-		return new JwtAuthenticationProvider<U,ID>(jwtService, userDetailsService);
+		return new JpaJwtAuthenticationProvider<U,ID>(jwtService, userDetailsService);
 	}	
 	
 	/**
 	 * Configures LemonSecurityConfig if missing
 	 */
 	@Bean
-	@ConditionalOnMissingBean(LemonSecurityConfig.class)	
-	public LemonSecurityConfig lemonSecurityConfig() {
+	@ConditionalOnMissingBean(LemonJpaSecurityConfig.class)	
+	public LemonJpaSecurityConfig lemonSecurityConfig() {
 		
         log.info("Configuring LemonSecurityConfig");       
-		return new LemonSecurityConfig();
+		return new LemonJpaSecurityConfig();
 	}
 	
 	/**

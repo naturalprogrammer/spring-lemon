@@ -11,7 +11,7 @@ import org.springframework.util.Assert;
 
 import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
 import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
-import com.naturalprogrammer.spring.lemon.util.LemonUtils;
+import com.naturalprogrammer.spring.lemon.commonsweb.util.LecwUtils;
 
 /**
  * Cookie based repository for storing Authorization requests
@@ -36,7 +36,7 @@ public class HttpCookieOAuth2AuthorizationRequestRepository implements Authoriza
 		
 		Assert.notNull(request, "request cannot be null");
 		
-		return LemonUtils.fetchCookie(request, AUTHORIZATION_REQUEST_COOKIE_NAME)
+		return LecwUtils.fetchCookie(request, AUTHORIZATION_REQUEST_COOKIE_NAME)
 					.map(this::deserialize)
 					.orElse(null);
 	}

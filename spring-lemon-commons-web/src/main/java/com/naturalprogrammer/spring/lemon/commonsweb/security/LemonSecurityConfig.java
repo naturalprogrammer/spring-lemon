@@ -1,4 +1,4 @@
-package com.naturalprogrammer.spring.lemon.security;
+package com.naturalprogrammer.spring.lemon.commonsweb.security;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -14,6 +14,7 @@ import org.springframework.security.web.authentication.Http403ForbiddenEntryPoin
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
+import com.naturalprogrammer.spring.lemon.commonsweb.security.LemonTokenAuthenticationFilter;
 
 /**
  * Security configuration class. Extend it in the
@@ -34,7 +35,7 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 	private LemonOAuth2UserService<?, ?> oauth2UserService;
 	private OAuth2AuthenticationSuccessHandler<?> oauth2AuthenticationSuccessHandler;
 	private OAuth2AuthenticationFailureHandler oauth2AuthenticationFailureHandler;
-	private JwtAuthenticationProvider<?,?> jwtAuthenticationProvider;
+	private JpaJwtAuthenticationProvider<?,?> jwtAuthenticationProvider;
 	private PasswordEncoder passwordEncoder;
 	
 	@Autowired
@@ -44,7 +45,7 @@ public class LemonSecurityConfig extends WebSecurityConfigurerAdapter {
 			LemonOAuth2UserService<?, ?> oauth2UserService,
 			OAuth2AuthenticationSuccessHandler<?> oauth2AuthenticationSuccessHandler,
 			OAuth2AuthenticationFailureHandler oauth2AuthenticationFailureHandler,
-			JwtAuthenticationProvider<?,?> jwtAuthenticationProvider,
+			JpaJwtAuthenticationProvider<?,?> jwtAuthenticationProvider,
 			PasswordEncoder passwordEncoder
 			) {
 
