@@ -14,6 +14,7 @@ import org.springframework.security.web.authentication.Http403ForbiddenEntryPoin
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
+import com.naturalprogrammer.spring.lemon.commonsweb.security.LemonCommonsWebSecurityConfig;
 import com.naturalprogrammer.spring.lemon.commonsweb.security.LemonTokenAuthenticationFilter;
 
 /**
@@ -23,7 +24,7 @@ import com.naturalprogrammer.spring.lemon.commonsweb.security.LemonTokenAuthenti
  * 
  * @author Sanjay Patel
  */
-public class LemonJpaSecurityConfig extends WebSecurityConfigurerAdapter {
+public class LemonJpaSecurityConfig extends LemonCommonsWebSecurityConfig {
 	
 	private static final Log log = LogFactory.getLog(LemonJpaSecurityConfig.class);
 
@@ -35,7 +36,6 @@ public class LemonJpaSecurityConfig extends WebSecurityConfigurerAdapter {
 	private LemonOAuth2UserService<?, ?> oauth2UserService;
 	private OAuth2AuthenticationSuccessHandler<?> oauth2AuthenticationSuccessHandler;
 	private OAuth2AuthenticationFailureHandler oauth2AuthenticationFailureHandler;
-	private JpaJwtAuthenticationProvider<?,?> jwtAuthenticationProvider;
 	private PasswordEncoder passwordEncoder;
 	
 	@Autowired
@@ -45,9 +45,7 @@ public class LemonJpaSecurityConfig extends WebSecurityConfigurerAdapter {
 			LemonOAuth2UserService<?, ?> oauth2UserService,
 			OAuth2AuthenticationSuccessHandler<?> oauth2AuthenticationSuccessHandler,
 			OAuth2AuthenticationFailureHandler oauth2AuthenticationFailureHandler,
-			JpaJwtAuthenticationProvider<?,?> jwtAuthenticationProvider,
-			PasswordEncoder passwordEncoder
-			) {
+			PasswordEncoder passwordEncoder) {
 
 		this.properties = properties;
 		this.userDetailsService = userDetailsService;
@@ -57,7 +55,6 @@ public class LemonJpaSecurityConfig extends WebSecurityConfigurerAdapter {
 		this.oauth2UserService = oauth2UserService;
 		this.oauth2AuthenticationSuccessHandler = oauth2AuthenticationSuccessHandler;
 		this.oauth2AuthenticationFailureHandler = oauth2AuthenticationFailureHandler;
-		this.jwtAuthenticationProvider = jwtAuthenticationProvider;
 		this.passwordEncoder = passwordEncoder;
 		
 		log.info("Created");
@@ -69,27 +66,10 @@ public class LemonJpaSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		
-		sessionCreationPolicy(http); // set session creation policy
+		super.configure(http);
 		login(http); // authentication
-		logout(http); // logout related configuration
 		exceptionHandling(http); // exception handling
-		tokenAuthentication(http); // configure token authentication filter
-		csrf(http); // CSRF configuration
-		cors(http); // CORS configuration
 		oauth2Client(http);
-		authorizeRequests(http); // authorize requests
-		otherConfigurations(http); // override this to add more configurations
-	}
-
-	
-	/**
-	 * Configuring session creation policy
-	 */
-	protected void sessionCreationPolicy(HttpSecurity http) throws Exception {
-		
-		// No session
-		http.sessionManagement()
-			.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 	}
 
 	
@@ -127,64 +107,8 @@ public class LemonJpaSecurityConfig extends WebSecurityConfigurerAdapter {
 		return "/api/core/login";
 	}
 
-	/**
-	 * Logout related configuration
-	 */
-	protected void logout(HttpSecurity http) throws Exception {
-		
-		http
-			.logout().disable(); // we are stateless; so /logout endpoint not needed			
-	}
-
 	
-	/**
-	 * Configures exception-handling
-	 */
-	protected void exceptionHandling(HttpSecurity http) throws Exception {
-		
-		http
-		.exceptionHandling()
-		
-			/***********************************************
-			 * To prevent redirection to the login page
-			 * when someone tries to access a restricted page
-			 **********************************************/
-			.authenticationEntryPoint(new Http403ForbiddenEntryPoint());
-	}
-
-
-	/**
-	 * Configuring token authentication filter
-	 */
-	protected void tokenAuthentication(HttpSecurity http) throws Exception {
-		
-		http.addFilterBefore(new LemonTokenAuthenticationFilter(
-				super.authenticationManager()),
-				UsernamePasswordAuthenticationFilter.class);
-	}
-
-
-	/**
-	 * Disables CSRF. We are stateless.
-	 */
-	protected void csrf(HttpSecurity http) throws Exception {
-		
-		http
-			.csrf().disable();
-	}
-
-	
-	/**
-	 * Configures CORS
-	 */
-	protected void cors(HttpSecurity http) throws Exception {
-		
-		http
-			.cors();
-	}
-
-	
-	private void oauth2Client(HttpSecurity http) throws Exception {
+	protected void oauth2Client(HttpSecurity http) throws Exception {
 		
 		http.oauth2Login()
 			.authorizationEndpoint()
@@ -198,34 +122,13 @@ public class LemonJpaSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	
 	/**
-	 * URL based authorization configuration. Override this if needed.
-	 */
-	protected void authorizeRequests(HttpSecurity http) throws Exception {
-		http.authorizeRequests()
-			.mvcMatchers("/**").permitAll();                  
-	}
-	
-
-	/**
-	 * Override this to add more http configurations,
-	 * such as more authentication methods.
-	 * 
-	 * @param http
-	 * @throws Exception
-	 */
-	protected void otherConfigurations(HttpSecurity http)  throws Exception {
-
-	}
-
-	
-	/**
 	 * Needed for configuring JwtAuthenticationProvider
 	 */
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
   
+    	super.configure(auth);
         auth.userDetailsService(userDetailsService)
-        	.passwordEncoder(passwordEncoder).and()
-        	.authenticationProvider(jwtAuthenticationProvider);
+        	.passwordEncoder(passwordEncoder);
     }
 }
