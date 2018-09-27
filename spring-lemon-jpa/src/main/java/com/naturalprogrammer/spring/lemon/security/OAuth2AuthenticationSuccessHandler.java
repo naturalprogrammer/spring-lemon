@@ -14,7 +14,6 @@ import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
 import com.naturalprogrammer.spring.lemon.commons.security.JwtService;
 import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
 import com.naturalprogrammer.spring.lemon.commonsweb.util.LecwUtils;
-import com.naturalprogrammer.spring.lemon.util.LemonUtils;
 
 /**
  * Authentication success handler for redirecting the
@@ -42,7 +41,7 @@ public class OAuth2AuthenticationSuccessHandler<ID extends Serializable>
 	protected String determineTargetUrl(HttpServletRequest request,
 			HttpServletResponse response) {
 		
-		UserDto currentUser = LemonUtils.currentUser();
+		UserDto currentUser = LecwUtils.currentUser();
 		
 		String shortLivedAuthToken = jwtService.createToken(
 				JwtService.AUTH_AUDIENCE,

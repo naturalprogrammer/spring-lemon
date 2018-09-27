@@ -12,7 +12,6 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 
 import com.naturalprogrammer.spring.lemon.commons.security.JwtService;
 import com.naturalprogrammer.spring.lemon.commons.security.LemonPrincipal;
-import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
 import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
 import com.naturalprogrammer.spring.lemon.domain.VersionedEntity;
@@ -33,15 +32,6 @@ public class LemonUtils {
 		log.info("Created");
 	}
 
-
-	/**
-	 * Gets the current-user
-	 */
-	public static <ID extends Serializable> UserDto currentUser() {
-		
-		return LecUtils.currentUser(SecurityContextHolder.getContext());
-	}
-	
 
 	/**
 	 * Signs a user in
@@ -75,6 +65,7 @@ public class LemonUtils {
 			throw new VersionException(original.getClass().getSimpleName(), original.getId().toString());
 	}
 	
+	
 	/**
 	 * A convenient method for running code
 	 * after successful database commit.
@@ -92,7 +83,7 @@ public class LemonUtils {
 		        }
 		});				
 	}
-
+	
 	
 	/**
 	 * Throws BadCredentialsException if 

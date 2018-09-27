@@ -29,9 +29,9 @@ import com.naturalprogrammer.spring.lemon.commons.security.JwtService;
 import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
 import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
 import com.naturalprogrammer.spring.lemon.commons.util.UserUtils;
+import com.naturalprogrammer.spring.lemon.commonsweb.util.LecwUtils;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
 import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
-import com.naturalprogrammer.spring.lemon.util.LemonUtils;
 
 /**
  * The Lemon API. See the
@@ -276,7 +276,7 @@ public abstract class LemonController
 	 */
 	protected UserDto userWithToken(HttpServletResponse response) {
 		
-		UserDto currentUser = LemonUtils.currentUser();
+		UserDto currentUser = LecwUtils.currentUser();
 		lemonService.addAuthHeader(response, currentUser.getUsername(), jwtExpirationMillis);
 		return currentUser;
 	}

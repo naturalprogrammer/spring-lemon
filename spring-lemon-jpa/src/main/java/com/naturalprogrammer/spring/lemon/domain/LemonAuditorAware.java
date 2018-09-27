@@ -9,7 +9,7 @@ import org.springframework.data.domain.AuditorAware;
 
 import com.naturalprogrammer.spring.lemon.LemonService;
 import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
-import com.naturalprogrammer.spring.lemon.util.LemonUtils;
+import com.naturalprogrammer.spring.lemon.commonsweb.util.LecwUtils;
 
 /**
  * Needed for auto-filling of the
@@ -35,7 +35,7 @@ implements AuditorAware<U> {
 	@Override
 	public Optional<U> getCurrentAuditor() {
 		
-		UserDto currentUser = LemonUtils.currentUser();
+		UserDto currentUser = LecwUtils.currentUser();
 		
 		if (currentUser == null)
 			return Optional.empty();

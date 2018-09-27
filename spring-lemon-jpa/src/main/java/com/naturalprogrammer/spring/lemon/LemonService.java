@@ -37,6 +37,7 @@ import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
 import com.naturalprogrammer.spring.lemon.commons.security.UserEditPermission;
 import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
 import com.naturalprogrammer.spring.lemon.commons.util.UserUtils;
+import com.naturalprogrammer.spring.lemon.commonsweb.util.LecwUtils;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUserRepository;
 import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
@@ -176,14 +177,14 @@ public abstract class LemonService
 		sharedProperties.put("reCaptchaSiteKey", properties.getRecaptcha().getSitekey());
 		sharedProperties.put("shared", properties.getShared());
 		
-		UserDto currentUser = LemonUtils.currentUser();
+		UserDto currentUser = LecwUtils.currentUser();
 		if (currentUser != null)
 			addAuthHeader(response, currentUser.getUsername(),
 				expirationMillis.orElse(properties.getJwt().getExpirationMillis()));
 		
 		return LecUtils.mapOf(
 				"context", sharedProperties,
-				"user", LemonUtils.currentUser());	
+				"user", LecwUtils.currentUser());	
 	}
 	
 	
@@ -457,7 +458,7 @@ public abstract class LemonService
 		LemonUtils.ensureCorrectVersion(user, updatedUser);
 
 		// delegates to updateUserFields
-		updateUserFields(user, updatedUser, LemonUtils.currentUser());
+		updateUserFields(user, updatedUser, LecwUtils.currentUser());
 		userRepository.save(user);
 		
 		log.debug("Updated user: " + user);
@@ -478,7 +479,7 @@ public abstract class LemonService
 		log.debug("Changing password for user: " + user);
 		
 		// Get the old password of the logged in user (logged in user may be an ADMIN)
-		UserDto currentUser = LemonUtils.currentUser();
+		UserDto currentUser = LecwUtils.currentUser();
 		U loggedIn = userRepository.findById(toId(currentUser.getId())).get();
 		String oldPassword = loggedIn.getPassword();
 
@@ -622,7 +623,7 @@ public abstract class LemonService
 		log.debug("Changing email of current user ...");
 
 		// fetch the current-user
-		UserDto currentUser = LemonUtils.currentUser();
+		UserDto currentUser = LecwUtils.currentUser();
 		
 		LexUtils.validate(userId.equals(toId(currentUser.getId())),
 			"com.naturalprogrammer.spring.wrong.login").go();
@@ -709,7 +710,7 @@ public abstract class LemonService
 	public String fetchNewToken(Optional<Long> expirationMillis,
 			Optional<String> optionalUsername) {
 		
-		UserDto currentUser = LemonUtils.currentUser();
+		UserDto currentUser = LecwUtils.currentUser();
 		String username = optionalUsername.orElse(currentUser.getUsername());
 		
 		LecUtils.ensureAuthority(currentUser.getUsername().equals(username) ||
@@ -738,7 +739,7 @@ public abstract class LemonService
 		
 		user.setPassword(null); // JsonIgnore didn't work
 		
-		if (!user.hasPermission(LemonUtils.currentUser(), UserUtils.Permission.EDIT))
+		if (!user.hasPermission(LecwUtils.currentUser(), UserUtils.Permission.EDIT))
 			user.setEmail(null);
 		
 		log.debug("Hid confidential fields for user: " + user);

@@ -1,5 +1,6 @@
 package com.naturalprogrammer.spring.lemon.commonsweb.util;
 
+import java.io.Serializable;
 import java.util.Optional;
 
 import javax.servlet.http.Cookie;
@@ -7,6 +8,10 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.security.core.context.SecurityContextHolder;
+
+import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
+import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
 
 public class LecwUtils {
 
@@ -30,6 +35,14 @@ public class LecwUtils {
 					return Optional.of(cookies[i]);
 		
 		return Optional.empty();
+	}
+
+	/**
+	 * Gets the current-user
+	 */
+	public static UserDto currentUser() {
+		
+		return LecUtils.currentUser(SecurityContextHolder.getContext());
 	}
 
 }
