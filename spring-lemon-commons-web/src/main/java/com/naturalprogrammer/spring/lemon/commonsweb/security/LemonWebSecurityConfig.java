@@ -17,14 +17,14 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
  * 
  * @author Sanjay Patel
  */
-public class LemonCommonsWebSecurityConfig extends WebSecurityConfigurerAdapter {
+public class LemonWebSecurityConfig extends WebSecurityConfigurerAdapter {
 	
-	private static final Log log = LogFactory.getLog(LemonCommonsWebSecurityConfig.class);
+	private static final Log log = LogFactory.getLog(LemonWebSecurityConfig.class);
 
 	private JwtAuthenticationProvider jwtAuthenticationProvider;
 	
 	@Autowired
-	public void createLemonCommonsWebSecurityConfig(JwtAuthenticationProvider jwtAuthenticationProvider) {
+	public void createLemonWebSecurityConfig(JwtAuthenticationProvider jwtAuthenticationProvider) {
 
 		this.jwtAuthenticationProvider = jwtAuthenticationProvider;		
 		log.info("Created");

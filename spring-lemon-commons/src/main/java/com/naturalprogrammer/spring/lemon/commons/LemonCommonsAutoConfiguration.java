@@ -5,6 +5,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -23,6 +24,7 @@ import com.naturalprogrammer.spring.lemon.commons.mail.SmtpMailSender;
 import com.naturalprogrammer.spring.lemon.commons.security.JwtService;
 import com.naturalprogrammer.spring.lemon.commons.security.LemonPermissionEvaluator;
 import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
+import com.naturalprogrammer.spring.lemon.commons.validation.CaptchaValidator;
 import com.naturalprogrammer.spring.lemon.exceptions.LemonExceptionsAutoConfiguration;
 import com.nimbusds.jose.KeyLengthException;
 
@@ -117,5 +119,16 @@ public class LemonCommonsAutoConfiguration {
 	@Bean
 	public LecUtils lecUtils(ApplicationContext applicationContext, ObjectMapper objectMapper) {
 		return new LecUtils(applicationContext, objectMapper);
+	}
+	
+	/**
+	 * Configures CaptchaValidator if missing
+	 */
+	@Bean
+	@ConditionalOnMissingBean(CaptchaValidator.class)
+	public CaptchaValidator captchaValidator(LemonProperties properties, RestTemplateBuilder restTemplateBuilder) {
+		
+        log.info("Configuring LemonUserDetailsService");       
+		return new CaptchaValidator(properties, restTemplateBuilder);
 	}
 }

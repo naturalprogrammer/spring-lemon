@@ -1,30 +1,20 @@
 package com.naturalprogrammer.spring.lemon;
 
 import java.io.Serializable;
-import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityFilterAutoConfiguration;
-import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.servlet.error.ErrorMvcAutoConfiguration;
-import org.springframework.boot.autoconfigure.web.servlet.error.ErrorViewResolver;
-import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.boot.web.servlet.error.ErrorAttributes;
-import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
-import org.springframework.data.web.config.EnableSpringDataWebSupport;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
@@ -32,25 +22,20 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationFa
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.naturalprogrammer.spring.lemon.commons.LemonCommonsAutoConfiguration;
 import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
 import com.naturalprogrammer.spring.lemon.commons.security.JwtService;
-import com.naturalprogrammer.spring.lemon.commons.validation.CaptchaValidator;
 import com.naturalprogrammer.spring.lemon.commons.validation.RetypePasswordValidator;
 import com.naturalprogrammer.spring.lemon.commonsweb.LemonCommonsWebAutoConfiguration;
-import com.naturalprogrammer.spring.lemon.commonsweb.exceptions.DefaultExceptionHandlerControllerAdvice;
-import com.naturalprogrammer.spring.lemon.commonsweb.exceptions.LemonErrorAttributes;
-import com.naturalprogrammer.spring.lemon.commonsweb.exceptions.LemonErrorController;
-import com.naturalprogrammer.spring.lemon.commonsweb.security.LemonCorsConfig;
+import com.naturalprogrammer.spring.lemon.commonsweb.security.JwtAuthenticationProvider;
+import com.naturalprogrammer.spring.lemon.commonsweb.security.LemonWebSecurityConfig;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUserRepository;
 import com.naturalprogrammer.spring.lemon.domain.LemonAuditorAware;
-import com.naturalprogrammer.spring.lemon.exceptions.ErrorResponseComposer;
 import com.naturalprogrammer.spring.lemon.security.JpaJwtAuthenticationProvider;
 import com.naturalprogrammer.spring.lemon.security.LemonAuthenticationSuccessHandler;
+import com.naturalprogrammer.spring.lemon.security.LemonJpaSecurityConfig;
 import com.naturalprogrammer.spring.lemon.security.LemonOAuth2UserService;
 import com.naturalprogrammer.spring.lemon.security.LemonOidcUserService;
-import com.naturalprogrammer.spring.lemon.security.LemonJpaSecurityConfig;
 import com.naturalprogrammer.spring.lemon.security.LemonUserDetailsService;
 import com.naturalprogrammer.spring.lemon.security.OAuth2AuthenticationFailureHandler;
 import com.naturalprogrammer.spring.lemon.security.OAuth2AuthenticationSuccessHandler;
@@ -73,38 +58,12 @@ import com.naturalprogrammer.spring.lemon.validation.UniqueEmailValidator;
 	LemonCommonsWebAutoConfiguration.class})
 public class LemonAutoConfiguration {
 	
-	/**
-	 * For handling JSON vulnerability,
-	 * JSON response bodies would be prefixed with
-	 * this string.
-	 */
-	public final static String JSON_PREFIX = ")]}',\n";
-
 	private static final Log log = LogFactory.getLog(LemonAutoConfiguration.class);
 	
 	public LemonAutoConfiguration() {
 		log.info("Created");
 	}
 
-	/**
-	 * Prefixes JSON responses for JSON vulnerability. Disabled by default.
-	 * To enable, add this to your application properties:
-	 *     lemon.enabled.json-prefix: true
-	 */
-	@Bean
-	@ConditionalOnProperty(name="lemon.enabled.json-prefix")
-	public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter(
-			ObjectMapper objectMapper) {
-		
-        log.info("Configuring JSON vulnerability prefix");       
-
-        MappingJackson2HttpMessageConverter converter =
-        		new MappingJackson2HttpMessageConverter(objectMapper);
-        converter.setJsonPrefix(JSON_PREFIX);
-        
-        return converter;
-	}
-	
 	/**
 	 * Configures an Auditor Aware if missing
 	 */	
@@ -116,43 +75,6 @@ public class LemonAutoConfiguration {
         log.info("Configuring LemonAuditorAware");       
 		return new LemonAuditorAware<U, ID>(lemonService);
 	}
-
-	/**
-	 * Configures DefaultExceptionHandlerControllerAdvice if missing
-	 */	
-	@Bean
-	@ConditionalOnMissingBean(DefaultExceptionHandlerControllerAdvice.class)
-	public <T extends Throwable>
-	DefaultExceptionHandlerControllerAdvice<T> defaultExceptionHandlerControllerAdvice(ErrorResponseComposer<T> errorResponseComposer) {
-		
-        log.info("Configuring DefaultExceptionHandlerControllerAdvice");       
-		return new DefaultExceptionHandlerControllerAdvice<T>(errorResponseComposer);
-	}
-	
-	/**
-	 * Configures an Error Attributes if missing
-	 */	
-	@Bean
-	@ConditionalOnMissingBean(ErrorAttributes.class)
-	public <T extends Throwable>
-	ErrorAttributes errorAttributes(ErrorResponseComposer<T> errorResponseComposer) {
-		
-        log.info("Configuring LemonErrorAttributes");       
-		return new LemonErrorAttributes<T>(errorResponseComposer);
-	}
-	
-	/**
-	 * Configures an Error Controller if missing
-	 */	
-	@Bean
-	@ConditionalOnMissingBean(ErrorController.class)
-	public ErrorController errorController(ErrorAttributes errorAttributes,
-			ServerProperties serverProperties,
-			List<ErrorViewResolver> errorViewResolvers) {
-		
-        log.info("Configuring LemonErrorController");       
-		return new LemonErrorController(errorAttributes, serverProperties, errorViewResolvers);	
-	}	
 
 	/**
 	 * Configures AuthenticationSuccessHandler if missing
@@ -213,18 +135,6 @@ public class LemonAutoConfiguration {
 	}
 
 	/**
-	 * Configures LemonCorsConfig if missing and lemon.cors.allowed-origins is provided
-	 */
-	@Bean
-	@ConditionalOnProperty(name="lemon.cors.allowed-origins")
-	@ConditionalOnMissingBean(LemonCorsConfig.class)
-	public LemonCorsConfig lemonCorsConfig(LemonProperties properties) {
-		
-        log.info("Configuring LemonCorsConfig");       
-		return new LemonCorsConfig(properties);		
-	}
-	
-	/**
 	 * Configures LemonOidcUserService if missing
 	 */
 	@Bean
@@ -254,13 +164,13 @@ public class LemonAutoConfiguration {
 	 * Configures JwtAuthenticationProvider if missing
 	 */
 	@Bean
-	@ConditionalOnMissingBean(JpaJwtAuthenticationProvider.class)	
+	@ConditionalOnMissingBean(JwtAuthenticationProvider.class)	
 	public <U extends AbstractUser<U,ID>, ID extends Serializable>
-		JpaJwtAuthenticationProvider<U,ID> jwtAuthenticationProvider(
+			JwtAuthenticationProvider jwtAuthenticationProvider(
 			JwtService jwtService,
 			LemonUserDetailsService<U, ID> userDetailsService) {
 		
-        log.info("Configuring JwtAuthenticationProvider");       
+        log.info("Configuring JpaJwtAuthenticationProvider");       
 		return new JpaJwtAuthenticationProvider<U,ID>(jwtService, userDetailsService);
 	}	
 	
@@ -268,10 +178,10 @@ public class LemonAutoConfiguration {
 	 * Configures LemonSecurityConfig if missing
 	 */
 	@Bean
-	@ConditionalOnMissingBean(LemonJpaSecurityConfig.class)	
-	public LemonJpaSecurityConfig lemonSecurityConfig() {
+	@ConditionalOnMissingBean(LemonWebSecurityConfig.class)	
+	public LemonWebSecurityConfig lemonSecurityConfig() {
 		
-        log.info("Configuring LemonSecurityConfig");       
+        log.info("Configuring LemonJpaSecurityConfig");       
 		return new LemonJpaSecurityConfig();
 	}
 	
@@ -279,22 +189,11 @@ public class LemonAutoConfiguration {
 	 * Configures LemonUtils
 	 */
 	@Bean
-	public LemonUtils lemonUtil(ApplicationContext applicationContext,
+	public LemonUtils lemonUtils(ApplicationContext applicationContext,
 			ObjectMapper objectMapper) {
 
-        log.info("Configuring LemonUtil");       		
+        log.info("Configuring LemonUtils");       		
 		return new LemonUtils();
-	}
-	
-	/**
-	 * Configures CaptchaValidator if missing
-	 */
-	@Bean
-	@ConditionalOnMissingBean(CaptchaValidator.class)
-	public CaptchaValidator captchaValidator(LemonProperties properties, RestTemplateBuilder restTemplateBuilder) {
-		
-        log.info("Configuring LemonUserDetailsService");       
-		return new CaptchaValidator(properties, restTemplateBuilder);
 	}
 	
 	/**
@@ -316,5 +215,6 @@ public class LemonAutoConfiguration {
 		
         log.info("Configuring UniqueEmailValidator");       
 		return new UniqueEmailValidator(userRepository);		
-	}	
+	}
+	
 }

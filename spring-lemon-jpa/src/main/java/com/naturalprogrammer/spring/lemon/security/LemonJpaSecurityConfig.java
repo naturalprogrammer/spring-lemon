@@ -5,17 +5,12 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
-import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
-import com.naturalprogrammer.spring.lemon.commonsweb.security.LemonCommonsWebSecurityConfig;
-import com.naturalprogrammer.spring.lemon.commonsweb.security.LemonTokenAuthenticationFilter;
+import com.naturalprogrammer.spring.lemon.commonsweb.security.LemonWebSecurityConfig;
 
 /**
  * Security configuration class. Extend it in the
@@ -24,7 +19,7 @@ import com.naturalprogrammer.spring.lemon.commonsweb.security.LemonTokenAuthenti
  * 
  * @author Sanjay Patel
  */
-public class LemonJpaSecurityConfig extends LemonCommonsWebSecurityConfig {
+public class LemonJpaSecurityConfig extends LemonWebSecurityConfig {
 	
 	private static final Log log = LogFactory.getLog(LemonJpaSecurityConfig.class);
 
