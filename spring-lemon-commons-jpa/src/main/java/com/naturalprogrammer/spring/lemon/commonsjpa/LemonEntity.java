@@ -2,8 +2,11 @@ package com.naturalprogrammer.spring.lemon.commonsjpa;
 
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.Date;
 
 import javax.persistence.MappedSuperclass;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.Version;
 
 import org.springframework.data.annotation.CreatedBy;
@@ -35,13 +38,15 @@ public class LemonEntity<ID extends Serializable> extends AbstractPersistable<ID
 	private ID createdById;
 	
 	@CreatedDate
-	private Instant createdDate;
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date createdDate;
 	
 	@LastModifiedBy
 	private ID lastModifiedById;
 	
 	@LastModifiedDate
-	private Instant lastModifiedDate;
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date lastModifiedDate;
 	
 	@Version
 	private long version;

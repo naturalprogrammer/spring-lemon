@@ -2,6 +2,7 @@ package com.naturalprogrammer.spring.lemon.commonsmongo;
 
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.Date;
 
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
@@ -28,13 +29,13 @@ public abstract class AbstractDocument<ID extends Serializable> implements Permi
 	private ID createdBy;
 	
 	@CreatedDate
-	private Instant createdDate;
+	private Date createdDate;
 	
 	@LastModifiedBy
 	private ID lastModifiedBy;
 	
 	@LastModifiedDate
-	private Instant lastModifiedDate;
+	private Date lastModifiedDate;
 	
 	@Version
 	private long version;
