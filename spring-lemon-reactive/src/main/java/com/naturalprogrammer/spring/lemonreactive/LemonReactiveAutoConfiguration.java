@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
+import com.naturalprogrammer.spring.lemon.commons.domain.IdConverter;
 import com.naturalprogrammer.spring.lemon.commons.security.JwtService;
 import com.naturalprogrammer.spring.lemon.commonsmongo.LemonCommonsMongoAutoConfiguration;
 import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
@@ -32,6 +33,12 @@ public class LemonReactiveAutoConfiguration {
 		log.info("Created");
 	}
 
+	@Bean
+	@ConditionalOnMissingBean(IdConverter.class)
+	public <ID extends Serializable>
+	IdConverter<ID> idConverter(LemonReactiveService<?,ID> lemonService) {
+		return id -> lemonService.toId(id);
+	}
 	
 	@Bean
 	@ConditionalOnMissingBean(LemonReactiveSecurityConfig.class)

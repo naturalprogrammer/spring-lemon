@@ -41,7 +41,7 @@ import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
  * @author Sanjay Patel
  */
 public abstract class LemonController
-	<U extends AbstractUser<U,ID>, ID extends Serializable> {
+	<U extends AbstractUser<ID>, ID extends Serializable> {
 
 	private static final Log log = LogFactory.getLog(LemonController.class);
 

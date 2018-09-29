@@ -9,7 +9,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,6 +18,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
+import com.naturalprogrammer.spring.lemon.commons.domain.IdConverter;
 import com.naturalprogrammer.spring.lemon.commons.security.JwtService;
 import com.naturalprogrammer.spring.lemon.commons.validation.RetypePasswordValidator;
 import com.naturalprogrammer.spring.lemon.commonsjpa.LemonCommonsJpaAutoConfiguration;
@@ -26,7 +26,6 @@ import com.naturalprogrammer.spring.lemon.commonsweb.security.JwtAuthenticationP
 import com.naturalprogrammer.spring.lemon.commonsweb.security.LemonWebSecurityConfig;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUserRepository;
-import com.naturalprogrammer.spring.lemon.domain.LemonAuditorAware;
 import com.naturalprogrammer.spring.lemon.security.JpaJwtAuthenticationProvider;
 import com.naturalprogrammer.spring.lemon.security.LemonAuthenticationSuccessHandler;
 import com.naturalprogrammer.spring.lemon.security.LemonJpaSecurityConfig;
@@ -55,18 +54,13 @@ public class LemonAutoConfiguration {
 		log.info("Created");
 	}
 
-	/**
-	 * Configures an Auditor Aware if missing
-	 */	
 	@Bean
-	@ConditionalOnMissingBean(AuditorAware.class)
-	public <U extends AbstractUser<U,ID>, ID extends Serializable>
-	AuditorAware<U> auditorAware(LemonService<U,ID> lemonService) {
-		
-        log.info("Configuring LemonAuditorAware");       
-		return new LemonAuditorAware<U, ID>(lemonService);
+	@ConditionalOnMissingBean(IdConverter.class)
+	public <ID extends Serializable>
+	IdConverter<ID> idConverter(LemonService<?,ID> lemonService) {
+		return id -> lemonService.toId(id);
 	}
-
+	
 	/**
 	 * Configures AuthenticationSuccessHandler if missing
 	 */
@@ -118,7 +112,7 @@ public class LemonAutoConfiguration {
 	 */
 	@Bean
 	@ConditionalOnMissingBean(UserDetailsService.class)
-	public <U extends AbstractUser<U,ID>, ID extends Serializable>
+	public <U extends AbstractUser<ID>, ID extends Serializable>
 	UserDetailsService userDetailService(AbstractUserRepository<U, ID> userRepository) {
 		
         log.info("Configuring LemonUserDetailsService");       
@@ -141,7 +135,7 @@ public class LemonAutoConfiguration {
 	 */
 	@Bean
 	@ConditionalOnMissingBean(LemonOAuth2UserService.class)	
-	public <U extends AbstractUser<U,ID>, ID extends Serializable>
+	public <U extends AbstractUser<ID>, ID extends Serializable>
 		LemonOAuth2UserService<U,ID> lemonOAuth2UserService(
 			LemonUserDetailsService<U, ?> userDetailsService,
 			LemonService<U, ?> lemonService,
@@ -156,7 +150,7 @@ public class LemonAutoConfiguration {
 	 */
 	@Bean
 	@ConditionalOnMissingBean(JwtAuthenticationProvider.class)	
-	public <U extends AbstractUser<U,ID>, ID extends Serializable>
+	public <U extends AbstractUser<ID>, ID extends Serializable>
 			JwtAuthenticationProvider jwtAuthenticationProvider(
 			JwtService jwtService,
 			LemonUserDetailsService<U, ID> userDetailsService) {

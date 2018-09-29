@@ -14,7 +14,7 @@ import org.springframework.data.repository.NoRepositoryBean;
  */
 @NoRepositoryBean
 public interface AbstractUserRepository
-	<U extends AbstractUser<U,ID>, ID extends Serializable>
+	<U extends AbstractUser<ID>, ID extends Serializable>
 extends JpaRepository<U, ID> {
 	
 	Optional<U> findByEmail(String email);

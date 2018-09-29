@@ -1,6 +1,5 @@
 package com.naturalprogrammer.spring.lemon.commonsweb.util;
 
-import java.io.Serializable;
 import java.util.Optional;
 
 import javax.servlet.http.Cookie;

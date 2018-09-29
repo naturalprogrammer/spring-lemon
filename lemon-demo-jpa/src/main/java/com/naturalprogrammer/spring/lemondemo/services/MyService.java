@@ -39,8 +39,7 @@ public class MyService extends LemonService<User, Long> {
     	User user = super.createAdminUser(); 
     	user.setName(ADMIN_NAME);
     	return user;
-    }
-    
+    }    
     
     @Override
     public void fillAdditionalFields(String registrationId, User user, Map<String, Object> attributes) {
@@ -65,7 +64,7 @@ public class MyService extends LemonService<User, Long> {
     }
 
 	@Override
-	protected Long toId(String id) {
+	public Long toId(String id) {
 		
 		return Long.valueOf(id);
 	}

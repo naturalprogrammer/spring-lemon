@@ -18,6 +18,7 @@ import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
 import com.naturalprogrammer.spring.lemon.commons.util.UserUtils;
 import com.naturalprogrammer.spring.lemon.commons.validation.Captcha;
 import com.naturalprogrammer.spring.lemon.commons.validation.Password;
+import com.naturalprogrammer.spring.lemon.commonsjpa.LemonEntity;
 import com.naturalprogrammer.spring.lemon.validation.UniqueEmail;
 
 import lombok.Getter;
@@ -31,10 +32,8 @@ import lombok.Setter;
  */
 @Getter @Setter
 @MappedSuperclass
-public class AbstractUser
-	<U extends AbstractUser<U,ID>,
-	 ID extends Serializable>
-extends VersionedEntity<U, ID> {
+public class AbstractUser<ID extends Serializable>
+extends LemonEntity<ID> {
 	
 	// email
 	@JsonView(UserUtils.SignupInput.class)

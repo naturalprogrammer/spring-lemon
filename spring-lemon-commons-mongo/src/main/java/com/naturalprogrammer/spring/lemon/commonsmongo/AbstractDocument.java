@@ -25,19 +25,19 @@ public abstract class AbstractDocument<ID extends Serializable> implements Permi
 	protected ID id;
 	
 	@CreatedBy
-	protected ID createdBy;
+	private ID createdBy;
 	
 	@CreatedDate
-	protected Instant createdDate;
+	private Instant createdDate;
 	
 	@LastModifiedBy
-	protected ID lastModifiedBy;
+	private ID lastModifiedBy;
 	
 	@LastModifiedDate
-	protected Instant lastModifiedDate;
+	private Instant lastModifiedDate;
 	
 	@Version
-	protected long version;
+	private long version;
 	
 	/**
 	 * Whether the given user has the given permission for

@@ -22,7 +22,7 @@ import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
 /**
  * Logs in or registers a user after OAuth2 SignIn/Up
  */
-public class LemonOAuth2UserService<U extends AbstractUser<U,ID>, ID extends Serializable> extends DefaultOAuth2UserService {
+public class LemonOAuth2UserService<U extends AbstractUser<ID>, ID extends Serializable> extends DefaultOAuth2UserService {
 
 	private static final Log log = LogFactory.getLog(LemonOAuth2UserService.class);
 

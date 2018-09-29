@@ -1,5 +1,6 @@
 package com.naturalprogrammer.spring.lemon.commonsweb;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -18,6 +19,7 @@ import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -31,6 +33,7 @@ import com.naturalprogrammer.spring.lemon.commonsweb.exceptions.LemonErrorAttrib
 import com.naturalprogrammer.spring.lemon.commonsweb.exceptions.LemonErrorController;
 import com.naturalprogrammer.spring.lemon.commonsweb.security.JwtAuthenticationProvider;
 import com.naturalprogrammer.spring.lemon.commonsweb.security.LemonCorsConfig;
+import com.naturalprogrammer.spring.lemon.commonsweb.security.LemonWebAuditorAware;
 import com.naturalprogrammer.spring.lemon.commonsweb.security.LemonWebSecurityConfig;
 import com.naturalprogrammer.spring.lemon.commonsweb.util.LecwUtils;
 import com.naturalprogrammer.spring.lemon.exceptions.ErrorResponseComposer;
@@ -150,6 +153,18 @@ public class LemonCommonsWebAutoConfiguration {
 		return new LemonWebSecurityConfig();
 	}
 	
+	/**
+	 * Configures an Auditor Aware if missing
+	 */	
+	@Bean
+	@ConditionalOnMissingBean(AuditorAware.class)
+	public <ID extends Serializable>
+	AuditorAware<ID> auditorAware() {
+		
+        log.info("Configuring LemonAuditorAware");       
+		return new LemonWebAuditorAware<ID>();
+	}
+
 	/**
 	 * Configures LemonUtils
 	 */

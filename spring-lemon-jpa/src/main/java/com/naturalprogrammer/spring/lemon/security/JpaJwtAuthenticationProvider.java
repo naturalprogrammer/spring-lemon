@@ -17,7 +17,7 @@ import com.nimbusds.jwt.JWTClaimsSet;
  * Authentication provider for JWT token authentication
  */
 public class JpaJwtAuthenticationProvider
-<U extends AbstractUser<U,ID>, ID extends Serializable> extends JwtAuthenticationProvider {
+<U extends AbstractUser<ID>, ID extends Serializable> extends JwtAuthenticationProvider {
 
     private static final Log log = LogFactory.getLog(JpaJwtAuthenticationProvider.class);
 

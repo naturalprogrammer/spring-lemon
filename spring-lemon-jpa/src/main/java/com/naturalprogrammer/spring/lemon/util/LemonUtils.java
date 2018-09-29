@@ -11,8 +11,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import com.naturalprogrammer.spring.lemon.commons.security.JwtService;
 import com.naturalprogrammer.spring.lemon.commons.security.LemonPrincipal;
 import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
+import com.naturalprogrammer.spring.lemon.commonsjpa.LemonEntity;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
-import com.naturalprogrammer.spring.lemon.domain.VersionedEntity;
 import com.naturalprogrammer.spring.lemon.exceptions.VersionException;
 import com.nimbusds.jwt.JWTClaimsSet;
 
@@ -36,7 +36,7 @@ public class LemonUtils {
 	 * 
 	 * @param user
 	 */
-	public static <U extends AbstractUser<U,ID>, ID extends Serializable>
+	public static <U extends AbstractUser<ID>, ID extends Serializable>
 	void login(U user) {
 		
 		LemonPrincipal principal = new LemonPrincipal(user.toUserDto());
@@ -56,8 +56,8 @@ public class LemonUtils {
 	 * @param original
 	 * @param updated
 	 */
-	public static <U extends AbstractUser<U,ID>, ID extends Serializable>
-	void ensureCorrectVersion(VersionedEntity<U,ID> original, VersionedEntity<U,ID> updated) {
+	public static <U extends AbstractUser<ID>, ID extends Serializable>
+	void ensureCorrectVersion(LemonEntity<ID> original, LemonEntity<ID> updated) {
 		
 		if (original.getVersion() != updated.getVersion())
 			throw new VersionException(original.getClass().getSimpleName(), original.getId().toString());
@@ -68,7 +68,7 @@ public class LemonUtils {
 	 * Throws BadCredentialsException if 
 	 * user's credentials were updated after the JWT was issued
 	 */
-	public static <U extends AbstractUser<U,ID>, ID extends Serializable>
+	public static <U extends AbstractUser<ID>, ID extends Serializable>
 	void ensureCredentialsUpToDate(JWTClaimsSet claims, U user) {
 		
 		long issueTime = (long) claims.getClaim(JwtService.LEMON_IAT);

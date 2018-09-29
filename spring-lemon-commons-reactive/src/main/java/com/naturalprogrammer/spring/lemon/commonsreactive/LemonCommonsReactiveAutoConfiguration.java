@@ -1,5 +1,7 @@
 package com.naturalprogrammer.spring.lemon.commonsreactive;
 
+import java.io.Serializable;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bson.types.ObjectId;
@@ -13,6 +15,7 @@ import org.springframework.boot.web.reactive.error.ErrorAttributes;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.access.expression.AbstractSecurityExpressionHandler;
 import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
@@ -27,6 +30,7 @@ import com.naturalprogrammer.spring.lemon.commons.security.JwtService;
 import com.naturalprogrammer.spring.lemon.commonsreactive.exceptions.LemonReactiveErrorAttributes;
 import com.naturalprogrammer.spring.lemon.commonsreactive.exceptions.handlers.VersionExceptionHandler;
 import com.naturalprogrammer.spring.lemon.commonsreactive.security.LemonCommonsReactiveSecurityConfig;
+import com.naturalprogrammer.spring.lemon.commonsreactive.security.LemonReactiveAuditorAware;
 import com.naturalprogrammer.spring.lemon.commonsreactive.security.LemonReactiveCorsConfig;
 import com.naturalprogrammer.spring.lemon.commonsreactive.util.LecrUtils;
 import com.naturalprogrammer.spring.lemon.exceptions.ErrorResponseComposer;
@@ -110,6 +114,19 @@ public class LemonCommonsReactiveAutoConfiguration {
 	}
 	
 	
+	/**
+	 * Configures an Auditor Aware if missing
+	 */	
+	@Bean
+	@ConditionalOnMissingBean(AuditorAware.class)
+	public <ID extends Serializable>
+	AuditorAware<ID> auditorAware() {
+		
+        log.info("Configuring LemonAuditorAware");       
+		return new LemonReactiveAuditorAware<ID>();
+	}
+
+
 	/**
 	 * Configures LeeUtils
 	 */

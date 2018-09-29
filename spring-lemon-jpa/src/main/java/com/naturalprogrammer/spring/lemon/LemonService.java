@@ -53,7 +53,7 @@ import com.nimbusds.jwt.JWTClaimsSet;
 @Validated
 @Transactional(propagation=Propagation.SUPPORTS, readOnly=true)
 public abstract class LemonService
-	<U extends AbstractUser<U,ID>, ID extends Serializable> {
+	<U extends AbstractUser<ID>, ID extends Serializable> {
 
     private static final Log log = LogFactory.getLog(LemonService.class);
     
@@ -501,7 +501,7 @@ public abstract class LemonService
 	}
 
 
-	protected abstract ID toId(String id);
+	public abstract ID toId(String id);
 
 	/**
 	 * Updates the fields of the users. Override this if you have more fields.

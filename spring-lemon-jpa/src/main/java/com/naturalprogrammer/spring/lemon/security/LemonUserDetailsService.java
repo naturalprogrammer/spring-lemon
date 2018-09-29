@@ -19,7 +19,7 @@ import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
  * @author Sanjay Patel
  */
 public class LemonUserDetailsService
-	<U extends AbstractUser<U,ID>, ID extends Serializable>
+	<U extends AbstractUser<ID>, ID extends Serializable>
 implements UserDetailsService {
 
 	private static final Log log = LogFactory.getLog(LemonUserDetailsService.class);
