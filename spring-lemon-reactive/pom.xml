@@ -20,13 +20,8 @@
     
 		<dependency>
 			<groupId>com.naturalprogrammer.spring-lemon</groupId>
-			<artifactId>spring-lemon-commons-reactive</artifactId>
+			<artifactId>spring-lemon-commons-mongo</artifactId>
 			<version>${project.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-mongodb-reactive</artifactId>
 		</dependency>
 
 		<dependency>

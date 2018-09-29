@@ -7,8 +7,6 @@ import org.apache.commons.logging.LogFactory;
 
 import com.naturalprogrammer.spring.lemon.commons.security.JwtService;
 import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
-import com.naturalprogrammer.spring.lemon.exceptions.VersionException;
-import com.naturalprogrammer.spring.lemonreactive.domain.AbstractDocument;
 import com.naturalprogrammer.spring.lemonreactive.domain.AbstractMongoUser;
 import com.nimbusds.jwt.JWTClaimsSet;
 
@@ -35,19 +33,5 @@ public class LerUtils {
 		
 		LecUtils.ensureCredentials(issueTime >= user.getCredentialsUpdatedMillis(),
 				"com.naturalprogrammer.spring.obsoleteToken");
-	}
-
-	/**
-	 * Throws a VersionException if the versions of the
-	 * given entities aren't same.
-	 * 
-	 * @param original
-	 * @param updated
-	 */
-	public static <ID extends Serializable>
-	void ensureCorrectVersion(AbstractDocument<ID> original, AbstractDocument<ID> updated) {
-		
-		if (original.getVersion() != updated.getVersion())
-			throw new VersionException(original.getClass().getSimpleName(), original.getId().toString());
 	}
 }

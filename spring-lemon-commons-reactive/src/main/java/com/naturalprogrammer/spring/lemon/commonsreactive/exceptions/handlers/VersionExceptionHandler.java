@@ -1,4 +1,4 @@
-package com.naturalprogrammer.spring.lemonreactive.exceptions.handlers;
+package com.naturalprogrammer.spring.lemon.commonsreactive.exceptions.handlers;
 
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;

@@ -1,4 +1,4 @@
-package com.naturalprogrammer.spring.lemonreactive.domain;
+package com.naturalprogrammer.spring.lemon.commonsmongo;
 
 import java.io.Serializable;
 import java.time.Instant;

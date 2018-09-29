@@ -7,8 +7,6 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.transaction.support.TransactionSynchronizationAdapter;
-import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import com.naturalprogrammer.spring.lemon.commons.security.JwtService;
 import com.naturalprogrammer.spring.lemon.commons.security.LemonPrincipal;
@@ -63,25 +61,6 @@ public class LemonUtils {
 		
 		if (original.getVersion() != updated.getVersion())
 			throw new VersionException(original.getClass().getSimpleName(), original.getId().toString());
-	}
-	
-	
-	/**
-	 * A convenient method for running code
-	 * after successful database commit.
-	 *  
-	 * @param runnable
-	 */
-	public static void afterCommit(Runnable runnable) {
-		
-		TransactionSynchronizationManager.registerSynchronization(
-		    new TransactionSynchronizationAdapter() {
-		        @Override
-		        public void afterCommit() {
-		        	
-		        	runnable.run();
-		        }
-		});				
 	}
 	
 	

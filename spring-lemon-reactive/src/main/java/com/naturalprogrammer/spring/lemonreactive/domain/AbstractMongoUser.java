@@ -14,6 +14,7 @@ import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
 import com.naturalprogrammer.spring.lemon.commons.util.UserUtils;
 import com.naturalprogrammer.spring.lemon.commons.validation.Captcha;
 import com.naturalprogrammer.spring.lemon.commons.validation.Password;
+import com.naturalprogrammer.spring.lemon.commonsmongo.AbstractDocument;
 import com.naturalprogrammer.spring.lemonreactive.validation.UniqueEmail;
 
 import lombok.Getter;

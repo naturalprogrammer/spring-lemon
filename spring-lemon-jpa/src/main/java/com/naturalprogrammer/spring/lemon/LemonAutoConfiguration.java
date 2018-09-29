@@ -6,10 +6,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
-import org.springframework.boot.autoconfigure.security.servlet.SecurityFilterAutoConfiguration;
-import org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguration;
-import org.springframework.boot.autoconfigure.web.servlet.error.ErrorMvcAutoConfiguration;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,7 +21,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
 import com.naturalprogrammer.spring.lemon.commons.security.JwtService;
 import com.naturalprogrammer.spring.lemon.commons.validation.RetypePasswordValidator;
-import com.naturalprogrammer.spring.lemon.commonsweb.LemonCommonsWebAutoConfiguration;
+import com.naturalprogrammer.spring.lemon.commonsjpa.LemonCommonsJpaAutoConfiguration;
 import com.naturalprogrammer.spring.lemon.commonsweb.security.JwtAuthenticationProvider;
 import com.naturalprogrammer.spring.lemon.commonsweb.security.LemonWebSecurityConfig;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
@@ -50,12 +46,7 @@ import com.naturalprogrammer.spring.lemon.validation.UniqueEmailValidator;
 @Configuration
 @EnableTransactionManagement
 @EnableJpaAuditing
-@AutoConfigureBefore({
-	WebMvcAutoConfiguration.class,
-	ErrorMvcAutoConfiguration.class,
-	SecurityAutoConfiguration.class,
-	SecurityFilterAutoConfiguration.class,
-	LemonCommonsWebAutoConfiguration.class})
+@AutoConfigureBefore({LemonCommonsJpaAutoConfiguration.class})
 public class LemonAutoConfiguration {
 	
 	private static final Log log = LogFactory.getLog(LemonAutoConfiguration.class);

@@ -37,6 +37,7 @@ import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
 import com.naturalprogrammer.spring.lemon.commons.security.UserEditPermission;
 import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
 import com.naturalprogrammer.spring.lemon.commons.util.UserUtils;
+import com.naturalprogrammer.spring.lemon.commonsjpa.LecjUtils;
 import com.naturalprogrammer.spring.lemon.commonsweb.util.LecwUtils;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUserRepository;
@@ -201,7 +202,7 @@ public abstract class LemonService
 		userRepository.save(user);
 		
 		// if successfully committed
-		LemonUtils.afterCommit(() -> {
+		LecjUtils.afterCommit(() -> {
 		
 			LemonUtils.login(user); // log the user in
 			log.debug("Signed up user: " + user);
@@ -229,7 +230,7 @@ public abstract class LemonService
 		
 		user.getRoles().add(UserUtils.Role.UNVERIFIED);
 		user.setCredentialsUpdatedMillis(System.currentTimeMillis());
-		LemonUtils.afterCommit(() -> sendVerificationMail(user)); // send a verification mail to the user
+		LecjUtils.afterCommit(() -> sendVerificationMail(user)); // send a verification mail to the user
 	}
 	
 	
@@ -346,7 +347,7 @@ public abstract class LemonService
 		userRepository.save(user);
 		
 		// after successful commit,
-		LemonUtils.afterCommit(() -> {
+		LecjUtils.afterCommit(() -> {
 			
 			// Re-login the user, so that the UNVERIFIED role is removed
 			LemonUtils.login(user);
@@ -434,7 +435,7 @@ public abstract class LemonService
 		userRepository.save(user);
 		
 		// after successful commit,
-		LemonUtils.afterCommit(() -> {
+		LecjUtils.afterCommit(() -> {
 			
 			// Login the user
 			LemonUtils.login(user);
@@ -561,7 +562,7 @@ public abstract class LemonService
 		userRepository.save(user);
 		
 		// after successful commit, mails a link to the user
-		LemonUtils.afterCommit(() -> mailChangeEmailLink(user));
+		LecjUtils.afterCommit(() -> mailChangeEmailLink(user));
 		
 		log.debug("Requested email change: " + user);		
 	}
@@ -660,7 +661,7 @@ public abstract class LemonService
 		userRepository.save(user);
 		
 		// after successful commit,
-		LemonUtils.afterCommit(() -> {
+		LecjUtils.afterCommit(() -> {
 			
 			// Login the user
 			LemonUtils.login(user);

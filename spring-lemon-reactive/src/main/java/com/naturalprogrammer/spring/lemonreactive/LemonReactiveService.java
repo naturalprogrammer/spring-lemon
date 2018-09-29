@@ -31,6 +31,7 @@ import com.naturalprogrammer.spring.lemon.commons.security.JwtService;
 import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
 import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
 import com.naturalprogrammer.spring.lemon.commons.util.UserUtils;
+import com.naturalprogrammer.spring.lemon.commonsmongo.LecmUtils;
 import com.naturalprogrammer.spring.lemon.commonsreactive.util.LecrUtils;
 import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
 import com.naturalprogrammer.spring.lemonreactive.domain.AbstractMongoUser;
@@ -504,7 +505,7 @@ public abstract class LemonReactiveService
 
 		U updatedUser = LecrUtils.applyPatch(user, patch); // create a patched form
 		LexUtils.validate("updatedUser", updatedUser, UserUtils.UpdateValidation.class);
-		LerUtils.ensureCorrectVersion(user, updatedUser);
+		LecmUtils.ensureCorrectVersion(user, updatedUser);
 		
 		updateUserFields(user, updatedUser, currentUser.get());
 

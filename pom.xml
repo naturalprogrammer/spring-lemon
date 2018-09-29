@@ -24,6 +24,8 @@
 		<module>spring-lemon-commons</module>
 		<module>spring-lemon-commons-web</module>
 		<module>spring-lemon-commons-reactive</module>
+		<module>spring-lemon-commons-jpa</module>
+		<module>spring-lemon-commons-mongo</module>
 		<module>spring-lemon-jpa</module>
 		<module>spring-lemon-reactive</module>
 		<module>lemon-demo-jpa</module>

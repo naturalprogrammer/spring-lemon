@@ -11,6 +11,7 @@ import org.springframework.boot.autoconfigure.web.reactive.WebFluxAutoConfigurat
 import org.springframework.boot.autoconfigure.web.reactive.error.ErrorWebFluxAutoConfiguration;
 import org.springframework.boot.web.reactive.error.ErrorAttributes;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.access.expression.AbstractSecurityExpressionHandler;
@@ -24,6 +25,7 @@ import com.naturalprogrammer.spring.lemon.commons.LemonCommonsAutoConfiguration;
 import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
 import com.naturalprogrammer.spring.lemon.commons.security.JwtService;
 import com.naturalprogrammer.spring.lemon.commonsreactive.exceptions.LemonReactiveErrorAttributes;
+import com.naturalprogrammer.spring.lemon.commonsreactive.exceptions.handlers.VersionExceptionHandler;
 import com.naturalprogrammer.spring.lemon.commonsreactive.security.LemonCommonsReactiveSecurityConfig;
 import com.naturalprogrammer.spring.lemon.commonsreactive.security.LemonReactiveCorsConfig;
 import com.naturalprogrammer.spring.lemon.commonsreactive.util.LecrUtils;
@@ -37,6 +39,7 @@ import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
 	ErrorWebFluxAutoConfiguration.class,
 	ReactiveSecurityAutoConfiguration.class,
 	LemonCommonsAutoConfiguration.class})
+@ComponentScan(basePackageClasses=VersionExceptionHandler.class)
 public class LemonCommonsReactiveAutoConfiguration {
 	
 	private static final Log log = LogFactory.getLog(LemonCommonsReactiveAutoConfiguration.class);
