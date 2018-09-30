@@ -24,8 +24,8 @@ angular.module('angularSampleApp')
       this.goodUser = !(this.unverified || this.blocked);
       this.goodAdmin = this.admin && this.goodUser;
 
-      this.editable = authService.isAuthenticated() && (this.id === authService.user.id || authService.isGoodAdmin());
-      this.rolesEditable = authService.isGoodAdmin() && this.id !== authService.user.id;
+      this.editable = authService.isAuthenticated() && (this.id == authService.user.id || authService.isGoodAdmin());
+      this.rolesEditable = authService.isGoodAdmin() && this.id != authService.user.id;
     };
 
     User.prototype.hasRole = function(role) {

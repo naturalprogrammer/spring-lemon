@@ -27,11 +27,9 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.naturalprogrammer.spring.lemon.commons.LemonCommonsAutoConfiguration;
 import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
-import com.naturalprogrammer.spring.lemon.commons.security.JwtService;
 import com.naturalprogrammer.spring.lemon.commonsweb.exceptions.DefaultExceptionHandlerControllerAdvice;
 import com.naturalprogrammer.spring.lemon.commonsweb.exceptions.LemonErrorAttributes;
 import com.naturalprogrammer.spring.lemon.commonsweb.exceptions.LemonErrorController;
-import com.naturalprogrammer.spring.lemon.commonsweb.security.JwtAuthenticationProvider;
 import com.naturalprogrammer.spring.lemon.commonsweb.security.LemonCorsConfig;
 import com.naturalprogrammer.spring.lemon.commonsweb.security.LemonWebAuditorAware;
 import com.naturalprogrammer.spring.lemon.commonsweb.security.LemonWebSecurityConfig;
@@ -130,18 +128,6 @@ public class LemonCommonsWebAutoConfiguration {
 		return new LemonCorsConfig(properties);		
 	}
 	
-	/**
-	 * Configures JwtAuthenticationProvider if missing
-	 */
-	@Bean
-	@ConditionalOnMissingBean(JwtAuthenticationProvider.class)	
-	public JwtAuthenticationProvider jwtAuthenticationProvider(
-			JwtService jwtService) {
-		
-        log.info("Configuring JwtAuthenticationProvider");       
-		return new JwtAuthenticationProvider(jwtService);
-	}	
-
 	/**
 	 * Configures LemonSecurityConfig if missing
 	 */

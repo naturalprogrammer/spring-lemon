@@ -8,27 +8,25 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import com.naturalprogrammer.spring.lemon.commons.security.JwtService;
 import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
-import com.naturalprogrammer.spring.lemon.commonsweb.security.JwtAuthenticationProvider;
+import com.naturalprogrammer.spring.lemon.commonsweb.security.LemonCommonsWebTokenAuthenticationFilter;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
 import com.naturalprogrammer.spring.lemon.util.LemonUtils;
 import com.nimbusds.jwt.JWTClaimsSet;
 
-/**
- * Authentication provider for JWT token authentication
- */
-public class JpaJwtAuthenticationProvider
-<U extends AbstractUser<ID>, ID extends Serializable> extends JwtAuthenticationProvider {
+public class LemonJpaTokenAuthenticationFilter<U extends AbstractUser<ID>, ID extends Serializable>
+	extends LemonCommonsWebTokenAuthenticationFilter {
 
-    private static final Log log = LogFactory.getLog(JpaJwtAuthenticationProvider.class);
+    private static final Log log = LogFactory.getLog(LemonJpaTokenAuthenticationFilter.class);
 
-	private LemonUserDetailsService<U, ID> userDetailsService;
+    private LemonUserDetailsService<U, ID> userDetailsService;
 	
-	public JpaJwtAuthenticationProvider(JwtService jwtService, LemonUserDetailsService<U, ID> userDetailsService) {
-
+	public LemonJpaTokenAuthenticationFilter(JwtService jwtService,
+			LemonUserDetailsService<U, ID> userDetailsService) {
+		
 		super(jwtService);
 		this.userDetailsService = userDetailsService;
 		
-		log.debug("Created");
+		log.info("Created");		
 	}
 
 	@Override

@@ -7,6 +7,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.core.Authentication;
@@ -18,7 +19,6 @@ import org.springframework.security.web.server.authorization.ServerAccessDeniedH
 import org.springframework.security.web.server.context.NoOpServerSecurityContextRepository;
 import org.springframework.web.server.ServerWebExchange;
 
-import com.naturalprogrammer.spring.lemon.commons.security.JwtAuthenticationToken;
 import com.naturalprogrammer.spring.lemon.commons.security.JwtService;
 import com.naturalprogrammer.spring.lemon.commons.security.LemonPrincipal;
 import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
@@ -100,7 +100,7 @@ public class LemonCommonsReactiveSecurityConfig {
 			
 			return userDtoMono.map(LemonPrincipal::new)
 					.doOnNext(LemonPrincipal::eraseCredentials)
-					.map(principal -> new JwtAuthenticationToken(principal, token, principal.getAuthorities()));		
+					.map(principal -> new UsernamePasswordAuthenticationToken(principal, token, principal.getAuthorities()));		
 		};
 	}
 	
@@ -125,7 +125,7 @@ public class LemonCommonsReactiveSecurityConfig {
 			if(authorization == null || !authorization.startsWith(LecUtils.TOKEN_PREFIX))
 				return Mono.empty();
 
-			return Mono.just(new JwtAuthenticationToken(authorization.substring(LecUtils.TOKEN_PREFIX_LENGTH)));		
+			return Mono.just(new UsernamePasswordAuthenticationToken(null, authorization.substring(LecUtils.TOKEN_PREFIX_LENGTH)));		
 		};
 	}
 	

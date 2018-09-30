@@ -3,12 +3,13 @@ package com.naturalprogrammer.spring.lemon.commonsweb.security;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import com.naturalprogrammer.spring.lemon.commons.security.JwtService;
 
 /**
  * Security configuration class. Extend it in the
@@ -21,12 +22,12 @@ public class LemonWebSecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	private static final Log log = LogFactory.getLog(LemonWebSecurityConfig.class);
 
-	private JwtAuthenticationProvider jwtAuthenticationProvider;
+	protected JwtService jwtService;
 	
 	@Autowired
-	public void createLemonWebSecurityConfig(JwtAuthenticationProvider jwtAuthenticationProvider) {
+	public void createLemonWebSecurityConfig(JwtService jwtService) {
 
-		this.jwtAuthenticationProvider = jwtAuthenticationProvider;		
+		this.jwtService = jwtService;		
 		log.info("Created");
 	}
 
@@ -89,8 +90,7 @@ public class LemonWebSecurityConfig extends WebSecurityConfigurerAdapter {
 	 */
 	protected void tokenAuthentication(HttpSecurity http) throws Exception {
 		
-		http.addFilterBefore(new LemonTokenAuthenticationFilter(
-				super.authenticationManager()),
+		http.addFilterBefore(new LemonCommonsWebTokenAuthenticationFilter(jwtService),
 				UsernamePasswordAuthenticationFilter.class);
 	}
 
@@ -134,14 +134,4 @@ public class LemonWebSecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void otherConfigurations(HttpSecurity http)  throws Exception {
 
 	}
-
-	
-	/**
-	 * Needed for configuring JwtAuthenticationProvider
-	 */
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-  
-        auth.authenticationProvider(jwtAuthenticationProvider);
-    }
 }

@@ -3,11 +3,10 @@ package com.naturalprogrammer.spring.lemon.security;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
 import com.naturalprogrammer.spring.lemon.commonsweb.security.LemonWebSecurityConfig;
@@ -24,7 +23,7 @@ public class LemonJpaSecurityConfig extends LemonWebSecurityConfig {
 	private static final Log log = LogFactory.getLog(LemonJpaSecurityConfig.class);
 
 	private LemonProperties properties;
-	private UserDetailsService userDetailsService;
+	private LemonUserDetailsService<?, ?> userDetailsService;
 	private LemonAuthenticationSuccessHandler authenticationSuccessHandler;
 	private AuthenticationFailureHandler authenticationFailureHandler;
 	private LemonOidcUserService oidcUserService;
@@ -34,7 +33,7 @@ public class LemonJpaSecurityConfig extends LemonWebSecurityConfig {
 	private PasswordEncoder passwordEncoder;
 	
 	@Autowired
-	public void createLemonSecurityConfig(LemonProperties properties, UserDetailsService userDetailsService,
+	public void createLemonSecurityConfig(LemonProperties properties, LemonUserDetailsService<?, ?> userDetailsService,
 			LemonAuthenticationSuccessHandler authenticationSuccessHandler, AuthenticationFailureHandler authenticationFailureHandler,
 			LemonOidcUserService oidcUserService,
 			LemonOAuth2UserService<?, ?> oauth2UserService,
@@ -117,13 +116,11 @@ public class LemonJpaSecurityConfig extends LemonWebSecurityConfig {
 
 	
 	/**
-	 * Needed for configuring JwtAuthenticationProvider
+	 * Configuring token authentication filter
 	 */
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-  
-    	super.configure(auth);
-        auth.userDetailsService(userDetailsService)
-        	.passwordEncoder(passwordEncoder);
-    }
+	protected void tokenAuthentication(HttpSecurity http) throws Exception {
+		
+		http.addFilterBefore(new LemonJpaTokenAuthenticationFilter(jwtService, userDetailsService),
+				UsernamePasswordAuthenticationFilter.class);
+	}
 }

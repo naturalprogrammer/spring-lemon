@@ -22,11 +22,9 @@ import com.naturalprogrammer.spring.lemon.commons.domain.IdConverter;
 import com.naturalprogrammer.spring.lemon.commons.security.JwtService;
 import com.naturalprogrammer.spring.lemon.commons.validation.RetypePasswordValidator;
 import com.naturalprogrammer.spring.lemon.commonsjpa.LemonCommonsJpaAutoConfiguration;
-import com.naturalprogrammer.spring.lemon.commonsweb.security.JwtAuthenticationProvider;
 import com.naturalprogrammer.spring.lemon.commonsweb.security.LemonWebSecurityConfig;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUserRepository;
-import com.naturalprogrammer.spring.lemon.security.JpaJwtAuthenticationProvider;
 import com.naturalprogrammer.spring.lemon.security.LemonAuthenticationSuccessHandler;
 import com.naturalprogrammer.spring.lemon.security.LemonJpaSecurityConfig;
 import com.naturalprogrammer.spring.lemon.security.LemonOAuth2UserService;
@@ -113,7 +111,7 @@ public class LemonAutoConfiguration {
 	@Bean
 	@ConditionalOnMissingBean(UserDetailsService.class)
 	public <U extends AbstractUser<ID>, ID extends Serializable>
-	UserDetailsService userDetailService(AbstractUserRepository<U, ID> userRepository) {
+	LemonUserDetailsService userDetailService(AbstractUserRepository<U, ID> userRepository) {
 		
         log.info("Configuring LemonUserDetailsService");       
 		return new LemonUserDetailsService<U, ID>(userRepository);
@@ -145,20 +143,6 @@ public class LemonAutoConfiguration {
 		return new LemonOAuth2UserService<U,ID>(userDetailsService, lemonService, passwordEncoder);
 	}
 
-	/**
-	 * Configures JwtAuthenticationProvider if missing
-	 */
-	@Bean
-	@ConditionalOnMissingBean(JwtAuthenticationProvider.class)	
-	public <U extends AbstractUser<ID>, ID extends Serializable>
-			JwtAuthenticationProvider jwtAuthenticationProvider(
-			JwtService jwtService,
-			LemonUserDetailsService<U, ID> userDetailsService) {
-		
-        log.info("Configuring JpaJwtAuthenticationProvider");       
-		return new JpaJwtAuthenticationProvider<U,ID>(jwtService, userDetailsService);
-	}	
-	
 	/**
 	 * Configures LemonSecurityConfig if missing
 	 */
