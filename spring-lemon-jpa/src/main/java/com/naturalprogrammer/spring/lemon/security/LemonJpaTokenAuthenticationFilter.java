@@ -39,6 +39,9 @@ public class LemonJpaTokenAuthenticationFilter<U extends AbstractUser<ID>, ID ex
         log.debug("User found ...");
 
         LemonUtils.ensureCredentialsUpToDate(claims, user);
-        return user.toUserDto();
+        UserDto userDto = user.toUserDto();
+        userDto.setPassword(null);
+        
+        return userDto;
 	}
 }

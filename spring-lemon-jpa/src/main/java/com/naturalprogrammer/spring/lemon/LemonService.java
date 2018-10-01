@@ -1,6 +1,7 @@
 package com.naturalprogrammer.spring.lemon;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -747,6 +748,26 @@ public abstract class LemonService
 	}
 
 	
+	@PreAuthorize("isAuthenticated()")
+	public Map<String, String> fetchFullToken(String authHeader) {
+
+		LecUtils.ensureCredentials(jwtService.parseClaim(authHeader.substring(LecUtils.TOKEN_PREFIX_LENGTH),
+				JwtService.USER_CLAIM) == null,	"com.naturalprogrammer.spring.fullTokenNotAllowed");
+		
+		UserDto currentUser = LecwUtils.currentUser();
+		
+		Map<String, Object> claimMap = Collections.singletonMap(JwtService.USER_CLAIM,
+				LecUtils.serialize(currentUser)); // Not serializing converts it to a JsonNode
+		
+		Map<String, String> tokenMap = Collections.singletonMap("token", LecUtils.TOKEN_PREFIX +
+			jwtService.createToken(JwtService.AUTH_AUDIENCE, currentUser.getUsername(),
+					Long.valueOf(properties.getJwt().getShortLivedMillis()),
+					claimMap));
+		
+		return tokenMap;
+	}
+
+	
 	/**
 	 * Adds a Lemon-Authorization header to the response
 	 */
@@ -756,6 +777,7 @@ public abstract class LemonService
 				LecUtils.TOKEN_PREFIX +
 				jwtService.createToken(JwtService.AUTH_AUDIENCE, username, expirationMillis));
 	}
+	
 	
 	public Optional<U> findUserById(String id) {
 		return userRepository.findById(toId(id));

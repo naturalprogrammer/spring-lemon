@@ -104,7 +104,12 @@ extends LemonEntity<ID> {
 		userDto.setId(getId().toString());
 		userDto.setUsername(email);
 		userDto.setPassword(password);
-		userDto.setRoles(roles);
+		
+		// roles would be org.hibernate.collection.internal.PersistentSet,
+		// which is not in another microservices not having Hibernate.
+		// So, let's convert it to HashSet
+		userDto.setRoles(new HashSet<String>(roles));
+		
 		userDto.setTag(toTag());
 		
 		userDto.initialize();

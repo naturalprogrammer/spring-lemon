@@ -10,12 +10,14 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
@@ -271,6 +273,17 @@ public abstract class LemonController
 	}
 
 
+	/**
+	 * Fetch a self-sufficient token with embedded UserDto - for interservice communications
+	 */
+	@GetMapping("/fetch-full-token")
+	public Map<String, String> fetchFullToken(@RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) {
+		
+		log.debug("Fetching a micro token");
+		return lemonService.fetchFullToken(authHeader);
+	}	
+
+	
 	/**
 	 * returns the current user and a new authorization token in the response
 	 */
