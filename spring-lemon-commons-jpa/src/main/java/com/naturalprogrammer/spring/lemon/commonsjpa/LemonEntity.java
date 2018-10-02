@@ -28,7 +28,7 @@ import lombok.Setter;
   */
 @MappedSuperclass
 @Getter @Setter
-@JsonIgnoreProperties({ "createdBy", "lastModifiedBy", "createdDate", "lastModifiedDate" })
+@JsonIgnoreProperties({ "createdById", "lastModifiedById", "createdDate", "lastModifiedDate", "new" })
 public class LemonEntity<ID extends Serializable> extends AbstractPersistable<ID> implements PermissionEvaluatorEntity {
 
 	private static final long serialVersionUID = -8151190931948396443L;

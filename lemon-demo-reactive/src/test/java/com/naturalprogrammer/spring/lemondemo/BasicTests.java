@@ -4,6 +4,7 @@ import static com.naturalprogrammer.spring.lemondemo.MyTestUtils.ADMIN_ID;
 import static com.naturalprogrammer.spring.lemondemo.MyTestUtils.CLIENT;
 import static com.naturalprogrammer.spring.lemondemo.MyTestUtils.TOKENS;
 import static com.naturalprogrammer.spring.lemondemo.controllers.MyController.BASE_URI;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 import org.junit.Test;
 
@@ -29,7 +30,8 @@ public class BasicTests extends AbstractTests {
 				.expectBody()
 					.jsonPath("$.context.reCaptchaSiteKey").exists()
 					.jsonPath("$.user.id").isEqualTo(ADMIN_ID.toString())
-					.jsonPath("$.user.roles[0]").isEqualTo("ADMIN");
+					.jsonPath("$.user.roles[0]").isEqualTo("ADMIN")
+					.jsonPath("$.user.password").doesNotExist();
 	}
 	
 	@Test

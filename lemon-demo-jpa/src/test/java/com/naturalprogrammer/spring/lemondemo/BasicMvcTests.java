@@ -31,7 +31,8 @@ public class BasicMvcTests extends AbstractMvcTests {
 				.andExpect(header().string(LecUtils.TOKEN_RESPONSE_HEADER_NAME, containsString(".")))
 				.andExpect(jsonPath("$.context.reCaptchaSiteKey").isString())
 				.andExpect(jsonPath("$.user.id").value(ADMIN_ID))
-				.andExpect(jsonPath("$.user.roles[0]").value("ADMIN"));
+				.andExpect(jsonPath("$.user.roles[0]").value("ADMIN"))
+				.andExpect(jsonPath("$.user.password").doesNotExist());
 	}
 	
 	@Test
