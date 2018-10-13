@@ -31,8 +31,6 @@ public class LexUtils {
 
 	/**
 	 * Constructor
-	 * 
-	 * @param messageSource
 	 */
 	public LexUtils(MessageSource messageSource, LocalValidatorFactoryBean validator) {
 		
@@ -56,9 +54,6 @@ public class LexUtils {
 	
 	/**
 	 * Gets a message from messages.properties
-	 * 
-	 * @param messageKey	the key of the message
-	 * @param args			any arguments
 	 */
 	public static String getMessage(String messageKey, Object... args) {
 		
@@ -73,10 +68,6 @@ public class LexUtils {
 	
 	/**
 	 * Creates a MultiErrorException out of the given parameters
-	 * 
-	 * @param valid			the condition to check for
-	 * @param messageKey	key of the error message
-	 * @param args			any message arguments
 	 */
 	public static <T> void validate(String name, T object, Class<?>... groups) {
 		
@@ -89,10 +80,6 @@ public class LexUtils {
 	
 	/**
 	 * Creates a MultiErrorException out of the given parameters
-	 * 
-	 * @param valid			the condition to check for
-	 * @param messageKey	key of the error message
-	 * @param args			any message arguments
 	 */
 	public static MultiErrorException validate(
 			boolean valid, String messageKey, Object... args) {
@@ -103,11 +90,6 @@ public class LexUtils {
 	
 	/**
 	 * Creates a MultiErrorException out of the given parameters
-	 * 
-	 * @param fieldName		the name of the field related to the error
-	 * @param valid			the condition to check for
-	 * @param messageKey	key of the error message
-	 * @param args			any message arguments
 	 */
 	public static MultiErrorException validate(
 			String fieldName, boolean valid, String messageKey, Object... args) {
@@ -118,8 +100,6 @@ public class LexUtils {
 	
 	/**
 	 * Throws 404 Error is the entity isn't found
-	 * 
-	 * @param entity
 	 */
 	public static <T> void ensureFound(T entity) {
 		
