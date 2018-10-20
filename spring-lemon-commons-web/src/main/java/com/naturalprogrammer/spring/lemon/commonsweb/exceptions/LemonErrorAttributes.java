@@ -58,14 +58,14 @@ public class LemonErrorAttributes<T extends Throwable> extends DefaultErrorAttri
 		
 		Throwable ex = getError(request);
 		
-		errorAttributes.put("exception", exceptionCodeMaker.make(LexUtils.getRootException(ex)));
+		errorAttributes.put("exceptionId", exceptionCodeMaker.make(LexUtils.getRootException(ex)));
 		
 		errorResponseComposer.compose((T)ex).ifPresent(errorResponse -> {
 			
 			// check for null - errorResponse may have left something for the DefaultErrorAttributes
 			
-			if (errorResponse.getException() != null) // In case of deserialized exception from Feign
-				errorAttributes.put("exception", errorResponse.getException());
+			if (errorResponse.getExceptionId() != null) // In case of deserialized exception from Feign
+				errorAttributes.put("exceptionId", errorResponse.getExceptionId());
 
 			if (errorResponse.getMessage() != null)
 				errorAttributes.put("message", errorResponse.getMessage());

@@ -12,7 +12,7 @@ import lombok.Setter;
 @Getter @Setter
 public class ErrorResponse {
 	
-	private String exception;
+	private String exceptionId;
 	private String error;
 	private String message;
 	private Integer status; // We'd need it as integer in JSON serialization

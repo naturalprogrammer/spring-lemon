@@ -54,7 +54,7 @@ public class DefaultExceptionHandlerControllerAdvice<T extends Throwable> {
     	
     	// We didn't do this inside compose because LemonErrorAttributes
     	// and LemonReactiveErrorAttributes would do it differently
-    	errorResponse.setException(exceptionCodeMaker.make(LexUtils.getRootException(ex)));
+    	errorResponse.setExceptionId(exceptionCodeMaker.make(LexUtils.getRootException(ex)));
 
         return new ResponseEntity<ErrorResponse>(errorResponse, HttpStatus.valueOf(errorResponse.getStatus()));
     }
