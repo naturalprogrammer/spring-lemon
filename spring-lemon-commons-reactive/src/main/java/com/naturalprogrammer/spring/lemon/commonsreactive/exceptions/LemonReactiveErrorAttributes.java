@@ -8,6 +8,7 @@ import org.springframework.boot.web.reactive.error.DefaultErrorAttributes;
 import org.springframework.web.reactive.function.server.ServerRequest;
 
 import com.naturalprogrammer.spring.lemon.exceptions.ErrorResponseComposer;
+import com.naturalprogrammer.spring.lemon.exceptions.ExceptionCodeMaker;
 import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
 
 public class LemonReactiveErrorAttributes<T extends Throwable> extends DefaultErrorAttributes {
@@ -18,10 +19,14 @@ public class LemonReactiveErrorAttributes<T extends Throwable> extends DefaultEr
 	 * Component that actually builds the error response
 	 */
 	private ErrorResponseComposer<T> errorResponseComposer;
+	private ExceptionCodeMaker exceptionCodeMaker;
 	
-    public LemonReactiveErrorAttributes(ErrorResponseComposer<T> errorResponseComposer) {
+    public LemonReactiveErrorAttributes(
+    		ErrorResponseComposer<T> errorResponseComposer,
+    		ExceptionCodeMaker exceptionCodeMaker) {
 
 		this.errorResponseComposer = errorResponseComposer;
+		this.exceptionCodeMaker = exceptionCodeMaker;
 		log.info("Created");
 	}
 
@@ -43,7 +48,7 @@ public class LemonReactiveErrorAttributes<T extends Throwable> extends DefaultEr
 		
 		Throwable ex = getError(request);
 		
-		errorAttributes.put("exception", LexUtils.getRootExceptionName(ex));
+		errorAttributes.put("exception", exceptionCodeMaker.make(LexUtils.getRootException(ex)));
 		
 		errorResponseComposer.compose((T)ex).ifPresent(errorResponse -> {
 			

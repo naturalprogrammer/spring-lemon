@@ -41,8 +41,20 @@ public class LemonExceptionsAutoConfiguration {
         log.info("Configuring ErrorResponseComposer");       
 		return new ErrorResponseComposer<T>(handlers);
 	}
-	
 
+	
+	/**
+	 * Configures ExceptionCodeMaker if missing
+	 */	
+	@Bean
+	@ConditionalOnMissingBean(ExceptionCodeMaker.class)
+	public ExceptionCodeMaker exceptionCodeMaker() {
+		
+        log.info("Configuring ExceptionCodeMaker");
+        return ex -> ex.getClass().getSimpleName();
+	}
+
+	
 	/**
 	 * Configures LemonUtils
 	 */

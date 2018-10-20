@@ -35,6 +35,7 @@ import com.naturalprogrammer.spring.lemon.commonsweb.security.LemonWebAuditorAwa
 import com.naturalprogrammer.spring.lemon.commonsweb.security.LemonWebSecurityConfig;
 import com.naturalprogrammer.spring.lemon.commonsweb.util.LecwUtils;
 import com.naturalprogrammer.spring.lemon.exceptions.ErrorResponseComposer;
+import com.naturalprogrammer.spring.lemon.exceptions.ExceptionCodeMaker;
 
 @Configuration
 @EnableSpringDataWebSupport
@@ -85,10 +86,12 @@ public class LemonCommonsWebAutoConfiguration {
 	@Bean
 	@ConditionalOnMissingBean(DefaultExceptionHandlerControllerAdvice.class)
 	public <T extends Throwable>
-	DefaultExceptionHandlerControllerAdvice<T> defaultExceptionHandlerControllerAdvice(ErrorResponseComposer<T> errorResponseComposer) {
+	DefaultExceptionHandlerControllerAdvice<T> defaultExceptionHandlerControllerAdvice(
+    		ErrorResponseComposer<T> errorResponseComposer,
+    		ExceptionCodeMaker exceptionCodeMaker) {
 		
         log.info("Configuring DefaultExceptionHandlerControllerAdvice");       
-		return new DefaultExceptionHandlerControllerAdvice<T>(errorResponseComposer);
+		return new DefaultExceptionHandlerControllerAdvice<T>(errorResponseComposer, exceptionCodeMaker);
 	}
 	
 	/**
@@ -97,10 +100,12 @@ public class LemonCommonsWebAutoConfiguration {
 	@Bean
 	@ConditionalOnMissingBean(ErrorAttributes.class)
 	public <T extends Throwable>
-	ErrorAttributes errorAttributes(ErrorResponseComposer<T> errorResponseComposer) {
+	ErrorAttributes errorAttributes(
+		ErrorResponseComposer<T> errorResponseComposer,
+		ExceptionCodeMaker exceptionCodeMaker) {
 		
         log.info("Configuring LemonErrorAttributes");       
-		return new LemonErrorAttributes<T>(errorResponseComposer);
+		return new LemonErrorAttributes<T>(errorResponseComposer, exceptionCodeMaker);
 	}
 	
 	/**

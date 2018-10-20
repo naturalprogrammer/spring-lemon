@@ -8,6 +8,7 @@ import org.springframework.boot.web.servlet.error.DefaultErrorAttributes;
 import org.springframework.web.context.request.WebRequest;
 
 import com.naturalprogrammer.spring.lemon.exceptions.ErrorResponseComposer;
+import com.naturalprogrammer.spring.lemon.exceptions.ExceptionCodeMaker;
 import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
 
 /**
@@ -22,10 +23,14 @@ public class LemonErrorAttributes<T extends Throwable> extends DefaultErrorAttri
 	static final String HTTP_STATUS_KEY = "httpStatus";
 	
 	private ErrorResponseComposer<T> errorResponseComposer;
+	private ExceptionCodeMaker exceptionCodeMaker;
 	
-    public LemonErrorAttributes(ErrorResponseComposer<T> errorResponseComposer) {
+    public LemonErrorAttributes(
+    		ErrorResponseComposer<T> errorResponseComposer,
+    		ExceptionCodeMaker exceptionCodeMaker) {
 
 		this.errorResponseComposer = errorResponseComposer;
+		this.exceptionCodeMaker = exceptionCodeMaker;
 		log.info("Created");
 	}
 	
@@ -53,7 +58,7 @@ public class LemonErrorAttributes<T extends Throwable> extends DefaultErrorAttri
 		
 		Throwable ex = getError(request);
 		
-		errorAttributes.put("exception", LexUtils.getRootExceptionName(ex));
+		errorAttributes.put("exception", exceptionCodeMaker.make(LexUtils.getRootException(ex)));
 		
 		errorResponseComposer.compose((T)ex).ifPresent(errorResponse -> {
 			

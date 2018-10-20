@@ -118,15 +118,14 @@ public class LexUtils {
 	}
 	
 
-	public static String getRootExceptionName(Throwable ex) {
+	public static Throwable getRootException(Throwable ex) {
 		
-		if (ex == null)
-			return "UnknownException";
+		if (ex == null) return null;
 			
 		while(ex.getCause() != null)
 			ex = ex.getCause();
 		
-		return ex.getClass().getSimpleName();
+		return ex;
 	}
 
 }
