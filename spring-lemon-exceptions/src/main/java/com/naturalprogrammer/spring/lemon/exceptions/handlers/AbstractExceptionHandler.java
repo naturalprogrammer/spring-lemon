@@ -16,14 +16,14 @@ public abstract class AbstractExceptionHandler<T extends Throwable> {
 	
 	protected final Log log = LogFactory.getLog(this.getClass());
 	
-	private String exceptionName;
+	private Class<?> exceptionClass;
 	
-	public AbstractExceptionHandler(String exceptionName) {
-		this.exceptionName = exceptionName;
+	public AbstractExceptionHandler(Class<?> exceptionClass) {
+		this.exceptionClass = exceptionClass;
 	}
 
-	public String getExceptionName() {
-		return exceptionName;
+	public Class<?> getExceptionClass() {
+		return exceptionClass;
 	}
 	
 	protected String getMessage(T ex) {

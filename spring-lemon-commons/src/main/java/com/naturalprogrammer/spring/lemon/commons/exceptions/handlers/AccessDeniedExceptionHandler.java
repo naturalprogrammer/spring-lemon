@@ -14,7 +14,7 @@ public class AccessDeniedExceptionHandler extends AbstractExceptionHandler<Acces
 	
 	public AccessDeniedExceptionHandler() {
 		
-		super(AccessDeniedException.class.getSimpleName());
+		super(AccessDeniedException.class);
 		log.info("Created");
 	}
 	

@@ -47,7 +47,8 @@ public class DefaultExceptionHandlerControllerAdvice<T extends Throwable> {
     	
     	log.warn("Handling exception", ex);
     	
-    	// We didn't do this inside compose because LemonErrorAttributes would do it differently
+    	// We didn't do this inside compose because LemonErrorAttributes
+    	// and LemonReactiveErrorAttributes would do it differently
     	errorResponse.setException(LexUtils.getRootExceptionName(ex));
 
         return new ResponseEntity<ErrorResponse>(errorResponse, HttpStatus.valueOf(errorResponse.getStatus()));

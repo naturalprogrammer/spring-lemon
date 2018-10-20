@@ -17,7 +17,7 @@ public class WebExchangeBindExceptionHandler extends AbstractExceptionHandler<We
 
 	public WebExchangeBindExceptionHandler() {
 		
-		super(WebExchangeBindException.class.getSimpleName());
+		super(WebExchangeBindException.class);
 		log.info("Created");
 	}
 	

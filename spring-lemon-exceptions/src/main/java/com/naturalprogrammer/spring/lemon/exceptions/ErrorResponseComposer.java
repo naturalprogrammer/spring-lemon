@@ -19,12 +19,12 @@ public class ErrorResponseComposer<T extends Throwable> {
 	
     private static final Log log = LogFactory.getLog(ErrorResponseComposer.class);
 	
-	private final Map<String, AbstractExceptionHandler<T>> handlers;
+	private final Map<Class<?>, AbstractExceptionHandler<T>> handlers;
 	
 	public ErrorResponseComposer(List<AbstractExceptionHandler<T>> handlers) {
 		
 		this.handlers = handlers.stream().collect(
-	            Collectors.toMap(AbstractExceptionHandler::getExceptionName,
+	            Collectors.toMap(AbstractExceptionHandler::getExceptionClass,
 	            		Function.identity(), (handler1, handler2) -> {
 	            			
 	            			return AnnotationAwareOrderComparator
@@ -49,7 +49,7 @@ public class ErrorResponseComposer<T extends Throwable> {
 
 		while (ex != null) {
 			
-			handler = handlers.get(ex.getClass().getSimpleName());
+			handler = handlers.get(ex.getClass());
 			
 			if (handler != null) // found a handler
 				break;

@@ -16,7 +16,7 @@ public class ExplicitConstraintViolationExceptionHandler
 
 	public ExplicitConstraintViolationExceptionHandler() {
 		
-		super(ExplicitConstraintViolationException.class.getSimpleName());
+		super(ExplicitConstraintViolationException.class);
 		log.info("Created");
 	}
 		

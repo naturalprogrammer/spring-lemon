@@ -18,12 +18,12 @@ public class ConstraintViolationExceptionHandler<E extends ConstraintViolationEx
 
 	public ConstraintViolationExceptionHandler() {
 		
-		super(ConstraintViolationException.class.getSimpleName());
+		super(ConstraintViolationException.class);
 		log.info("Created");
 	}
 	
-	public ConstraintViolationExceptionHandler(String exceptionName) {
-		super(exceptionName);
+	public ConstraintViolationExceptionHandler(Class<?> exceptionClass) {
+		super(exceptionClass);
 	}
 
 	@Override

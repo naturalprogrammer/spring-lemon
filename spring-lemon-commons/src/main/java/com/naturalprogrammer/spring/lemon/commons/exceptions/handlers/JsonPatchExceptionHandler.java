@@ -13,7 +13,7 @@ public class JsonPatchExceptionHandler extends AbstractBadRequestExceptionHandle
 
 	public JsonPatchExceptionHandler() {
 		
-		super(JsonPatchException.class.getSimpleName());
+		super(JsonPatchException.class);
 		log.info("Created");
 	}
 }

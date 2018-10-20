@@ -10,8 +10,8 @@ import org.springframework.http.HttpStatus;
 @Order(Ordered.LOWEST_PRECEDENCE)
 public abstract class AbstractBadRequestExceptionHandler<T extends Throwable> extends AbstractExceptionHandler<T> {
 
-	public AbstractBadRequestExceptionHandler(String exceptionName) {
-		super(exceptionName);
+	public AbstractBadRequestExceptionHandler(Class<?> exceptionClass) {
+		super(exceptionClass);
 	}
 
 	@Override
