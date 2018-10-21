@@ -2,6 +2,10 @@ package com.naturalprogrammer.spring.lemon.exceptions;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import javax.validation.ConstraintViolation;
 
 import org.springframework.http.HttpStatus;
 
@@ -26,8 +30,16 @@ public class MultiErrorException extends RuntimeException {
 	// HTTP Status code to be returned
 	private HttpStatus status = HttpStatus.UNPROCESSABLE_ENTITY;
 	
+	// Set this if you need to customize exceptionId
+	private String exceptionId = null;
+	
 	public MultiErrorException httpStatus(HttpStatus status) {
 		this.status = status;
+		return this;
+	}
+
+	public MultiErrorException exceptionId(String exceptionId) {
+		this.exceptionId = exceptionId;
 		return this;
 	}
 
@@ -60,6 +72,26 @@ public class MultiErrorException extends RuntimeException {
 		
 		// delegate
 		return validate(null, valid, messageKey, args);
+	}
+
+	/**
+	 * Adds constraint violations
+	 * 
+	 * @param constraintViolations
+	 * @param objectName
+	 * @return
+	 */
+	public MultiErrorException addErrors(Set<? extends ConstraintViolation<?>> constraintViolations, String objectName) {
+		
+		errors.addAll(constraintViolations.stream()
+				.map(constraintViolation ->
+					new LemonFieldError(
+							objectName + "." + constraintViolation.getPropertyPath().toString(),
+							constraintViolation.getMessageTemplate(),
+							constraintViolation.getMessage()))
+			    .collect(Collectors.toList()));
+		
+		return this;
 	}
 
 	/**

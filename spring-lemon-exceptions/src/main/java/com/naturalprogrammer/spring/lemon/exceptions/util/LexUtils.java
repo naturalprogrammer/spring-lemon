@@ -12,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 import com.naturalprogrammer.spring.lemon.exceptions.ExceptionIdMaker;
-import com.naturalprogrammer.spring.lemon.exceptions.ExplicitConstraintViolationException;
 import com.naturalprogrammer.spring.lemon.exceptions.MultiErrorException;
 
 /**
@@ -75,7 +74,8 @@ public class LexUtils {
 	 */
 	public static <T> void validate(String objectName, T object, Class<?>... groups) {
 		
-		new ExplicitConstraintViolationException()
+		new MultiErrorException()
+			.exceptionId("ConstraintViolationException")
 			.addErrors(validator.validate(object, groups), objectName)
 			.go();
 	}

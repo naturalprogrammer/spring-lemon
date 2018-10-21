@@ -21,6 +21,15 @@ public class MultiErrorExceptionHandler extends AbstractExceptionHandler<MultiEr
 	}
 	
 	@Override
+	public String getExceptionId(MultiErrorException ex) {
+		
+		if (ex.getExceptionId() == null)
+			return super.getExceptionId(ex);
+		
+		return ex.getExceptionId();
+	}
+
+	@Override
 	public String getMessage(MultiErrorException ex) {
 		return ex.getMessage();
 	}
