@@ -15,6 +15,7 @@ import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Table(name="usr")
@@ -26,7 +27,7 @@ public class User extends AbstractUser<Long> {
     public static final int NAME_MIN = 1;
     public static final int NAME_MAX = 50;
 
-    @Getter @Setter
+    @Getter @Setter @ToString
 	public static class Tag implements Serializable {
 		
 		private static final long serialVersionUID = -2129078111926834670L;

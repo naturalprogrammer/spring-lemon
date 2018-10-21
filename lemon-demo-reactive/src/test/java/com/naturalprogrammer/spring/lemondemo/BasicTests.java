@@ -4,7 +4,6 @@ import static com.naturalprogrammer.spring.lemondemo.MyTestUtils.ADMIN_ID;
 import static com.naturalprogrammer.spring.lemondemo.MyTestUtils.CLIENT;
 import static com.naturalprogrammer.spring.lemondemo.MyTestUtils.TOKENS;
 import static com.naturalprogrammer.spring.lemondemo.controllers.MyController.BASE_URI;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 import org.junit.Test;
 

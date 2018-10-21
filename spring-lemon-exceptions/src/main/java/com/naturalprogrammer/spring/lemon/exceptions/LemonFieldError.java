@@ -1,6 +1,5 @@
 package com.naturalprogrammer.spring.lemon.exceptions;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -46,17 +45,6 @@ public class LemonFieldError {
 				.map(LemonFieldError::of).collect(Collectors.toList());	
 	}
 	
-
-	public static Collection<LemonFieldError> getErrors(ExplicitConstraintViolationException ex) {
-		
-		return ex.getConstraintViolations().stream()
-			.map(constraintViolation ->
-				new LemonFieldError(
-						ex.getObjectName() + "." + constraintViolation.getPropertyPath().toString(),
-						constraintViolation.getMessageTemplate(),
-						constraintViolation.getMessage()))
-		    .collect(Collectors.toList());	
-	}
 
 	/**
 	 * Converts a ConstraintViolation

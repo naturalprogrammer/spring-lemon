@@ -15,6 +15,7 @@ import com.naturalprogrammer.spring.lemonreactive.domain.AbstractMongoUser;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter @Setter
 @TypeAlias("User")
@@ -24,7 +25,7 @@ public class User extends AbstractMongoUser<ObjectId> {
     public static final int NAME_MIN = 1;
     public static final int NAME_MAX = 50;
 
-    @Getter @Setter
+    @Getter @Setter @ToString
 	public static class Tag implements Serializable {
 		
 		private static final long serialVersionUID = -2129078111926834670L;

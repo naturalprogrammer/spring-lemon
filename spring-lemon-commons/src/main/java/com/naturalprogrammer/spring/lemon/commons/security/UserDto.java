@@ -8,12 +8,13 @@ import com.naturalprogrammer.spring.lemon.commons.util.UserUtils;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * A lighter User class,
  * mainly used for holding logged-in user data 
  */
-@Getter @Setter
+@Getter @Setter @ToString
 public class UserDto implements Serializable {
 
 	private static final long serialVersionUID = -9134054705405149534L;

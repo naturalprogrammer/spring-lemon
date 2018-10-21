@@ -1,10 +1,8 @@
 package com.naturalprogrammer.spring.lemon.exceptions.util;
 
-import java.util.Set;
 import java.util.function.Supplier;
 
 import javax.annotation.PostConstruct;
-import javax.validation.ConstraintViolation;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -67,14 +65,13 @@ public class LexUtils {
 
 	
 	/**
-	 * Creates a MultiErrorException out of the given parameters
+	 * Validates the given object and throws ExplicitConstraintViolationException in case of errors
 	 */
-	public static <T> void validate(String name, T object, Class<?>... groups) {
+	public static <T> void validate(String objectName, T object, Class<?>... groups) {
 		
-		Set<ConstraintViolation<T>> violations = validator.validate(object, groups);
-		
-		if (!violations.isEmpty())			
-			throw new ExplicitConstraintViolationException(violations, name);
+		new ExplicitConstraintViolationException()
+			.addErrors(validator.validate(object, groups), objectName)
+			.go();
 	}
 
 	

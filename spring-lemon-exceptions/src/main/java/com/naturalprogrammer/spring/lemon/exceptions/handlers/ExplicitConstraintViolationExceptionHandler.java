@@ -12,7 +12,7 @@ import com.naturalprogrammer.spring.lemon.exceptions.LemonFieldError;
 @Component
 @Order(Ordered.LOWEST_PRECEDENCE)
 public class ExplicitConstraintViolationExceptionHandler
-	extends ConstraintViolationExceptionHandler<ExplicitConstraintViolationException> {
+	extends AbstractValidationExceptionHandler<ExplicitConstraintViolationException> {
 
 	public ExplicitConstraintViolationExceptionHandler() {
 		
@@ -22,6 +22,6 @@ public class ExplicitConstraintViolationExceptionHandler
 		
 	@Override
 	public Collection<LemonFieldError> getErrors(ExplicitConstraintViolationException ex) {
-		return LemonFieldError.getErrors(ex);
+		return ex.getErrors();
 	}
 }
