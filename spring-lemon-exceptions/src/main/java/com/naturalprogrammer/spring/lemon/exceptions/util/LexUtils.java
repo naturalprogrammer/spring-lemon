@@ -3,6 +3,7 @@ package com.naturalprogrammer.spring.lemon.exceptions.util;
 import java.util.function.Supplier;
 
 import javax.annotation.PostConstruct;
+import javax.validation.ConstraintViolationException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -75,7 +76,7 @@ public class LexUtils {
 	public static <T> void validate(String objectName, T object, Class<?>... groups) {
 		
 		new MultiErrorException()
-			.exceptionId("ConstraintViolationException")
+			.exceptionId(getExceptionId(new ConstraintViolationException(null)))
 			.addErrors(validator.validate(object, groups), objectName)
 			.go();
 	}
