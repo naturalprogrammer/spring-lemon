@@ -8,7 +8,6 @@ import org.springframework.boot.web.servlet.error.DefaultErrorAttributes;
 import org.springframework.web.context.request.WebRequest;
 
 import com.naturalprogrammer.spring.lemon.exceptions.ErrorResponseComposer;
-import com.naturalprogrammer.spring.lemon.exceptions.ExceptionCodeMaker;
 import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
 
 /**
@@ -23,14 +22,10 @@ public class LemonErrorAttributes<T extends Throwable> extends DefaultErrorAttri
 	static final String HTTP_STATUS_KEY = "httpStatus";
 	
 	private ErrorResponseComposer<T> errorResponseComposer;
-	private ExceptionCodeMaker exceptionCodeMaker;
 	
-    public LemonErrorAttributes(
-    		ErrorResponseComposer<T> errorResponseComposer,
-    		ExceptionCodeMaker exceptionCodeMaker) {
+    public LemonErrorAttributes(ErrorResponseComposer<T> errorResponseComposer) {
 
 		this.errorResponseComposer = errorResponseComposer;
-		this.exceptionCodeMaker = exceptionCodeMaker;
 		log.info("Created");
 	}
 	
@@ -58,13 +53,11 @@ public class LemonErrorAttributes<T extends Throwable> extends DefaultErrorAttri
 		
 		Throwable ex = getError(request);
 		
-		errorAttributes.put("exceptionId", exceptionCodeMaker.make(LexUtils.getRootException(ex)));
-		
 		errorResponseComposer.compose((T)ex).ifPresent(errorResponse -> {
 			
 			// check for null - errorResponse may have left something for the DefaultErrorAttributes
 			
-			if (errorResponse.getExceptionId() != null) // In case of deserialized exception from Feign
+			if (errorResponse.getExceptionId() != null)
 				errorAttributes.put("exceptionId", errorResponse.getExceptionId());
 
 			if (errorResponse.getMessage() != null)
@@ -81,5 +74,8 @@ public class LemonErrorAttributes<T extends Throwable> extends DefaultErrorAttri
 			if (errorResponse.getErrors() != null)
 				errorAttributes.put("errors", errorResponse.getErrors());			
 		});
+		
+		if (errorAttributes.get("exceptionId") == null)
+			errorAttributes.put("exceptionId", LexUtils.getExceptionId(ex));		
 	}
 }

@@ -11,6 +11,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
+import com.naturalprogrammer.spring.lemon.exceptions.ExceptionIdMaker;
 import com.naturalprogrammer.spring.lemon.exceptions.ExplicitConstraintViolationException;
 import com.naturalprogrammer.spring.lemon.exceptions.MultiErrorException;
 
@@ -25,15 +26,20 @@ public class LexUtils {
 
 	private static MessageSource messageSource;
 	private static LocalValidatorFactoryBean validator;
+	private static ExceptionIdMaker exceptionIdMaker;
+	
 	public static final MultiErrorException NOT_FOUND_EXCEPTION = new MultiErrorException();
 
 	/**
 	 * Constructor
 	 */
-	public LexUtils(MessageSource messageSource, LocalValidatorFactoryBean validator) {
+	public LexUtils(MessageSource messageSource,
+			LocalValidatorFactoryBean validator,
+			ExceptionIdMaker exceptionIdMaker) {
 		
 		LexUtils.messageSource = messageSource;
 		LexUtils.validator = validator;
+		LexUtils.exceptionIdMaker = exceptionIdMaker;
 		
 		log.info("Created");
 	}
@@ -115,7 +121,17 @@ public class LexUtils {
 	}
 	
 
-	public static Throwable getRootException(Throwable ex) {
+	public static String getExceptionId(Throwable ex) {
+		
+		Throwable root = getRootException(ex);
+		if (root == null)
+			return null;
+		
+		return exceptionIdMaker.make(root);
+	}
+	
+	
+	private static Throwable getRootException(Throwable ex) {
 		
 		if (ex == null) return null;
 			
@@ -124,5 +140,4 @@ public class LexUtils {
 		
 		return ex;
 	}
-
 }

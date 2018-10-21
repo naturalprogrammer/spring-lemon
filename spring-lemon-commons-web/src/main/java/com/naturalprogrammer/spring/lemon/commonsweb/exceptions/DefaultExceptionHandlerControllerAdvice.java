@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.naturalprogrammer.spring.lemon.exceptions.ErrorResponse;
 import com.naturalprogrammer.spring.lemon.exceptions.ErrorResponseComposer;
-import com.naturalprogrammer.spring.lemon.exceptions.ExceptionCodeMaker;
-import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
 
 /**
  * Handles exceptions thrown from in controllers or inner routines
@@ -25,14 +23,10 @@ public class DefaultExceptionHandlerControllerAdvice<T extends Throwable> {
 	 * Component that actually builds the error response
 	 */
 	private ErrorResponseComposer<T> errorResponseComposer;
-	private ExceptionCodeMaker exceptionCodeMaker;
 	
-    public DefaultExceptionHandlerControllerAdvice(
-    		ErrorResponseComposer<T> errorResponseComposer,
-    		ExceptionCodeMaker exceptionCodeMaker) {
+    public DefaultExceptionHandlerControllerAdvice(ErrorResponseComposer<T> errorResponseComposer) {
 
 		this.errorResponseComposer = errorResponseComposer;
-		this.exceptionCodeMaker = exceptionCodeMaker;
 		log.info("Created");
 	}
 
@@ -51,11 +45,6 @@ public class DefaultExceptionHandlerControllerAdvice<T extends Throwable> {
     		throw ex;
     	
     	log.warn("Handling exception", ex);
-    	
-    	// We didn't do this inside compose because LemonErrorAttributes
-    	// and LemonReactiveErrorAttributes would do it differently
-    	errorResponse.setExceptionId(exceptionCodeMaker.make(LexUtils.getRootException(ex)));
-
         return new ResponseEntity<ErrorResponse>(errorResponse, HttpStatus.valueOf(errorResponse.getStatus()));
     }
 }

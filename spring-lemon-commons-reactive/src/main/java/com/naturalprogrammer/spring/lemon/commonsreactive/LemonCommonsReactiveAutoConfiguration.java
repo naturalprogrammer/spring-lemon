@@ -34,7 +34,6 @@ import com.naturalprogrammer.spring.lemon.commonsreactive.security.LemonReactive
 import com.naturalprogrammer.spring.lemon.commonsreactive.security.LemonReactiveCorsConfig;
 import com.naturalprogrammer.spring.lemon.commonsreactive.util.LecrUtils;
 import com.naturalprogrammer.spring.lemon.exceptions.ErrorResponseComposer;
-import com.naturalprogrammer.spring.lemon.exceptions.ExceptionCodeMaker;
 import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
 
 @Configuration
@@ -60,12 +59,10 @@ public class LemonCommonsReactiveAutoConfiguration {
 	@Bean
 	@ConditionalOnMissingBean(ErrorAttributes.class)
 	public <T extends Throwable>
-	ErrorAttributes errorAttributes(
-    		ErrorResponseComposer<T> errorResponseComposer,
-    		ExceptionCodeMaker exceptionCodeMaker) {
+	ErrorAttributes errorAttributes(ErrorResponseComposer<T> errorResponseComposer) {
 		
         log.info("Configuring LemonErrorAttributes");       
-		return new LemonReactiveErrorAttributes<T>(errorResponseComposer, exceptionCodeMaker);
+		return new LemonReactiveErrorAttributes<T>(errorResponseComposer);
 	}
 
 	

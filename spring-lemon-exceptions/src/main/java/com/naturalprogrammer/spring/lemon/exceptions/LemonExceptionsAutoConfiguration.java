@@ -47,22 +47,24 @@ public class LemonExceptionsAutoConfiguration {
 	 * Configures ExceptionCodeMaker if missing
 	 */	
 	@Bean
-	@ConditionalOnMissingBean(ExceptionCodeMaker.class)
-	public ExceptionCodeMaker exceptionCodeMaker() {
+	@ConditionalOnMissingBean(ExceptionIdMaker.class)
+	public ExceptionIdMaker exceptionIdMaker() {
 		
-        log.info("Configuring ExceptionCodeMaker");
+        log.info("Configuring ExceptionIdMaker");
         return ex -> ex.getClass().getSimpleName();
 	}
 
 	
 	/**
-	 * Configures LemonUtils
+	 * Configures LexUtils
 	 */
 	@Bean
-	public LexUtils lexUtils(MessageSource messageSource, LocalValidatorFactoryBean validator) {
+	public LexUtils lexUtils(MessageSource messageSource,
+			LocalValidatorFactoryBean validator,
+			ExceptionIdMaker exceptionIdMaker) {
 
         log.info("Configuring LexUtils");       		
-		return new LexUtils(messageSource, validator);
+		return new LexUtils(messageSource, validator, exceptionIdMaker);
 	}
 	
 	/**

@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 
 import com.naturalprogrammer.spring.lemon.exceptions.ErrorResponse;
 import com.naturalprogrammer.spring.lemon.exceptions.LemonFieldError;
+import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
 
 /**
  * Extend this to code an exception handler
@@ -26,6 +27,10 @@ public abstract class AbstractExceptionHandler<T extends Throwable> {
 		return exceptionClass;
 	}
 	
+	protected String getExceptionId(T ex) {
+		return LexUtils.getExceptionId(ex);
+	}
+
 	protected String getMessage(T ex) {
 		return ex.getMessage();
 	}
@@ -39,9 +44,10 @@ public abstract class AbstractExceptionHandler<T extends Throwable> {
 	}
 
 	public ErrorResponse getErrorResponse(T ex) {
-		
+    	
 		ErrorResponse errorResponse = new ErrorResponse();
 		
+		errorResponse.setExceptionId(getExceptionId(ex));
 		errorResponse.setMessage(getMessage(ex));
 		
 		HttpStatus status = getStatus(ex);

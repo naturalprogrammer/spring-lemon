@@ -8,7 +8,6 @@ import org.springframework.boot.web.reactive.error.DefaultErrorAttributes;
 import org.springframework.web.reactive.function.server.ServerRequest;
 
 import com.naturalprogrammer.spring.lemon.exceptions.ErrorResponseComposer;
-import com.naturalprogrammer.spring.lemon.exceptions.ExceptionCodeMaker;
 import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
 
 public class LemonReactiveErrorAttributes<T extends Throwable> extends DefaultErrorAttributes {
@@ -19,14 +18,10 @@ public class LemonReactiveErrorAttributes<T extends Throwable> extends DefaultEr
 	 * Component that actually builds the error response
 	 */
 	private ErrorResponseComposer<T> errorResponseComposer;
-	private ExceptionCodeMaker exceptionCodeMaker;
 	
-    public LemonReactiveErrorAttributes(
-    		ErrorResponseComposer<T> errorResponseComposer,
-    		ExceptionCodeMaker exceptionCodeMaker) {
+    public LemonReactiveErrorAttributes(ErrorResponseComposer<T> errorResponseComposer) {
 
 		this.errorResponseComposer = errorResponseComposer;
-		this.exceptionCodeMaker = exceptionCodeMaker;
 		log.info("Created");
 	}
 
@@ -48,13 +43,11 @@ public class LemonReactiveErrorAttributes<T extends Throwable> extends DefaultEr
 		
 		Throwable ex = getError(request);
 		
-		errorAttributes.put("exceptionId", exceptionCodeMaker.make(LexUtils.getRootException(ex)));
-		
 		errorResponseComposer.compose((T)ex).ifPresent(errorResponse -> {
 			
 			// check for nulls - errorResponse may have left something for the DefaultErrorAttributes
 			
-			if (errorResponse.getExceptionId() != null) // In case of deserialized exception from Feign
+			if (errorResponse.getExceptionId() != null)
 				errorAttributes.put("exceptionId", errorResponse.getExceptionId());
 
 			if (errorResponse.getMessage() != null)
@@ -70,5 +63,8 @@ public class LemonReactiveErrorAttributes<T extends Throwable> extends DefaultEr
 			if (errorResponse.getErrors() != null)
 				errorAttributes.put("errors", errorResponse.getErrors());			
 		});
+		
+		if (errorAttributes.get("exceptionId") == null)
+			errorAttributes.put("exceptionId", LexUtils.getExceptionId(ex));		
 	}
 }
