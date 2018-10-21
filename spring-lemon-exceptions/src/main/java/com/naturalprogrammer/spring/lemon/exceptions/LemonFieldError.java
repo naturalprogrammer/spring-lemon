@@ -52,7 +52,7 @@ public class LemonFieldError {
 		return ex.getConstraintViolations().stream()
 			.map(constraintViolation ->
 				new LemonFieldError(
-						constraintViolation.getPropertyPath().toString(),
+						ex.getObjectName() + "." + constraintViolation.getPropertyPath().toString(),
 						constraintViolation.getMessageTemplate(),
 						constraintViolation.getMessage()))
 		    .collect(Collectors.toList());	
