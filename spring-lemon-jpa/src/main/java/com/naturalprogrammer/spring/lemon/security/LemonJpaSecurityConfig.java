@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
@@ -25,7 +26,6 @@ public class LemonJpaSecurityConfig extends LemonWebSecurityConfig {
 	private LemonProperties properties;
 	private LemonUserDetailsService<?, ?> userDetailsService;
 	private LemonAuthenticationSuccessHandler authenticationSuccessHandler;
-	private AuthenticationFailureHandler authenticationFailureHandler;
 	private LemonOidcUserService oidcUserService;
 	private LemonOAuth2UserService<?, ?> oauth2UserService;
 	private OAuth2AuthenticationSuccessHandler<?> oauth2AuthenticationSuccessHandler;
@@ -34,7 +34,7 @@ public class LemonJpaSecurityConfig extends LemonWebSecurityConfig {
 	
 	@Autowired
 	public void createLemonSecurityConfig(LemonProperties properties, LemonUserDetailsService<?, ?> userDetailsService,
-			LemonAuthenticationSuccessHandler authenticationSuccessHandler, AuthenticationFailureHandler authenticationFailureHandler,
+			LemonAuthenticationSuccessHandler authenticationSuccessHandler,
 			LemonOidcUserService oidcUserService,
 			LemonOAuth2UserService<?, ?> oauth2UserService,
 			OAuth2AuthenticationSuccessHandler<?> oauth2AuthenticationSuccessHandler,
@@ -44,7 +44,6 @@ public class LemonJpaSecurityConfig extends LemonWebSecurityConfig {
 		this.properties = properties;
 		this.userDetailsService = userDetailsService;
 		this.authenticationSuccessHandler = authenticationSuccessHandler;
-		this.authenticationFailureHandler = authenticationFailureHandler;
 		this.oidcUserService = oidcUserService;
 		this.oauth2UserService = oauth2UserService;
 		this.oauth2AuthenticationSuccessHandler = oauth2AuthenticationSuccessHandler;
@@ -87,7 +86,7 @@ public class LemonJpaSecurityConfig extends LemonWebSecurityConfig {
 			 * that url if login fails. Instead, we need to send
 			 * 401. So, let's set failureHandler instead.
 			 *******************************************/
-        	.failureHandler(authenticationFailureHandler);
+        	.failureHandler(new SimpleUrlAuthenticationFailureHandler());
 	}
 
 	
