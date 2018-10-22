@@ -125,9 +125,6 @@ public class LexUtils {
 	public static String getExceptionId(Throwable ex) {
 		
 		Throwable root = getRootException(ex);
-		if (root == null)
-			return null;
-		
 		return exceptionIdMaker.make(root);
 	}
 	

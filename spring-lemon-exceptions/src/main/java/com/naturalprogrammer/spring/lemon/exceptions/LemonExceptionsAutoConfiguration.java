@@ -51,7 +51,13 @@ public class LemonExceptionsAutoConfiguration {
 	public ExceptionIdMaker exceptionIdMaker() {
 		
         log.info("Configuring ExceptionIdMaker");
-        return ex -> ex.getClass().getSimpleName();
+        return ex -> {
+        	
+        	if (ex == null)
+        		return null;
+        	
+        	return ex.getClass().getSimpleName();
+        };
 	}
 
 	
