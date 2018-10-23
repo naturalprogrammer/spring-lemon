@@ -71,34 +71,34 @@ public class LexUtils {
 
 	
 	/**
-	 * Validates the given object and throws ExplicitConstraintViolationException in case of errors
-	 */
-	public static <T> void validate(String objectName, T object, Class<?>... groups) {
-		
-		new MultiErrorException()
-			.exceptionId(getExceptionId(new ConstraintViolationException(null)))
-			.addErrors(validator.validate(object, groups), objectName)
-			.go();
-	}
-
-	
-	/**
 	 * Creates a MultiErrorException out of the given parameters
 	 */
 	public static MultiErrorException validate(
 			boolean valid, String messageKey, Object... args) {
 		
-		return LexUtils.validate(null, valid, messageKey, args);
+		return validateField(null, valid, messageKey, args);
 	}
 
 	
 	/**
 	 * Creates a MultiErrorException out of the given parameters
 	 */
-	public static MultiErrorException validate(
+	public static MultiErrorException validateField(
 			String fieldName, boolean valid, String messageKey, Object... args) {
 		
-		return new MultiErrorException().validate(fieldName, valid, messageKey, args);
+		return new MultiErrorException().validateField(fieldName, valid, messageKey, args);
+	}
+
+	
+	/**
+	 * Creates a MultiErrorException out of the constraint violations in the given bean
+	 */
+	public static <T> MultiErrorException validateBean(String beanName, T bean, Class<?>... validationGroups) {
+		
+		return new MultiErrorException()
+			.exceptionId(getExceptionId(new ConstraintViolationException(null)))
+			.validationGroups(validationGroups)
+			.validateBean(beanName, bean);
 	}
 
 	
@@ -137,5 +137,10 @@ public class LexUtils {
 			ex = ex.getCause();
 		
 		return ex;
+	}
+
+	
+	public static LocalValidatorFactoryBean validator() {
+		return validator;
 	}
 }

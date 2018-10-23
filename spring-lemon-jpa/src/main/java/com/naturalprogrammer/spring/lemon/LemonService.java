@@ -487,7 +487,7 @@ public abstract class LemonService
 
 		// checks
 		LexUtils.ensureFound(user);
-		LexUtils.validate("changePasswordForm.oldPassword",
+		LexUtils.validateField("changePasswordForm.oldPassword",
 			passwordEncoder.matches(changePasswordForm.getOldPassword(),
 					oldPassword),
 			"com.naturalprogrammer.spring.wrong.password").go();
@@ -552,7 +552,7 @@ public abstract class LemonService
 
 		// checks
 		LexUtils.ensureFound(user);	
-		LexUtils.validate("updatedUser.password",
+		LexUtils.validateField("updatedUser.password",
 			passwordEncoder.matches(updatedUser.getPassword(),
 									user.getPassword()),
 			"com.naturalprogrammer.spring.wrong.password").go();

@@ -504,7 +504,7 @@ public abstract class LemonReactiveService
 		log.debug("Updating user: " + user);
 
 		U updatedUser = LecrUtils.applyPatch(user, patch); // create a patched form
-		LexUtils.validate("updatedUser", updatedUser, UserUtils.UpdateValidation.class);
+		LexUtils.validateBean("updatedUser", updatedUser, UserUtils.UpdateValidation.class).go();
 		LecmUtils.ensureCorrectVersion(user, updatedUser);
 		
 		updateUserFields(user, updatedUser, currentUser.get());
@@ -604,7 +604,7 @@ public abstract class LemonReactiveService
 		
 		String oldPassword = loggedIn.getPassword();
 
-		LexUtils.validate("changePasswordForm.oldPassword",
+		LexUtils.validateField("changePasswordForm.oldPassword",
 			passwordEncoder.matches(changePasswordForm.getOldPassword(),
 					oldPassword),
 			"com.naturalprogrammer.spring.wrong.password").go();
@@ -642,7 +642,7 @@ public abstract class LemonReactiveService
 		log.debug("Requesting email change: " + user);
 		
 		// checks
-		LexUtils.validate("emailFormMono.password",
+		LexUtils.validateField("emailFormMono.password",
 			passwordEncoder.matches(emailForm.getPassword(),
 									user.getPassword()),
 			"com.naturalprogrammer.spring.wrong.password").go();
