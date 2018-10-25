@@ -4,21 +4,22 @@
 
 When developing **real-world** Spring REST APIs and microservices, you face many challenges like
 
-1. How to make the API truly _stateless_, using token authentication, session sliding etc.
+1. How to follow a stateless and efficient security model – using JWT authentication, session sliding etc.
 1. How to configure Spring Security to suit API development, e.g. returning _200_ or _401_ responses on login, configuring _CORS_, _JSON vulnerability protection_, etc.
-1. How to handle _validations_ and _exceptions_ in a cross functional manner and send precise errors to the client.
+1. How to elegantly do _validations_ and _exceptions_ and send precise errors to the client.
+1. How to easily mix manual and bean validations in a single validation cycle.
 1. How exactly to support multiple _social sign up/in_, using _OpenID Connect_ or _OAuth2_ providers such as _Google_ and _Facebook_.
 1. How to code a robust user module (with features like _sign up_, _sign in_, _verify email_, _social sign up/in_, _update profile_, _forgot password_, _change password_, _change email_, _token authentication_ etc.) and share it across all your applications.
-1. How to _secure microservices_ effeciently, using long-lived and short-lived JWTs.
+1. How to correctly and effeciently _secure microservices_, using long-lived and short-lived JWTs.
 1. What would be good ways to _test your API_.
 1. How to do _Captcha validation_.
 1. How to properly organize _application properties_.
 1. How to use _PATCH_ and _JsonPatch_ to handle partial updates correctly.
 1. How to do all the above reactively, using WebFlux and WebFlux security.
 
-Coding all this rightly needs in-depth knowledge of Spring. It also takes a lot of development time and effort, and needs to be properly maintained as new versions of Spring modules come out.
+Coding all this rightly needs in-depth knowledge of Spring. It also takes a lot of development time and effort, and needs to be properly maintained as new versions of Spring comes out.
 
-**Spring Lemon** relieves you of all this burden. It's a set of configurable and extensible libraries, providing all above features. Use these to develop quality reactive or non-reactive monolith or microservices applications easily.  
+**Spring Lemon** relieves you of all this burden. It's a set of configurable and extensible libraries, providing all above features. Use these to develop quality reactive or non-reactive monolith or microservices applications quickly and easily.  
 
 Even if you don't plan to use Spring Lemon, it's a good example to learn from, because it showcases the essential best practices for developing elegant web services and microservices using Spring.
 
@@ -28,16 +29,16 @@ Read [this quick starter guide](https://github.com/naturalprogrammer/spring-lemo
 
 ## Libraries hierarchy
 
-* **spring-lemon-exceptions**: Useful for elegant exception handling and validation in any Spring project
-    * **spring-lemon-commons**: Common for all things below
-        * **spring-lemon-commons-web**: For developing Spring Web (non-reactive) microservices
-            * **spring-lemon-commons-jpa**: For developing Spring Web (non-reactive) JPA microservices
-                * **spring-lemon-jpa**: For developing Spring Web (non-reactive) JPA monolith or auth-microservice
-        * **spring-lemon-commons-reactive**: For developing Spring WebFlux (reactive) microservices
-            * **spring-lemon-commons-mongo**: For developing Spring WebFlux (reactive) MongoDB microservices
-                * **spring-lemon-rective**: For developing Spring WebFlux (reactive) MongoDB monolith or auth-microservice
+* [spring-lemon-exceptions](https://github.com/naturalprogrammer/spring-lemon/wiki/Spring-Lemon-Exceptions-Guide): Useful for elegant exception handling and validation in any Spring project
+    * [spring-lemon-commons](https://github.com/naturalprogrammer/spring-lemon/wiki/Spring-Lemon-Commons-Guide): Common for all things below
+        * [spring-lemon-commons-web](https://github.com/naturalprogrammer/spring-lemon/wiki/Spring-Lemon-Commons-Web-Guide): For developing Spring Web (non-reactive) microservices
+            * [spring-lemon-commons-jpa](https://github.com/naturalprogrammer/spring-lemon/wiki/Spring-Lemon-Commons-JPA-Guide): For developing Spring Web (non-reactive) JPA microservices
+                * [spring-lemon-jpa](https://github.com/naturalprogrammer/spring-lemon/wiki/Spring-Lemon-JPA-Guide): For developing Spring Web (non-reactive) JPA monolith or auth-microservice
+        * [spring-lemon-commons-reactive](https://github.com/naturalprogrammer/spring-lemon/wiki/Spring-Lemon-Commons-Reactive-Guide): For developing Spring WebFlux (reactive) microservices
+            * [spring-lemon-commons-mongo](https://github.com/naturalprogrammer/spring-lemon/wiki/Spring-Lemon-Commons-MongoDB-Guide): For developing Spring WebFlux (reactive) MongoDB microservices
+                * [spring-lemon-reactive](https://github.com/naturalprogrammer/spring-lemon/wiki/Spring-Lemon-Reactive-Guide): For developing Spring WebFlux (reactive) MongoDB monolith or auth-microservice
 
-For example usage, see
+For example usages, see
 
 * [Demo non-reactive monolith](https://github.com/naturalprogrammer/spring-lemon/tree/master/lemon-demo-jpa)
 * [Demo reactive monolith](https://github.com/naturalprogrammer/spring-lemon/tree/master/lemon-demo-reactive)
@@ -52,6 +53,7 @@ For example usage, see
 1. _Getting started guide_
    1. [Book](https://github.com/naturalprogrammer/spring-lemon/wiki/Getting-Started-With-Spring-Lemon)
    1. [Video Tutorial](https://www.naturalprogrammer.com/p/spring-lemon-restful-web-services-development)
+1. _[Official Documentation](https://github.com/naturalprogrammer/spring-lemon/wiki)_
 1. _Example applications_
     * [Demo non-reactive monolith](https://github.com/naturalprogrammer/spring-lemon/tree/master/lemon-demo-jpa)
     * [Demo reactive monolith](https://github.com/naturalprogrammer/spring-lemon/tree/master/lemon-demo-reactive)
