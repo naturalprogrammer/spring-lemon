@@ -29,7 +29,6 @@ import org.springframework.web.server.ServerWebExchange;
 import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
 import com.naturalprogrammer.spring.lemon.commons.domain.ChangePasswordForm;
 import com.naturalprogrammer.spring.lemon.commons.domain.ResetPasswordForm;
-import com.naturalprogrammer.spring.lemon.commons.security.JwtService;
 import com.naturalprogrammer.spring.lemon.commons.security.LemonPrincipal;
 import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
 import com.naturalprogrammer.spring.lemonreactive.domain.AbstractMongoUser;
@@ -51,18 +50,15 @@ public class LemonReactiveController
 	private static final Log log = LogFactory.getLog(LemonReactiveController.class);
 
     protected long jwtExpirationMillis;
-    protected JwtService jwtService;
 	protected LemonReactiveService<U, ID> lemonReactiveService;	
 	
 	@Autowired
 	public void createLemonController(
 			LemonProperties properties,
-			LemonReactiveService<U, ID> lemonReactiveService,
-			JwtService jwtService) {
+			LemonReactiveService<U, ID> lemonReactiveService) {
 		
 		this.jwtExpirationMillis = properties.getJwt().getExpirationMillis();
 		this.lemonReactiveService = lemonReactiveService;		
-		this.jwtService = jwtService;
 
 		log.info("Created");
 	}

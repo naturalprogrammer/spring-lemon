@@ -16,27 +16,24 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.naturalprogrammer.spring.lemon.commons.security.JwtService;
+import com.naturalprogrammer.spring.lemon.commons.security.AuthTokenService;
 import com.naturalprogrammer.spring.lemon.commons.security.LemonPrincipal;
 import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
 import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
 import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
 import com.nimbusds.jwt.JWTClaimsSet;
 
+import lombok.AllArgsConstructor;
+
 /**
  * Filter for token authentication
  */
+@AllArgsConstructor
 public class LemonCommonsWebTokenAuthenticationFilter extends OncePerRequestFilter {
 	
     private static final Log log = LogFactory.getLog(LemonCommonsWebTokenAuthenticationFilter.class);
     
-    private JwtService jwtService;
-	
-	public LemonCommonsWebTokenAuthenticationFilter(JwtService jwtService) {
-		
-		this.jwtService = jwtService;
-		log.info("Created");
-	}
+    private AuthTokenService authTokenService;
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -77,7 +74,7 @@ public class LemonCommonsWebTokenAuthenticationFilter extends OncePerRequestFilt
 
 	protected Authentication createAuthToken(String token) {
 		
-		JWTClaimsSet claims = jwtService.parseToken(token, JwtService.AUTH_AUDIENCE);
+		JWTClaimsSet claims = authTokenService.parseToken(token, AuthTokenService.AUTH_AUDIENCE);
 		UserDto userDto = LecUtils.getUserDto(claims);
 		if (userDto == null)
 			userDto = fetchUserDto(claims);

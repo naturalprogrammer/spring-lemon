@@ -11,9 +11,11 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 
 import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
-import com.naturalprogrammer.spring.lemon.commons.security.JwtService;
+import com.naturalprogrammer.spring.lemon.commons.security.AuthTokenService;
 import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
 import com.naturalprogrammer.spring.lemon.commonsweb.util.LecwUtils;
+
+import lombok.AllArgsConstructor;
 
 /**
  * Authentication success handler for redirecting the
@@ -21,21 +23,14 @@ import com.naturalprogrammer.spring.lemon.commonsweb.util.LecwUtils;
  * 
  * @author Sanjay Patel
  */
+@AllArgsConstructor
 public class OAuth2AuthenticationSuccessHandler<ID extends Serializable>
 	extends SimpleUrlAuthenticationSuccessHandler {
 	
 	private static final Log log = LogFactory.getLog(OAuth2AuthenticationSuccessHandler.class);
 
 	private LemonProperties properties;
-	private JwtService jwtService;
-
-	public OAuth2AuthenticationSuccessHandler(LemonProperties properties, JwtService jwtService) {
-
-		this.properties = properties;
-		this.jwtService = jwtService;
-
-		log.info("Created");
-	}
+	private AuthTokenService authTokenService;
 
 	@Override
 	protected String determineTargetUrl(HttpServletRequest request,
@@ -43,8 +38,8 @@ public class OAuth2AuthenticationSuccessHandler<ID extends Serializable>
 		
 		UserDto currentUser = LecwUtils.currentUser();
 		
-		String shortLivedAuthToken = jwtService.createToken(
-				JwtService.AUTH_AUDIENCE,
+		String shortLivedAuthToken = authTokenService.createToken(
+				AuthTokenService.AUTH_AUDIENCE,
 				currentUser.getUsername(),
 				(long) properties.getJwt().getShortLivedMillis());
 

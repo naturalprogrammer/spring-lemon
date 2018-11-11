@@ -26,7 +26,7 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.naturalprogrammer.spring.lemon.commons.LemonCommonsAutoConfiguration;
 import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
-import com.naturalprogrammer.spring.lemon.commons.security.JwtService;
+import com.naturalprogrammer.spring.lemon.commons.security.AuthTokenService;
 import com.naturalprogrammer.spring.lemon.commonsreactive.exceptions.LemonReactiveErrorAttributes;
 import com.naturalprogrammer.spring.lemon.commonsreactive.exceptions.handlers.VersionExceptionHandler;
 import com.naturalprogrammer.spring.lemon.commonsreactive.security.LemonCommonsReactiveSecurityConfig;
@@ -68,10 +68,10 @@ public class LemonCommonsReactiveAutoConfiguration {
 	
 	@Bean
 	@ConditionalOnMissingBean(LemonCommonsReactiveSecurityConfig.class)
-	public LemonCommonsReactiveSecurityConfig lemonReactiveSecurityConfig(JwtService jwtService) {
+	public LemonCommonsReactiveSecurityConfig lemonReactiveSecurityConfig(AuthTokenService authTokenService) {
 		
 		log.info("Configuring LemonCommonsReactiveSecurityConfig ...");
-		return new LemonCommonsReactiveSecurityConfig(jwtService);
+		return new LemonCommonsReactiveSecurityConfig(authTokenService);
 	}
 	
 	

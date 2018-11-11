@@ -25,7 +25,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.fge.jsonpatch.JsonPatch;
 import com.github.fge.jsonpatch.JsonPatchException;
-import com.naturalprogrammer.spring.lemon.commons.security.JwtService;
+import com.naturalprogrammer.spring.lemon.commons.security.AuthTokenService;
 import com.naturalprogrammer.spring.lemon.commons.security.LemonPrincipal;
 import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
 import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
@@ -255,7 +255,7 @@ public class LecUtils {
 
 	public static UserDto getUserDto(JWTClaimsSet claims) {
 
-		Object userClaim = claims.getClaim(JwtService.USER_CLAIM);
+		Object userClaim = claims.getClaim(AuthTokenService.USER_CLAIM);
 		
 		if (userClaim == null)
 			return null;

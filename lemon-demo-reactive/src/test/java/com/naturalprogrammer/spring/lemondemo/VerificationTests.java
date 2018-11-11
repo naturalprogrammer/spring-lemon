@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.web.reactive.server.WebTestClient.ResponseSpec;
 
-import com.naturalprogrammer.spring.lemon.commons.security.JwtService;
+import com.naturalprogrammer.spring.lemon.commons.security.ExternalTokenService;
 import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
 import com.naturalprogrammer.spring.lemondemo.dto.TestUserDto;
 
@@ -25,12 +25,12 @@ public class VerificationTests extends AbstractTests {
 	private String verificationCode;
 	
 	@Autowired
-	private JwtService jwtService;
+	private ExternalTokenService externalTokenService;
 	
 	@Before
 	public void setUp() {
 		
-		verificationCode = jwtService.createToken(JwtService.VERIFY_AUDIENCE,
+		verificationCode = externalTokenService.createToken(ExternalTokenService.VERIFY_AUDIENCE,
 				UNVERIFIED_USER_ID.toString(), 60000L,
 				LecUtils.mapOf("email", UNVERIFIED_USER_EMAIL));
 	}
@@ -77,21 +77,21 @@ public class VerificationTests extends AbstractTests {
 		.expectStatus().isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY);
 
 		// Wrong audience
-		String token = jwtService.createToken("wrong-audience",
+		String token = externalTokenService.createToken("wrong-audience",
 				UNVERIFIED_USER_ID.toString(), 60000L,
 				LecUtils.mapOf("email", UNVERIFIED_USER_EMAIL));
 		emailVerification(UNVERIFIED_USER_ID, token)
 		.expectStatus().isUnauthorized();
 		
 		// Wrong email
-		token = jwtService.createToken(JwtService.VERIFY_AUDIENCE,
+		token = externalTokenService.createToken(ExternalTokenService.VERIFY_AUDIENCE,
 				UNVERIFIED_USER_ID.toString(), 60000L,
 				LecUtils.mapOf("email", "wrong.email@example.com"));
 		emailVerification(UNVERIFIED_USER_ID, token)
 		.expectStatus().isForbidden();
 
 		// expired token
-		token = jwtService.createToken(JwtService.VERIFY_AUDIENCE,
+		token = externalTokenService.createToken(ExternalTokenService.VERIFY_AUDIENCE,
 				UNVERIFIED_USER_ID.toString(), 1L,
 				LecUtils.mapOf("email", UNVERIFIED_USER_EMAIL));	
 		emailVerification(UNVERIFIED_USER_ID, token)

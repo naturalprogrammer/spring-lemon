@@ -36,23 +36,15 @@ import com.nimbusds.jwt.proc.DefaultJWTProcessor;
  * https://connect2id.com/products/nimbus-jose-jwt/examples/jwe-with-shared-key
  * https://connect2id.com/products/nimbus-jose-jwt/examples/validating-jwt-access-tokens
  */
-public class JwtService {
+public class LemonJweService implements AuthTokenService, ExternalTokenService {
 	
-	private static final Log log = LogFactory.getLog(JwtService.class);
+	private static final Log log = LogFactory.getLog(LemonJweService.class);
 	
-	public static final String LEMON_IAT = "lemon-iat";
-	public static final String USER_CLAIM = "user";
-
-	public static final String AUTH_AUDIENCE = "auth";
-    public static final String VERIFY_AUDIENCE = "verify";
-    public static final String FORGOT_PASSWORD_AUDIENCE = "forgot-password";
-	public static final String CHANGE_EMAIL_AUDIENCE = "change-email";
-	
-    private DirectEncrypter encrypter;
+	private DirectEncrypter encrypter;
     private JWEHeader header = new JWEHeader(JWEAlgorithm.DIR, EncryptionMethod.A128CBC_HS256);
     private ConfigurableJWTProcessor<SimpleSecurityContext> jwtProcessor;
     
-	public JwtService(String secret) throws KeyLengthException {
+	public LemonJweService(String secret) throws KeyLengthException {
 		
 		byte[] secretKey = secret.getBytes();
 		encrypter = new DirectEncrypter(secretKey);
@@ -68,9 +60,10 @@ public class JwtService {
 		jwtProcessor.setJWEKeySelector(jweKeySelector);
 	}
 
-	/**
-	 * Creates a token
+	/* (non-Javadoc)
+	 * @see com.naturalprogrammer.spring.lemon.commons.security.JwtService#createToken(java.lang.String, java.lang.String, java.lang.Long, java.util.Map)
 	 */
+	@Override
 	public String createToken(String aud, String subject, Long expirationMillis, Map<String, Object> claimMap) {
 		
 		JWTClaimsSet.Builder builder = new JWTClaimsSet.Builder();
@@ -105,17 +98,19 @@ public class JwtService {
     	return jweObject.serialize();
 	}
 
-	/**
-	 * Creates a token
+	/* (non-Javadoc)
+	 * @see com.naturalprogrammer.spring.lemon.commons.security.JwtService#createToken(java.lang.String, java.lang.String, java.lang.Long)
 	 */
+	@Override
 	public String createToken(String audience, String subject, Long expirationMillis) {
 
 		return createToken(audience, subject, expirationMillis, new HashMap<>());
 	}
 
-	/**
-	 * Parses a token
+	/* (non-Javadoc)
+	 * @see com.naturalprogrammer.spring.lemon.commons.security.JwtService#parseToken(java.lang.String, java.lang.String)
 	 */
+	@Override
 	public JWTClaimsSet parseToken(String token, String audience) {
 
 		JWTClaimsSet claims = parseToken(token);
@@ -135,9 +130,10 @@ public class JwtService {
 		return claims;
 	}
 	
-	/**
-	 * Parses a token
+	/* (non-Javadoc)
+	 * @see com.naturalprogrammer.spring.lemon.commons.security.JwtService#parseToken(java.lang.String, java.lang.String, long)
 	 */
+	@Override
 	public JWTClaimsSet parseToken(String token, String audience, long issuedAfter) {
 		
 		JWTClaimsSet claims = parseToken(token, audience);
@@ -149,10 +145,20 @@ public class JwtService {
 		return claims;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.naturalprogrammer.spring.lemon.commons.security.JwtService#parseClaim(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public <T> T parseClaim(String token, String claim) {
+		
+		JWTClaimsSet claims = parseToken(token);
+		return (T) claims.getClaim(claim);
+	}
+	
 	/**
 	 * Parses a token
 	 */
-	public JWTClaimsSet parseToken(String token) {
+	protected JWTClaimsSet parseToken(String token) {
 		
 		try {
 			
@@ -162,14 +168,5 @@ public class JwtService {
 			
 			throw new BadCredentialsException(e.getMessage());
 		}
-	}
-	
-	/**
-	 * Parses a claim
-	 */
-	public <T> T parseClaim(String token, String claim) {
-		
-		JWTClaimsSet claims = parseToken(token);
-		return (T) claims.getClaim(claim);
 	}
 }

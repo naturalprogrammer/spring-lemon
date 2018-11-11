@@ -5,7 +5,6 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -119,7 +118,7 @@ public class LemonJpaSecurityConfig extends LemonWebSecurityConfig {
 	 */
 	protected void tokenAuthentication(HttpSecurity http) throws Exception {
 		
-		http.addFilterBefore(new LemonJpaTokenAuthenticationFilter(jwtService, userDetailsService),
+		http.addFilterBefore(new LemonJpaTokenAuthenticationFilter(authTokenService, userDetailsService),
 				UsernamePasswordAuthenticationFilter.class);
 	}
 }

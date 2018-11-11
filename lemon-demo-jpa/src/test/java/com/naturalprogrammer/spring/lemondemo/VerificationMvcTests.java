@@ -12,7 +12,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 
-import com.naturalprogrammer.spring.lemon.commons.security.JwtService;
+import com.naturalprogrammer.spring.lemon.commons.security.ExternalTokenService;
 import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
 import com.naturalprogrammer.spring.lemondemo.entities.User;
 
@@ -21,12 +21,12 @@ public class VerificationMvcTests extends AbstractMvcTests {
 	private String verificationCode;
 	
 	@Autowired
-	private JwtService jwtService;
+	private ExternalTokenService externalTokenService;
 	
 	@Before
 	public void setUp() {
 		
-		verificationCode = jwtService.createToken(JwtService.VERIFY_AUDIENCE,
+		verificationCode = externalTokenService.createToken(ExternalTokenService.VERIFY_AUDIENCE,
 				Long.toString(UNVERIFIED_USER_ID), 60000L,
 				LecUtils.mapOf("email", UNVERIFIED_USER_EMAIL));
 	}
@@ -75,7 +75,7 @@ public class VerificationMvcTests extends AbstractMvcTests {
                 .andExpect(status().is(401));
 
 		// Wrong audience
-		String token = jwtService.createToken("wrong-audience",
+		String token = externalTokenService.createToken("wrong-audience",
 				Long.toString(UNVERIFIED_USER_ID), 60000L,
 				LecUtils.mapOf("email", UNVERIFIED_USER_EMAIL));
 		mvc.perform(post("/api/core/users/{userId}/verification", UNVERIFIED_USER_ID)
@@ -84,7 +84,7 @@ public class VerificationMvcTests extends AbstractMvcTests {
                 .andExpect(status().is(401));
 		
 		// Wrong email
-		token = jwtService.createToken(JwtService.VERIFY_AUDIENCE,
+		token = externalTokenService.createToken(ExternalTokenService.VERIFY_AUDIENCE,
 				Long.toString(UNVERIFIED_USER_ID), 60000L,
 				LecUtils.mapOf("email", "wrong.email@example.com"));
 		mvc.perform(post("/api/core/users/{userId}/verification", UNVERIFIED_USER_ID)
@@ -93,7 +93,7 @@ public class VerificationMvcTests extends AbstractMvcTests {
                 .andExpect(status().is(403));
 
 		// expired token
-		token = jwtService.createToken(JwtService.VERIFY_AUDIENCE,
+		token = externalTokenService.createToken(ExternalTokenService.VERIFY_AUDIENCE,
 				Long.toString(UNVERIFIED_USER_ID), 1L,
 				LecUtils.mapOf("email", UNVERIFIED_USER_EMAIL));	
 		// Thread.sleep(1001L);

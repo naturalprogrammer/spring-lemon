@@ -9,7 +9,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.naturalprogrammer.spring.lemon.commons.security.JwtService;
+import com.naturalprogrammer.spring.lemon.commons.security.AuthTokenService;
 
 /**
  * Security configuration class. Extend it in the
@@ -22,12 +22,12 @@ public class LemonWebSecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	private static final Log log = LogFactory.getLog(LemonWebSecurityConfig.class);
 
-	protected JwtService jwtService;
+	protected AuthTokenService authTokenService;
 	
 	@Autowired
-	public void createLemonWebSecurityConfig(JwtService jwtService) {
+	public void createLemonWebSecurityConfig(AuthTokenService authTokenService) {
 
-		this.jwtService = jwtService;		
+		this.authTokenService = authTokenService;		
 		log.info("Created");
 	}
 
@@ -90,7 +90,7 @@ public class LemonWebSecurityConfig extends WebSecurityConfigurerAdapter {
 	 */
 	protected void tokenAuthentication(HttpSecurity http) throws Exception {
 		
-		http.addFilterBefore(new LemonCommonsWebTokenAuthenticationFilter(jwtService),
+		http.addFilterBefore(new LemonCommonsWebTokenAuthenticationFilter(authTokenService),
 				UsernamePasswordAuthenticationFilter.class);
 	}
 

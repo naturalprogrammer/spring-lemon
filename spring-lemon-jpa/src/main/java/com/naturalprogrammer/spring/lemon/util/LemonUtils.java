@@ -8,8 +8,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import com.naturalprogrammer.spring.lemon.commons.security.JwtService;
 import com.naturalprogrammer.spring.lemon.commons.security.LemonPrincipal;
+import com.naturalprogrammer.spring.lemon.commons.security.LemonTokenService;
 import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
 import com.naturalprogrammer.spring.lemon.commonsjpa.LemonEntity;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
@@ -71,7 +71,7 @@ public class LemonUtils {
 	public static <U extends AbstractUser<ID>, ID extends Serializable>
 	void ensureCredentialsUpToDate(JWTClaimsSet claims, U user) {
 		
-		long issueTime = (long) claims.getClaim(JwtService.LEMON_IAT);
+		long issueTime = (long) claims.getClaim(LemonTokenService.LEMON_IAT);
 
 		LecUtils.ensureCredentials(issueTime >= user.getCredentialsUpdatedMillis(),
 				"com.naturalprogrammer.spring.obsoleteToken");

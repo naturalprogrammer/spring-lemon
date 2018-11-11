@@ -6,7 +6,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import com.naturalprogrammer.spring.lemon.commons.security.JwtService;
+import com.naturalprogrammer.spring.lemon.commons.security.AuthTokenService;
 import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
 import com.naturalprogrammer.spring.lemon.commonsweb.security.LemonCommonsWebTokenAuthenticationFilter;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
@@ -20,10 +20,10 @@ public class LemonJpaTokenAuthenticationFilter<U extends AbstractUser<ID>, ID ex
 
     private LemonUserDetailsService<U, ID> userDetailsService;
 	
-	public LemonJpaTokenAuthenticationFilter(JwtService jwtService,
+	public LemonJpaTokenAuthenticationFilter(AuthTokenService authTokenService,
 			LemonUserDetailsService<U, ID> userDetailsService) {
 		
-		super(jwtService);
+		super(authTokenService);
 		this.userDetailsService = userDetailsService;
 		
 		log.info("Created");		

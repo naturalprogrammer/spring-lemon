@@ -12,7 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient.ResponseSpec;
 
-import com.naturalprogrammer.spring.lemon.commons.security.JwtService;
+import com.naturalprogrammer.spring.lemon.commons.security.ExternalTokenService;
 import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
 import com.naturalprogrammer.spring.lemondemo.dto.TestResetPasswordForm;
 
@@ -23,13 +23,13 @@ public class ResetPasswordTests extends AbstractTests {
 	private String forgotPasswordCode;
 	
 	@Autowired
-	private JwtService jwtService;
+	private ExternalTokenService externalTokenService;
 	
 	@Before
 	public void setUp() {
 		
-		forgotPasswordCode = jwtService.createToken(
-				JwtService.FORGOT_PASSWORD_AUDIENCE,
+		forgotPasswordCode = externalTokenService.createToken(
+				ExternalTokenService.FORGOT_PASSWORD_AUDIENCE,
 				ADMIN_EMAIL, 60000L);
 	}
 	

@@ -27,7 +27,6 @@ import com.github.fge.jsonpatch.JsonPatchException;
 import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
 import com.naturalprogrammer.spring.lemon.commons.domain.ChangePasswordForm;
 import com.naturalprogrammer.spring.lemon.commons.domain.ResetPasswordForm;
-import com.naturalprogrammer.spring.lemon.commons.security.JwtService;
 import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
 import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
 import com.naturalprogrammer.spring.lemon.commons.util.UserUtils;
@@ -48,18 +47,15 @@ public abstract class LemonController
 	private static final Log log = LogFactory.getLog(LemonController.class);
 
     private long jwtExpirationMillis;
-    private JwtService jwtService;
 	private LemonService<U, ID> lemonService;
 	
 	@Autowired
 	public void createLemonController(
 			LemonProperties properties,
-			LemonService<U, ID> lemonService,
-			JwtService jwtService) {
+			LemonService<U, ID> lemonService) {
 		
 		this.jwtExpirationMillis = properties.getJwt().getExpirationMillis();
 		this.lemonService = lemonService;
-		this.jwtService = jwtService;
 		
 		log.info("Created");
 	}

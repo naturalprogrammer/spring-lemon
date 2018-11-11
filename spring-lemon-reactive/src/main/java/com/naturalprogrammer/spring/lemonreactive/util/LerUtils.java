@@ -5,7 +5,7 @@ import java.io.Serializable;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.naturalprogrammer.spring.lemon.commons.security.JwtService;
+import com.naturalprogrammer.spring.lemon.commons.security.LemonTokenService;
 import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
 import com.naturalprogrammer.spring.lemonreactive.domain.AbstractMongoUser;
 import com.nimbusds.jwt.JWTClaimsSet;
@@ -26,7 +26,7 @@ public class LerUtils {
 	public static <U extends AbstractMongoUser<ID>, ID extends Serializable>
 	void ensureCredentialsUpToDate(JWTClaimsSet claims, U user) {
 		
-		long issueTime = (long) claims.getClaim(JwtService.LEMON_IAT);
+		long issueTime = (long) claims.getClaim(LemonTokenService.LEMON_IAT);
 
 		log.debug("Ensuring credentials up to date. Issue time = "
 				+ issueTime + ". User's credentials updated at" + user.getCredentialsUpdatedMillis());
