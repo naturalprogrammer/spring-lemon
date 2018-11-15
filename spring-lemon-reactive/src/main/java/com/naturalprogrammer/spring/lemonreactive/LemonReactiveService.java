@@ -65,6 +65,7 @@ public abstract class LemonReactiveService
 			MailSender mailSender,
 			AbstractMongoUserRepository<U, ID> userRepository,
 			ReactiveUserDetailsService userDetailsService,
+			AuthTokenService authTokenService,
 			ExternalTokenService externalTokenService) {
 		
 		this.properties = properties;

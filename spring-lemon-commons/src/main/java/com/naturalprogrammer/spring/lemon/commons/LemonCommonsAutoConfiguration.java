@@ -24,10 +24,12 @@ import com.naturalprogrammer.spring.lemon.commons.mail.SmtpMailSender;
 import com.naturalprogrammer.spring.lemon.commons.security.AuthTokenService;
 import com.naturalprogrammer.spring.lemon.commons.security.ExternalTokenService;
 import com.naturalprogrammer.spring.lemon.commons.security.LemonJweService;
+import com.naturalprogrammer.spring.lemon.commons.security.LemonJwsService;
 import com.naturalprogrammer.spring.lemon.commons.security.LemonPermissionEvaluator;
 import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
 import com.naturalprogrammer.spring.lemon.commons.validation.CaptchaValidator;
 import com.naturalprogrammer.spring.lemon.exceptions.LemonExceptionsAutoConfiguration;
+import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.KeyLengthException;
 
 @Configuration
@@ -60,15 +62,15 @@ public class LemonCommonsAutoConfiguration {
 	 */
 	@Bean
 	@ConditionalOnMissingBean(AuthTokenService.class)
-	public AuthTokenService authTokenService(LemonProperties properties) throws KeyLengthException {
+	public AuthTokenService authTokenService(LemonProperties properties) throws JOSEException {
 		
         log.info("Configuring AuthTokenService");       
-		return new LemonJweService(properties.getJwt().getSecret());
+		return new LemonJwsService(properties.getJwt().getSecret());
 	}
 
 
 	/**
-	 * Configures AuthTokenService if missing
+	 * Configures ExternalTokenService if missing
 	 */
 	@Bean
 	@ConditionalOnMissingBean(ExternalTokenService.class)
