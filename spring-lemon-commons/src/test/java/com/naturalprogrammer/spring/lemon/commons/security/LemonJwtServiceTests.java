@@ -54,12 +54,18 @@ public class LemonJwtServiceTests {
 	}
 
 	@Test(expected = BadCredentialsException.class)
-	public void testParseTokenWrongAudience() {
+	public void testParseJweTokenWrongAudience() {
 		
 		testParseTokenWrongAudience(jweService1);
+	}
+	
+	@Test(expected = BadCredentialsException.class)
+	public void testParseJwsTokenWrongAudience() {
+		
 		testParseTokenWrongAudience(jwsService1);		
 	}
 	
+
 	private void testParseTokenWrongAudience(LemonTokenService service) {
 		
 		String token = service.createToken("auth", "subject", 5000L);
@@ -67,12 +73,17 @@ public class LemonJwtServiceTests {
 	}
 
 	@Test(expected = BadCredentialsException.class)
-	public void testParseTokenExpired() throws InterruptedException {
+	public void testParseJweTokenExpired() throws InterruptedException {
 		
 		testParseTokenExpired(jweService1);
-		testParseTokenExpired(jwsService1);
 	}
 	
+	@Test(expected = BadCredentialsException.class)
+	public void testParseJwsTokenExpired() throws InterruptedException {
+		
+		testParseTokenExpired(jwsService1);
+	}
+
 	private void testParseTokenExpired(LemonTokenService service) throws InterruptedException {
 		
 		String token = service.createToken("auth", "subject", 1L);
@@ -81,9 +92,14 @@ public class LemonJwtServiceTests {
 	}
 
 	@Test(expected = BadCredentialsException.class)
-	public void testParseTokenWrongSecret() {
+	public void testParseJweTokenWrongSecret() {
 		
 		testParseTokenWrongSecret(jweService1, jweService2);
+	}
+
+	@Test(expected = BadCredentialsException.class)
+	public void testParseJwsTokenWrongSecret() {
+		
 		testParseTokenWrongSecret(jwsService1, jwsService2);
 	}
 
@@ -94,11 +110,17 @@ public class LemonJwtServiceTests {
 	}
 
 	@Test(expected = BadCredentialsException.class)
-	public void testParseTokenCutoffTime() throws InterruptedException {
+	public void testParseJweTokenCutoffTime() throws InterruptedException {
 
 		testParseTokenCutoffTime(jweService1);
+	}
+
+	@Test(expected = BadCredentialsException.class)
+	public void testParseJwsTokenCutoffTime() throws InterruptedException {
+
 		testParseTokenCutoffTime(jwsService1);
 	}
+
 
 	private void testParseTokenCutoffTime(LemonTokenService service) throws InterruptedException {
 		
