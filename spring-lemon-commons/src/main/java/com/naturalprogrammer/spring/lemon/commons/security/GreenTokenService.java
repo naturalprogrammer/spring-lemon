@@ -1,6 +1,6 @@
 package com.naturalprogrammer.spring.lemon.commons.security;
 
-public interface ExternalTokenService extends LemonTokenService {
+public interface GreenTokenService extends LemonTokenService {
 
 	String VERIFY_AUDIENCE = "verify";
 	String FORGOT_PASSWORD_AUDIENCE = "forgot-password";

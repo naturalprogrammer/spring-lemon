@@ -118,7 +118,7 @@ public class LemonJpaSecurityConfig extends LemonWebSecurityConfig {
 	 */
 	protected void tokenAuthentication(HttpSecurity http) throws Exception {
 		
-		http.addFilterBefore(new LemonJpaTokenAuthenticationFilter(authTokenService, userDetailsService),
+		http.addFilterBefore(new LemonJpaTokenAuthenticationFilter(blueTokenService, userDetailsService),
 				UsernamePasswordAuthenticationFilter.class);
 	}
 }

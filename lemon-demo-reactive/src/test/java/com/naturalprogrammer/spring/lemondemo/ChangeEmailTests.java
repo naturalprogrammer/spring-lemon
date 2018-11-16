@@ -18,7 +18,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.web.reactive.server.WebTestClient.ResponseSpec;
 
-import com.naturalprogrammer.spring.lemon.commons.security.ExternalTokenService;
+import com.naturalprogrammer.spring.lemon.commons.security.GreenTokenService;
 import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
 import com.naturalprogrammer.spring.lemondemo.domain.User;
 
@@ -29,7 +29,7 @@ public class ChangeEmailTests extends AbstractTests {
 	private String changeEmailCode;
 	
 	@Autowired
-	private ExternalTokenService externalTokenService;
+	private GreenTokenService greenTokenService;
 	
 	@Before
 	public void setUp() {
@@ -38,8 +38,8 @@ public class ChangeEmailTests extends AbstractTests {
 		user.setNewEmail(NEW_EMAIL);
 		mongoTemplate.save(user);
 		
-		changeEmailCode = externalTokenService.createToken(
-				ExternalTokenService.CHANGE_EMAIL_AUDIENCE,
+		changeEmailCode = greenTokenService.createToken(
+				GreenTokenService.CHANGE_EMAIL_AUDIENCE,
 				UNVERIFIED_USER_ID.toString(), 60000L,
 				LecUtils.mapOf("newEmail", NEW_EMAIL));
 	}
@@ -71,7 +71,7 @@ public class ChangeEmailTests extends AbstractTests {
 			.expectStatus().isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY);
 
 		// Wrong audience
-		String code = externalTokenService.createToken(
+		String code = greenTokenService.createToken(
 				"", // blank audience
 				UNVERIFIED_USER_ID.toString(), 60000L,
 				LecUtils.mapOf("newEmail", NEW_EMAIL));
@@ -80,8 +80,8 @@ public class ChangeEmailTests extends AbstractTests {
 			.expectStatus().isUnauthorized();
 
 		// Wrong userId subject
-		code = externalTokenService.createToken(
-				ExternalTokenService.CHANGE_EMAIL_AUDIENCE,
+		code = greenTokenService.createToken(
+				GreenTokenService.CHANGE_EMAIL_AUDIENCE,
 				ADMIN_ID.toString(), 60000L,
 				LecUtils.mapOf("newEmail", NEW_EMAIL));
 		
@@ -89,8 +89,8 @@ public class ChangeEmailTests extends AbstractTests {
 			.expectStatus().isForbidden();
 		
 		// Wrong new email
-		code = externalTokenService.createToken(
-				ExternalTokenService.CHANGE_EMAIL_AUDIENCE,
+		code = greenTokenService.createToken(
+				GreenTokenService.CHANGE_EMAIL_AUDIENCE,
 				UNVERIFIED_USER_ID.toString(), 60000L,
 				LecUtils.mapOf("newEmail", "wrong.new.email@example.com"));
 		

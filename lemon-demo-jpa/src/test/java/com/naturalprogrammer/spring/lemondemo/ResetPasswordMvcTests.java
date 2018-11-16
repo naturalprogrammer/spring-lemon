@@ -13,7 +13,7 @@ import org.springframework.http.MediaType;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.naturalprogrammer.spring.lemon.commons.domain.ResetPasswordForm;
-import com.naturalprogrammer.spring.lemon.commons.security.ExternalTokenService;
+import com.naturalprogrammer.spring.lemon.commons.security.GreenTokenService;
 import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
 
 public class ResetPasswordMvcTests extends AbstractMvcTests {
@@ -21,13 +21,13 @@ public class ResetPasswordMvcTests extends AbstractMvcTests {
 	private String forgotPasswordCode;
 	
 	@Autowired
-	private ExternalTokenService externalTokenService;
+	private GreenTokenService greenTokenService;
 	
 	@Before
 	public void setUp() {
 		
-		forgotPasswordCode = externalTokenService.createToken(
-				ExternalTokenService.FORGOT_PASSWORD_AUDIENCE,
+		forgotPasswordCode = greenTokenService.createToken(
+				GreenTokenService.FORGOT_PASSWORD_AUDIENCE,
 				ADMIN_EMAIL, 60000L);
 	}
 

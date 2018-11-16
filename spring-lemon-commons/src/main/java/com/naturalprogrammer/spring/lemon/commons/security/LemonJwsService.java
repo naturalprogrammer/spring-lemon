@@ -21,7 +21,7 @@ import com.nimbusds.jwt.JWTClaimsSet;
  * 
  * Reference: https://connect2id.com/products/nimbus-jose-jwt/examples/jws-with-hmac
  */
-public class LemonJwsService extends AbstractJwtService implements AuthTokenService {
+public class LemonJwsService extends AbstractJwtService implements BlueTokenService {
 
 	private JWSSigner signer;
 	private JWSVerifier verifier;

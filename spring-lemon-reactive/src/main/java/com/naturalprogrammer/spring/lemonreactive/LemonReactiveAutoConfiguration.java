@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import com.naturalprogrammer.spring.lemon.commons.domain.IdConverter;
-import com.naturalprogrammer.spring.lemon.commons.security.AuthTokenService;
+import com.naturalprogrammer.spring.lemon.commons.security.BlueTokenService;
 import com.naturalprogrammer.spring.lemon.commonsmongo.LemonCommonsMongoAutoConfiguration;
 import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
 import com.naturalprogrammer.spring.lemonreactive.domain.AbstractMongoUser;
@@ -44,12 +44,12 @@ public class LemonReactiveAutoConfiguration {
 	@ConditionalOnMissingBean(LemonReactiveSecurityConfig.class)
 	public <U extends AbstractMongoUser<ID>, ID extends Serializable>
 		LemonReactiveSecurityConfig<U,ID> lemonReactiveSecurityConfig(
-				AuthTokenService authTokenService,
+				BlueTokenService blueTokenService,
 				LemonReactiveUserDetailsService<U, ID> userDetailsService) {
 		
 		log.info("Configuring LemonReactiveSecurityConfig ...");
 
-		return new LemonReactiveSecurityConfig<U,ID>(authTokenService, userDetailsService);
+		return new LemonReactiveSecurityConfig<U,ID>(blueTokenService, userDetailsService);
 	}
 	
 	

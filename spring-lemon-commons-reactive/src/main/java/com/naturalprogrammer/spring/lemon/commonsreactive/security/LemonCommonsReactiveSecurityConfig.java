@@ -19,7 +19,7 @@ import org.springframework.security.web.server.authorization.ServerAccessDeniedH
 import org.springframework.security.web.server.context.NoOpServerSecurityContextRepository;
 import org.springframework.web.server.ServerWebExchange;
 
-import com.naturalprogrammer.spring.lemon.commons.security.AuthTokenService;
+import com.naturalprogrammer.spring.lemon.commons.security.BlueTokenService;
 import com.naturalprogrammer.spring.lemon.commons.security.LemonPrincipal;
 import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
 import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
@@ -34,7 +34,7 @@ public class LemonCommonsReactiveSecurityConfig {
 
 	private static final Log log = LogFactory.getLog(LemonCommonsReactiveSecurityConfig.class);
 	
-	protected AuthTokenService authTokenService;
+	protected BlueTokenService blueTokenService;
 
 	public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
 		
@@ -91,7 +91,7 @@ public class LemonCommonsReactiveSecurityConfig {
 
 			String token = (String) authentication.getCredentials();
 			
-			JWTClaimsSet claims = authTokenService.parseToken(token, AuthTokenService.AUTH_AUDIENCE);
+			JWTClaimsSet claims = blueTokenService.parseToken(token, BlueTokenService.AUTH_AUDIENCE);
 			
 			UserDto userDto = LecUtils.getUserDto(claims);
 			

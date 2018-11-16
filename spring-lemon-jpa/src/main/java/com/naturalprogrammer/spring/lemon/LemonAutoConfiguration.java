@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
 import com.naturalprogrammer.spring.lemon.commons.domain.IdConverter;
-import com.naturalprogrammer.spring.lemon.commons.security.AuthTokenService;
+import com.naturalprogrammer.spring.lemon.commons.security.BlueTokenService;
 import com.naturalprogrammer.spring.lemon.commons.validation.RetypePasswordValidator;
 import com.naturalprogrammer.spring.lemon.commonsjpa.LemonCommonsJpaAutoConfiguration;
 import com.naturalprogrammer.spring.lemon.commonsweb.security.LemonWebSecurityConfig;
@@ -77,10 +77,10 @@ public class LemonAutoConfiguration {
 	@Bean
 	@ConditionalOnMissingBean(OAuth2AuthenticationSuccessHandler.class)
 	public OAuth2AuthenticationSuccessHandler<?> oauth2AuthenticationSuccessHandler(
-			LemonProperties properties, AuthTokenService authTokenService) {
+			LemonProperties properties, BlueTokenService blueTokenService) {
 		
         log.info("Configuring OAuth2AuthenticationSuccessHandler");       
-		return new OAuth2AuthenticationSuccessHandler<>(properties, authTokenService);
+		return new OAuth2AuthenticationSuccessHandler<>(properties, blueTokenService);
 	}
 	
 	/**

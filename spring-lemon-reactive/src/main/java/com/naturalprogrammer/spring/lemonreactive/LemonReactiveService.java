@@ -27,8 +27,8 @@ import com.naturalprogrammer.spring.lemon.commons.domain.ChangePasswordForm;
 import com.naturalprogrammer.spring.lemon.commons.domain.ResetPasswordForm;
 import com.naturalprogrammer.spring.lemon.commons.mail.LemonMailData;
 import com.naturalprogrammer.spring.lemon.commons.mail.MailSender;
-import com.naturalprogrammer.spring.lemon.commons.security.AuthTokenService;
-import com.naturalprogrammer.spring.lemon.commons.security.ExternalTokenService;
+import com.naturalprogrammer.spring.lemon.commons.security.BlueTokenService;
+import com.naturalprogrammer.spring.lemon.commons.security.GreenTokenService;
 import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
 import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
 import com.naturalprogrammer.spring.lemon.commons.util.UserUtils;
@@ -56,8 +56,8 @@ public abstract class LemonReactiveService
 	protected MailSender mailSender;
 	protected AbstractMongoUserRepository<U, ID> userRepository;
 	protected ReactiveUserDetailsService userDetailsService;
-	protected AuthTokenService authTokenService;
-	protected ExternalTokenService externalTokenService;
+	protected BlueTokenService blueTokenService;
+	protected GreenTokenService greenTokenService;
 
 	@Autowired
 	public void createLemonService(LemonProperties properties,
@@ -65,16 +65,16 @@ public abstract class LemonReactiveService
 			MailSender mailSender,
 			AbstractMongoUserRepository<U, ID> userRepository,
 			ReactiveUserDetailsService userDetailsService,
-			AuthTokenService authTokenService,
-			ExternalTokenService externalTokenService) {
+			BlueTokenService blueTokenService,
+			GreenTokenService greenTokenService) {
 		
 		this.properties = properties;
 		this.passwordEncoder = passwordEncoder;
 		this.mailSender = mailSender;
 		this.userRepository = userRepository;
 		this.userDetailsService = userDetailsService;
-		this.authTokenService = authTokenService;
-		this.externalTokenService = externalTokenService;
+		this.blueTokenService = blueTokenService;
+		this.greenTokenService = greenTokenService;
 		
 		log.info("Created");
 	}
@@ -236,7 +236,7 @@ public abstract class LemonReactiveService
 			
 			log.debug("Sending verification mail to: " + user);
 			
-			String verificationCode = externalTokenService.createToken(ExternalTokenService.VERIFY_AUDIENCE,
+			String verificationCode = greenTokenService.createToken(GreenTokenService.VERIFY_AUDIENCE,
 					user.getId().toString(), properties.getJwt().getExpirationMillis(),
 					LecUtils.mapOf("email", user.getEmail()));
 
@@ -330,8 +330,8 @@ public abstract class LemonReactiveService
 		LexUtils.validate(user.hasRole(UserUtils.Role.UNVERIFIED),
 				"com.naturalprogrammer.spring.alreadyVerified").go();	
 		
-		JWTClaimsSet claims = externalTokenService.parseToken(
-				verificationCode, ExternalTokenService.VERIFY_AUDIENCE, user.getCredentialsUpdatedMillis());
+		JWTClaimsSet claims = greenTokenService.parseToken(
+				verificationCode, GreenTokenService.VERIFY_AUDIENCE, user.getCredentialsUpdatedMillis());
 		
 		LecUtils.ensureAuthority(
 				claims.getSubject().equals(user.getId().toString()) &&
@@ -367,8 +367,8 @@ public abstract class LemonReactiveService
 		
 		log.debug("Mailing forgot password link to user: " + user);
 
-		String forgotPasswordCode = externalTokenService.createToken(
-				ExternalTokenService.FORGOT_PASSWORD_AUDIENCE,
+		String forgotPasswordCode = greenTokenService.createToken(
+				GreenTokenService.FORGOT_PASSWORD_AUDIENCE,
 				user.getEmail(), properties.getJwt().getExpirationMillis());
 
 		// make the link
@@ -402,8 +402,8 @@ public abstract class LemonReactiveService
 			
 			log.debug("Resetting password ...");
 
-			JWTClaimsSet claims = externalTokenService.parseToken(form.getCode(),
-					ExternalTokenService.FORGOT_PASSWORD_AUDIENCE);
+			JWTClaimsSet claims = greenTokenService.parseToken(form.getCode(),
+					GreenTokenService.FORGOT_PASSWORD_AUDIENCE);
 			
 			String email = claims.getSubject();
 			
@@ -457,7 +457,7 @@ public abstract class LemonReactiveService
 		log.debug("Adding auth header for " + userDto.getUsername());
 		
 		response.getHeaders().add(LecUtils.TOKEN_RESPONSE_HEADER_NAME, LecUtils.TOKEN_PREFIX +
-				authTokenService.createToken(AuthTokenService.AUTH_AUDIENCE, userDto.getUsername(), expirationMillis));
+				blueTokenService.createToken(BlueTokenService.AUTH_AUDIENCE, userDto.getUsername(), expirationMillis));
 	}
 
 
@@ -665,8 +665,8 @@ public abstract class LemonReactiveService
 	 */
 	protected void mailChangeEmailLink(U user) {
 		
-		String changeEmailCode = externalTokenService.createToken(
-				ExternalTokenService.CHANGE_EMAIL_AUDIENCE,
+		String changeEmailCode = greenTokenService.createToken(
+				GreenTokenService.CHANGE_EMAIL_AUDIENCE,
 				user.getId().toString(), properties.getJwt().getExpirationMillis(),
 				LecUtils.mapOf("newEmail", user.getNewEmail()));
 		
@@ -741,8 +741,8 @@ public abstract class LemonReactiveService
 		LexUtils.validate(StringUtils.isNotBlank(user.getNewEmail()),
 				"com.naturalprogrammer.spring.blank.newEmail").go();
 		
-		JWTClaimsSet claims = externalTokenService.parseToken(code,
-				ExternalTokenService.CHANGE_EMAIL_AUDIENCE,
+		JWTClaimsSet claims = greenTokenService.parseToken(code,
+				GreenTokenService.CHANGE_EMAIL_AUDIENCE,
 				user.getCredentialsUpdatedMillis());
 		
 		LecUtils.ensureAuthority(
@@ -794,7 +794,7 @@ public abstract class LemonReactiveService
 					currentUser.isGoodAdmin(), "com.naturalprogrammer.spring.notGoodAdminOrSameUser");
 			
 			return Collections.singletonMap("token", LecUtils.TOKEN_PREFIX +
-					authTokenService.createToken(authTokenService.AUTH_AUDIENCE, username, expirationMillis));			
+					blueTokenService.createToken(blueTokenService.AUTH_AUDIENCE, username, expirationMillis));			
 		});
 	}
 	
@@ -802,18 +802,18 @@ public abstract class LemonReactiveService
 	@PreAuthorize("isAuthenticated()")
 	public Mono<Map<String, String>> fetchFullToken(String authHeader) {
 
-		LecUtils.ensureCredentials(authTokenService.parseClaim(authHeader.substring(LecUtils.TOKEN_PREFIX_LENGTH),
-				AuthTokenService.USER_CLAIM) == null,	"com.naturalprogrammer.spring.fullTokenNotAllowed");
+		LecUtils.ensureCredentials(blueTokenService.parseClaim(authHeader.substring(LecUtils.TOKEN_PREFIX_LENGTH),
+				BlueTokenService.USER_CLAIM) == null,	"com.naturalprogrammer.spring.fullTokenNotAllowed");
 		
 		return LecrUtils.currentUser().map(optionalUser -> {
 			
 			UserDto currentUser = optionalUser.get();
 			
-			Map<String, Object> claimMap = Collections.singletonMap(AuthTokenService.USER_CLAIM,
+			Map<String, Object> claimMap = Collections.singletonMap(BlueTokenService.USER_CLAIM,
 					LecUtils.serialize(currentUser)); // Not serializing converts it to a JsonNode
 			
 			Map<String, String> tokenMap = Collections.singletonMap("token", LecUtils.TOKEN_PREFIX +
-					authTokenService.createToken(AuthTokenService.AUTH_AUDIENCE, currentUser.getUsername(),
+					blueTokenService.createToken(BlueTokenService.AUTH_AUDIENCE, currentUser.getUsername(),
 						Long.valueOf(properties.getJwt().getShortLivedMillis()),
 						claimMap));
 			

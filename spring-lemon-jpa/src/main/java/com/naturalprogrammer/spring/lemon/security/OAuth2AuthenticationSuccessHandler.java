@@ -11,7 +11,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 
 import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
-import com.naturalprogrammer.spring.lemon.commons.security.AuthTokenService;
+import com.naturalprogrammer.spring.lemon.commons.security.BlueTokenService;
 import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
 import com.naturalprogrammer.spring.lemon.commonsweb.util.LecwUtils;
 
@@ -30,7 +30,7 @@ public class OAuth2AuthenticationSuccessHandler<ID extends Serializable>
 	private static final Log log = LogFactory.getLog(OAuth2AuthenticationSuccessHandler.class);
 
 	private LemonProperties properties;
-	private AuthTokenService authTokenService;
+	private BlueTokenService blueTokenService;
 
 	@Override
 	protected String determineTargetUrl(HttpServletRequest request,
@@ -38,8 +38,8 @@ public class OAuth2AuthenticationSuccessHandler<ID extends Serializable>
 		
 		UserDto currentUser = LecwUtils.currentUser();
 		
-		String shortLivedAuthToken = authTokenService.createToken(
-				AuthTokenService.AUTH_AUDIENCE,
+		String shortLivedAuthToken = blueTokenService.createToken(
+				BlueTokenService.AUTH_AUDIENCE,
 				currentUser.getUsername(),
 				(long) properties.getJwt().getShortLivedMillis());
 

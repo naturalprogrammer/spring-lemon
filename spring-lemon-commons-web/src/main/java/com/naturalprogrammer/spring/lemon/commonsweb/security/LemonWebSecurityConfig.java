@@ -9,7 +9,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.naturalprogrammer.spring.lemon.commons.security.AuthTokenService;
+import com.naturalprogrammer.spring.lemon.commons.security.BlueTokenService;
 
 /**
  * Security configuration class. Extend it in the
@@ -22,12 +22,12 @@ public class LemonWebSecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	private static final Log log = LogFactory.getLog(LemonWebSecurityConfig.class);
 
-	protected AuthTokenService authTokenService;
+	protected BlueTokenService blueTokenService;
 	
 	@Autowired
-	public void createLemonWebSecurityConfig(AuthTokenService authTokenService) {
+	public void createLemonWebSecurityConfig(BlueTokenService blueTokenService) {
 
-		this.authTokenService = authTokenService;		
+		this.blueTokenService = blueTokenService;		
 		log.info("Created");
 	}
 
@@ -90,7 +90,7 @@ public class LemonWebSecurityConfig extends WebSecurityConfigurerAdapter {
 	 */
 	protected void tokenAuthentication(HttpSecurity http) throws Exception {
 		
-		http.addFilterBefore(new LemonCommonsWebTokenAuthenticationFilter(authTokenService),
+		http.addFilterBefore(new LemonCommonsWebTokenAuthenticationFilter(blueTokenService),
 				UsernamePasswordAuthenticationFilter.class);
 	}
 

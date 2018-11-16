@@ -33,7 +33,7 @@ import com.nimbusds.jwt.proc.DefaultJWTProcessor;
  * https://connect2id.com/products/nimbus-jose-jwt/examples/jwe-with-shared-key
  * https://connect2id.com/products/nimbus-jose-jwt/examples/validating-jwt-access-tokens
  */
-public class LemonJweService extends AbstractJwtService implements ExternalTokenService {
+public class LemonJweService extends AbstractJwtService implements GreenTokenService {
 	
 	private static final Log log = LogFactory.getLog(LemonJweService.class);
 	

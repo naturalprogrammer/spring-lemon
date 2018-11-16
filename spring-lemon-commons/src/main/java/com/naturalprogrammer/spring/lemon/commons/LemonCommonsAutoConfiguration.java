@@ -21,8 +21,8 @@ import com.naturalprogrammer.spring.lemon.commons.exceptions.handlers.BadCredent
 import com.naturalprogrammer.spring.lemon.commons.mail.MailSender;
 import com.naturalprogrammer.spring.lemon.commons.mail.MockMailSender;
 import com.naturalprogrammer.spring.lemon.commons.mail.SmtpMailSender;
-import com.naturalprogrammer.spring.lemon.commons.security.AuthTokenService;
-import com.naturalprogrammer.spring.lemon.commons.security.ExternalTokenService;
+import com.naturalprogrammer.spring.lemon.commons.security.BlueTokenService;
+import com.naturalprogrammer.spring.lemon.commons.security.GreenTokenService;
 import com.naturalprogrammer.spring.lemon.commons.security.LemonJweService;
 import com.naturalprogrammer.spring.lemon.commons.security.LemonJwsService;
 import com.naturalprogrammer.spring.lemon.commons.security.LemonPermissionEvaluator;
@@ -61,8 +61,8 @@ public class LemonCommonsAutoConfiguration {
 	 * Configures AuthTokenService if missing
 	 */
 	@Bean
-	@ConditionalOnMissingBean(AuthTokenService.class)
-	public AuthTokenService authTokenService(LemonProperties properties) throws JOSEException {
+	@ConditionalOnMissingBean(BlueTokenService.class)
+	public BlueTokenService blueTokenService(LemonProperties properties) throws JOSEException {
 		
         log.info("Configuring AuthTokenService");       
 		return new LemonJwsService(properties.getJwt().getSecret());
@@ -73,8 +73,8 @@ public class LemonCommonsAutoConfiguration {
 	 * Configures ExternalTokenService if missing
 	 */
 	@Bean
-	@ConditionalOnMissingBean(ExternalTokenService.class)
-	public ExternalTokenService externalTokenService(LemonProperties properties) throws KeyLengthException {
+	@ConditionalOnMissingBean(GreenTokenService.class)
+	public GreenTokenService greenTokenService(LemonProperties properties) throws KeyLengthException {
 		
         log.info("Configuring ExternalTokenService");       
 		return new LemonJweService(properties.getJwt().getSecret());

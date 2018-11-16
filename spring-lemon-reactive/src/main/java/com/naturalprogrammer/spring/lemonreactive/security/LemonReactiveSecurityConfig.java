@@ -8,7 +8,7 @@ import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.server.authentication.WebFilterChainServerAuthenticationSuccessHandler;
 
-import com.naturalprogrammer.spring.lemon.commons.security.AuthTokenService;
+import com.naturalprogrammer.spring.lemon.commons.security.BlueTokenService;
 import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
 import com.naturalprogrammer.spring.lemon.commonsreactive.security.LemonCommonsReactiveSecurityConfig;
 import com.naturalprogrammer.spring.lemonreactive.domain.AbstractMongoUser;
@@ -23,10 +23,10 @@ public class LemonReactiveSecurityConfig <U extends AbstractMongoUser<ID>, ID ex
 	
 	protected LemonReactiveUserDetailsService<U, ID> userDetailsService;
 
-	public LemonReactiveSecurityConfig(AuthTokenService authTokenService,
+	public LemonReactiveSecurityConfig(BlueTokenService blueTokenService,
 			LemonReactiveUserDetailsService<U, ID> userDetailsService) {
 		
-		super(authTokenService);
+		super(blueTokenService);
 		this.userDetailsService = userDetailsService;
 		log.info("Created");
 	}
