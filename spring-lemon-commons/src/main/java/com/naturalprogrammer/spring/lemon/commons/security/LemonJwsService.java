@@ -26,8 +26,6 @@ public class LemonJwsService extends AbstractJwtService implements BlueTokenServ
 	private JWSSigner signer;
 	private JWSVerifier verifier;
 
-
-
 	public LemonJwsService(String secret) throws JOSEException {
 		
 		byte[] secretKey = secret.getBytes();
