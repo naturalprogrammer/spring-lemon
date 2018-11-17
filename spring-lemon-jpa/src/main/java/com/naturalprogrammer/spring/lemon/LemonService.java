@@ -708,7 +708,11 @@ public abstract class LemonService
 		if (verified == null)
 			verified = attributes.get("verified");
 		
-		return (boolean) verified;
+		try {
+			return (boolean) verified;
+		} catch (Throwable t) {
+			return false;
+		}
 	}
 
 
