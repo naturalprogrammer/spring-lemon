@@ -21,6 +21,9 @@ spring:
     # when source code changes
     restart.enabled: false
     livereload.enabled: false
+    
+  # https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-2.1-Release-Notes#bean-overriding
+  main.allow-bean-definition-overriding: true
 
 server.servlet.session.persistent: false
 

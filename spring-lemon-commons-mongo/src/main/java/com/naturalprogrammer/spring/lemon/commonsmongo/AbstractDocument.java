@@ -37,7 +37,7 @@ public abstract class AbstractDocument<ID extends Serializable> implements Permi
 	private Date lastModifiedDate;
 	
 	@Version
-	private long version;
+	private Long version;
 	
 	/**
 	 * Whether the given user has the given permission for

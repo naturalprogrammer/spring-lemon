@@ -78,7 +78,7 @@ public class UpdateUserMvcTests extends AbstractMvcTests {
 		Assert.assertEquals(UNVERIFIED_USER_EMAIL, user.getEmail());
 		Assert.assertEquals(1, user.getRoles().size());
 		Assert.assertTrue(user.getRoles().contains(UserUtils.Role.UNVERIFIED));
-		Assert.assertEquals(2L, user.getVersion());
+		Assert.assertEquals(2L, user.getVersion().longValue());
 		
 		// Version mismatch
 		mvc.perform(patch("/api/core/users/{id}", UNVERIFIED_USER_ID)

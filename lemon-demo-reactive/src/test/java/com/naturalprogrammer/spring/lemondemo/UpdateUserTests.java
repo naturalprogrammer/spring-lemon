@@ -73,7 +73,7 @@ public class UpdateUserTests extends AbstractTests {
 		assertEquals(UNVERIFIED_USER_EMAIL, user.getEmail());
 		assertEquals(1, user.getRoles().size());
 		assertTrue(user.getRoles().contains(UserUtils.Role.UNVERIFIED));
-		assertEquals(1L, user.getVersion());
+		assertEquals(1L, user.getVersion().longValue());
 		
 		// Version mismatch
 		updateUser(UNVERIFIED_USER_ID, UNVERIFIED_USER_ID, userPatch)

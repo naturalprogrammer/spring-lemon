@@ -13,6 +13,9 @@ spring:
     deserialization:
       accept-single-value-as-array: true
 
+  # https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-2.1-Release-Notes#bean-overriding
+  main.allow-bean-definition-overriding: true
+
 # Spring Lemon related properties
 lemon:
 
