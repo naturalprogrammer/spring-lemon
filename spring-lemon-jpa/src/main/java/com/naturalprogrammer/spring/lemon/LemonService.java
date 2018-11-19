@@ -464,7 +464,7 @@ public abstract class LemonService
 		log.debug("Updating user: " + user);
 
 		// checks
-		LemonUtils.ensureCorrectVersion(user, updatedUser);
+		LecjUtils.ensureCorrectVersion(user, updatedUser);
 
 		// delegates to updateUserFields
 		updateUserFields(user, updatedUser, LecwUtils.currentUser());

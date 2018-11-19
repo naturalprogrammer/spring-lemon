@@ -11,9 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import com.naturalprogrammer.spring.lemon.commons.security.LemonPrincipal;
 import com.naturalprogrammer.spring.lemon.commons.security.LemonTokenService;
 import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
-import com.naturalprogrammer.spring.lemon.commonsjpa.LemonEntity;
 import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
-import com.naturalprogrammer.spring.lemon.exceptions.VersionException;
 import com.nimbusds.jwt.JWTClaimsSet;
 
 /**
@@ -46,21 +44,6 @@ public class LemonUtils {
 
 	    SecurityContextHolder.getContext().setAuthentication(authentication); // put that in the security context
 	    principal.eraseCredentials();
-	}
-
-
-	/**
-	 * Throws a VersionException if the versions of the
-	 * given entities aren't same.
-	 * 
-	 * @param original
-	 * @param updated
-	 */
-	public static <U extends AbstractUser<ID>, ID extends Serializable>
-	void ensureCorrectVersion(LemonEntity<ID> original, LemonEntity<ID> updated) {
-		
-		if (original.getVersion() != updated.getVersion())
-			throw new VersionException(original.getClass().getSimpleName(), original.getId().toString());
 	}
 	
 	
