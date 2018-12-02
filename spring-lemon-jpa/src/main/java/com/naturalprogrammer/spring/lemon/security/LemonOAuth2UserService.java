@@ -1,16 +1,26 @@
 package com.naturalprogrammer.spring.lemon.security;
 
 import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.http.MediaType;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.http.OAuth2ErrorResponseErrorHandler;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.util.MimeType;
+import org.springframework.web.client.RestTemplate;
 
 import com.naturalprogrammer.spring.lemon.LemonService;
 import com.naturalprogrammer.spring.lemon.commons.security.LemonPrincipal;
@@ -39,7 +49,31 @@ public class LemonOAuth2UserService<U extends AbstractUser<ID>, ID extends Seria
 		this.lemonService = lemonService;
 		this.passwordEncoder = passwordEncoder;
 		
+		replaceRestOperarions();
 		log.info("Created");
+	}
+
+	protected void replaceRestOperarions() {
+		
+		RestTemplate restTemplate = new RestTemplate();
+		restTemplate.setErrorHandler(new OAuth2ErrorResponseErrorHandler());
+		restTemplate.setMessageConverters(makeMessageConverters());
+		setRestOperations(restTemplate);
+		
+		log.info("Rest Operations replaced");
+	}
+
+	protected List<HttpMessageConverter<?>> makeMessageConverters() {
+		
+		log.info("Making message converters");
+
+		MappingJackson2HttpMessageConverter converter =	new MappingJackson2HttpMessageConverter();
+
+        List<MediaType> mediaTypes = new ArrayList<>(converter.getSupportedMediaTypes());
+        mediaTypes.add(MediaType.asMediaType(new MimeType("text", "javascript", StandardCharsets.UTF_8))); // Facebook returns text/javascript        
+
+        converter.setSupportedMediaTypes(mediaTypes);
+        return Collections.singletonList(converter);
 	}
 
 	@Override
