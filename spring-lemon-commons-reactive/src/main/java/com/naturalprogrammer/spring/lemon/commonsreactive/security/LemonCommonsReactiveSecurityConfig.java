@@ -1,7 +1,5 @@
 package com.naturalprogrammer.spring.lemon.commonsreactive.security;
 
-import java.util.function.Function;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.http.HttpHeaders;
@@ -10,14 +8,13 @@ import org.springframework.security.authentication.ReactiveAuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.ServerAuthenticationEntryPoint;
 import org.springframework.security.web.server.authentication.AuthenticationWebFilter;
+import org.springframework.security.web.server.authentication.ServerAuthenticationConverter;
 import org.springframework.security.web.server.authentication.ServerAuthenticationFailureHandler;
 import org.springframework.security.web.server.authorization.ServerAccessDeniedHandler;
 import org.springframework.security.web.server.context.NoOpServerSecurityContextRepository;
-import org.springframework.web.server.ServerWebExchange;
 
 import com.naturalprogrammer.spring.lemon.commons.security.BlueTokenService;
 import com.naturalprogrammer.spring.lemon.commons.security.LemonPrincipal;
@@ -79,7 +76,7 @@ public class LemonCommonsReactiveSecurityConfig {
 	protected AuthenticationWebFilter tokenAuthenticationFilter() {
 		
 		AuthenticationWebFilter filter = new AuthenticationWebFilter(tokenAuthenticationManager());		
-		filter.setAuthenticationConverter(tokenAuthenticationConverter());
+		filter.setServerAuthenticationConverter(tokenAuthenticationConverter());
 		filter.setAuthenticationFailureHandler(authenticationFailureHandler());
 		
 		return filter;
@@ -117,7 +114,7 @@ public class LemonCommonsReactiveSecurityConfig {
 				LexUtils.getMessage("com.naturalprogrammer.spring.userClaimAbsent")));
 	}
 
-	protected Function<ServerWebExchange, Mono<Authentication>> tokenAuthenticationConverter() {
+	protected ServerAuthenticationConverter tokenAuthenticationConverter() {
 		
 		return serverWebExchange -> {
 			
