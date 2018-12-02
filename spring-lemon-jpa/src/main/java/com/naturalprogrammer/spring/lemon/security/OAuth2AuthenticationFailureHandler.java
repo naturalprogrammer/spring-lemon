@@ -21,7 +21,6 @@ public class OAuth2AuthenticationFailureHandler
 			HttpServletResponse response, AuthenticationException exception)
 			throws IOException, ServletException {
 		
-		HttpCookieOAuth2AuthorizationRequestRepository.deleteCookies(request, response);
 		super.onAuthenticationFailure(request, response, exception);
 	}
 }

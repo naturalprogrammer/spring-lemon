@@ -48,7 +48,6 @@ public class OAuth2AuthenticationSuccessHandler<ID extends Serializable>
 				.map(Cookie::getValue)
 				.orElse(properties.getOauth2AuthenticationSuccessUrl());
 		
-		HttpCookieOAuth2AuthorizationRequestRepository.deleteCookies(request, response);
 		return targetUrl + shortLivedAuthToken;
 	}
 }

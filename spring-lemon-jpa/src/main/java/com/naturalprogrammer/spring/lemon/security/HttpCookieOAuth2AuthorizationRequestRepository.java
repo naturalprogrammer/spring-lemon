@@ -75,9 +75,11 @@ public class HttpCookieOAuth2AuthorizationRequestRepository implements Authoriza
 	}
 
 	@Override
-	public OAuth2AuthorizationRequest removeAuthorizationRequest(HttpServletRequest request) {
+	public OAuth2AuthorizationRequest removeAuthorizationRequest(HttpServletRequest request, HttpServletResponse response) {
 		
-		return loadAuthorizationRequest(request);
+		OAuth2AuthorizationRequest originalRequest = loadAuthorizationRequest(request);
+		deleteCookies(request, response);
+		return originalRequest;
 	}
 	
 	/**
@@ -102,5 +104,11 @@ public class HttpCookieOAuth2AuthorizationRequestRepository implements Authoriza
 	private OAuth2AuthorizationRequest deserialize(Cookie cookie) {
 		
 		return LecUtils.deserialize(cookie.getValue());
+	}
+
+	@Deprecated
+	@Override
+	public OAuth2AuthorizationRequest removeAuthorizationRequest(HttpServletRequest request) {
+		throw new UnsupportedOperationException("Spring Security shouldn't have called the deprecated removeAuthorizationRequest(request)");
 	}
 }
