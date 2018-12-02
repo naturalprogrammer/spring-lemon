@@ -23,6 +23,7 @@ import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.web.cors.CorsConfigurationSource;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.naturalprogrammer.spring.lemon.commons.LemonCommonsAutoConfiguration;
@@ -30,7 +31,7 @@ import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
 import com.naturalprogrammer.spring.lemon.commonsweb.exceptions.DefaultExceptionHandlerControllerAdvice;
 import com.naturalprogrammer.spring.lemon.commonsweb.exceptions.LemonErrorAttributes;
 import com.naturalprogrammer.spring.lemon.commonsweb.exceptions.LemonErrorController;
-import com.naturalprogrammer.spring.lemon.commonsweb.security.LemonCorsConfig;
+import com.naturalprogrammer.spring.lemon.commonsweb.security.LemonCorsConfigurationSource;
 import com.naturalprogrammer.spring.lemon.commonsweb.security.LemonWebAuditorAware;
 import com.naturalprogrammer.spring.lemon.commonsweb.security.LemonWebSecurityConfig;
 import com.naturalprogrammer.spring.lemon.commonsweb.util.LecwUtils;
@@ -122,11 +123,11 @@ public class LemonCommonsWebAutoConfiguration {
 	 */
 	@Bean
 	@ConditionalOnProperty(name="lemon.cors.allowed-origins")
-	@ConditionalOnMissingBean(LemonCorsConfig.class)
-	public LemonCorsConfig lemonCorsConfig(LemonProperties properties) {
+	@ConditionalOnMissingBean(CorsConfigurationSource.class)
+	public LemonCorsConfigurationSource corsConfigurationSource(LemonProperties properties) {
 		
-        log.info("Configuring LemonCorsConfig");       
-		return new LemonCorsConfig(properties);		
+        log.info("Configuring LemonCorsConfigurationSource");       
+		return new LemonCorsConfigurationSource(properties);		
 	}
 	
 	/**

@@ -21,6 +21,7 @@ import org.springframework.security.access.expression.AbstractSecurityExpression
 import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.web.server.SecurityWebFilterChain;
+import org.springframework.web.cors.reactive.CorsConfigurationSource;
 
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
@@ -30,8 +31,8 @@ import com.naturalprogrammer.spring.lemon.commons.security.BlueTokenService;
 import com.naturalprogrammer.spring.lemon.commonsreactive.exceptions.LemonReactiveErrorAttributes;
 import com.naturalprogrammer.spring.lemon.commonsreactive.exceptions.handlers.VersionExceptionHandler;
 import com.naturalprogrammer.spring.lemon.commonsreactive.security.LemonCommonsReactiveSecurityConfig;
+import com.naturalprogrammer.spring.lemon.commonsreactive.security.LemonCorsConfigurationSource;
 import com.naturalprogrammer.spring.lemon.commonsreactive.security.LemonReactiveAuditorAware;
-import com.naturalprogrammer.spring.lemon.commonsreactive.security.LemonReactiveCorsConfig;
 import com.naturalprogrammer.spring.lemon.commonsreactive.util.LecrUtils;
 import com.naturalprogrammer.spring.lemon.exceptions.ErrorResponseComposer;
 import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
@@ -96,11 +97,11 @@ public class LemonCommonsReactiveAutoConfiguration {
 	 */
 	@Bean
 	@ConditionalOnProperty(name="lemon.cors.allowed-origins")
-	@ConditionalOnMissingBean(LemonReactiveCorsConfig.class)
-	public LemonReactiveCorsConfig lemonCorsConfig(LemonProperties properties) {
+	@ConditionalOnMissingBean(CorsConfigurationSource.class)
+	public LemonCorsConfigurationSource corsConfigurationSource(LemonProperties properties) {
 		
-        log.info("Configuring LemonCorsConfig");       
-		return new LemonReactiveCorsConfig(properties);		
+        log.info("Configuring LemonCorsConfigurationSource");       
+		return new LemonCorsConfigurationSource(properties);		
 	}
 
 	

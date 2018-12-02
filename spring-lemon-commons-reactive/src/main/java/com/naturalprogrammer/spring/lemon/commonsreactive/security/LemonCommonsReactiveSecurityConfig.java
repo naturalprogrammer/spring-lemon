@@ -49,6 +49,8 @@ public class LemonCommonsReactiveSecurityConfig {
 				.accessDeniedHandler(accessDeniedHandler())
 				.authenticationEntryPoint(authenticationEntryPoint())
 			.and()
+				.cors()
+			.and()
 				.csrf().disable()
 				.addFilterAt(tokenAuthenticationFilter(), SecurityWebFiltersOrder.AUTHENTICATION)
 			.logout().disable()
