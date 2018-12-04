@@ -51,6 +51,14 @@ public class LemonReactiveSecurityConfig <U extends AbstractMongoUser<ID>, ID ex
 		return "/api/core/login";
 	}
 
+	/**
+	 * Configure OAuth2 login
+	 */
+	@Override
+	protected void oauth2Login(ServerHttpSecurity http) {
+
+		http.oauth2Login(); // TODO: Configure properly
+	}
 	
 	@Override
 	protected Mono<UserDto> fetchUserDto(JWTClaimsSet claims) {

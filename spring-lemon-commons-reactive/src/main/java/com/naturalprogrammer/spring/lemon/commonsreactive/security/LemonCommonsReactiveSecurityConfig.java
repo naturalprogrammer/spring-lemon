@@ -39,6 +39,7 @@ public class LemonCommonsReactiveSecurityConfig {
 		
 		formLogin(http); // Configure form login
 		authorizeExchange(http); // configure authorization
+		oauth2Login(http); // configure OAuth2 login
 
 		return http
 			.securityContextRepository(NoOpServerSecurityContextRepository.getInstance())
@@ -52,6 +53,14 @@ public class LemonCommonsReactiveSecurityConfig {
 				.addFilterAt(tokenAuthenticationFilter(), SecurityWebFiltersOrder.AUTHENTICATION)
 			.logout().disable()
 			.build();
+	}
+
+	/**
+	 * Override this to configure oauth2 Login
+	 */
+	protected void oauth2Login(ServerHttpSecurity http) {
+
+		// Bypass here. OAuth2 login is needed only in the auth service
 	}
 
 	/**
