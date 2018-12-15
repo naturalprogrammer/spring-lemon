@@ -33,7 +33,7 @@ import com.naturalprogrammer.spring.lemondemo.repositories.UserRepository;
 	"logging.level.org.springframework=ERROR",
 	"lemon.recaptcha.sitekey="
 })
-@AutoConfigureMockMvc(secure=false)
+@AutoConfigureMockMvc
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.HSQL)
 @Sql({"/test-data/initialize.sql", "/test-data/finalize.sql"})
 public abstract class AbstractMvcTests {
