@@ -17,9 +17,14 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationFa
 public class OAuth2AuthenticationFailureHandler
 	extends SimpleUrlAuthenticationFailureHandler {
 	
+	@Override
 	public void onAuthenticationFailure(HttpServletRequest request,
 			HttpServletResponse response, AuthenticationException exception)
 			throws IOException, ServletException {
+		
+		HttpCookieOAuth2AuthorizationRequestRepository.deleteCookies(request, response,
+			HttpCookieOAuth2AuthorizationRequestRepository.AUTHORIZATION_REQUEST_COOKIE_NAME,
+			HttpCookieOAuth2AuthorizationRequestRepository.LEMON_REDIRECT_URI_COOKIE_PARAM_NAME);
 		
 		super.onAuthenticationFailure(request, response, exception);
 	}

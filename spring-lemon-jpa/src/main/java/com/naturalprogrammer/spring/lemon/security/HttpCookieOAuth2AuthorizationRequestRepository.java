@@ -4,6 +4,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.oauth2.client.web.AuthorizationRequestRepository;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
@@ -18,7 +19,7 @@ import com.naturalprogrammer.spring.lemon.commonsweb.util.LecwUtils;
  */
 public class HttpCookieOAuth2AuthorizationRequestRepository implements AuthorizationRequestRepository<OAuth2AuthorizationRequest> {
 	
-	private static final String AUTHORIZATION_REQUEST_COOKIE_NAME = "lemon_oauth2_authorization_request";
+	public static final String AUTHORIZATION_REQUEST_COOKIE_NAME = "lemon_oauth2_authorization_request";
 	public static final String LEMON_REDIRECT_URI_COOKIE_PARAM_NAME = "lemon_redirect_uri";
 	
 	private int cookieExpirySecs;
@@ -53,7 +54,7 @@ public class HttpCookieOAuth2AuthorizationRequestRepository implements Authoriza
 		
 		if (authorizationRequest == null) {
 			
-			deleteCookies(request, response);
+			deleteCookies(request, response, AUTHORIZATION_REQUEST_COOKIE_NAME, LEMON_REDIRECT_URI_COOKIE_PARAM_NAME);
 			return;
 		}
 		
@@ -78,21 +79,20 @@ public class HttpCookieOAuth2AuthorizationRequestRepository implements Authoriza
 	public OAuth2AuthorizationRequest removeAuthorizationRequest(HttpServletRequest request, HttpServletResponse response) {
 		
 		OAuth2AuthorizationRequest originalRequest = loadAuthorizationRequest(request);
-		deleteCookies(request, response);
+		deleteCookies(request, response, AUTHORIZATION_REQUEST_COOKIE_NAME);
 		return originalRequest;
 	}
 	
 	/**
 	 * Utility for deleting related cookies
 	 */
-	public static void deleteCookies(HttpServletRequest request, HttpServletResponse response) {
+	public static void deleteCookies(HttpServletRequest request, HttpServletResponse response, String... cookiesToDelete) {
 		
 		Cookie[] cookies = request.getCookies();
 
 		if (cookies != null && cookies.length > 0)
 			for (int i = 0; i < cookies.length; i++)
-				if (cookies[i].getName().equals(AUTHORIZATION_REQUEST_COOKIE_NAME) ||
-					cookies[i].getName().equals(LEMON_REDIRECT_URI_COOKIE_PARAM_NAME)) {
+				if (ArrayUtils.contains(cookiesToDelete, cookies[i].getName())) {
 					
 					cookies[i].setValue("");
 					cookies[i].setPath("/");
