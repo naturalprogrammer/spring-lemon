@@ -41,6 +41,12 @@ public class LemonProperties {
 	 */
     private String oauth2AuthenticationSuccessUrl = "http://localhost:9000/social-login-success?token=";
 
+	/**
+	 * URL of the login endpoint 
+	 * e.g. POST /api/core/login
+	 */
+    private String loginUrl = "/api/core/login";
+
     /**
 	 * Recaptcha related properties
 	 */

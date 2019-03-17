@@ -96,7 +96,7 @@ public class LemonJpaSecurityConfig extends LemonWebSecurityConfig {
 	 */
 	protected String loginPage() {
 		
-		return "/api/core/login";
+		return properties.getLoginUrl();
 	}
 
 	
@@ -116,6 +116,7 @@ public class LemonJpaSecurityConfig extends LemonWebSecurityConfig {
 	/**
 	 * Configuring token authentication filter
 	 */
+	@Override
 	protected void tokenAuthentication(HttpSecurity http) throws Exception {
 		
 		http.addFilterBefore(new LemonJpaTokenAuthenticationFilter(blueTokenService, userDetailsService),
