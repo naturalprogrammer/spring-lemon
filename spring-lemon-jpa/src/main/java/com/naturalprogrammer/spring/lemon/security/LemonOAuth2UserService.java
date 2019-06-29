@@ -85,7 +85,7 @@ public class LemonOAuth2UserService<U extends AbstractUser<ID>, ID extends Seria
 
 	/**
 	 * Builds the security principal from the given userReqest.
-	 * Registers the user if not already reqistered
+	 * Registers the user if not already registered
 	 */
 	public LemonPrincipal buildPrincipal(OAuth2User oath2User, String registrationId) {
 		

@@ -17,7 +17,7 @@ import com.nimbusds.jwt.JWTClaimsSet;
 
 import reactor.core.publisher.Mono;
 
-public class LemonReactiveSecurityConfig <U extends AbstractMongoUser<ID>, ID extends Serializable> extends LemonCommonsReactiveSecurityConfig {
+public class LemonReactiveSecurityConfig<U extends AbstractMongoUser<ID>, ID extends Serializable> extends LemonCommonsReactiveSecurityConfig {
 
 	private static final Log log = LogFactory.getLog(LemonReactiveSecurityConfig.class);
 	
