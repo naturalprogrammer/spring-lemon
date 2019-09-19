@@ -8,6 +8,7 @@ import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.server.authentication.WebFilterChainServerAuthenticationSuccessHandler;
 
+import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
 import com.naturalprogrammer.spring.lemon.commons.security.BlueTokenService;
 import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
 import com.naturalprogrammer.spring.lemon.commonsreactive.security.LemonCommonsReactiveSecurityConfig;
@@ -22,12 +23,16 @@ public class LemonReactiveSecurityConfig<U extends AbstractMongoUser<ID>, ID ext
 	private static final Log log = LogFactory.getLog(LemonReactiveSecurityConfig.class);
 	
 	protected LemonReactiveUserDetailsService<U, ID> userDetailsService;
+	private LemonProperties properties;
 
 	public LemonReactiveSecurityConfig(BlueTokenService blueTokenService,
-			LemonReactiveUserDetailsService<U, ID> userDetailsService) {
+			LemonReactiveUserDetailsService<U, ID> userDetailsService,
+			LemonProperties properties) {
 		
 		super(blueTokenService);
 		this.userDetailsService = userDetailsService;
+		this.properties = properties;
+		
 		log.info("Created");
 	}
 
@@ -57,7 +62,10 @@ public class LemonReactiveSecurityConfig<U extends AbstractMongoUser<ID>, ID ext
 	@Override
 	protected void oauth2Login(ServerHttpSecurity http) {
 
-		http.oauth2Login(); // TODO: Configure properly
+		http.oauth2Login()
+			.authorizedClientRepository(new ReactiveCookieServerOAuth2AuthorizedClientRepository(properties));
+			//.authenticationSuccessHandler(authenticationSuccessHandler);
+			//.authenticationManager(authenticationManager);
 	}
 	
 	@Override

@@ -33,7 +33,17 @@ public class SignupMvcTests extends AbstractMvcTests {
 				.andExpect(status().is(422))
 				.andExpect(jsonPath("$.errors[*].field").value(hasSize(4)))
 				.andExpect(jsonPath("$.errors[*].field").value(hasItems(
-					"user.email", "user.password", "user.name")));
+					"user.email", "user.password", "user.name")))
+				.andExpect(jsonPath("$.errors[*].code").value(hasItems(
+						"{com.naturalprogrammer.spring.invalid.email}",
+						"{blank.name}",
+						"{com.naturalprogrammer.spring.invalid.email.size}",
+						"{com.naturalprogrammer.spring.invalid.password.size}")))
+				.andExpect(jsonPath("$.errors[*].message").value(hasItems(
+						"Not a well formed email address",
+						"Name required",
+						"Email must be between 4 and 250 characters",
+						"Password must be between 6 and 50 characters")));
 		
 		verify(mailSender, never()).send(any());
 	}

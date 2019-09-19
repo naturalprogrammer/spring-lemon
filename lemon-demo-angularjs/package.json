@@ -2,7 +2,7 @@
   "name": "angularsample",
   "version": "0.0.0",
   "dependencies": {
-    "natives": "^1.1.5",
+    "natives": "^1.1.6",
     "wiredep": "^2.2.2"
   },
   "repository": {},

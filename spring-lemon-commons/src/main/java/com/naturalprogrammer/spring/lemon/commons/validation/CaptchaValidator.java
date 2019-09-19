@@ -9,7 +9,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
@@ -61,10 +60,10 @@ public class CaptchaValidator implements ConstraintValidator<Captcha, String> {
 	private LemonProperties properties;
 	private RestTemplate restTemplate;
 	
-	public CaptchaValidator(LemonProperties properties, RestTemplateBuilder restTemplateBuilder) {
+	public CaptchaValidator(LemonProperties properties) {
 		
 		this.properties = properties;
-		this.restTemplate = restTemplateBuilder.build();;
+		this.restTemplate = new RestTemplate();
 		log.info("Created");
 	}
 

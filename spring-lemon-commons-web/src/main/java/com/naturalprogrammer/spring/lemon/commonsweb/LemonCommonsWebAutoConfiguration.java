@@ -61,7 +61,7 @@ public class LemonCommonsWebAutoConfiguration {
 		log.info("Created");
 	}
 	
-	/**
+    /**
 	 * Prefixes JSON responses for JSON vulnerability. Disabled by default.
 	 * To enable, add this to your application properties:
 	 *     lemon.enabled.json-prefix: true

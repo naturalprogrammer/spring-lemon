@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
+import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
 import com.naturalprogrammer.spring.lemon.commons.domain.IdConverter;
 import com.naturalprogrammer.spring.lemon.commons.security.BlueTokenService;
 import com.naturalprogrammer.spring.lemon.commonsmongo.LemonCommonsMongoAutoConfiguration;
@@ -45,11 +46,12 @@ public class LemonReactiveAutoConfiguration {
 	public <U extends AbstractMongoUser<ID>, ID extends Serializable>
 		LemonReactiveSecurityConfig<U,ID> lemonReactiveSecurityConfig(
 				BlueTokenService blueTokenService,
-				LemonReactiveUserDetailsService<U, ID> userDetailsService) {
+				LemonReactiveUserDetailsService<U, ID> userDetailsService,
+				LemonProperties properties) {
 		
 		log.info("Configuring LemonReactiveSecurityConfig ...");
 
-		return new LemonReactiveSecurityConfig<U,ID>(blueTokenService, userDetailsService);
+		return new LemonReactiveSecurityConfig<U,ID>(blueTokenService, userDetailsService, properties);
 	}
 	
 	

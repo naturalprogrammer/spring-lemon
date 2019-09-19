@@ -1,9 +1,12 @@
 package com.naturalprogrammer.spring.lemonreactive.util;
 
 import java.io.Serializable;
+import java.util.Optional;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.http.HttpCookie;
+import org.springframework.web.server.ServerWebExchange;
 
 import com.naturalprogrammer.spring.lemon.commons.security.LemonTokenService;
 import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
@@ -33,5 +36,9 @@ public class LerUtils {
 		
 		LecUtils.ensureCredentials(issueTime >= user.getCredentialsUpdatedMillis(),
 				"com.naturalprogrammer.spring.obsoleteToken");
+	}
+
+	public static Optional<HttpCookie> fetchCookie(ServerWebExchange exchange, String cookieName) {		
+		return Optional.ofNullable(exchange.getRequest().getCookies().getFirst(cookieName));
 	}
 }
