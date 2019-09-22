@@ -40,6 +40,9 @@ public class LecUtils {
 	
 	private static final Log log = LogFactory.getLog(LecUtils.class);
 	
+	public static final String AUTHORIZATION_REQUEST_COOKIE_NAME = "lemon_oauth2_authorization_request";
+	public static final String LEMON_REDIRECT_URI_COOKIE_PARAM_NAME = "lemon_redirect_uri";
+
 	// Computed authorities
 	public static final String GOOD_ADMIN = "GOOD_ADMIN";
 	public static final String GOOD_USER = "GOOD_USER";

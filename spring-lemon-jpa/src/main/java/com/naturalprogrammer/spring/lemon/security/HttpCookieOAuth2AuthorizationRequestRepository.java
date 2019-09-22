@@ -19,9 +19,6 @@ import com.naturalprogrammer.spring.lemon.commonsweb.util.LecwUtils;
  */
 public class HttpCookieOAuth2AuthorizationRequestRepository implements AuthorizationRequestRepository<OAuth2AuthorizationRequest> {
 	
-	public static final String AUTHORIZATION_REQUEST_COOKIE_NAME = "lemon_oauth2_authorization_request";
-	public static final String LEMON_REDIRECT_URI_COOKIE_PARAM_NAME = "lemon_redirect_uri";
-	
 	private int cookieExpirySecs;
 	
 	public HttpCookieOAuth2AuthorizationRequestRepository(LemonProperties properties) {
@@ -37,7 +34,7 @@ public class HttpCookieOAuth2AuthorizationRequestRepository implements Authoriza
 		
 		Assert.notNull(request, "request cannot be null");
 		
-		return LecwUtils.fetchCookie(request, AUTHORIZATION_REQUEST_COOKIE_NAME)
+		return LecwUtils.fetchCookie(request, LecUtils.AUTHORIZATION_REQUEST_COOKIE_NAME)
 					.map(this::deserialize)
 					.orElse(null);
 	}
@@ -54,20 +51,20 @@ public class HttpCookieOAuth2AuthorizationRequestRepository implements Authoriza
 		
 		if (authorizationRequest == null) {
 			
-			deleteCookies(request, response, AUTHORIZATION_REQUEST_COOKIE_NAME, LEMON_REDIRECT_URI_COOKIE_PARAM_NAME);
+			deleteCookies(request, response, LecUtils.AUTHORIZATION_REQUEST_COOKIE_NAME, LecUtils.LEMON_REDIRECT_URI_COOKIE_PARAM_NAME);
 			return;
 		}
 		
-		Cookie cookie = new Cookie(AUTHORIZATION_REQUEST_COOKIE_NAME, LecUtils.serialize(authorizationRequest));
+		Cookie cookie = new Cookie(LecUtils.AUTHORIZATION_REQUEST_COOKIE_NAME, LecUtils.serialize(authorizationRequest));
 		cookie.setPath("/");
 		cookie.setHttpOnly(true);
 		cookie.setMaxAge(cookieExpirySecs);
 		response.addCookie(cookie);
 		
-		String lemonRedirectUri = request.getParameter(LEMON_REDIRECT_URI_COOKIE_PARAM_NAME);
+		String lemonRedirectUri = request.getParameter(LecUtils.LEMON_REDIRECT_URI_COOKIE_PARAM_NAME);
 		if (StringUtils.isNotBlank(lemonRedirectUri)) {
 
-			cookie = new Cookie(LEMON_REDIRECT_URI_COOKIE_PARAM_NAME, lemonRedirectUri);
+			cookie = new Cookie(LecUtils.LEMON_REDIRECT_URI_COOKIE_PARAM_NAME, lemonRedirectUri);
 			cookie.setPath("/");
 			cookie.setHttpOnly(true);
 			cookie.setMaxAge(cookieExpirySecs);
@@ -79,7 +76,7 @@ public class HttpCookieOAuth2AuthorizationRequestRepository implements Authoriza
 	public OAuth2AuthorizationRequest removeAuthorizationRequest(HttpServletRequest request, HttpServletResponse response) {
 		
 		OAuth2AuthorizationRequest originalRequest = loadAuthorizationRequest(request);
-		deleteCookies(request, response, AUTHORIZATION_REQUEST_COOKIE_NAME);
+		deleteCookies(request, response, LecUtils.AUTHORIZATION_REQUEST_COOKIE_NAME);
 		return originalRequest;
 	}
 	

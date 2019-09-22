@@ -1,7 +1,5 @@
 package com.naturalprogrammer.spring.lemon.security;
 
-import java.io.Serializable;
-
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -13,6 +11,7 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
 import com.naturalprogrammer.spring.lemon.commons.security.BlueTokenService;
 import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
+import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
 import com.naturalprogrammer.spring.lemon.commonsweb.util.LecwUtils;
 
 import lombok.AllArgsConstructor;
@@ -44,13 +43,13 @@ public class OAuth2AuthenticationSuccessHandler
 				(long) properties.getJwt().getShortLivedMillis());
 
 		String targetUrl = LecwUtils.fetchCookie(request,
-				HttpCookieOAuth2AuthorizationRequestRepository.LEMON_REDIRECT_URI_COOKIE_PARAM_NAME)
+				LecUtils.LEMON_REDIRECT_URI_COOKIE_PARAM_NAME)
 				.map(Cookie::getValue)
 				.orElse(properties.getOauth2AuthenticationSuccessUrl());
 		
 		HttpCookieOAuth2AuthorizationRequestRepository.deleteCookies(request, response,
-				HttpCookieOAuth2AuthorizationRequestRepository.AUTHORIZATION_REQUEST_COOKIE_NAME,
-				HttpCookieOAuth2AuthorizationRequestRepository.LEMON_REDIRECT_URI_COOKIE_PARAM_NAME);
+				LecUtils.AUTHORIZATION_REQUEST_COOKIE_NAME,
+				LecUtils.LEMON_REDIRECT_URI_COOKIE_PARAM_NAME);
 		
 		return targetUrl + shortLivedAuthToken;
 	}

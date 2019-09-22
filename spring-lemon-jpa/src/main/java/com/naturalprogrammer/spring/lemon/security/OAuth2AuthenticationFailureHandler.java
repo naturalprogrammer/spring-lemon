@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 
+import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
+
 /**
  * OAuth2 Authentication failure handler for removing oauth2 related cookies
  * 
@@ -23,8 +25,8 @@ public class OAuth2AuthenticationFailureHandler
 			throws IOException, ServletException {
 		
 		HttpCookieOAuth2AuthorizationRequestRepository.deleteCookies(request, response,
-			HttpCookieOAuth2AuthorizationRequestRepository.AUTHORIZATION_REQUEST_COOKIE_NAME,
-			HttpCookieOAuth2AuthorizationRequestRepository.LEMON_REDIRECT_URI_COOKIE_PARAM_NAME);
+			LecUtils.AUTHORIZATION_REQUEST_COOKIE_NAME,
+			LecUtils.LEMON_REDIRECT_URI_COOKIE_PARAM_NAME);
 		
 		super.onAuthenticationFailure(request, response, exception);
 	}

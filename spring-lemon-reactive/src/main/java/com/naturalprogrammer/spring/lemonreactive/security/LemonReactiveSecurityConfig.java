@@ -5,12 +5,15 @@ import java.io.Serializable;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.web.server.WebFilterExchange;
 import org.springframework.security.web.server.authentication.WebFilterChainServerAuthenticationSuccessHandler;
 
 import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
 import com.naturalprogrammer.spring.lemon.commons.security.BlueTokenService;
 import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
+import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
 import com.naturalprogrammer.spring.lemon.commonsreactive.security.LemonCommonsReactiveSecurityConfig;
 import com.naturalprogrammer.spring.lemonreactive.domain.AbstractMongoUser;
 import com.naturalprogrammer.spring.lemonreactive.util.LerUtils;
@@ -24,11 +27,11 @@ public class LemonReactiveSecurityConfig<U extends AbstractMongoUser<ID>, ID ext
 	
 	protected LemonReactiveUserDetailsService<U, ID> userDetailsService;
 	private LemonProperties properties;
-	private ReactiveOAuth2AuthenticationSuccessHandler reactiveOAuth2AuthenticationSuccessHandler;
+	private ReactiveOAuth2AuthenticationSuccessHandler<U,ID> reactiveOAuth2AuthenticationSuccessHandler;
 
 	public LemonReactiveSecurityConfig(BlueTokenService blueTokenService,
 			LemonReactiveUserDetailsService<U, ID> userDetailsService,
-			ReactiveOAuth2AuthenticationSuccessHandler reactiveOAuth2AuthenticationSuccessHandler,
+			ReactiveOAuth2AuthenticationSuccessHandler<U,ID> reactiveOAuth2AuthenticationSuccessHandler,
 			LemonProperties properties) {
 		
 		super(blueTokenService);
@@ -68,7 +71,7 @@ public class LemonReactiveSecurityConfig<U extends AbstractMongoUser<ID>, ID ext
 		http.oauth2Login()
 			.authorizedClientRepository(new ReactiveCookieServerOAuth2AuthorizedClientRepository(properties))
 			.authenticationSuccessHandler(reactiveOAuth2AuthenticationSuccessHandler)
-			.authenticationManager(authenticationManager);
+			.authenticationFailureHandler(this::onAuthenticationFailure);
 	}
 	
 	@Override
@@ -83,5 +86,14 @@ public class LemonReactiveSecurityConfig<U extends AbstractMongoUser<ID>, ID ext
 		        LerUtils.ensureCredentialsUpToDate(claims, user);
 			})
 			.map(AbstractMongoUser::toUserDto);
+	}
+	
+	protected Mono<Void> onAuthenticationFailure(WebFilterExchange webFilterExchange, AuthenticationException exception) {
+		
+		ReactiveCookieServerOAuth2AuthorizedClientRepository.deleteCookies(webFilterExchange.getExchange(),
+				LecUtils.AUTHORIZATION_REQUEST_COOKIE_NAME,
+				LecUtils.LEMON_REDIRECT_URI_COOKIE_PARAM_NAME);
+		
+		return Mono.error(exception);
 	}
 }

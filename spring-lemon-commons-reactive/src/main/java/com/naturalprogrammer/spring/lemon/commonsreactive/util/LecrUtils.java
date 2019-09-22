@@ -8,7 +8,9 @@ import javax.annotation.PostConstruct;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.http.HttpCookie;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
+import org.springframework.web.server.ServerWebExchange;
 
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
@@ -33,6 +35,10 @@ public class LecrUtils {
 		NOT_FOUND_MONO = Mono.error(LexUtils.NOT_FOUND_EXCEPTION);
 	}
 	
+	public static Optional<HttpCookie> fetchCookie(ServerWebExchange exchange, String cookieName) {		
+		return Optional.ofNullable(exchange.getRequest().getCookies().getFirst(cookieName));
+	}
+
 	/**
 	 * Gets the current-user
 	 */

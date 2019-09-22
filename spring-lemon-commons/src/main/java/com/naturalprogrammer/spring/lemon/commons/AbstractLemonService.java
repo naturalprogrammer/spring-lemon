@@ -10,6 +10,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.core.oidc.StandardClaimNames;
 
 import com.naturalprogrammer.spring.lemon.commons.LemonProperties.Admin;
 import com.naturalprogrammer.spring.lemon.commons.domain.LemonUser;
@@ -175,6 +176,41 @@ public abstract class AbstractLemonService
 				LexUtils.getMessage("com.naturalprogrammer.spring.forgotPasswordSubject"),
 				LexUtils.getMessage("com.naturalprogrammer.spring.forgotPasswordEmail",
 					forgotPasswordLink)));
+	}
+	
+	/**
+	 * Extracts the email id from user attributes received from OAuth2 provider, e.g. Google
+	 * 
+	 */
+	public String getOAuth2Email(String registrationId, Map<String, Object> attributes) {
+
+		return (String) attributes.get(StandardClaimNames.EMAIL);
+	}
+
+	
+	/**
+	 * Extracts additional fields, e.g. name from user attributes received from OAuth2 provider, e.g. Google
+	 * Override this if you introduce more user fields, e.g. name
+	 */
+	public void fillAdditionalFields(String clientId, U user, Map<String, Object> attributes) {
+		
+	}
+
+	
+	/**
+	 * Checks if the account at the OAuth2 provider is verified 
+	 */
+	public boolean getOAuth2AccountVerified(String registrationId, Map<String, Object> attributes) {
+
+		Object verified = attributes.get(StandardClaimNames.EMAIL_VERIFIED);
+		if (verified == null)
+			verified = attributes.get("verified");
+		
+		try {
+			return (boolean) verified;
+		} catch (Throwable t) {
+			return false;
+		}
 	}
 		
 }

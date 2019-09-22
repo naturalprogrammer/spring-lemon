@@ -15,14 +15,11 @@ import org.springframework.web.server.ServerWebExchange;
 
 import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
 import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
-import com.naturalprogrammer.spring.lemonreactive.util.LerUtils;
+import com.naturalprogrammer.spring.lemon.commonsreactive.util.LecrUtils;
 
 import reactor.core.publisher.Mono;
 
 public class ReactiveCookieServerOAuth2AuthorizedClientRepository implements ServerOAuth2AuthorizedClientRepository {
-
-	public static final String AUTHORIZATION_REQUEST_COOKIE_NAME = "lemon_oauth2_authorization_request";
-	public static final String LEMON_REDIRECT_URI_COOKIE_PARAM_NAME = "lemon_redirect_uri";
 
 	private int cookieExpirySecs;
 	
@@ -35,7 +32,7 @@ public class ReactiveCookieServerOAuth2AuthorizedClientRepository implements Ser
 	public Mono<OAuth2AuthorizedClient> loadAuthorizedClient(String clientRegistrationId,
 			Authentication principal, ServerWebExchange exchange) {
 		
-		return LerUtils.fetchCookie(exchange, AUTHORIZATION_REQUEST_COOKIE_NAME)
+		return LecrUtils.fetchCookie(exchange, LecUtils.AUTHORIZATION_REQUEST_COOKIE_NAME)
 				.map(this::deserialize)
 				.orElse(Mono.empty());
 	}
@@ -49,12 +46,12 @@ public class ReactiveCookieServerOAuth2AuthorizedClientRepository implements Ser
 		Assert.notNull(exchange, "exchange cannot be null");
 		if (authorizedClient == null) {
 			
-			deleteCookies(exchange, AUTHORIZATION_REQUEST_COOKIE_NAME, LEMON_REDIRECT_URI_COOKIE_PARAM_NAME);
+			deleteCookies(exchange, LecUtils.AUTHORIZATION_REQUEST_COOKIE_NAME, LecUtils.LEMON_REDIRECT_URI_COOKIE_PARAM_NAME);
 			return Mono.empty();
 		}
 		
 		ResponseCookie cookie = ResponseCookie
-				.from(AUTHORIZATION_REQUEST_COOKIE_NAME, LecUtils.serialize(authorizedClient))
+				.from(LecUtils.AUTHORIZATION_REQUEST_COOKIE_NAME, LecUtils.serialize(authorizedClient))
 				.path("/")
 				.httpOnly(true)
 				.maxAge(cookieExpirySecs)
@@ -63,12 +60,12 @@ public class ReactiveCookieServerOAuth2AuthorizedClientRepository implements Ser
 		response.addCookie(cookie);
 		
 		String lemonRedirectUri = exchange.getRequest()
-				.getQueryParams().getFirst(LEMON_REDIRECT_URI_COOKIE_PARAM_NAME);
+				.getQueryParams().getFirst(LecUtils.LEMON_REDIRECT_URI_COOKIE_PARAM_NAME);
 		
 		if (StringUtils.isNotBlank(lemonRedirectUri)) {
 			
 			cookie = ResponseCookie
-					.from(LEMON_REDIRECT_URI_COOKIE_PARAM_NAME, lemonRedirectUri)
+					.from(LecUtils.LEMON_REDIRECT_URI_COOKIE_PARAM_NAME, lemonRedirectUri)
 					.path("/")
 					.httpOnly(true)
 					.maxAge(cookieExpirySecs)
@@ -84,11 +81,11 @@ public class ReactiveCookieServerOAuth2AuthorizedClientRepository implements Ser
 	public Mono<Void> removeAuthorizedClient(String clientRegistrationId, Authentication principal,
 			ServerWebExchange exchange) {
 		
-		deleteCookies(exchange, AUTHORIZATION_REQUEST_COOKIE_NAME);
+		deleteCookies(exchange, LecUtils.AUTHORIZATION_REQUEST_COOKIE_NAME);
 		return Mono.empty();
 	}
 	
-	private void deleteCookies(ServerWebExchange exchange, String ...cookiesToDelete) {
+	public static void deleteCookies(ServerWebExchange exchange, String ...cookiesToDelete) {
 		
 		MultiValueMap<String, HttpCookie> cookies = exchange.getRequest().getCookies();
 		MultiValueMap<String, ResponseCookie> responseCookies = exchange.getResponse().getCookies();

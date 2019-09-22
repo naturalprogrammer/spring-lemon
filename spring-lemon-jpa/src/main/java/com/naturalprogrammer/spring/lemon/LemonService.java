@@ -557,42 +557,6 @@ public abstract class LemonService
 
 
 	/**
-	 * Extracts the email id from user attributes received from OAuth2 provider, e.g. Google
-	 * 
-	 */
-	public String getOAuth2Email(String registrationId, Map<String, Object> attributes) {
-
-		return (String) attributes.get(StandardClaimNames.EMAIL);
-	}
-
-	
-	/**
-	 * Extracts additional fields, e.g. name from user attributes received from OAuth2 provider, e.g. Google
-	 * Override this if you introduce more user fields, e.g. name
-	 */
-	public void fillAdditionalFields(String clientId, U user, Map<String, Object> attributes) {
-		
-	}
-
-	
-	/**
-	 * Checks if the account at the OAuth2 provider is verified 
-	 */
-	public boolean getOAuth2AccountVerified(String registrationId, Map<String, Object> attributes) {
-
-		Object verified = attributes.get(StandardClaimNames.EMAIL_VERIFIED);
-		if (verified == null)
-			verified = attributes.get("verified");
-		
-		try {
-			return (boolean) verified;
-		} catch (Throwable t) {
-			return false;
-		}
-	}
-
-
-	/**
 	 * Fetches a new token - for session scrolling etc.
 	 * @return 
 	 */
