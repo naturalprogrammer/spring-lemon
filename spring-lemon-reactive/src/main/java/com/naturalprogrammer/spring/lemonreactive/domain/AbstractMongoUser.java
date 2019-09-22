@@ -10,6 +10,7 @@ import org.springframework.security.core.CredentialsContainer;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
+import com.naturalprogrammer.spring.lemon.commons.domain.LemonUser;
 import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
 import com.naturalprogrammer.spring.lemon.commons.util.UserUtils;
 import com.naturalprogrammer.spring.lemon.commons.validation.Captcha;
@@ -23,7 +24,8 @@ import lombok.Setter;
 @Getter @Setter
 public abstract class AbstractMongoUser
 	<ID extends Serializable>
-	extends AbstractDocument<ID> implements CredentialsContainer {
+	extends AbstractDocument<ID>
+	implements CredentialsContainer, LemonUser<ID> {
 
 	// email
 	@JsonView(UserUtils.SignupInput.class)

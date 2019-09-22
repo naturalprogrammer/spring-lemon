@@ -26,7 +26,7 @@ public class LemonJpaSecurityConfig extends LemonWebSecurityConfig {
 	private LemonAuthenticationSuccessHandler authenticationSuccessHandler;
 	private LemonOidcUserService oidcUserService;
 	private LemonOAuth2UserService<?, ?> oauth2UserService;
-	private OAuth2AuthenticationSuccessHandler<?> oauth2AuthenticationSuccessHandler;
+	private OAuth2AuthenticationSuccessHandler oauth2AuthenticationSuccessHandler;
 	private OAuth2AuthenticationFailureHandler oauth2AuthenticationFailureHandler;
 	
 	@Autowired
@@ -34,7 +34,7 @@ public class LemonJpaSecurityConfig extends LemonWebSecurityConfig {
 			LemonAuthenticationSuccessHandler authenticationSuccessHandler,
 			LemonOidcUserService oidcUserService,
 			LemonOAuth2UserService<?, ?> oauth2UserService,
-			OAuth2AuthenticationSuccessHandler<?> oauth2AuthenticationSuccessHandler,
+			OAuth2AuthenticationSuccessHandler oauth2AuthenticationSuccessHandler,
 			OAuth2AuthenticationFailureHandler oauth2AuthenticationFailureHandler) {
 
 		this.properties = properties;

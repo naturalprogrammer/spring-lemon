@@ -76,11 +76,11 @@ public class LemonAutoConfiguration {
 	 */
 	@Bean
 	@ConditionalOnMissingBean(OAuth2AuthenticationSuccessHandler.class)
-	public OAuth2AuthenticationSuccessHandler<?> oauth2AuthenticationSuccessHandler(
+	public OAuth2AuthenticationSuccessHandler oauth2AuthenticationSuccessHandler(
 			LemonProperties properties, BlueTokenService blueTokenService) {
 		
         log.info("Configuring OAuth2AuthenticationSuccessHandler");       
-		return new OAuth2AuthenticationSuccessHandler<>(properties, blueTokenService);
+		return new OAuth2AuthenticationSuccessHandler(properties, blueTokenService);
 	}
 	
 	/**

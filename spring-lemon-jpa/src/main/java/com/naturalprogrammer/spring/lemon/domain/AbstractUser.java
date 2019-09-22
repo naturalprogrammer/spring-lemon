@@ -14,6 +14,7 @@ import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
+import com.naturalprogrammer.spring.lemon.commons.domain.LemonUser;
 import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
 import com.naturalprogrammer.spring.lemon.commons.util.UserUtils;
 import com.naturalprogrammer.spring.lemon.commons.validation.Captcha;
@@ -33,7 +34,8 @@ import lombok.Setter;
 @Getter @Setter
 @MappedSuperclass
 public class AbstractUser<ID extends Serializable>
-extends LemonEntity<ID> {
+	extends LemonEntity<ID>
+	implements LemonUser<ID> {
 	
 	// email
 	@JsonView(UserUtils.SignupInput.class)

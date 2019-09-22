@@ -24,7 +24,7 @@ import lombok.AllArgsConstructor;
  * @author Sanjay Patel
  */
 @AllArgsConstructor
-public class OAuth2AuthenticationSuccessHandler<ID extends Serializable>
+public class OAuth2AuthenticationSuccessHandler
 	extends SimpleUrlAuthenticationSuccessHandler {
 	
 	private static final Log log = LogFactory.getLog(OAuth2AuthenticationSuccessHandler.class);

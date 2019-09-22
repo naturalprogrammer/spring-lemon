@@ -24,13 +24,16 @@ public class LemonReactiveSecurityConfig<U extends AbstractMongoUser<ID>, ID ext
 	
 	protected LemonReactiveUserDetailsService<U, ID> userDetailsService;
 	private LemonProperties properties;
+	private ReactiveOAuth2AuthenticationSuccessHandler reactiveOAuth2AuthenticationSuccessHandler;
 
 	public LemonReactiveSecurityConfig(BlueTokenService blueTokenService,
 			LemonReactiveUserDetailsService<U, ID> userDetailsService,
+			ReactiveOAuth2AuthenticationSuccessHandler reactiveOAuth2AuthenticationSuccessHandler,
 			LemonProperties properties) {
 		
 		super(blueTokenService);
 		this.userDetailsService = userDetailsService;
+		this.reactiveOAuth2AuthenticationSuccessHandler = reactiveOAuth2AuthenticationSuccessHandler;
 		this.properties = properties;
 		
 		log.info("Created");
@@ -63,9 +66,9 @@ public class LemonReactiveSecurityConfig<U extends AbstractMongoUser<ID>, ID ext
 	protected void oauth2Login(ServerHttpSecurity http) {
 
 		http.oauth2Login()
-			.authorizedClientRepository(new ReactiveCookieServerOAuth2AuthorizedClientRepository(properties));
-			//.authenticationSuccessHandler(authenticationSuccessHandler);
-			//.authenticationManager(authenticationManager);
+			.authorizedClientRepository(new ReactiveCookieServerOAuth2AuthorizedClientRepository(properties))
+			.authenticationSuccessHandler(reactiveOAuth2AuthenticationSuccessHandler)
+			.authenticationManager(authenticationManager);
 	}
 	
 	@Override

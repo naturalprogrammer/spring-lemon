@@ -27,6 +27,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
+import com.naturalprogrammer.spring.lemon.commons.AbstractLemonService;
 import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
 import com.naturalprogrammer.spring.lemon.commons.LemonProperties.Admin;
 import com.naturalprogrammer.spring.lemon.commons.domain.ChangePasswordForm;
@@ -55,17 +56,13 @@ import com.nimbusds.jwt.JWTClaimsSet;
 @Validated
 @Transactional(propagation=Propagation.SUPPORTS, readOnly=true)
 public abstract class LemonService
-	<U extends AbstractUser<ID>, ID extends Serializable> {
+	<U extends AbstractUser<ID>, ID extends Serializable>
+	extends AbstractLemonService<U, ID> {
 
     private static final Log log = LogFactory.getLog(LemonService.class);
     
-	private LemonProperties properties;
-	private PasswordEncoder passwordEncoder;
-    private MailSender mailSender;
 	private AbstractUserRepository<U, ID> userRepository;
 	private UserDetailsService userDetailsService;
-	private BlueTokenService blueTokenService;
-	private GreenTokenService greenTokenService;
 
 	@Autowired
 	public void createLemonService(LemonProperties properties,
@@ -89,21 +86,6 @@ public abstract class LemonService
 
 	
 	/**
-     * This method is called after the application is ready.
-     * Needs to be public - otherwise Spring screams.
-     * 
-     * @param event
-     */
-    @EventListener
-    public void afterApplicationReady(ApplicationReadyEvent event) {
-    	
-    	log.info("Starting up Spring Lemon ...");
-    	onStartup(); // delegate to onStartup()
-    	log.info("Spring Lemon started");	
-    }
-
-    
-	/**
 	 * Creates the initial Admin user, if not found.
 	 * Override this method if needed.
 	 */
@@ -125,28 +107,6 @@ public abstract class LemonService
 	}
 
 
-	/**
-	 * Creates the initial Admin user.
-	 * Override this if needed.
-	 */
-    protected U createAdminUser() {
-		
-    	// fetch data about the user to be created
-    	Admin initialAdmin = properties.getAdmin();
-    	
-    	log.info("Creating the first admin user: " + initialAdmin.getUsername());
-
-    	// create the user
-    	U user = newUser();
-    	user.setEmail(initialAdmin.getUsername());
-		user.setPassword(passwordEncoder.encode(
-			properties.getAdmin().getPassword()));
-		user.getRoles().add(UserUtils.Role.ADMIN);
-		
-		return user;
-	}
-
-    
 	/**
 	 * Creates a new user object. Must be overridden in the
 	 * subclass, like this:
@@ -178,19 +138,16 @@ public abstract class LemonService
 		
 		log.debug("Getting context ...");
 
-		// make the context
-		Map<String, Object> sharedProperties = new HashMap<String, Object>(2);
-		sharedProperties.put("reCaptchaSiteKey", properties.getRecaptcha().getSitekey());
-		sharedProperties.put("shared", properties.getShared());
+		Map<String, Object> context = buildContext();
 		
 		UserDto currentUser = LecwUtils.currentUser();
-		if (currentUser != null)
+		if (currentUser != null) {
 			addAuthHeader(response, currentUser.getUsername(),
 				expirationMillis.orElse(properties.getJwt().getExpirationMillis()));
+			context.put("user", currentUser);
+		}
 		
-		return LecUtils.mapOf(
-				"context", sharedProperties,
-				"user", LecwUtils.currentUser());	
+		return context;	
 	}
 	
 	
@@ -233,54 +190,10 @@ public abstract class LemonService
 	 */
 	protected void makeUnverified(U user) {
 		
-		user.getRoles().add(UserUtils.Role.UNVERIFIED);
-		user.setCredentialsUpdatedMillis(System.currentTimeMillis());
+		super.makeUnverified(user);
 		LecjUtils.afterCommit(() -> sendVerificationMail(user)); // send a verification mail to the user
 	}
 	
-	
-	/**
-	 * Sends verification mail to a unverified user.
-	 */
-	protected void sendVerificationMail(final U user) {
-		try {
-			
-			log.debug("Sending verification mail to: " + user);
-			
-			String verificationCode = greenTokenService.createToken(
-					GreenTokenService.VERIFY_AUDIENCE,
-					user.getId().toString(), properties.getJwt().getExpirationMillis(),
-					LecUtils.mapOf("email", user.getEmail()));
-
-			// make the link
-			String verifyLink = properties.getApplicationUrl()
-				+ "/users/" + user.getId() + "/verification?code=" + verificationCode;
-
-			// send the mail
-			sendVerificationMail(user, verifyLink);
-
-			log.debug("Verification mail to " + user.getEmail() + " queued.");
-			
-		} catch (Throwable e) {
-			// In case of exception, just log the error and keep silent
-			log.error(ExceptionUtils.getStackTrace(e));
-		}
-	}	
-
-	
-	/**
-	 * Sends verification mail to a unverified user.
-	 * Override this method if you're using a different MailData
-	 */
-	protected void sendVerificationMail(final U user, String verifyLink) {
-		
-		// send the mail
-		mailSender.send(LemonMailData.of(user.getEmail(),
-			LexUtils.getMessage("com.naturalprogrammer.spring.verifySubject"),
-			LexUtils.getMessage(
-				"com.naturalprogrammer.spring.verifyEmail",	verifyLink)));
-	}	
-
 	
 	/**
 	 * Resends verification mail to the user.
@@ -380,43 +293,6 @@ public abstract class LemonService
 		mailForgotPasswordLink(user);
 	}
 	
-	
-	/**
-	 * Mails the forgot password link.
-	 * 
-	 * @param user
-	 */
-	public void mailForgotPasswordLink(U user) {
-		
-		log.debug("Mailing forgot password link to user: " + user);
-
-		String forgotPasswordCode = greenTokenService.createToken(
-				GreenTokenService.FORGOT_PASSWORD_AUDIENCE,
-				user.getEmail(), properties.getJwt().getExpirationMillis());
-
-		// make the link
-		String forgotPasswordLink =	properties.getApplicationUrl()
-			    + "/reset-password?code=" + forgotPasswordCode;
-		
-		mailForgotPasswordLink(user, forgotPasswordLink);
-		
-		log.debug("Forgot password link mail queued.");
-	}
-
-	
-	/**
-	 * Mails the forgot password link.
-	 * 
-	 * Override this method if you're using a different MailData
-	 */
-	public void mailForgotPasswordLink(U user, String forgotPasswordLink) {
-		
-		// send the mail
-		mailSender.send(LemonMailData.of(user.getEmail(),
-				LexUtils.getMessage("com.naturalprogrammer.spring.forgotPasswordSubject"),
-				LexUtils.getMessage("com.naturalprogrammer.spring.forgotPasswordEmail",
-					forgotPasswordLink)));
-	}
 	
 	/**
 	 * Resets the password.

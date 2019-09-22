@@ -20,6 +20,7 @@ import com.naturalprogrammer.spring.lemonreactive.domain.AbstractMongoUser;
 import com.naturalprogrammer.spring.lemonreactive.domain.AbstractMongoUserRepository;
 import com.naturalprogrammer.spring.lemonreactive.security.LemonReactiveSecurityConfig;
 import com.naturalprogrammer.spring.lemonreactive.security.LemonReactiveUserDetailsService;
+import com.naturalprogrammer.spring.lemonreactive.security.ReactiveOAuth2AuthenticationSuccessHandler;
 import com.naturalprogrammer.spring.lemonreactive.util.LerUtils;
 
 @Configuration
@@ -42,16 +43,35 @@ public class LemonReactiveAutoConfiguration {
 	}
 	
 	@Bean
+	@ConditionalOnMissingBean(ReactiveOAuth2AuthenticationSuccessHandler.class)
+	public <U extends AbstractMongoUser<ID>, ID extends Serializable>
+		ReactiveOAuth2AuthenticationSuccessHandler reactiveOAuth2AuthenticationSuccessHandler(
+				BlueTokenService blueTokenService,
+				LemonProperties properties) {
+		
+		log.info("Configuring ReactiveOAuth2AuthenticationSuccessHandler ...");
+
+		return new ReactiveOAuth2AuthenticationSuccessHandler(
+				blueTokenService,
+				properties);
+	}
+	
+	@Bean
 	@ConditionalOnMissingBean(LemonReactiveSecurityConfig.class)
 	public <U extends AbstractMongoUser<ID>, ID extends Serializable>
 		LemonReactiveSecurityConfig<U,ID> lemonReactiveSecurityConfig(
 				BlueTokenService blueTokenService,
 				LemonReactiveUserDetailsService<U, ID> userDetailsService,
+				ReactiveOAuth2AuthenticationSuccessHandler reactiveOAuth2AuthenticationSuccessHandler,
 				LemonProperties properties) {
 		
 		log.info("Configuring LemonReactiveSecurityConfig ...");
 
-		return new LemonReactiveSecurityConfig<U,ID>(blueTokenService, userDetailsService, properties);
+		return new LemonReactiveSecurityConfig<U,ID>(
+				blueTokenService,
+				userDetailsService,
+				reactiveOAuth2AuthenticationSuccessHandler,
+				properties);
 	}
 	
 	
