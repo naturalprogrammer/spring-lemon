@@ -8,8 +8,10 @@ import org.springframework.security.authentication.ReactiveAuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.ServerAuthenticationEntryPoint;
+import org.springframework.security.web.server.WebFilterExchange;
 import org.springframework.security.web.server.authentication.AuthenticationWebFilter;
 import org.springframework.security.web.server.authentication.ServerAuthenticationConverter;
 import org.springframework.security.web.server.authentication.ServerAuthenticationFailureHandler;
@@ -44,8 +46,8 @@ public class LemonCommonsReactiveSecurityConfig {
 		return http
 			.securityContextRepository(NoOpServerSecurityContextRepository.getInstance())
 			.exceptionHandling()
-				.accessDeniedHandler(accessDeniedHandler())
-				.authenticationEntryPoint(authenticationEntryPoint())
+				.accessDeniedHandler((exchange, exception) -> Mono.error(exception))
+				.authenticationEntryPoint((exchange, exception) -> Mono.error(exception))
 			.and()
 				.cors()
 			.and()
@@ -86,7 +88,7 @@ public class LemonCommonsReactiveSecurityConfig {
 		
 		AuthenticationWebFilter filter = new AuthenticationWebFilter(tokenAuthenticationManager());		
 		filter.setServerAuthenticationConverter(tokenAuthenticationConverter());
-		filter.setAuthenticationFailureHandler(authenticationFailureHandler());
+		filter.setAuthenticationFailureHandler((exchange, exception) -> Mono.error(exception));
 		
 		return filter;
 	}
@@ -136,20 +138,4 @@ public class LemonCommonsReactiveSecurityConfig {
 			return Mono.just(new UsernamePasswordAuthenticationToken(null, authorization.substring(LecUtils.TOKEN_PREFIX_LENGTH)));		
 		};
 	}
-	
-	protected ServerAuthenticationFailureHandler authenticationFailureHandler() {
-		
-		return (webFilterExchange, exception) -> Mono.error(exception);		
-	}
-	
-	protected ServerAccessDeniedHandler accessDeniedHandler() {
-		
-		return (exchange, exception) -> Mono.error(exception);
-	}
-	
-	protected ServerAuthenticationEntryPoint authenticationEntryPoint() {
-		
-		return (exchange, exception) -> Mono.error(exception);
-	}
-	
 }

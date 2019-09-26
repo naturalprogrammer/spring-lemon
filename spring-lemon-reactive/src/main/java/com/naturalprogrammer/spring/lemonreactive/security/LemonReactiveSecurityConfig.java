@@ -9,6 +9,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.server.WebFilterExchange;
 import org.springframework.security.web.server.authentication.WebFilterChainServerAuthenticationSuccessHandler;
+import org.springframework.security.web.server.context.NoOpServerSecurityContextRepository;
 
 import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
 import com.naturalprogrammer.spring.lemon.commons.security.BlueTokenService;
@@ -49,8 +50,9 @@ public class LemonReactiveSecurityConfig<U extends AbstractMongoUser<ID>, ID ext
 	protected void formLogin(ServerHttpSecurity http) {
 		
 		http.formLogin()
+			.securityContextRepository(NoOpServerSecurityContextRepository.getInstance())
 			.loginPage(loginPage()) // Should be "/login" by default, but not providing that overwrites our AuthenticationFailureHandler, because this is called later 
-			.authenticationFailureHandler(authenticationFailureHandler())
+			.authenticationFailureHandler((exchange, exception) -> Mono.error(exception))
 			.authenticationSuccessHandler(new WebFilterChainServerAuthenticationSuccessHandler());
 	}
 
@@ -69,9 +71,10 @@ public class LemonReactiveSecurityConfig<U extends AbstractMongoUser<ID>, ID ext
 	protected void oauth2Login(ServerHttpSecurity http) {
 
 		http.oauth2Login()
+			.securityContextRepository(NoOpServerSecurityContextRepository.getInstance())
 			.authorizedClientRepository(new ReactiveCookieServerOAuth2AuthorizedClientRepository(properties))
 			.authenticationSuccessHandler(reactiveOAuth2AuthenticationSuccessHandler)
-			.authenticationFailureHandler(this::onAuthenticationFailure);
+			.authenticationFailureHandler(this::onOauth2AuthenticationFailure);
 	}
 	
 	@Override
@@ -88,7 +91,7 @@ public class LemonReactiveSecurityConfig<U extends AbstractMongoUser<ID>, ID ext
 			.map(AbstractMongoUser::toUserDto);
 	}
 	
-	protected Mono<Void> onAuthenticationFailure(WebFilterExchange webFilterExchange, AuthenticationException exception) {
+	protected Mono<Void> onOauth2AuthenticationFailure(WebFilterExchange webFilterExchange, AuthenticationException exception) {
 		
 		ReactiveCookieServerOAuth2AuthorizedClientRepository.deleteCookies(webFilterExchange.getExchange(),
 				LecUtils.AUTHORIZATION_REQUEST_COOKIE_NAME,
