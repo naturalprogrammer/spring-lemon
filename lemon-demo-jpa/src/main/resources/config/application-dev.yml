@@ -16,14 +16,14 @@ spring:
       client:
         provider:
           facebook:
-            user-info-uri: https://graph.facebook.com/me?fields=email,name,verified 
+            user-info-uri: https://graph.facebook.com/me?fields=email,name 
         registration:
           google:
             client-id: 1011974249454-6gq0hr01gqh3cndoqnss5r69tkk2nd84.apps.googleusercontent.com
             client-secret: saDA6Cj60wipncFM-hzBD-C6
           facebook:
-            client-id: 1234020186718741
-            client-secret: 0c0abaf685a83e879e8e48b1167c96ab
+            client-id: 548349525905412
+            client-secret: 15a20c560c4c780dabdc0e637c02087a
 
 logging:
   level:

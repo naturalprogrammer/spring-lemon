@@ -3,6 +3,8 @@ package com.naturalprogrammer.spring.lemonreactive.security;
 import java.util.Collections;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.http.HttpCookie;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.server.reactive.ServerHttpResponse;
@@ -21,6 +23,8 @@ import reactor.core.publisher.Mono;
 
 public class ReactiveCookieServerOAuth2AuthorizedClientRepository implements ServerOAuth2AuthorizedClientRepository {
 
+	private static final Log log = LogFactory.getLog(ReactiveCookieServerOAuth2AuthorizedClientRepository.class);
+
 	private int cookieExpirySecs;
 	
 	public ReactiveCookieServerOAuth2AuthorizedClientRepository(LemonProperties properties) {
@@ -32,6 +36,9 @@ public class ReactiveCookieServerOAuth2AuthorizedClientRepository implements Ser
 	public Mono<OAuth2AuthorizedClient> loadAuthorizedClient(String clientRegistrationId,
 			Authentication principal, ServerWebExchange exchange) {
 		
+		log.debug("Loading authorized client for clientRegistrationId " + clientRegistrationId
+				+ ", principal " + principal + ", and exchange " + exchange);
+		
 		return LecrUtils.fetchCookie(exchange, LecUtils.AUTHORIZATION_REQUEST_COOKIE_NAME)
 				.map(this::deserialize)
 				.orElse(Mono.empty());
@@ -41,6 +48,9 @@ public class ReactiveCookieServerOAuth2AuthorizedClientRepository implements Ser
 	public Mono<Void> saveAuthorizedClient(OAuth2AuthorizedClient authorizedClient, Authentication principal,
 			ServerWebExchange exchange) {
 		
+		log.debug("Saving authorized client " + authorizedClient
+				+ " for principal " + principal + ", and exchange " + exchange);
+
 		ServerHttpResponse response = exchange.getResponse();
 		
 		Assert.notNull(exchange, "exchange cannot be null");
@@ -81,6 +91,9 @@ public class ReactiveCookieServerOAuth2AuthorizedClientRepository implements Ser
 	public Mono<Void> removeAuthorizedClient(String clientRegistrationId, Authentication principal,
 			ServerWebExchange exchange) {
 		
+		log.debug("Deleting authorized client for clientRegistrationId " + clientRegistrationId
+				+ ", principal " + principal + ", and exchange " + exchange);
+
 		deleteCookies(exchange, LecUtils.AUTHORIZATION_REQUEST_COOKIE_NAME);
 		return Mono.empty();
 	}

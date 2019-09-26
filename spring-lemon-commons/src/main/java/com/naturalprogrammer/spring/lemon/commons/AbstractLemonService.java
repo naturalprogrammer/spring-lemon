@@ -202,6 +202,11 @@ public abstract class AbstractLemonService
 	 */
 	public boolean getOAuth2AccountVerified(String registrationId, Map<String, Object> attributes) {
 
+		// Facebook no more returns verified
+		// https://developers.facebook.com/docs/graph-api/reference/user
+		if ("facebook".equals(registrationId))
+			return true;
+		
 		Object verified = attributes.get(StandardClaimNames.EMAIL_VERIFIED);
 		if (verified == null)
 			verified = attributes.get("verified");
