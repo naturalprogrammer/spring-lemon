@@ -1,11 +1,10 @@
 package com.naturalprogrammer.spring.lemondemo;
 
+import com.naturalprogrammer.spring.lemon.security.LemonJpaSecurityConfig;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.stereotype.Component;
-
-import com.naturalprogrammer.spring.lemon.security.LemonJpaSecurityConfig;
 
 @Component
 public class MySecurityConfig extends LemonJpaSecurityConfig {

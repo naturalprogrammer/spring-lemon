@@ -1,13 +1,5 @@
 package com.naturalprogrammer.spring.lemonreactive.domain;
 
-import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
-
-import org.springframework.data.annotation.Transient;
-import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.security.core.CredentialsContainer;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.naturalprogrammer.spring.lemon.commons.domain.LemonUser;
@@ -17,9 +9,15 @@ import com.naturalprogrammer.spring.lemon.commons.validation.Captcha;
 import com.naturalprogrammer.spring.lemon.commons.validation.Password;
 import com.naturalprogrammer.spring.lemon.commonsmongo.AbstractDocument;
 import com.naturalprogrammer.spring.lemonreactive.validation.UniqueEmail;
-
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.security.core.CredentialsContainer;
+
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter @Setter
 public abstract class AbstractMongoUser

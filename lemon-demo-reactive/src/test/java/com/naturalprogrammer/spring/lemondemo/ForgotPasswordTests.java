@@ -1,5 +1,9 @@
 package com.naturalprogrammer.spring.lemondemo;
 
+import org.junit.Test;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+
 import static com.naturalprogrammer.spring.lemondemo.MyTestUtils.ADMIN_EMAIL;
 import static com.naturalprogrammer.spring.lemondemo.MyTestUtils.CLIENT;
 import static com.naturalprogrammer.spring.lemondemo.controllers.MyController.BASE_URI;
@@ -7,10 +11,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.springframework.web.reactive.function.BodyInserters.fromFormData;
-
-import org.junit.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
 public class ForgotPasswordTests extends AbstractTests {
 

@@ -1,21 +1,15 @@
 package com.naturalprogrammer.spring.lemondemo;
 
-import static com.naturalprogrammer.spring.lemondemo.MyTestUtils.ADMIN_EMAIL;
-import static com.naturalprogrammer.spring.lemondemo.MyTestUtils.ADMIN_ID;
-import static com.naturalprogrammer.spring.lemondemo.MyTestUtils.CLIENT;
-import static com.naturalprogrammer.spring.lemondemo.MyTestUtils.TOKENS;
-import static com.naturalprogrammer.spring.lemondemo.MyTestUtils.UNVERIFIED_USER_EMAIL;
-import static com.naturalprogrammer.spring.lemondemo.MyTestUtils.UNVERIFIED_USER_ID;
-import static com.naturalprogrammer.spring.lemondemo.controllers.MyController.BASE_URI;
-import static org.junit.Assert.assertNotNull;
-import static org.springframework.web.reactive.function.BodyInserters.fromFormData;
-
+import com.naturalprogrammer.spring.lemondemo.dto.TestToken;
 import org.junit.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.EntityExchangeResult;
 
-import com.naturalprogrammer.spring.lemondemo.dto.TestToken;
+import static com.naturalprogrammer.spring.lemondemo.MyTestUtils.*;
+import static com.naturalprogrammer.spring.lemondemo.controllers.MyController.BASE_URI;
+import static org.junit.Assert.assertNotNull;
+import static org.springframework.web.reactive.function.BodyInserters.fromFormData;
 
 public class FetchNewTokenTests extends AbstractTests {
 

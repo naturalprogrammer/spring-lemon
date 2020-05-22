@@ -1,14 +1,13 @@
 package com.naturalprogrammer.spring.lemonreactive.validation;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
+import com.naturalprogrammer.spring.lemon.commons.util.UserUtils;
 
 import javax.validation.Constraint;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-
-import com.naturalprogrammer.spring.lemon.commons.util.UserUtils;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 /**
  * Annotation for unique-email constraint,

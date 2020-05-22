@@ -1,11 +1,11 @@
 package com.naturalprogrammer.spring.lemon.commonsjpa;
 
-import java.io.Serializable;
-
+import com.naturalprogrammer.spring.lemon.exceptions.VersionException;
 import org.springframework.transaction.support.TransactionSynchronizationAdapter;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
-import com.naturalprogrammer.spring.lemon.exceptions.VersionException;
+import java.io.Serializable;
+import java.util.Objects;
 
 public class LecjUtils {
 
@@ -38,7 +38,7 @@ public class LecjUtils {
 	public static <ID extends Serializable>
 	void ensureCorrectVersion(LemonEntity<ID> original, LemonEntity<ID> updated) {
 		
-		if (original.getVersion() != updated.getVersion())
+		if (!Objects.equals(original.getVersion(), updated.getVersion()))
 			throw new VersionException(original.getClass().getSimpleName(), original.getId().toString());
 	}
 }

@@ -1,19 +1,6 @@
 package com.naturalprogrammer.spring.lemon.commons.security;
 
-import java.text.ParseException;
-import java.util.Map;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.security.authentication.BadCredentialsException;
-
-import com.nimbusds.jose.EncryptionMethod;
-import com.nimbusds.jose.JOSEException;
-import com.nimbusds.jose.JWEAlgorithm;
-import com.nimbusds.jose.JWEHeader;
-import com.nimbusds.jose.JWEObject;
-import com.nimbusds.jose.KeyLengthException;
-import com.nimbusds.jose.Payload;
+import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.DirectEncrypter;
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
 import com.nimbusds.jose.jwk.source.JWKSource;
@@ -24,6 +11,10 @@ import com.nimbusds.jose.proc.SimpleSecurityContext;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.proc.ConfigurableJWTProcessor;
 import com.nimbusds.jwt.proc.DefaultJWTProcessor;
+import org.springframework.security.authentication.BadCredentialsException;
+
+import java.text.ParseException;
+import java.util.Map;
 
 /**
  * JWE Service
@@ -34,8 +25,6 @@ import com.nimbusds.jwt.proc.DefaultJWTProcessor;
  * https://connect2id.com/products/nimbus-jose-jwt/examples/validating-jwt-access-tokens
  */
 public class LemonJweService extends AbstractJwtService implements GreenTokenService {
-	
-	private static final Log log = LogFactory.getLog(LemonJweService.class);
 	
 	private DirectEncrypter encrypter;
     private JWEHeader header = new JWEHeader(JWEAlgorithm.DIR, EncryptionMethod.A128CBC_HS256);

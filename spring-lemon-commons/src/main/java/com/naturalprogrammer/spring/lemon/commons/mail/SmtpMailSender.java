@@ -1,13 +1,13 @@
 package com.naturalprogrammer.spring.lemon.commons.mail;
 
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
+
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 
 
 /**

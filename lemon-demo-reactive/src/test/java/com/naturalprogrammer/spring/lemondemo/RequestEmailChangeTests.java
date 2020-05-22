@@ -1,19 +1,9 @@
 package com.naturalprogrammer.spring.lemondemo;
 
-import static com.naturalprogrammer.spring.lemondemo.MyTestUtils.ADMIN_EMAIL;
-import static com.naturalprogrammer.spring.lemondemo.MyTestUtils.ADMIN_ID;
-import static com.naturalprogrammer.spring.lemondemo.MyTestUtils.CLIENT;
-import static com.naturalprogrammer.spring.lemondemo.MyTestUtils.TOKENS;
-import static com.naturalprogrammer.spring.lemondemo.MyTestUtils.UNVERIFIED_ADMIN_ID;
-import static com.naturalprogrammer.spring.lemondemo.MyTestUtils.UNVERIFIED_USER_EMAIL;
-import static com.naturalprogrammer.spring.lemondemo.MyTestUtils.UNVERIFIED_USER_ID;
-import static com.naturalprogrammer.spring.lemondemo.MyTestUtils.USER_ID;
-import static com.naturalprogrammer.spring.lemondemo.MyTestUtils.USER_PASSWORD;
-import static com.naturalprogrammer.spring.lemondemo.controllers.MyController.BASE_URI;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.naturalprogrammer.spring.lemondemo.domain.User;
+import com.naturalprogrammer.spring.lemondemo.dto.TestEmailForm;
+import com.naturalprogrammer.spring.lemondemo.dto.TestErrorResponse;
 import org.bson.types.ObjectId;
 import org.junit.Assert;
 import org.junit.Test;
@@ -21,13 +11,13 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient.BodySpec;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.naturalprogrammer.spring.lemondemo.domain.User;
-import com.naturalprogrammer.spring.lemondemo.dto.TestEmailForm;
-import com.naturalprogrammer.spring.lemondemo.dto.TestErrorResponse;
-
 import reactor.core.publisher.Mono;
+
+import static com.naturalprogrammer.spring.lemondemo.MyTestUtils.*;
+import static com.naturalprogrammer.spring.lemondemo.controllers.MyController.BASE_URI;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 
 public class RequestEmailChangeTests extends AbstractTests {
 
@@ -55,7 +45,7 @@ public class RequestEmailChangeTests extends AbstractTests {
 
 		verify(mailSender).send(any());
 		
-		User updatedUser = mongoTemplate.findById(UNVERIFIED_USER_ID, User.class);
+		User updatedUser = mongoTemplate.findById(UNVERIFIED_USER_ID, User.class).block();
 		Assert.assertEquals(NEW_EMAIL, updatedUser.getNewEmail());
 		Assert.assertEquals(UNVERIFIED_USER_EMAIL, updatedUser.getEmail());
 	}
@@ -74,7 +64,7 @@ public class RequestEmailChangeTests extends AbstractTests {
 		.exchange()
 			.expectStatus().isNoContent();
 
-		User updatedUser = mongoTemplate.findById(UNVERIFIED_USER_ID, User.class);
+		User updatedUser = mongoTemplate.findById(UNVERIFIED_USER_ID, User.class).block();
 		Assert.assertEquals(NEW_EMAIL, updatedUser.getNewEmail());
 	}	
 
@@ -223,7 +213,7 @@ public class RequestEmailChangeTests extends AbstractTests {
 	
 	
 	private void assertNotChanged() {
-		User updatedUser = mongoTemplate.findById(UNVERIFIED_USER_ID, User.class);
+		User updatedUser = mongoTemplate.findById(UNVERIFIED_USER_ID, User.class).block();
 		Assert.assertNull(updatedUser.getNewEmail());
 	}
 }

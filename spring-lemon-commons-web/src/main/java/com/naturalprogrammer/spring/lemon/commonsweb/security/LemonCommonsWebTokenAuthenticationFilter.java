@@ -1,12 +1,12 @@
 package com.naturalprogrammer.spring.lemon.commonsweb.security;
 
-import java.io.IOException;
-
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.naturalprogrammer.spring.lemon.commons.security.BlueTokenService;
+import com.naturalprogrammer.spring.lemon.commons.security.LemonPrincipal;
+import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
+import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
+import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
+import com.nimbusds.jwt.JWTClaimsSet;
+import lombok.AllArgsConstructor;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.http.HttpHeaders;
@@ -16,14 +16,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.naturalprogrammer.spring.lemon.commons.security.BlueTokenService;
-import com.naturalprogrammer.spring.lemon.commons.security.LemonPrincipal;
-import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
-import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
-import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
-import com.nimbusds.jwt.JWTClaimsSet;
-
-import lombok.AllArgsConstructor;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 /**
  * Filter for token authentication

@@ -1,35 +1,7 @@
 package com.naturalprogrammer.spring.lemon;
 
-import java.io.Serializable;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.event.EventListener;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.core.oidc.StandardClaimNames;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.annotation.Validated;
-
 import com.naturalprogrammer.spring.lemon.commons.AbstractLemonService;
 import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
-import com.naturalprogrammer.spring.lemon.commons.LemonProperties.Admin;
 import com.naturalprogrammer.spring.lemon.commons.domain.ChangePasswordForm;
 import com.naturalprogrammer.spring.lemon.commons.domain.ResetPasswordForm;
 import com.naturalprogrammer.spring.lemon.commons.mail.LemonMailData;
@@ -47,6 +19,27 @@ import com.naturalprogrammer.spring.lemon.domain.AbstractUserRepository;
 import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
 import com.naturalprogrammer.spring.lemon.util.LemonUtils;
 import com.nimbusds.jwt.JWTClaimsSet;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
+
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * The Lemon Service class
@@ -176,6 +169,7 @@ public abstract class LemonService
 	 * Initializes the user based on the input data,
 	 * e.g. encrypts the password
 	 */
+	@Override
 	protected void initUser(U user) {
 		
 		log.debug("Initializing user: " + user);
@@ -188,6 +182,7 @@ public abstract class LemonService
 	/**
 	 * Makes a user unverified
 	 */
+	@Override
 	protected void makeUnverified(U user) {
 		
 		super.makeUnverified(user);
@@ -319,13 +314,8 @@ public abstract class LemonService
 		userRepository.save(user);
 		
 		// after successful commit,
-		LecjUtils.afterCommit(() -> {
-			
-			// Login the user
-			LemonUtils.login(user);
-		});
-		
-		log.debug("Password reset.");		
+		LecjUtils.afterCommit(() -> LemonUtils.login(user));
+		log.debug("Password reset.");
 	}
 
 	
@@ -476,7 +466,7 @@ public abstract class LemonService
 			
 			log.debug("Change email link mail queued.");
 			
-		} catch (Throwable e) {
+		} catch (Exception e) {
 			// In case of exception, just log the error and keep silent			
 			log.error(ExceptionUtils.getStackTrace(e));
 		}
@@ -546,12 +536,7 @@ public abstract class LemonService
 		userRepository.save(user);
 		
 		// after successful commit,
-		LecjUtils.afterCommit(() -> {
-			
-			// Login the user
-			LemonUtils.login(user);
-		});
-		
+		LecjUtils.afterCommit(() -> LemonUtils.login(user));
 		log.debug("Changed email of user: " + user);
 	}
 
@@ -611,12 +596,10 @@ public abstract class LemonService
 		Map<String, Object> claimMap = Collections.singletonMap(BlueTokenService.USER_CLAIM,
 				LecUtils.serialize(currentUser)); // Not serializing converts it to a JsonNode
 		
-		Map<String, String> tokenMap = Collections.singletonMap("token", LecUtils.TOKEN_PREFIX +
+		return Collections.singletonMap("token", LecUtils.TOKEN_PREFIX +
 				blueTokenService.createToken(BlueTokenService.AUTH_AUDIENCE, currentUser.getUsername(),
 					Long.valueOf(properties.getJwt().getShortLivedMillis()),
 					claimMap));
-		
-		return tokenMap;
 	}
 
 	

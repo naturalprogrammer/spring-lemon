@@ -1,21 +1,18 @@
 package com.naturalprogrammer.spring.lemondemo.domain;
 
-import java.io.Serializable;
-
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
-
+import com.fasterxml.jackson.annotation.JsonView;
+import com.naturalprogrammer.spring.lemon.commons.util.UserUtils;
+import com.naturalprogrammer.spring.lemonreactive.domain.AbstractMongoUser;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.TypeAlias;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.fasterxml.jackson.annotation.JsonView;
-import com.naturalprogrammer.spring.lemon.commons.util.UserUtils;
-import com.naturalprogrammer.spring.lemonreactive.domain.AbstractMongoUser;
-
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
+import java.io.Serializable;
 
 @Getter @Setter
 @TypeAlias("User")

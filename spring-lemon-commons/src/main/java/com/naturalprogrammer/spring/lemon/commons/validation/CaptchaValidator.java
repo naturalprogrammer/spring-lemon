@@ -1,10 +1,7 @@
 package com.naturalprogrammer.spring.lemon.commons.validation;
 
-import java.util.Collection;
-
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
-
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.logging.Log;
@@ -13,8 +10,9 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
+import java.util.Collection;
 
 /**
  * Captcha validation constraint
@@ -89,8 +87,7 @@ public class CaptchaValidator implements ConstraintValidator<Captcha, String> {
 	         return false;
 	        
 		// Prepare the form data for sending to google
-		MultiValueMap<String, String> formData =
-			new LinkedMultiValueMap<String, String>(2);
+		MultiValueMap<String, String> formData = new LinkedMultiValueMap<>(2);
 		formData.add("response", captchaResponse);
 		formData.add("secret", properties.getRecaptcha().getSecretkey());
 		
@@ -114,8 +111,8 @@ public class CaptchaValidator implements ConstraintValidator<Captcha, String> {
 			log.info("Captcha validation failed.");
 			return false;
 			
-		} catch (Throwable t) {
-			log.error(ExceptionUtils.getStackTrace(t));
+		} catch (Exception e) {
+			log.error(ExceptionUtils.getStackTrace(e));
 			return false;
 		}
 	}

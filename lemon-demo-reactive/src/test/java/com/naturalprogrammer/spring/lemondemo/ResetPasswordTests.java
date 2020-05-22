@@ -1,22 +1,18 @@
 package com.naturalprogrammer.spring.lemondemo;
 
-import static com.naturalprogrammer.spring.lemondemo.MyTestUtils.ADMIN_EMAIL;
-import static com.naturalprogrammer.spring.lemondemo.MyTestUtils.ADMIN_ID;
-import static com.naturalprogrammer.spring.lemondemo.MyTestUtils.CLIENT;
-import static com.naturalprogrammer.spring.lemondemo.controllers.MyController.BASE_URI;
-
+import com.naturalprogrammer.spring.lemon.commons.security.GreenTokenService;
+import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
+import com.naturalprogrammer.spring.lemondemo.dto.TestResetPasswordForm;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient.ResponseSpec;
-
-import com.naturalprogrammer.spring.lemon.commons.security.GreenTokenService;
-import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
-import com.naturalprogrammer.spring.lemondemo.dto.TestResetPasswordForm;
-
 import reactor.core.publisher.Mono;
+
+import static com.naturalprogrammer.spring.lemondemo.MyTestUtils.*;
+import static com.naturalprogrammer.spring.lemondemo.controllers.MyController.BASE_URI;
 
 public class ResetPasswordTests extends AbstractTests {
 

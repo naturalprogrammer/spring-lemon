@@ -1,14 +1,14 @@
 package com.naturalprogrammer.spring.lemon.commonsreactive.exceptions;
 
-import java.util.Map;
-
+import com.naturalprogrammer.spring.lemon.exceptions.ErrorResponseComposer;
+import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.reactive.error.DefaultErrorAttributes;
 import org.springframework.web.reactive.function.server.ServerRequest;
 
-import com.naturalprogrammer.spring.lemon.exceptions.ErrorResponseComposer;
-import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
+import java.util.Map;
 
 public class LemonReactiveErrorAttributes<T extends Throwable> extends DefaultErrorAttributes {
 	
@@ -27,9 +27,9 @@ public class LemonReactiveErrorAttributes<T extends Throwable> extends DefaultEr
 
 	@Override
 	public Map<String, Object> getErrorAttributes(ServerRequest request,
-			boolean includeStackTrace) {
+			ErrorAttributeOptions options) {
 		
-		Map<String, Object> errorAttributes = super.getErrorAttributes(request, includeStackTrace);		
+		Map<String, Object> errorAttributes = super.getErrorAttributes(request, options);
 		addLemonErrorDetails(errorAttributes, request);
 		return errorAttributes;
 	}

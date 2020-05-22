@@ -1,19 +1,18 @@
 package com.naturalprogrammer.spring.lemon.exceptions;
 
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import javax.validation.ConstraintViolation;
-
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.ToString;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.support.WebExchangeBindException;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.ToString;
+import javax.validation.ConstraintViolation;
+import java.io.Serializable;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Holds a field or form error
@@ -21,7 +20,7 @@ import lombok.ToString;
  * @author Sanjay Patel
  */
 @Getter @AllArgsConstructor @ToString
-public class LemonFieldError {
+public class LemonFieldError implements Serializable {
 	
 	// Name of the field. Null in case of a form level error. 
 	private String field;

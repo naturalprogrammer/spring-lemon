@@ -1,12 +1,11 @@
 package com.naturalprogrammer.spring.lemon.commons.validation;
 
-import java.util.Objects;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import java.util.Objects;
 
 /**
  * Validator for RetypePassword constraint

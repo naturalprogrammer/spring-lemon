@@ -1,9 +1,9 @@
 package com.naturalprogrammer.spring.lemondemo.dto;
 
-import java.util.Collection;
-
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.Collection;
 
 /**
  * Error DTO, to be sent as response body

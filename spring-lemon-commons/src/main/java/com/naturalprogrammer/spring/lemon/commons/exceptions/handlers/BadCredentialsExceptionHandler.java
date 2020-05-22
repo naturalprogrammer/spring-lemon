@@ -1,12 +1,11 @@
 package com.naturalprogrammer.spring.lemon.commons.exceptions.handlers;
 
+import com.naturalprogrammer.spring.lemon.exceptions.handlers.AbstractExceptionHandler;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Component;
-
-import com.naturalprogrammer.spring.lemon.exceptions.handlers.AbstractExceptionHandler;
 
 @Component
 @Order(Ordered.LOWEST_PRECEDENCE)

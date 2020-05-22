@@ -13,7 +13,7 @@
     <parent>
         <groupId>com.naturalprogrammer</groupId>
         <artifactId>spring-lemon</artifactId>
-        <version>1.0.0.RC3</version>
+        <version>1.0.0.RC4</version>
     </parent>
 
     <dependencies>

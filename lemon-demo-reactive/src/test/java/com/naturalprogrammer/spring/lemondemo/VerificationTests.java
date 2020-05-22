@@ -1,14 +1,8 @@
 package com.naturalprogrammer.spring.lemondemo;
 
-import static com.naturalprogrammer.spring.lemondemo.MyTestUtils.CLIENT;
-import static com.naturalprogrammer.spring.lemondemo.MyTestUtils.UNVERIFIED_USER_EMAIL;
-import static com.naturalprogrammer.spring.lemondemo.MyTestUtils.UNVERIFIED_USER_ID;
-import static com.naturalprogrammer.spring.lemondemo.controllers.MyController.BASE_URI;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.springframework.web.reactive.function.BodyInserters.fromFormData;
-
+import com.naturalprogrammer.spring.lemon.commons.security.GreenTokenService;
+import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
+import com.naturalprogrammer.spring.lemondemo.dto.TestUserDto;
 import org.bson.types.ObjectId;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,9 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.web.reactive.server.WebTestClient.ResponseSpec;
 
-import com.naturalprogrammer.spring.lemon.commons.security.GreenTokenService;
-import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
-import com.naturalprogrammer.spring.lemondemo.dto.TestUserDto;
+import static com.naturalprogrammer.spring.lemondemo.MyTestUtils.*;
+import static com.naturalprogrammer.spring.lemondemo.controllers.MyController.BASE_URI;
+import static org.junit.Assert.*;
+import static org.springframework.web.reactive.function.BodyInserters.fromFormData;
 
 public class VerificationTests extends AbstractTests {
 

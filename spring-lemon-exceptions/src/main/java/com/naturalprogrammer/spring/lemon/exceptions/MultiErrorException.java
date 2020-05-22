@@ -1,18 +1,15 @@
 package com.naturalprogrammer.spring.lemon.exceptions;
 
+import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
+import lombok.AccessLevel;
+import lombok.Getter;
+import org.springframework.http.HttpStatus;
+
+import javax.validation.ConstraintViolation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import javax.validation.ConstraintViolation;
-
-import org.springframework.http.HttpStatus;
-
-import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
-
-import lombok.AccessLevel;
-import lombok.Getter;
 
 /**
  * An exception class which can contain multiple errors.

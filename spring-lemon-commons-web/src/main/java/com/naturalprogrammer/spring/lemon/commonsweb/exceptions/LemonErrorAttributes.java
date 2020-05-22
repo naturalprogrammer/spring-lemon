@@ -1,14 +1,14 @@
 package com.naturalprogrammer.spring.lemon.commonsweb.exceptions;
 
-import java.util.Map;
-
+import com.naturalprogrammer.spring.lemon.exceptions.ErrorResponseComposer;
+import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.servlet.error.DefaultErrorAttributes;
 import org.springframework.web.context.request.WebRequest;
 
-import com.naturalprogrammer.spring.lemon.exceptions.ErrorResponseComposer;
-import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
+import java.util.Map;
 
 /**
  * Used for handling exceptions that can't be handled by
@@ -34,10 +34,10 @@ public class LemonErrorAttributes<T extends Throwable> extends DefaultErrorAttri
      */
 	@Override
 	public Map<String, Object> getErrorAttributes(WebRequest request,
-			boolean includeStackTrace) {
+			ErrorAttributeOptions options) {
 			
 		Map<String, Object> errorAttributes =
-				super.getErrorAttributes(request, includeStackTrace);
+				super.getErrorAttributes(request, options);
 		
 		addLemonErrorDetails(errorAttributes, request);
 		

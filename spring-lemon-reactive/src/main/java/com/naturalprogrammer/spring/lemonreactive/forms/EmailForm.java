@@ -2,7 +2,6 @@ package com.naturalprogrammer.spring.lemonreactive.forms;
 
 import com.naturalprogrammer.spring.lemon.commons.validation.Password;
 import com.naturalprogrammer.spring.lemonreactive.validation.UniqueEmail;
-
 import lombok.Getter;
 import lombok.Setter;
 

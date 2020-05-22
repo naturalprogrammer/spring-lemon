@@ -1,11 +1,10 @@
 package com.naturalprogrammer.spring.lemonreactive.domain;
 
-import java.io.Serializable;
-
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import org.springframework.data.repository.NoRepositoryBean;
-
 import reactor.core.publisher.Mono;
+
+import java.io.Serializable;
 
 /**
  * Abstract UserRepository interface

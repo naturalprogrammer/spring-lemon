@@ -1,10 +1,9 @@
 package com.naturalprogrammer.spring.lemondemo.controllers;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.naturalprogrammer.spring.lemon.LemonController;
 import com.naturalprogrammer.spring.lemondemo.entities.User;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(MyController.BASE_URI)

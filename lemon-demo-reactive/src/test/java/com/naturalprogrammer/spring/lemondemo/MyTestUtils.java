@@ -1,7 +1,19 @@
 package com.naturalprogrammer.spring.lemondemo;
 
-import static com.naturalprogrammer.spring.lemondemo.controllers.MyController.BASE_URI;
-import static org.springframework.web.reactive.function.BodyInserters.fromFormData;
+import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
+import com.naturalprogrammer.spring.lemondemo.domain.User;
+import com.naturalprogrammer.spring.lemondemo.dto.TestUserDto;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.bson.types.ObjectId;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
+import org.springframework.http.HttpHeaders;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
+import org.springframework.test.web.reactive.server.WebTestClient;
+import org.springframework.test.web.reactive.server.WebTestClient.ResponseSpec;
 
 import java.time.Duration;
 import java.util.Arrays;
@@ -9,21 +21,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.bson.types.ObjectId;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.http.HttpHeaders;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
-import org.springframework.test.web.reactive.server.WebTestClient;
-import org.springframework.test.web.reactive.server.WebTestClient.ResponseSpec;
-
-import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
-import com.naturalprogrammer.spring.lemondemo.domain.User;
-import com.naturalprogrammer.spring.lemondemo.dto.TestUserDto;
+import static com.naturalprogrammer.spring.lemondemo.controllers.MyController.BASE_URI;
+import static org.springframework.web.reactive.function.BodyInserters.fromFormData;
 
 @Component
 public class MyTestUtils {
@@ -52,7 +51,7 @@ public class MyTestUtils {
 	private PasswordEncoder passwordEncoder;
 	
 	@Autowired
-	private MongoTemplate mongoTemplate;
+	private ReactiveMongoTemplate mongoTemplate;
 	
 	public MyTestUtils(ApplicationContext context) {
 		CLIENT = WebTestClient
@@ -102,7 +101,7 @@ public class MyTestUtils {
 //
 	public void initDatabase() {
 
-		mongoTemplate.dropCollection("usr");
+		mongoTemplate.dropCollection("usr").block();
 		log.debug("Creating users ... ");
 		
 		createUser(ADMIN_ID, ADMIN_EMAIL, ADMIN_PASSWORD, "Admin 1", "ADMIN");
@@ -125,7 +124,7 @@ public class MyTestUtils {
 		user.setCredentialsUpdatedMillis(0L);
 		user.setRoles(new HashSet<String>(Arrays.asList(roles)));
 		
-		mongoTemplate.insert(user);
+		mongoTemplate.insert(user).block();
 		TOKENS.put(user.getId(), login(user.getEmail(), password));
 	}
 }

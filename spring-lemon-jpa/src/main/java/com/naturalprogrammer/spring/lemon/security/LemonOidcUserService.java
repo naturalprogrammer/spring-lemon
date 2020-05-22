@@ -1,13 +1,11 @@
 package com.naturalprogrammer.spring.lemon.security;
 
+import com.naturalprogrammer.spring.lemon.commons.security.LemonPrincipal;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
-import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
-
-import com.naturalprogrammer.spring.lemon.commons.security.LemonPrincipal;
 
 /**
  * Logs in or registers a user after OpenID Connect SignIn/Up
@@ -25,7 +23,7 @@ public class LemonOidcUserService extends OidcUserService {
 	}
 
 	@Override
-	public OidcUser loadUser(OidcUserRequest userRequest) throws OAuth2AuthenticationException {
+	public OidcUser loadUser(OidcUserRequest userRequest) {
 		
 		OidcUser oidcUser = super.loadUser(userRequest);
 		LemonPrincipal principal = oauth2UserService.buildPrincipal(oidcUser,

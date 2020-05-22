@@ -1,19 +1,17 @@
 package com.naturalprogrammer.spring.lemonreactive.security;
 
-import java.io.Serializable;
-
+import com.naturalprogrammer.spring.lemon.commons.security.LemonPrincipal;
+import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
+import com.naturalprogrammer.spring.lemonreactive.domain.AbstractMongoUser;
+import com.naturalprogrammer.spring.lemonreactive.domain.AbstractMongoUserRepository;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-
-import com.naturalprogrammer.spring.lemon.commons.security.LemonPrincipal;
-import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
-import com.naturalprogrammer.spring.lemonreactive.domain.AbstractMongoUser;
-import com.naturalprogrammer.spring.lemonreactive.domain.AbstractMongoUserRepository;
-
 import reactor.core.publisher.Mono;
+
+import java.io.Serializable;
 
 public class LemonReactiveUserDetailsService<U extends AbstractMongoUser<ID>, ID extends Serializable>
 		implements ReactiveUserDetailsService {

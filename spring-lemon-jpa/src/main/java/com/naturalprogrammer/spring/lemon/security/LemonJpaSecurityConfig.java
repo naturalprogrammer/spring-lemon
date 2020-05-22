@@ -1,15 +1,13 @@
 package com.naturalprogrammer.spring.lemon.security;
 
+import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
+import com.naturalprogrammer.spring.lemon.commonsweb.security.LemonWebSecurityConfig;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
-import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
-import com.naturalprogrammer.spring.lemon.commonsweb.security.LemonWebSecurityConfig;
 
 /**
  * Security configuration class. Extend it in the
@@ -114,7 +112,7 @@ public class LemonJpaSecurityConfig extends LemonWebSecurityConfig {
 	 * Configuring token authentication filter
 	 */
 	@Override
-	protected void tokenAuthentication(HttpSecurity http) throws Exception {
+	protected void tokenAuthentication(HttpSecurity http) {
 		
 		http.addFilterBefore(new LemonJpaTokenAuthenticationFilter(blueTokenService, userDetailsService),
 				UsernamePasswordAuthenticationFilter.class);

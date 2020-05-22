@@ -1,9 +1,8 @@
 package com.naturalprogrammer.spring.lemon.exceptions;
 
+import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
-
-import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
 
 /**
  * Version exception, to be thrown when concurrent

@@ -1,10 +1,10 @@
 package com.naturalprogrammer.spring.lemon.domain;
 
-import java.io.Serializable;
-import java.util.Optional;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.NoRepositoryBean;
+
+import java.io.Serializable;
+import java.util.Optional;
 
 /**
  * Abstract UserRepository interface

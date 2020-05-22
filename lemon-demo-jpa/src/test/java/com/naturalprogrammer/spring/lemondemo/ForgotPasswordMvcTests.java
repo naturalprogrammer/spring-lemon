@@ -1,13 +1,13 @@
 package com.naturalprogrammer.spring.lemondemo;
 
+import org.junit.Test;
+import org.springframework.http.MediaType;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import org.junit.Test;
-import org.springframework.http.MediaType;
 
 public class ForgotPasswordMvcTests extends AbstractMvcTests {
 	

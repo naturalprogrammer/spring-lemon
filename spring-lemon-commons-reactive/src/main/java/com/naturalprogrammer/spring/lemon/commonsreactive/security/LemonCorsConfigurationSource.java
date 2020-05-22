@@ -1,15 +1,14 @@
 package com.naturalprogrammer.spring.lemon.commonsreactive.security;
 
-import java.util.Arrays;
-
+import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
+import com.naturalprogrammer.spring.lemon.commons.LemonProperties.Cors;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.reactive.CorsConfigurationSource;
 import org.springframework.web.server.ServerWebExchange;
 
-import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
-import com.naturalprogrammer.spring.lemon.commons.LemonProperties.Cors;
+import java.util.Arrays;
 
 /**
  * CORS Configuration

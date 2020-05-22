@@ -1,29 +1,7 @@
 package com.naturalprogrammer.spring.lemonreactive;
 
-import java.io.Serializable;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.event.EventListener;
-import org.springframework.http.server.reactive.ServerHttpResponse;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.server.ServerWebExchange;
-
 import com.naturalprogrammer.spring.lemon.commons.AbstractLemonService;
 import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
-import com.naturalprogrammer.spring.lemon.commons.LemonProperties.Admin;
 import com.naturalprogrammer.spring.lemon.commons.domain.ChangePasswordForm;
 import com.naturalprogrammer.spring.lemon.commons.domain.ResetPasswordForm;
 import com.naturalprogrammer.spring.lemon.commons.mail.LemonMailData;
@@ -41,11 +19,27 @@ import com.naturalprogrammer.spring.lemonreactive.domain.AbstractMongoUserReposi
 import com.naturalprogrammer.spring.lemonreactive.forms.EmailForm;
 import com.naturalprogrammer.spring.lemonreactive.util.LerUtils;
 import com.nimbusds.jwt.JWTClaimsSet;
-
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.server.reactive.ServerHttpResponse;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 import reactor.util.function.Tuple2;
 import reactor.util.function.Tuple3;
 import reactor.util.function.Tuples;
+
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Optional;
 
 public abstract class LemonReactiveService
 	<U extends AbstractMongoUser<ID>, ID extends Serializable>
@@ -85,9 +79,9 @@ public abstract class LemonReactiveService
 				// Doesn't exist. So, create it.
 				log.debug("Creating first admin ... ");
 		    	U user = createAdminUser();
-		    	userRepository.insert(user).doOnError(err -> {
-		    		log.warn("Error creating initial admin " + err);
-		    	}).subscribe();
+		    	userRepository.insert(user)
+						.doOnError(err -> log.warn("Error creating initial admin " + err))
+						.subscribe();
 				log.debug("Created first admin.");		    	
 			}).subscribe();
 	}
@@ -489,7 +483,6 @@ public abstract class LemonReactiveService
 	protected void requestEmailChange(Tuple3<U,U,EmailForm> tuple) {
 		
 		U user = tuple.getT1();
-		U loggedIn = tuple.getT2();
 		EmailForm emailForm = tuple.getT3();
 		
 		log.debug("Requesting email change: " + user);
@@ -502,7 +495,6 @@ public abstract class LemonReactiveService
 
 		// preserves the new email id
 		user.setNewEmail(emailForm.getNewEmail());
-
 		log.debug("Requested email change: " + user);		
 	}
 	
@@ -531,7 +523,7 @@ public abstract class LemonReactiveService
 			
 			log.debug("Change email link mail queued.");
 			
-		} catch (Throwable e) {
+		} catch (Exception e) {
 			// In case of exception, just log the error and keep silent			
 			log.error(ExceptionUtils.getStackTrace(e));
 		}
@@ -560,10 +552,9 @@ public abstract class LemonReactiveService
 		log.debug("Changing email of current user ...");
 		
 		return LecrUtils.currentUser()
-			.doOnNext(currentUser -> {				
+			.doOnNext(currentUser ->
 				LexUtils.validate(userId.equals(toId(currentUser.get().getId())),
-						"com.naturalprogrammer.spring.wrong.login").go();	
-			})
+						"com.naturalprogrammer.spring.wrong.login").go())
 			.then(Mono.zip(findUserById(userId), formData))
 			.map(this::validateChangeEmail)
 			.flatMap(user -> Mono.zip(Mono.just(user),
@@ -629,7 +620,7 @@ public abstract class LemonReactiveService
 		
 		return Mono.zip(LecrUtils.currentUser(), exchange.getFormData()).map(tuple -> {
 				
-			UserDto currentUser = (UserDto) tuple.getT1().get();
+			UserDto currentUser = tuple.getT1().get();
 			
 			String username = tuple.getT2().getFirst("username");
 			if (StringUtils.isBlank(username))
@@ -659,12 +650,10 @@ public abstract class LemonReactiveService
 			Map<String, Object> claimMap = Collections.singletonMap(BlueTokenService.USER_CLAIM,
 					LecUtils.serialize(currentUser)); // Not serializing converts it to a JsonNode
 			
-			Map<String, String> tokenMap = Collections.singletonMap("token", LecUtils.TOKEN_PREFIX +
+			return Collections.singletonMap("token", LecUtils.TOKEN_PREFIX +
 					blueTokenService.createToken(BlueTokenService.AUTH_AUDIENCE, currentUser.getUsername(),
 						Long.valueOf(properties.getJwt().getShortLivedMillis()),
 						claimMap));
-			
-			return tokenMap;
 		});
 	}
 

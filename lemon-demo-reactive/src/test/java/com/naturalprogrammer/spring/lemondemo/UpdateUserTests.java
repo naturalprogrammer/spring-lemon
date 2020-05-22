@@ -1,16 +1,9 @@
 package com.naturalprogrammer.spring.lemondemo;
 
-import static com.naturalprogrammer.spring.lemondemo.MyTestUtils.ADMIN_ID;
-import static com.naturalprogrammer.spring.lemondemo.MyTestUtils.BLOCKED_ADMIN_ID;
-import static com.naturalprogrammer.spring.lemondemo.MyTestUtils.CLIENT;
-import static com.naturalprogrammer.spring.lemondemo.MyTestUtils.TOKENS;
-import static com.naturalprogrammer.spring.lemondemo.MyTestUtils.UNVERIFIED_ADMIN_ID;
-import static com.naturalprogrammer.spring.lemondemo.MyTestUtils.UNVERIFIED_USER_EMAIL;
-import static com.naturalprogrammer.spring.lemondemo.MyTestUtils.UNVERIFIED_USER_ID;
-import static com.naturalprogrammer.spring.lemondemo.controllers.MyController.BASE_URI;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
+import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
+import com.naturalprogrammer.spring.lemon.commons.util.UserUtils;
+import com.naturalprogrammer.spring.lemondemo.domain.User;
+import com.naturalprogrammer.spring.lemondemo.dto.TestUserDto;
 import org.bson.types.ObjectId;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,10 +14,10 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient.ResponseSpec;
 import org.springframework.web.reactive.function.BodyInserters;
 
-import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
-import com.naturalprogrammer.spring.lemon.commons.util.UserUtils;
-import com.naturalprogrammer.spring.lemondemo.domain.User;
-import com.naturalprogrammer.spring.lemondemo.dto.TestUserDto;
+import static com.naturalprogrammer.spring.lemondemo.MyTestUtils.*;
+import static com.naturalprogrammer.spring.lemondemo.controllers.MyController.BASE_URI;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class UpdateUserTests extends AbstractTests {
 
@@ -67,7 +60,7 @@ public class UpdateUserTests extends AbstractTests {
 				assertTrue(userDto.getRoles().contains(UserUtils.Role.UNVERIFIED));
 			});
 		
-		User user = mongoTemplate.findById(UNVERIFIED_USER_ID, User.class);
+		User user = mongoTemplate.findById(UNVERIFIED_USER_ID, User.class).block();
 		
 		// Ensure that data changed properly
 		assertEquals(UNVERIFIED_USER_EMAIL, user.getEmail());
@@ -106,7 +99,7 @@ public class UpdateUserTests extends AbstractTests {
 				assertTrue(userDto.getRoles().contains(UserUtils.Role.ADMIN));
 			});
 		
-		User user = mongoTemplate.findById(UNVERIFIED_USER_ID, User.class);
+		User user = mongoTemplate.findById(UNVERIFIED_USER_ID, User.class).block();
 		
 		// Ensure that data changed properly
 		assertEquals(UNVERIFIED_USER_EMAIL, user.getEmail());
@@ -169,7 +162,7 @@ public class UpdateUserTests extends AbstractTests {
 				assertTrue(userDto.getRoles().contains(UserUtils.Role.ADMIN));
 			});
 		
-		User user = mongoTemplate.findById(ADMIN_ID, User.class);
+		User user = mongoTemplate.findById(ADMIN_ID, User.class).block();
 		
 		assertEquals(1, user.getRoles().size());
     }

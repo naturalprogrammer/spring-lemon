@@ -1,16 +1,15 @@
 package com.naturalprogrammer.spring.lemon.exceptions;
 
+import com.naturalprogrammer.spring.lemon.exceptions.handlers.AbstractExceptionHandler;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.core.annotation.AnnotationAwareOrderComparator;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.core.annotation.AnnotationAwareOrderComparator;
-
-import com.naturalprogrammer.spring.lemon.exceptions.handlers.AbstractExceptionHandler;
 
 /**
  * Given an exception, builds a response.
@@ -25,12 +24,12 @@ public class ErrorResponseComposer<T extends Throwable> {
 		
 		this.handlers = handlers.stream().collect(
 	            Collectors.toMap(AbstractExceptionHandler::getExceptionClass,
-	            		Function.identity(), (handler1, handler2) -> {
+	            		Function.identity(), (handler1, handler2) ->
 	            			
-	            			return AnnotationAwareOrderComparator
-	            					.INSTANCE.compare(handler1, handler2) < 0 ?
-	            					handler1 : handler2;
-	            		}));
+	            			AnnotationAwareOrderComparator
+									.INSTANCE.compare(handler1, handler2) < 0 ?
+									handler1 : handler2
+	            		));
 		
 		log.info("Created");
 	}

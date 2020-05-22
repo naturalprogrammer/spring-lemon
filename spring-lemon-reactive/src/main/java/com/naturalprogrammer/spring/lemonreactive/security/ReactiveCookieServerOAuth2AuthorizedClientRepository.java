@@ -1,7 +1,8 @@
 package com.naturalprogrammer.spring.lemonreactive.security;
 
-import java.util.Collections;
-
+import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
+import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
+import com.naturalprogrammer.spring.lemon.commonsreactive.util.LecrUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -14,12 +15,9 @@ import org.springframework.security.oauth2.client.web.server.ServerOAuth2Authori
 import org.springframework.util.Assert;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.server.ServerWebExchange;
-
-import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
-import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
-import com.naturalprogrammer.spring.lemon.commonsreactive.util.LecrUtils;
-
 import reactor.core.publisher.Mono;
+
+import java.util.Collections;
 
 public class ReactiveCookieServerOAuth2AuthorizedClientRepository implements ServerOAuth2AuthorizedClientRepository {
 
@@ -112,7 +110,7 @@ public class ReactiveCookieServerOAuth2AuthorizedClientRepository implements Ser
 					.build();
 				
 				responseCookies.put(cookiesToDelete[i], Collections.singletonList(cookie));
-			};			
+			}
 	}
 
 	private Mono<OAuth2AuthorizedClient> deserialize(HttpCookie cookie) {		

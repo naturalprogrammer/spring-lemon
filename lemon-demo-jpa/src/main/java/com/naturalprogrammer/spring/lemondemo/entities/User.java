@@ -1,21 +1,19 @@
 package com.naturalprogrammer.spring.lemondemo.entities;
 
-import java.io.Serializable;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.naturalprogrammer.spring.lemon.commons.util.UserUtils;
+import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-
-import com.fasterxml.jackson.annotation.JsonView;
-import com.naturalprogrammer.spring.lemon.commons.util.UserUtils;
-import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
-
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import java.io.Serializable;
 
 @Entity
 @Table(name="usr")
@@ -43,7 +41,7 @@ public class User extends AbstractUser<Long> {
 	@JsonView(UserUtils.SignupInput.class)
 	@NotBlank(message = "{blank.name}", groups = {UserUtils.SignUpValidation.class, UserUtils.UpdateValidation.class})
     @Size(min=NAME_MIN, max=NAME_MAX, groups = {UserUtils.SignUpValidation.class, UserUtils.UpdateValidation.class})
-    @Column(nullable = false, length = NAME_MAX)
+    @Column(nullable = false, length = NAME_MAX) // Note: don't use JPA annotations on getter: https://github.com/naturalprogrammer/spring-lemon/issues/9
     private String name;
 	
 	@Override

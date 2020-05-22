@@ -1,12 +1,11 @@
 package com.naturalprogrammer.spring.lemon.security;
 
-import java.io.Serializable;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
+import com.naturalprogrammer.spring.lemon.LemonService;
+import com.naturalprogrammer.spring.lemon.commons.security.LemonPrincipal;
+import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
+import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
+import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
+import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -17,17 +16,16 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.http.OAuth2ErrorResponseErrorHandler;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
-import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.util.MimeType;
 import org.springframework.web.client.RestTemplate;
 
-import com.naturalprogrammer.spring.lemon.LemonService;
-import com.naturalprogrammer.spring.lemon.commons.security.LemonPrincipal;
-import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
-import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
-import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
-import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
+import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Logs in or registers a user after OAuth2 SignIn/Up
@@ -77,7 +75,7 @@ public class LemonOAuth2UserService<U extends AbstractUser<ID>, ID extends Seria
 	}
 
 	@Override
-	public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
+	public OAuth2User loadUser(OAuth2UserRequest userRequest) {
 		
 		OAuth2User oath2User = super.loadUser(userRequest);
 		return buildPrincipal(oath2User, userRequest.getClientRegistration().getRegistrationId());
@@ -110,7 +108,7 @@ public class LemonOAuth2UserService<U extends AbstractUser<ID>, ID extends Seria
 				
 				lemonService.mailForgotPasswordLink(newUser);
 				
-			} catch (Throwable e) {
+			} catch (Exception e) {
 				
 				// In case of exception, just log the error and keep silent			
 				log.error(ExceptionUtils.getStackTrace(e));

@@ -1,10 +1,9 @@
 package com.naturalprogrammer.spring.lemon.commons.security;
 
-import org.springframework.security.core.GrantedAuthority;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.security.core.GrantedAuthority;
 
 /**
  * Our implementation of GrantedAuthority.

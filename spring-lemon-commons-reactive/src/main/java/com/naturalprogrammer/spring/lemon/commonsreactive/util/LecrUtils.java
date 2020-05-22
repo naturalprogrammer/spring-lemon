@@ -1,23 +1,18 @@
 package com.naturalprogrammer.spring.lemon.commonsreactive.util;
 
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.Optional;
-
-import javax.annotation.PostConstruct;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.http.HttpCookie;
-import org.springframework.security.core.context.ReactiveSecurityContextHolder;
-import org.springframework.web.server.ServerWebExchange;
-
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
 import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
 import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
-
+import org.springframework.http.HttpCookie;
+import org.springframework.security.core.context.ReactiveSecurityContextHolder;
+import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
+
+import javax.annotation.PostConstruct;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.Optional;
 
 /**
  * Useful helper methods
@@ -25,8 +20,6 @@ import reactor.core.publisher.Mono;
  * @author Sanjay Patel
  */
 public class LecrUtils {
-	
-	private static final Log log = LogFactory.getLog(LecrUtils.class);
 	
 	private static Mono<Object> NOT_FOUND_MONO;
 	
@@ -46,7 +39,7 @@ public class LecrUtils {
 		
 		return ReactiveSecurityContextHolder.getContext()
 			.map(LecUtils::currentUser)
-			.map(user -> Optional.of(user))
+			.map(Optional::of)
 			.defaultIfEmpty(Optional.empty());
 	}	
 		

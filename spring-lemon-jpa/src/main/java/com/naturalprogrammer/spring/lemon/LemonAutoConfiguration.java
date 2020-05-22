@@ -1,7 +1,17 @@
 package com.naturalprogrammer.spring.lemon;
 
-import java.io.Serializable;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
+import com.naturalprogrammer.spring.lemon.commons.domain.IdConverter;
+import com.naturalprogrammer.spring.lemon.commons.security.BlueTokenService;
+import com.naturalprogrammer.spring.lemon.commons.validation.RetypePasswordValidator;
+import com.naturalprogrammer.spring.lemon.commonsjpa.LemonCommonsJpaAutoConfiguration;
+import com.naturalprogrammer.spring.lemon.commonsweb.security.LemonWebSecurityConfig;
+import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
+import com.naturalprogrammer.spring.lemon.domain.AbstractUserRepository;
+import com.naturalprogrammer.spring.lemon.security.*;
+import com.naturalprogrammer.spring.lemon.util.LemonUtils;
+import com.naturalprogrammer.spring.lemon.validation.UniqueEmailValidator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
@@ -16,24 +26,7 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
-import com.naturalprogrammer.spring.lemon.commons.domain.IdConverter;
-import com.naturalprogrammer.spring.lemon.commons.security.BlueTokenService;
-import com.naturalprogrammer.spring.lemon.commons.validation.RetypePasswordValidator;
-import com.naturalprogrammer.spring.lemon.commonsjpa.LemonCommonsJpaAutoConfiguration;
-import com.naturalprogrammer.spring.lemon.commonsweb.security.LemonWebSecurityConfig;
-import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
-import com.naturalprogrammer.spring.lemon.domain.AbstractUserRepository;
-import com.naturalprogrammer.spring.lemon.security.LemonAuthenticationSuccessHandler;
-import com.naturalprogrammer.spring.lemon.security.LemonJpaSecurityConfig;
-import com.naturalprogrammer.spring.lemon.security.LemonOAuth2UserService;
-import com.naturalprogrammer.spring.lemon.security.LemonOidcUserService;
-import com.naturalprogrammer.spring.lemon.security.LemonUserDetailsService;
-import com.naturalprogrammer.spring.lemon.security.OAuth2AuthenticationFailureHandler;
-import com.naturalprogrammer.spring.lemon.security.OAuth2AuthenticationSuccessHandler;
-import com.naturalprogrammer.spring.lemon.util.LemonUtils;
-import com.naturalprogrammer.spring.lemon.validation.UniqueEmailValidator;
+import java.io.Serializable;
 
 /**
  * Spring Lemon Auto Configuration
@@ -56,7 +49,7 @@ public class LemonAutoConfiguration {
 	@ConditionalOnMissingBean(IdConverter.class)
 	public <ID extends Serializable>
 	IdConverter<ID> idConverter(LemonService<?,ID> lemonService) {
-		return id -> lemonService.toId(id);
+		return lemonService::toId;
 	}
 	
 	/**

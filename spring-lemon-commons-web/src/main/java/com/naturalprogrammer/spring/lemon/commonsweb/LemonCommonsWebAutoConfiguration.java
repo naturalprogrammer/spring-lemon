@@ -1,8 +1,16 @@
 package com.naturalprogrammer.spring.lemon.commonsweb;
 
-import java.io.Serializable;
-import java.util.List;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.naturalprogrammer.spring.lemon.commons.LemonCommonsAutoConfiguration;
+import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
+import com.naturalprogrammer.spring.lemon.commonsweb.exceptions.DefaultExceptionHandlerControllerAdvice;
+import com.naturalprogrammer.spring.lemon.commonsweb.exceptions.LemonErrorAttributes;
+import com.naturalprogrammer.spring.lemon.commonsweb.exceptions.LemonErrorController;
+import com.naturalprogrammer.spring.lemon.commonsweb.security.LemonCorsConfigurationSource;
+import com.naturalprogrammer.spring.lemon.commonsweb.security.LemonWebAuditorAware;
+import com.naturalprogrammer.spring.lemon.commonsweb.security.LemonWebSecurityConfig;
+import com.naturalprogrammer.spring.lemon.commonsweb.util.LecwUtils;
+import com.naturalprogrammer.spring.lemon.exceptions.ErrorResponseComposer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
@@ -25,17 +33,8 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.web.cors.CorsConfigurationSource;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.naturalprogrammer.spring.lemon.commons.LemonCommonsAutoConfiguration;
-import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
-import com.naturalprogrammer.spring.lemon.commonsweb.exceptions.DefaultExceptionHandlerControllerAdvice;
-import com.naturalprogrammer.spring.lemon.commonsweb.exceptions.LemonErrorAttributes;
-import com.naturalprogrammer.spring.lemon.commonsweb.exceptions.LemonErrorController;
-import com.naturalprogrammer.spring.lemon.commonsweb.security.LemonCorsConfigurationSource;
-import com.naturalprogrammer.spring.lemon.commonsweb.security.LemonWebAuditorAware;
-import com.naturalprogrammer.spring.lemon.commonsweb.security.LemonWebSecurityConfig;
-import com.naturalprogrammer.spring.lemon.commonsweb.util.LecwUtils;
-import com.naturalprogrammer.spring.lemon.exceptions.ErrorResponseComposer;
+import java.io.Serializable;
+import java.util.List;
 
 @Configuration
 @EnableSpringDataWebSupport
@@ -53,7 +52,7 @@ public class LemonCommonsWebAutoConfiguration {
 	 * JSON response bodies would be prefixed with
 	 * this string.
 	 */
-	public final static String JSON_PREFIX = ")]}',\n";
+	public static final String JSON_PREFIX = ")]}',\n";
 
 	private static final Log log = LogFactory.getLog(LemonCommonsWebAutoConfiguration.class);
 	

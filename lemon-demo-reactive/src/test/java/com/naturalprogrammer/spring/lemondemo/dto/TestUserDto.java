@@ -1,14 +1,12 @@
 package com.naturalprogrammer.spring.lemondemo.dto;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import org.bson.types.ObjectId;
-
 import com.naturalprogrammer.spring.lemondemo.domain.User.Tag;
-
 import lombok.Getter;
 import lombok.Setter;
+import org.bson.types.ObjectId;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter @Setter
 public class TestUserDto {

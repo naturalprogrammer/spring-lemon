@@ -1,9 +1,16 @@
 package com.naturalprogrammer.spring.lemonreactive.security;
 
-import java.io.Serializable;
-import java.net.URI;
-import java.util.Map;
-
+import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
+import com.naturalprogrammer.spring.lemon.commons.security.BlueTokenService;
+import com.naturalprogrammer.spring.lemon.commons.security.LemonPrincipal;
+import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
+import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
+import com.naturalprogrammer.spring.lemon.commonsreactive.util.LecrUtils;
+import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
+import com.naturalprogrammer.spring.lemonreactive.LemonReactiveService;
+import com.naturalprogrammer.spring.lemonreactive.domain.AbstractMongoUser;
+import com.naturalprogrammer.spring.lemonreactive.domain.AbstractMongoUserRepository;
+import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -19,20 +26,11 @@ import org.springframework.security.web.server.ServerRedirectStrategy;
 import org.springframework.security.web.server.WebFilterExchange;
 import org.springframework.security.web.server.authentication.ServerAuthenticationSuccessHandler;
 import org.springframework.web.server.ServerWebExchange;
-
-import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
-import com.naturalprogrammer.spring.lemon.commons.security.BlueTokenService;
-import com.naturalprogrammer.spring.lemon.commons.security.LemonPrincipal;
-import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
-import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
-import com.naturalprogrammer.spring.lemon.commonsreactive.util.LecrUtils;
-import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
-import com.naturalprogrammer.spring.lemonreactive.LemonReactiveService;
-import com.naturalprogrammer.spring.lemonreactive.domain.AbstractMongoUser;
-import com.naturalprogrammer.spring.lemonreactive.domain.AbstractMongoUserRepository;
-
-import lombok.AllArgsConstructor;
 import reactor.core.publisher.Mono;
+
+import java.io.Serializable;
+import java.net.URI;
+import java.util.Map;
 
 /**
  * Authentication success handler for redirecting the
@@ -110,7 +108,7 @@ public class ReactiveOAuth2AuthenticationSuccessHandler<U extends AbstractMongoU
 				
 				lemonService.mailForgotPasswordLink(newUser);
 				
-			} catch (Throwable e) {
+			} catch (Exception e) {
 				
 				// In case of exception, just log the error and keep silent			
 				log.error(ExceptionUtils.getStackTrace(e));
@@ -120,12 +118,10 @@ public class ReactiveOAuth2AuthenticationSuccessHandler<U extends AbstractMongoU
 
 	private String getAuthToken(UserDto user) {
 		
-		String shortLivedAuthToken = blueTokenService.createToken(
+		return blueTokenService.createToken(
 				BlueTokenService.AUTH_AUDIENCE,
 				user.getUsername(),
 				(long) properties.getJwt().getShortLivedMillis());
-		
-		return shortLivedAuthToken;
 	}
 	
 	private String getTargetUrl(ServerWebExchange exchange, String shortLivedAuthToken) {

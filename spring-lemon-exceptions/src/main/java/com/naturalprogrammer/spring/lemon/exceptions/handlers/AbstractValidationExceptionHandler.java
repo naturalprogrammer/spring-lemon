@@ -1,10 +1,9 @@
 package com.naturalprogrammer.spring.lemon.exceptions.handlers;
 
+import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
-
-import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
 
 /**
  * Extend this for any exception handler that should return a 400 response

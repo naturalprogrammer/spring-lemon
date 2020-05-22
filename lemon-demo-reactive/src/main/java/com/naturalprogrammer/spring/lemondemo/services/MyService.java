@@ -1,14 +1,13 @@
 package com.naturalprogrammer.spring.lemondemo.services;
 
-import java.util.Map;
-
+import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
+import com.naturalprogrammer.spring.lemondemo.domain.User;
+import com.naturalprogrammer.spring.lemonreactive.LemonReactiveService;
 import org.bson.types.ObjectId;
 import org.springframework.security.oauth2.core.oidc.StandardClaimNames;
 import org.springframework.stereotype.Service;
 
-import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
-import com.naturalprogrammer.spring.lemondemo.domain.User;
-import com.naturalprogrammer.spring.lemonreactive.LemonReactiveService;
+import java.util.Map;
 
 @Service
 public class MyService extends LemonReactiveService<User, ObjectId> {

@@ -1,13 +1,10 @@
 package com.naturalprogrammer.spring.lemondemo;
 
-import static com.naturalprogrammer.spring.lemondemo.MyTestUtils.ADMIN_ID;
-import static com.naturalprogrammer.spring.lemondemo.MyTestUtils.CLIENT;
-import static com.naturalprogrammer.spring.lemondemo.MyTestUtils.TOKENS;
-import static com.naturalprogrammer.spring.lemondemo.controllers.MyController.BASE_URI;
-
+import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
 import org.junit.Test;
 
-import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
+import static com.naturalprogrammer.spring.lemondemo.MyTestUtils.*;
+import static com.naturalprogrammer.spring.lemondemo.controllers.MyController.BASE_URI;
 
 public class BasicTests extends AbstractTests {
 

@@ -1,5 +1,7 @@
 package com.naturalprogrammer.spring.lemon.commonsweb.exceptions;
 
+import com.naturalprogrammer.spring.lemon.exceptions.ErrorResponse;
+import com.naturalprogrammer.spring.lemon.exceptions.ErrorResponseComposer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.http.HttpStatus;
@@ -7,9 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
-import com.naturalprogrammer.spring.lemon.exceptions.ErrorResponse;
-import com.naturalprogrammer.spring.lemon.exceptions.ErrorResponseComposer;
 
 /**
  * Handles exceptions thrown from in controllers or inner routines

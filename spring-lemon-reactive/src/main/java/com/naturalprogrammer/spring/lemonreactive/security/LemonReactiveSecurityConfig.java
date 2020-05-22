@@ -1,16 +1,5 @@
 package com.naturalprogrammer.spring.lemonreactive.security;
 
-import java.io.Serializable;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.security.config.web.server.ServerHttpSecurity;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.web.server.WebFilterExchange;
-import org.springframework.security.web.server.authentication.WebFilterChainServerAuthenticationSuccessHandler;
-import org.springframework.security.web.server.context.NoOpServerSecurityContextRepository;
-
 import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
 import com.naturalprogrammer.spring.lemon.commons.security.BlueTokenService;
 import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
@@ -19,8 +8,17 @@ import com.naturalprogrammer.spring.lemon.commonsreactive.security.LemonCommonsR
 import com.naturalprogrammer.spring.lemonreactive.domain.AbstractMongoUser;
 import com.naturalprogrammer.spring.lemonreactive.util.LerUtils;
 import com.nimbusds.jwt.JWTClaimsSet;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.security.config.web.server.ServerHttpSecurity;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.web.server.WebFilterExchange;
+import org.springframework.security.web.server.authentication.WebFilterChainServerAuthenticationSuccessHandler;
+import org.springframework.security.web.server.context.NoOpServerSecurityContextRepository;
 import reactor.core.publisher.Mono;
+
+import java.io.Serializable;
 
 public class LemonReactiveSecurityConfig<U extends AbstractMongoUser<ID>, ID extends Serializable> extends LemonCommonsReactiveSecurityConfig {
 

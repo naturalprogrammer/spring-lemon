@@ -1,14 +1,13 @@
 package com.naturalprogrammer.spring.lemon.exceptions.handlers;
 
-import java.util.Collection;
-
+import com.naturalprogrammer.spring.lemon.exceptions.LemonFieldError;
+import com.naturalprogrammer.spring.lemon.exceptions.MultiErrorException;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
-import com.naturalprogrammer.spring.lemon.exceptions.LemonFieldError;
-import com.naturalprogrammer.spring.lemon.exceptions.MultiErrorException;
+import java.util.Collection;
 
 @Component
 @Order(Ordered.LOWEST_PRECEDENCE)

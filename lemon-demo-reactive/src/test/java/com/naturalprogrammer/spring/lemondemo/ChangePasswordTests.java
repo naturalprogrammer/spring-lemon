@@ -1,27 +1,17 @@
 package com.naturalprogrammer.spring.lemondemo;
 
-import static com.naturalprogrammer.spring.lemondemo.MyTestUtils.ADMIN_ID;
-import static com.naturalprogrammer.spring.lemondemo.MyTestUtils.ADMIN_PASSWORD;
-import static com.naturalprogrammer.spring.lemondemo.MyTestUtils.CLIENT;
-import static com.naturalprogrammer.spring.lemondemo.MyTestUtils.TOKENS;
-import static com.naturalprogrammer.spring.lemondemo.MyTestUtils.UNVERIFIED_ADMIN_ID;
-import static com.naturalprogrammer.spring.lemondemo.MyTestUtils.UNVERIFIED_USER_EMAIL;
-import static com.naturalprogrammer.spring.lemondemo.MyTestUtils.UNVERIFIED_USER_ID;
-import static com.naturalprogrammer.spring.lemondemo.MyTestUtils.USER_ID;
-import static com.naturalprogrammer.spring.lemondemo.MyTestUtils.USER_PASSWORD;
-import static com.naturalprogrammer.spring.lemondemo.controllers.MyController.BASE_URI;
-
+import com.naturalprogrammer.spring.lemon.commons.domain.ChangePasswordForm;
+import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
+import com.naturalprogrammer.spring.lemondemo.dto.TestErrorResponse;
 import org.bson.types.ObjectId;
 import org.junit.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-
-import com.naturalprogrammer.spring.lemon.commons.domain.ChangePasswordForm;
-import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
-import com.naturalprogrammer.spring.lemondemo.dto.TestErrorResponse;
-
 import reactor.core.publisher.Mono;
+
+import static com.naturalprogrammer.spring.lemondemo.MyTestUtils.*;
+import static com.naturalprogrammer.spring.lemondemo.controllers.MyController.BASE_URI;
 
 public class ChangePasswordTests extends AbstractTests {
 

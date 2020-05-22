@@ -1,17 +1,5 @@
 package com.naturalprogrammer.spring.lemonreactive;
 
-import java.io.Serializable;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.boot.autoconfigure.AutoConfigureBefore;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.security.reactive.ReactiveUserDetailsServiceAutoConfiguration;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.password.PasswordEncoder;
-
 import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
 import com.naturalprogrammer.spring.lemon.commons.domain.IdConverter;
 import com.naturalprogrammer.spring.lemon.commons.security.BlueTokenService;
@@ -23,6 +11,17 @@ import com.naturalprogrammer.spring.lemonreactive.security.LemonReactiveSecurity
 import com.naturalprogrammer.spring.lemonreactive.security.LemonReactiveUserDetailsService;
 import com.naturalprogrammer.spring.lemonreactive.security.ReactiveOAuth2AuthenticationSuccessHandler;
 import com.naturalprogrammer.spring.lemonreactive.util.LerUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.boot.autoconfigure.AutoConfigureBefore;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.security.reactive.ReactiveUserDetailsServiceAutoConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.io.Serializable;
 
 @Configuration
 @AutoConfigureBefore({
@@ -40,7 +39,7 @@ public class LemonReactiveAutoConfiguration {
 	@ConditionalOnMissingBean(IdConverter.class)
 	public <ID extends Serializable>
 	IdConverter<ID> idConverter(LemonReactiveService<?,ID> lemonService) {
-		return id -> lemonService.toId(id);
+		return lemonService::toId;
 	}
 	
 	@Bean

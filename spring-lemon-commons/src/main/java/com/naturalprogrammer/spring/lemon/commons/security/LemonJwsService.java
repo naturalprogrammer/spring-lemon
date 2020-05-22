@@ -1,20 +1,13 @@
 package com.naturalprogrammer.spring.lemon.commons.security;
 
-import java.text.ParseException;
-import java.util.Map;
-
-import org.springframework.security.authentication.BadCredentialsException;
-
-import com.nimbusds.jose.JOSEException;
-import com.nimbusds.jose.JWSAlgorithm;
-import com.nimbusds.jose.JWSHeader;
-import com.nimbusds.jose.JWSObject;
-import com.nimbusds.jose.JWSSigner;
-import com.nimbusds.jose.JWSVerifier;
-import com.nimbusds.jose.Payload;
+import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
+import org.springframework.security.authentication.BadCredentialsException;
+
+import java.text.ParseException;
+import java.util.Map;
 
 /**
  * JWS Service
@@ -28,7 +21,6 @@ public class LemonJwsService extends AbstractJwtService implements BlueTokenServ
 
 	public LemonJwsService(String secret) throws JOSEException {
 		
-		byte[] secretKey = secret.getBytes();
 		signer = new MACSigner(secret);
 		verifier = new MACVerifier(secret);
 	}

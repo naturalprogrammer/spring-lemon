@@ -1,15 +1,14 @@
 package com.naturalprogrammer.spring.lemon.commons.validation;
 
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-
-import java.lang.annotation.Retention;
+import com.naturalprogrammer.spring.lemon.commons.util.UserUtils;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.lang.annotation.Retention;
 
-import com.naturalprogrammer.spring.lemon.commons.util.UserUtils;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * Annotation for password constraint

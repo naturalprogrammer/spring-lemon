@@ -1,14 +1,13 @@
 package com.naturalprogrammer.spring.lemon.exceptions.handlers;
 
-import java.util.Collection;
-
+import com.naturalprogrammer.spring.lemon.exceptions.ErrorResponse;
+import com.naturalprogrammer.spring.lemon.exceptions.LemonFieldError;
+import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.http.HttpStatus;
 
-import com.naturalprogrammer.spring.lemon.exceptions.ErrorResponse;
-import com.naturalprogrammer.spring.lemon.exceptions.LemonFieldError;
-import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
+import java.util.Collection;
 
 /**
  * Extend this to code an exception handler

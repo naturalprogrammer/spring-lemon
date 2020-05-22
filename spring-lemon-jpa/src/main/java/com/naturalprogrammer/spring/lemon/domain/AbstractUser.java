@@ -1,17 +1,5 @@
 package com.naturalprogrammer.spring.lemon.domain;
 
-import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.persistence.CollectionTable;
-import javax.persistence.Column;
-import javax.persistence.ElementCollection;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.Transient;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.naturalprogrammer.spring.lemon.commons.domain.LemonUser;
@@ -21,9 +9,13 @@ import com.naturalprogrammer.spring.lemon.commons.validation.Captcha;
 import com.naturalprogrammer.spring.lemon.commons.validation.Password;
 import com.naturalprogrammer.spring.lemon.commonsjpa.LemonEntity;
 import com.naturalprogrammer.spring.lemon.validation.UniqueEmail;
-
 import lombok.Getter;
 import lombok.Setter;
+
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 
 /**

@@ -1,17 +1,5 @@
 package com.naturalprogrammer.spring.lemon.commons;
 
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.event.EventListener;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.core.oidc.StandardClaimNames;
-
 import com.naturalprogrammer.spring.lemon.commons.LemonProperties.Admin;
 import com.naturalprogrammer.spring.lemon.commons.domain.LemonUser;
 import com.naturalprogrammer.spring.lemon.commons.mail.LemonMailData;
@@ -21,6 +9,17 @@ import com.naturalprogrammer.spring.lemon.commons.security.GreenTokenService;
 import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
 import com.naturalprogrammer.spring.lemon.commons.util.UserUtils;
 import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.core.oidc.StandardClaimNames;
+
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 public abstract class AbstractLemonService
 	<U extends LemonUser<ID>, ID extends Serializable> {
@@ -74,7 +73,7 @@ public abstract class AbstractLemonService
 	protected Map<String, Object> buildContext() {
 		
 		// make the context
-		Map<String, Object> sharedProperties = new HashMap<String, Object>(2);
+		Map<String, Object> sharedProperties = new HashMap<>(2);
 		sharedProperties.put("reCaptchaSiteKey", properties.getRecaptcha().getSitekey());
 		sharedProperties.put("shared", properties.getShared());
 		
@@ -122,7 +121,7 @@ public abstract class AbstractLemonService
 
 			log.debug("Verification mail to " + user.getEmail() + " queued.");
 			
-		} catch (Throwable e) {
+		} catch (Exception e) {
 			// In case of exception, just log the error and keep silent
 			log.error(ExceptionUtils.getStackTrace(e));
 		}
@@ -213,7 +212,7 @@ public abstract class AbstractLemonService
 		
 		try {
 			return (boolean) verified;
-		} catch (Throwable t) {
+		} catch (Exception e) {
 			return false;
 		}
 	}

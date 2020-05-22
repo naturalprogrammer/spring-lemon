@@ -1,15 +1,13 @@
 package com.naturalprogrammer.spring.lemon.security;
 
-import java.io.IOException;
+import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
-
-import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
+import java.io.IOException;
 
 /**
  * OAuth2 Authentication failure handler for removing oauth2 related cookies

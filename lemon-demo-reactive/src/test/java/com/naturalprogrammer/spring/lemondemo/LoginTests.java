@@ -1,23 +1,15 @@
 package com.naturalprogrammer.spring.lemondemo;
 
-import static com.naturalprogrammer.spring.lemondemo.MyTestUtils.ADMIN_EMAIL;
-import static com.naturalprogrammer.spring.lemondemo.MyTestUtils.ADMIN_ID;
-import static com.naturalprogrammer.spring.lemondemo.MyTestUtils.ADMIN_PASSWORD;
-import static com.naturalprogrammer.spring.lemondemo.MyTestUtils.CLIENT;
-import static com.naturalprogrammer.spring.lemondemo.MyTestUtils.TOKENS;
-import static com.naturalprogrammer.spring.lemondemo.controllers.MyController.BASE_URI;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.springframework.web.reactive.function.BodyInserters.fromFormData;
-
-import org.junit.Test;
-import org.springframework.http.HttpHeaders;
-
 import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
 import com.naturalprogrammer.spring.lemondemo.domain.User;
 import com.naturalprogrammer.spring.lemondemo.dto.TestUserDto;
+import org.junit.Test;
+import org.springframework.http.HttpHeaders;
+
+import static com.naturalprogrammer.spring.lemondemo.MyTestUtils.*;
+import static com.naturalprogrammer.spring.lemondemo.controllers.MyController.BASE_URI;
+import static org.junit.Assert.*;
+import static org.springframework.web.reactive.function.BodyInserters.fromFormData;
 
 public class LoginTests extends AbstractTests {
 
@@ -63,9 +55,9 @@ public class LoginTests extends AbstractTests {
 	@Test
 	public void testObsoleteToken() throws Exception {
 		
-		User user = mongoTemplate.findById(ADMIN_ID, User.class);
+		User user = mongoTemplate.findById(ADMIN_ID, User.class).block();
 		user.setCredentialsUpdatedMillis(System.currentTimeMillis());
-		mongoTemplate.save(user);
+		mongoTemplate.save(user).block();
 		
 		CLIENT.get()
 			.uri(BASE_URI + "/ping")

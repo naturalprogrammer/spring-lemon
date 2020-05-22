@@ -1,8 +1,8 @@
 package com.naturalprogrammer.spring.lemon.commons.security;
 
-import java.util.Map;
-
 import com.nimbusds.jwt.JWTClaimsSet;
+
+import java.util.Map;
 
 public interface LemonTokenService {
 

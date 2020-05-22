@@ -1,17 +1,15 @@
 package com.naturalprogrammer.spring.lemon.commons;
 
-import java.util.Map;
-
+import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.http.HttpHeaders;
 import org.springframework.validation.annotation.Validated;
 
-import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
-
-import lombok.Getter;
-import lombok.Setter;
+import java.util.Map;
 
 /**
  * Lemon Properties

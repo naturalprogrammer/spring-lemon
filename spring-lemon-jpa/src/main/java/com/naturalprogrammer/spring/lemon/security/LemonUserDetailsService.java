@@ -1,17 +1,16 @@
 package com.naturalprogrammer.spring.lemon.security;
 
-import java.io.Serializable;
-import java.util.Optional;
-
+import com.naturalprogrammer.spring.lemon.commons.security.LemonPrincipal;
+import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
+import com.naturalprogrammer.spring.lemon.domain.AbstractUserRepository;
+import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import com.naturalprogrammer.spring.lemon.commons.security.LemonPrincipal;
-import com.naturalprogrammer.spring.lemon.domain.AbstractUser;
-import com.naturalprogrammer.spring.lemon.domain.AbstractUserRepository;
-import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
+import java.io.Serializable;
+import java.util.Optional;
 
 /**
  * UserDetailsService, as required by Spring Security.
@@ -33,8 +32,7 @@ implements UserDetailsService {
 	}
 	
 	@Override
-	public LemonPrincipal loadUserByUsername(String username)
-			throws UsernameNotFoundException {
+	public LemonPrincipal loadUserByUsername(String username) {
 		
 		log.debug("Loading user having username: " + username);
 		

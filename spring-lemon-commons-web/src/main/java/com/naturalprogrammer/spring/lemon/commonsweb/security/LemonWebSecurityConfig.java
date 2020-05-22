@@ -1,5 +1,6 @@
 package com.naturalprogrammer.spring.lemon.commonsweb.security;
 
+import com.naturalprogrammer.spring.lemon.commons.security.BlueTokenService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,8 +9,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
-import com.naturalprogrammer.spring.lemon.commons.security.BlueTokenService;
 
 /**
  * Security configuration class. Extend it in the
@@ -88,7 +87,7 @@ public class LemonWebSecurityConfig extends WebSecurityConfigurerAdapter {
 	/**
 	 * Configuring token authentication filter
 	 */
-	protected void tokenAuthentication(HttpSecurity http) throws Exception {
+	protected void tokenAuthentication(HttpSecurity http) {
 		
 		http.addFilterBefore(new LemonCommonsWebTokenAuthenticationFilter(blueTokenService),
 				UsernamePasswordAuthenticationFilter.class);

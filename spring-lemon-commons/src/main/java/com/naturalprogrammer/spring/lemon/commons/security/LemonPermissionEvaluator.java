@@ -1,13 +1,12 @@
 package com.naturalprogrammer.spring.lemon.commons.security;
 
-import java.io.Serializable;
-
+import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
 
-import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
+import java.io.Serializable;
 
 /**
  * Needed to check the permission for the service methods

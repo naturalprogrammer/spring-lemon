@@ -1,14 +1,13 @@
 package com.naturalprogrammer.spring.lemonreactive.util;
 
-import java.io.Serializable;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import com.naturalprogrammer.spring.lemon.commons.security.LemonTokenService;
 import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
 import com.naturalprogrammer.spring.lemonreactive.domain.AbstractMongoUser;
 import com.nimbusds.jwt.JWTClaimsSet;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import java.io.Serializable;
 
 /**
  * Useful helper methods

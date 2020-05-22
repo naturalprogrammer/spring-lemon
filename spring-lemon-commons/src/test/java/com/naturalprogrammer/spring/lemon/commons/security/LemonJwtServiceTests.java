@@ -1,14 +1,13 @@
 package com.naturalprogrammer.spring.lemon.commons.security;
 
+import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
+import com.nimbusds.jose.JOSEException;
+import com.nimbusds.jwt.JWTClaimsSet;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.security.authentication.BadCredentialsException;
-
-import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
-import com.nimbusds.jose.JOSEException;
-import com.nimbusds.jwt.JWTClaimsSet;
 
 public class LemonJwtServiceTests {
 	

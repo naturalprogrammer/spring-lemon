@@ -1,7 +1,18 @@
 package com.naturalprogrammer.spring.lemon.commonsreactive;
 
-import java.io.Serializable;
-
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import com.naturalprogrammer.spring.lemon.commons.LemonCommonsAutoConfiguration;
+import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
+import com.naturalprogrammer.spring.lemon.commons.security.BlueTokenService;
+import com.naturalprogrammer.spring.lemon.commonsreactive.exceptions.LemonReactiveErrorAttributes;
+import com.naturalprogrammer.spring.lemon.commonsreactive.exceptions.handlers.VersionExceptionHandler;
+import com.naturalprogrammer.spring.lemon.commonsreactive.security.LemonCommonsReactiveSecurityConfig;
+import com.naturalprogrammer.spring.lemon.commonsreactive.security.LemonCorsConfigurationSource;
+import com.naturalprogrammer.spring.lemon.commonsreactive.security.LemonReactiveAuditorAware;
+import com.naturalprogrammer.spring.lemon.commonsreactive.util.LecrUtils;
+import com.naturalprogrammer.spring.lemon.exceptions.ErrorResponseComposer;
+import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bson.types.ObjectId;
@@ -23,19 +34,7 @@ import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.web.cors.reactive.CorsConfigurationSource;
 
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
-import com.naturalprogrammer.spring.lemon.commons.LemonCommonsAutoConfiguration;
-import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
-import com.naturalprogrammer.spring.lemon.commons.security.BlueTokenService;
-import com.naturalprogrammer.spring.lemon.commonsreactive.exceptions.LemonReactiveErrorAttributes;
-import com.naturalprogrammer.spring.lemon.commonsreactive.exceptions.handlers.VersionExceptionHandler;
-import com.naturalprogrammer.spring.lemon.commonsreactive.security.LemonCommonsReactiveSecurityConfig;
-import com.naturalprogrammer.spring.lemon.commonsreactive.security.LemonCorsConfigurationSource;
-import com.naturalprogrammer.spring.lemon.commonsreactive.security.LemonReactiveAuditorAware;
-import com.naturalprogrammer.spring.lemon.commonsreactive.util.LecrUtils;
-import com.naturalprogrammer.spring.lemon.exceptions.ErrorResponseComposer;
-import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
+import java.io.Serializable;
 
 @Configuration
 @EnableReactiveMethodSecurity

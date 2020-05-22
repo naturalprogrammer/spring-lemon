@@ -1,14 +1,13 @@
 package com.naturalprogrammer.spring.lemon.commons.security;
 
-import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
-
 import com.naturalprogrammer.spring.lemon.commons.util.UserUtils;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * A lighter User class,
@@ -22,7 +21,7 @@ public class UserDto implements Serializable {
 	private String id;
 	private String username;
 	private String password;
-	private Set<String> roles = new HashSet<String>();
+	private Set<String> roles = new HashSet<>();
 	private Serializable tag;
 	
 	private boolean unverified = false;

@@ -3,7 +3,6 @@ package com.naturalprogrammer.spring.lemon.commons.domain;
 import com.naturalprogrammer.spring.lemon.commons.validation.Password;
 import com.naturalprogrammer.spring.lemon.commons.validation.RetypePassword;
 import com.naturalprogrammer.spring.lemon.commons.validation.RetypePasswordForm;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -1,9 +1,8 @@
 package com.naturalprogrammer.spring.lemon.commons.util;
 
+import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
 
 public class UserUtils {
 

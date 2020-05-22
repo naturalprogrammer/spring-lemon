@@ -1,5 +1,16 @@
 package com.naturalprogrammer.spring.lemon.commons;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.naturalprogrammer.spring.lemon.commons.exceptions.handlers.BadCredentialsExceptionHandler;
+import com.naturalprogrammer.spring.lemon.commons.mail.MailSender;
+import com.naturalprogrammer.spring.lemon.commons.mail.MockMailSender;
+import com.naturalprogrammer.spring.lemon.commons.mail.SmtpMailSender;
+import com.naturalprogrammer.spring.lemon.commons.security.*;
+import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
+import com.naturalprogrammer.spring.lemon.commons.validation.CaptchaValidator;
+import com.naturalprogrammer.spring.lemon.exceptions.LemonExceptionsAutoConfiguration;
+import com.nimbusds.jose.JOSEException;
+import com.nimbusds.jose.KeyLengthException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
@@ -14,22 +25,6 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.naturalprogrammer.spring.lemon.commons.exceptions.handlers.BadCredentialsExceptionHandler;
-import com.naturalprogrammer.spring.lemon.commons.mail.MailSender;
-import com.naturalprogrammer.spring.lemon.commons.mail.MockMailSender;
-import com.naturalprogrammer.spring.lemon.commons.mail.SmtpMailSender;
-import com.naturalprogrammer.spring.lemon.commons.security.BlueTokenService;
-import com.naturalprogrammer.spring.lemon.commons.security.GreenTokenService;
-import com.naturalprogrammer.spring.lemon.commons.security.LemonJweService;
-import com.naturalprogrammer.spring.lemon.commons.security.LemonJwsService;
-import com.naturalprogrammer.spring.lemon.commons.security.LemonPermissionEvaluator;
-import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
-import com.naturalprogrammer.spring.lemon.commons.validation.CaptchaValidator;
-import com.naturalprogrammer.spring.lemon.exceptions.LemonExceptionsAutoConfiguration;
-import com.nimbusds.jose.JOSEException;
-import com.nimbusds.jose.KeyLengthException;
 
 @Configuration
 @ComponentScan(basePackageClasses=BadCredentialsExceptionHandler.class)
