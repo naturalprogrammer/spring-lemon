@@ -2,6 +2,7 @@ package com.naturalprogrammer.spring.lemon.commonsweb.exceptions;
 
 import com.naturalprogrammer.spring.lemon.exceptions.ErrorResponseComposer;
 import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
@@ -15,13 +16,11 @@ import java.util.Map;
  * <code>DefaultExceptionHandlerControllerAdvice</code>,
  * e.g. exceptions thrown in filters.
  */
+@Slf4j
 public class LemonErrorAttributes<T extends Throwable> extends DefaultErrorAttributes {
 	
-    private static final Log log = LogFactory.getLog(LemonErrorAttributes.class);
-
 	static final String HTTP_STATUS_KEY = "httpStatus";
-	
-	private ErrorResponseComposer<T> errorResponseComposer;
+	private final ErrorResponseComposer<T> errorResponseComposer;
 	
     public LemonErrorAttributes(ErrorResponseComposer<T> errorResponseComposer) {
 

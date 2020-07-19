@@ -16,26 +16,22 @@ import java.util.stream.Collectors;
 
 /**
  * Holds a field or form error
- * 
- * @author Sanjay Patel
  */
 @Getter @AllArgsConstructor @ToString
 public class LemonFieldError implements Serializable {
 	
 	// Name of the field. Null in case of a form level error. 
-	private String field;
+	private final String field;
 	
 	// Error code. Typically the I18n message-code.
-	private String code;
+	private final String code;
 	
 	// Error message
-	private String message;
+	private final String message;
 
 	/**
 	 * Converts a set of ConstraintViolations
 	 * to a list of FieldErrors
-	 * 
-	 * @param constraintViolations
 	 */
 	public static List<LemonFieldError> getErrors(
 			Set<ConstraintViolation<?>> constraintViolations) {

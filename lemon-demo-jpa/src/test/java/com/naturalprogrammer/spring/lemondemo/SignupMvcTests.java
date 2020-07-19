@@ -3,8 +3,11 @@ package com.naturalprogrammer.spring.lemondemo;
 import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
 import com.naturalprogrammer.spring.lemondemo.entities.User;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
+
+import javax.validation.ConstraintViolationException;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -26,15 +29,20 @@ class SignupMvcTests extends AbstractMvcTests {
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(LecUtils.toJson(invalidUser)))
 				.andExpect(status().is(422))
-				.andExpect(jsonPath("$.errors[*].field").value(hasSize(4)))
-				.andExpect(jsonPath("$.errors[*].field").value(hasItems(
+				.andExpect(jsonPath("id").isString())
+				.andExpect(jsonPath("exceptionId").value(ConstraintViolationException.class.getSimpleName()))
+				.andExpect(jsonPath("error").value("Unprocessable Entity"))
+				.andExpect(jsonPath("message").value("Validation Error"))
+				.andExpect(jsonPath("status").value(HttpStatus.UNPROCESSABLE_ENTITY.value()))
+				.andExpect(jsonPath("errors[*].field").value(hasSize(4)))
+				.andExpect(jsonPath("errors[*].field").value(hasItems(
 					"user.email", "user.password", "user.name")))
-				.andExpect(jsonPath("$.errors[*].code").value(hasItems(
+				.andExpect(jsonPath("errors[*].code").value(hasItems(
 						"{com.naturalprogrammer.spring.invalid.email}",
 						"{blank.name}",
 						"{com.naturalprogrammer.spring.invalid.email.size}",
 						"{com.naturalprogrammer.spring.invalid.password.size}")))
-				.andExpect(jsonPath("$.errors[*].message").value(hasItems(
+				.andExpect(jsonPath("errors[*].message").value(hasItems(
 						"Not a well formed email address",
 						"Name required",
 						"Email must be between 4 and 250 characters",

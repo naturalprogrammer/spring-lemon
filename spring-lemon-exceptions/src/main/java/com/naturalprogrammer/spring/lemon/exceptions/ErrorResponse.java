@@ -2,6 +2,7 @@ package com.naturalprogrammer.spring.lemon.exceptions;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.util.Collection;
 
@@ -9,9 +10,10 @@ import java.util.Collection;
  * Error DTO, to be sent as response body
  * in case of errors
  */
-@Getter @Setter
+@Getter @Setter @ToString
 public class ErrorResponse {
-	
+
+	private String id;
 	private String exceptionId;
 	private String error;
 	private String message;

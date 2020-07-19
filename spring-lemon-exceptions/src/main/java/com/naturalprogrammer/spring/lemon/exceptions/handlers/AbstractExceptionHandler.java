@@ -8,6 +8,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.http.HttpStatus;
 
 import java.util.Collection;
+import java.util.UUID;
 
 /**
  * Extend this to code an exception handler
@@ -16,7 +17,7 @@ public abstract class AbstractExceptionHandler<T extends Throwable> {
 	
 	protected final Log log = LogFactory.getLog(this.getClass());
 	
-	private Class<?> exceptionClass;
+	private final Class<?> exceptionClass;
 	
 	public AbstractExceptionHandler(Class<?> exceptionClass) {
 		this.exceptionClass = exceptionClass;
@@ -45,7 +46,8 @@ public abstract class AbstractExceptionHandler<T extends Throwable> {
 	public ErrorResponse getErrorResponse(T ex) {
     	
 		ErrorResponse errorResponse = new ErrorResponse();
-		
+
+		errorResponse.setId(UUID.randomUUID().toString());
 		errorResponse.setExceptionId(getExceptionId(ex));
 		errorResponse.setMessage(getMessage(ex));
 		
