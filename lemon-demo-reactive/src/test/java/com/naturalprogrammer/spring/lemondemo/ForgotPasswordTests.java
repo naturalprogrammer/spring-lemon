@@ -1,6 +1,6 @@
 package com.naturalprogrammer.spring.lemondemo;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -12,10 +12,10 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.springframework.web.reactive.function.BodyInserters.fromFormData;
 
-public class ForgotPasswordTests extends AbstractTests {
+class ForgotPasswordTests extends AbstractTests {
 
 	@Test
-	public void testForgotPassword() {
+	void testForgotPassword() {
 		
 		CLIENT.post().uri(BASE_URI + "/forgot-password")
 		.contentType(MediaType.APPLICATION_FORM_URLENCODED)
@@ -27,7 +27,7 @@ public class ForgotPasswordTests extends AbstractTests {
 	}
 	
 	@Test
-	public void testForgotPasswordInvalidEmail() throws Exception {
+	void testForgotPasswordInvalidEmail() throws Exception {
 		
 		// Unknown email
 		CLIENT.post().uri(BASE_URI + "/forgot-password")

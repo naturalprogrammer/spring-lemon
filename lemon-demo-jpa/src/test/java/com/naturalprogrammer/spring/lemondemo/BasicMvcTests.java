@@ -1,7 +1,7 @@
 package com.naturalprogrammer.spring.lemondemo;
 
 import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.test.context.jdbc.Sql;
 
@@ -10,17 +10,17 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @Sql({"/test-data/initialize.sql", "/test-data/finalize.sql", })
-public class BasicMvcTests extends AbstractMvcTests {
+class BasicMvcTests extends AbstractMvcTests {
 	
 	@Test
-	public void testPing() throws Exception {
+	void testPing() throws Exception {
 		
 		mvc.perform(get("/api/core/ping"))
 				.andExpect(status().is(204));
 	}
 	
 	@Test
-	public void testGetContextLoggedIn() throws Exception {
+	void testGetContextLoggedIn() throws Exception {
 		
 		mvc.perform(get("/api/core/context")
 				.header(HttpHeaders.AUTHORIZATION, tokens.get(ADMIN_ID)))
@@ -33,7 +33,7 @@ public class BasicMvcTests extends AbstractMvcTests {
 	}
 	
 	@Test
-	public void testGetContextWithoutLoggedIn() throws Exception {
+	void testGetContextWithoutLoggedIn() throws Exception {
 		
 		mvc.perform(get("/api/core/context"))
 				.andExpect(status().is(200))

@@ -3,9 +3,8 @@ package com.naturalprogrammer.spring.lemondemo;
 import com.naturalprogrammer.spring.lemon.commons.security.GreenTokenService;
 import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
 import com.naturalprogrammer.spring.lemondemo.domain.User;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -13,6 +12,8 @@ import org.springframework.test.web.reactive.server.WebTestClient.ResponseSpec;
 
 import static com.naturalprogrammer.spring.lemondemo.MyTestUtils.*;
 import static com.naturalprogrammer.spring.lemondemo.controllers.MyController.BASE_URI;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.springframework.web.reactive.function.BodyInserters.fromFormData;
 
 public class ChangeEmailTests extends AbstractTests {
@@ -24,10 +25,11 @@ public class ChangeEmailTests extends AbstractTests {
 	@Autowired
 	private GreenTokenService greenTokenService;
 	
-	@Before
+	@BeforeEach
 	public void setUp() {
 		
 		User user = mongoTemplate.findById(UNVERIFIED_USER_ID, User.class).block();
+		assert user != null;
 		user.setNewEmail(NEW_EMAIL);
 		mongoTemplate.save(user).block();
 		
@@ -38,7 +40,7 @@ public class ChangeEmailTests extends AbstractTests {
 	}
 	
 	@Test
-	public void testChangeEmail() throws Exception {
+	void testChangeEmail() throws Exception {
 		
 		changeEmailResponse(changeEmailCode)
         	.expectStatus().isOk()
@@ -46,8 +48,8 @@ public class ChangeEmailTests extends AbstractTests {
         	.expectBody().jsonPath("$.id").isEqualTo(UNVERIFIED_USER_ID.toString());
 
 		User updatedUser = mongoTemplate.findById(UNVERIFIED_USER_ID, User.class).block();
-		Assert.assertNull(updatedUser.getNewEmail());
-		Assert.assertEquals(NEW_EMAIL, updatedUser.getEmail());
+		assertNull(updatedUser.getNewEmail());
+		assertEquals(NEW_EMAIL, updatedUser.getEmail());
 		
 		changeEmailResponse(changeEmailCode)
     		.expectStatus().isUnauthorized();
@@ -57,7 +59,7 @@ public class ChangeEmailTests extends AbstractTests {
      * Providing a wrong changeEmailCode shouldn't work.
      */
 	@Test
-	public void testChangeEmailWrongCode() throws Exception {
+	void testChangeEmailWrongCode() throws Exception {
 		
 		// Blank token
 		changeEmailResponse("")
@@ -98,9 +100,8 @@ public class ChangeEmailTests extends AbstractTests {
 	public void testChangeEmailObsoleteCode() throws Exception {
 		
 		// credentials updated after the request for email change was made
-		Thread.sleep(1L);
 		User user = mongoTemplate.findById(UNVERIFIED_USER_ID, User.class).block();
-		user.setCredentialsUpdatedMillis(System.currentTimeMillis());
+		user.setCredentialsUpdatedMillis(System.currentTimeMillis() + 1);
 		mongoTemplate.save(user).block();
 		
 		// A new auth token is needed, because old one would be obsolete!
@@ -118,7 +119,7 @@ public class ChangeEmailTests extends AbstractTests {
 	 * @throws Exception 
      */
 	@Test
-	public void testChangeEmailWithoutAnyRequest() throws Exception {
+	void testChangeEmailWithoutAnyRequest() throws Exception {
 
 		CLIENT.post().uri(BASE_URI + "/users/{id}/email", USER_ID)
 			.header(HttpHeaders.AUTHORIZATION, TOKENS.get(USER_ID))

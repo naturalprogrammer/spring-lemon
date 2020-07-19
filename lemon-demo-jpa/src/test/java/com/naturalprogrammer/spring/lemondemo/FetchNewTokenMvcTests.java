@@ -1,7 +1,7 @@
 package com.naturalprogrammer.spring.lemondemo;
 
 import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
@@ -12,7 +12,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class FetchNewTokenMvcTests extends AbstractMvcTests {
+class FetchNewTokenMvcTests extends AbstractMvcTests {
 	
 	public static class Response {
 		
@@ -28,7 +28,7 @@ public class FetchNewTokenMvcTests extends AbstractMvcTests {
 	}
 
 	@Test
-	public void testFetchNewToken() throws Exception {
+	void testFetchNewToken() throws Exception {
 		
 		MvcResult result = mvc.perform(post("/api/core/fetch-new-auth-token")
 				.header(HttpHeaders.AUTHORIZATION, tokens.get(UNVERIFIED_USER_ID))
@@ -42,7 +42,7 @@ public class FetchNewTokenMvcTests extends AbstractMvcTests {
 	}
 	
 	@Test
-	public void testFetchNewTokenExpiration() throws Exception {
+	void testFetchNewTokenExpiration() throws Exception {
 		
 		MvcResult result = mvc.perform(post("/api/core/fetch-new-auth-token")
 				.header(HttpHeaders.AUTHORIZATION, tokens.get(UNVERIFIED_USER_ID))
@@ -54,16 +54,15 @@ public class FetchNewTokenMvcTests extends AbstractMvcTests {
 		Response response = LecUtils.fromJson(result.getResponse().getContentAsString(), Response.class);
 		ensureTokenWorks(response.getToken());
 
-		Thread.sleep(1001L);
+		Thread.sleep(1001L); // Let more then a second pass
 		mvc.perform(get("/api/core/context")
 				.header(HttpHeaders.AUTHORIZATION,
 						LecUtils.TOKEN_PREFIX + response.getToken()))
 				.andExpect(status().is(401));
-		
 	}
 
 	@Test
-	public void testFetchNewTokenByAdminForAnotherUser() throws Exception {
+	void testFetchNewTokenByAdminForAnotherUser() throws Exception {
 		
 		MvcResult result = mvc.perform(post("/api/core/fetch-new-auth-token")
 				.header(HttpHeaders.AUTHORIZATION, tokens.get(ADMIN_ID))
@@ -77,7 +76,7 @@ public class FetchNewTokenMvcTests extends AbstractMvcTests {
 	}
 	
 	@Test
-	public void testFetchNewTokenByNonAdminForAnotherUser() throws Exception {
+	void testFetchNewTokenByNonAdminForAnotherUser() throws Exception {
 		
 		mvc.perform(post("/api/core/fetch-new-auth-token")
 				.header(HttpHeaders.AUTHORIZATION, tokens.get(UNVERIFIED_USER_ID))

@@ -3,18 +3,18 @@ package com.naturalprogrammer.spring.lemondemo;
 import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
 import com.naturalprogrammer.spring.lemondemo.domain.User;
 import com.naturalprogrammer.spring.lemondemo.dto.TestUserDto;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 
 import static com.naturalprogrammer.spring.lemondemo.MyTestUtils.*;
 import static com.naturalprogrammer.spring.lemondemo.controllers.MyController.BASE_URI;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.web.reactive.function.BodyInserters.fromFormData;
 
-public class LoginTests extends AbstractTests {
+class LoginTests extends AbstractTests {
 
 	@Test
-	public void testLogin() {
+	void testLogin() {
 		
 		testUtils.loginResponse(ADMIN_EMAIL, ADMIN_PASSWORD)
 			.expectStatus().isOk()
@@ -39,7 +39,7 @@ public class LoginTests extends AbstractTests {
 	
 	
 	@Test
-	public void testLoginTokenExpiry() throws Exception {
+	void testLoginTokenExpiry() throws Exception {
 		
 		String token = login(ADMIN_EMAIL, ADMIN_PASSWORD, 500L);
 		Thread.sleep(501L);
@@ -53,7 +53,7 @@ public class LoginTests extends AbstractTests {
 
 
 	@Test
-	public void testObsoleteToken() throws Exception {
+	void testObsoleteToken() throws Exception {
 		
 		User user = mongoTemplate.findById(ADMIN_ID, User.class).block();
 		user.setCredentialsUpdatedMillis(System.currentTimeMillis());
@@ -68,7 +68,7 @@ public class LoginTests extends AbstractTests {
 
 	
 	@Test
-	public void testLoginWrongPassword() throws Exception {
+	void testLoginWrongPassword() throws Exception {
 		
 		testUtils.loginResponse(ADMIN_EMAIL, "wrong-password")
 			.expectStatus().isUnauthorized();
@@ -76,7 +76,7 @@ public class LoginTests extends AbstractTests {
 
 	
 	@Test
-	public void testLoginBlankPassword() throws Exception {
+	void testLoginBlankPassword() throws Exception {
 		
 		testUtils.loginResponse(ADMIN_EMAIL, "")
 			.expectStatus().isUnauthorized();
@@ -84,7 +84,7 @@ public class LoginTests extends AbstractTests {
 
 	
 	@Test
-	public void testTokenLogin() {
+	void testTokenLogin() {
 		
 		CLIENT.get().uri(BASE_URI + "/context")
 			.header(HttpHeaders.AUTHORIZATION, TOKENS.get(ADMIN_ID))
@@ -96,7 +96,7 @@ public class LoginTests extends AbstractTests {
 
 	
 	@Test
-	public void testTokenLoginWrongToken() {
+	void testTokenLoginWrongToken() {
 		
 		CLIENT.get().uri(BASE_URI + "/context")
 			.header(HttpHeaders.AUTHORIZATION, "Bearer a-wrong-token")
@@ -106,7 +106,7 @@ public class LoginTests extends AbstractTests {
 
 	
 	@Test
-	public void testLogout() throws Exception {
+	void testLogout() throws Exception {
 		
 		CLIENT.post().uri("/logout")
 		.exchange()

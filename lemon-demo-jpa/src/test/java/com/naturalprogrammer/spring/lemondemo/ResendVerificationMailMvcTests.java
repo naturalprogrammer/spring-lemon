@@ -1,6 +1,6 @@
 package com.naturalprogrammer.spring.lemondemo;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -9,10 +9,10 @@ import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class ResendVerificationMailMvcTests extends AbstractMvcTests {
+class ResendVerificationMailMvcTests extends AbstractMvcTests {
 
 	@Test
-	public void testResendVerificationMail() throws Exception {
+	void testResendVerificationMail() throws Exception {
 		
 		mvc.perform(post("/api/core/users/{id}/resend-verification-mail", UNVERIFIED_USER_ID)
 				.header(HttpHeaders.AUTHORIZATION, tokens.get(UNVERIFIED_USER_ID)))
@@ -22,7 +22,7 @@ public class ResendVerificationMailMvcTests extends AbstractMvcTests {
 	}
 
 	@Test
-	public void testAdminResendVerificationMailOtherUser() throws Exception {
+	void testAdminResendVerificationMailOtherUser() throws Exception {
 		
 		mvc.perform(post("/api/core/users/{id}/resend-verification-mail", UNVERIFIED_USER_ID)
 				.header(HttpHeaders.AUTHORIZATION, tokens.get(ADMIN_ID)))
@@ -30,7 +30,7 @@ public class ResendVerificationMailMvcTests extends AbstractMvcTests {
 	}
 
 	@Test
-	public void testBadAdminResendVerificationMailOtherUser() throws Exception {
+	void testBadAdminResendVerificationMailOtherUser() throws Exception {
 		
 		mvc.perform(post("/api/core/users/{id}/resend-verification-mail", UNVERIFIED_USER_ID)
 				.header(HttpHeaders.AUTHORIZATION, tokens.get(UNVERIFIED_ADMIN_ID)))
@@ -44,7 +44,7 @@ public class ResendVerificationMailMvcTests extends AbstractMvcTests {
 	}
 
 	@Test
-	public void testResendVerificationMailUnauthenticated() throws Exception {
+	void testResendVerificationMailUnauthenticated() throws Exception {
 		
 		mvc.perform(post("/api/core/users/{id}/resend-verification-mail", UNVERIFIED_USER_ID))
 			.andExpect(status().is(403));
@@ -53,7 +53,7 @@ public class ResendVerificationMailMvcTests extends AbstractMvcTests {
 	}
 	
 	@Test
-	public void testResendVerificationMailAlreadyVerified() throws Exception {
+	void testResendVerificationMailAlreadyVerified() throws Exception {
 		
 		mvc.perform(post("/api/core/users/{id}/resend-verification-mail", USER_ID)
 				.header(HttpHeaders.AUTHORIZATION, tokens.get(USER_ID)))
@@ -63,7 +63,7 @@ public class ResendVerificationMailMvcTests extends AbstractMvcTests {
 	}
 	
 	@Test
-	public void testResendVerificationMailOtherUser() throws Exception {
+	void testResendVerificationMailOtherUser() throws Exception {
 		
 		mvc.perform(post("/api/core/users/{id}/resend-verification-mail", UNVERIFIED_USER_ID)
 				.header(HttpHeaders.AUTHORIZATION, tokens.get(USER_ID)))
@@ -73,7 +73,7 @@ public class ResendVerificationMailMvcTests extends AbstractMvcTests {
 	}
 	
 	@Test
-	public void testResendVerificationMailNonExistingUser() throws Exception {
+	void testResendVerificationMailNonExistingUser() throws Exception {
 		
 		mvc.perform(post("/api/core/users/99/resend-verification-mail")
 				.header(HttpHeaders.AUTHORIZATION, tokens.get(ADMIN_ID)))

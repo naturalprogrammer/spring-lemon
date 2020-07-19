@@ -2,12 +2,12 @@ package com.naturalprogrammer.spring.lemondemo;
 
 import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
 import com.naturalprogrammer.spring.lemondemo.entities.User;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -15,10 +15,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @Sql({"/test-data/initialize.sql", "/test-data/finalize.sql"})
-public class SignupMvcTests extends AbstractMvcTests {
+class SignupMvcTests extends AbstractMvcTests {
 	
 	@Test
-	public void testSignupWithInvalidData() throws Exception {
+	void testSignupWithInvalidData() throws Exception {
 		
 		User invalidUser = new User("abc", "user1", null);
 
@@ -44,7 +44,7 @@ public class SignupMvcTests extends AbstractMvcTests {
 	}
 
 	@Test
-	public void testSignup() throws Exception {
+	void testSignup() throws Exception {
 		
 		User user = new User("user.foo@example.com", "user123", "User Foo");
 
@@ -68,11 +68,11 @@ public class SignupMvcTests extends AbstractMvcTests {
 		verify(mailSender).send(any());
 
 		// Ensure that password got encrypted
-		Assert.assertNotEquals("user123", userRepository.findByEmail("user.foo@example.com").get().getPassword());
+		assertNotEquals("user123", userRepository.findByEmail("user.foo@example.com").get().getPassword());
 	}
 	
 	@Test
-	public void testSignupDuplicateEmail() throws Exception {
+	void testSignupDuplicateEmail() throws Exception {
 		
 		User user = new User("user@example.com", "user123", "User");
 

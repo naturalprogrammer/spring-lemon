@@ -1,7 +1,7 @@
 package com.naturalprogrammer.spring.lemondemo;
 
 import org.bson.types.ObjectId;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -10,10 +10,10 @@ import static com.naturalprogrammer.spring.lemondemo.MyTestUtils.*;
 import static com.naturalprogrammer.spring.lemondemo.controllers.MyController.BASE_URI;
 import static org.springframework.web.reactive.function.BodyInserters.fromFormData;
 
-public class FetchUserTests extends AbstractTests {
+class FetchUserTests extends AbstractTests {
 
 	@Test
-	public void testFetchUserById() throws Exception {
+	void testFetchUserById() throws Exception {
 		
 		CLIENT.get().uri(BASE_URI + "/users/{id}", ADMIN_ID)
 		.exchange()
@@ -27,7 +27,7 @@ public class FetchUserTests extends AbstractTests {
 	}
 
 	@Test
-	public void testFetchUserByIdLoggedIn() throws Exception {
+	void testFetchUserByIdLoggedIn() throws Exception {
 		
 		// Same user logged in
 		CLIENT.get().uri(BASE_URI + "/users/{id}", ADMIN_ID)
@@ -61,7 +61,7 @@ public class FetchUserTests extends AbstractTests {
 	}
 
 	@Test
-	public void testFetchNonExistingUserById() throws Exception {
+	void testFetchNonExistingUserById() throws Exception {
 		
 		CLIENT.get().uri(BASE_URI + "/users/{id}", ObjectId.get())
 		.exchange()
@@ -69,7 +69,7 @@ public class FetchUserTests extends AbstractTests {
 	}
 	
 	@Test
-	public void testFetchUserByEmail() throws Exception {
+	void testFetchUserByEmail() throws Exception {
 		
 		CLIENT.post().uri(BASE_URI + "/users/fetch-by-email")
 		.contentType(MediaType.APPLICATION_FORM_URLENCODED)
@@ -84,7 +84,7 @@ public class FetchUserTests extends AbstractTests {
 	}
 
 	@Test
-	public void testFetchUserByInvalidEmail() throws Exception {
+	void testFetchUserByInvalidEmail() throws Exception {
 		
 		// email does not exist
 		CLIENT.post().uri(BASE_URI + "/users/fetch-by-email")

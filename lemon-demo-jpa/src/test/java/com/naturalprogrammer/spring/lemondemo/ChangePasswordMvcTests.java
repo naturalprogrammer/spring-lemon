@@ -2,7 +2,7 @@ package com.naturalprogrammer.spring.lemondemo;
 
 import com.naturalprogrammer.spring.lemon.commons.domain.ChangePasswordForm;
 import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
@@ -12,7 +12,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @Sql({"/test-data/initialize.sql", "/test-data/finalize.sql"})
-public class ChangePasswordMvcTests extends AbstractMvcTests {
+class ChangePasswordMvcTests extends AbstractMvcTests {
 	
 	private static final String NEW_PASSWORD = "a-new-password";
 	
@@ -30,7 +30,7 @@ public class ChangePasswordMvcTests extends AbstractMvcTests {
 	 * A non-admin user should be able to change his password.
 	 */
 	@Test
-	public void testChangePassword() throws Exception {
+	void testChangePassword() throws Exception {
 		
 		mvc.perform(post("/api/core/users/{id}/password", UNVERIFIED_USER_ID)
 				.header(HttpHeaders.AUTHORIZATION, tokens.get(UNVERIFIED_USER_ID))
@@ -47,7 +47,7 @@ public class ChangePasswordMvcTests extends AbstractMvcTests {
 	 * An good admin user should be able to change the password of another user.
 	 */
 	@Test
-	public void testAdminChangePasswordAnotherUser() throws Exception {
+	void testAdminChangePasswordAnotherUser() throws Exception {
 		
 		mvc.perform(post("/api/core/users/{id}/password", UNVERIFIED_USER_ID)
 				.header(HttpHeaders.AUTHORIZATION, tokens.get(ADMIN_ID))
@@ -64,7 +64,7 @@ public class ChangePasswordMvcTests extends AbstractMvcTests {
 	 * Providing an unknown id should return 404.
 	 */
 	@Test
-	public void testChangePasswordUnknownId() throws Exception {
+	void testChangePasswordUnknownId() throws Exception {
 		
 		mvc.perform(post("/api/core/users/99/password")
 				.header(HttpHeaders.AUTHORIZATION, tokens.get(ADMIN_ID))
@@ -77,7 +77,7 @@ public class ChangePasswordMvcTests extends AbstractMvcTests {
 	 * A non-admin user should not be able to change others' password.
 	 */
 	@Test
-	public void testChangePasswordAnotherUser() throws Exception {
+	void testChangePasswordAnotherUser() throws Exception {
 		
 		mvc.perform(post("/api/core/users/{id}/password", UNVERIFIED_USER_ID)
 				.header(HttpHeaders.AUTHORIZATION, tokens.get(USER_ID))
@@ -93,7 +93,7 @@ public class ChangePasswordMvcTests extends AbstractMvcTests {
 	 * A  bad admin user should not be able to change others' password.
 	 */
 	@Test
-	public void testBadAdminChangePasswordAnotherUser() throws Exception {
+	void testBadAdminChangePasswordAnotherUser() throws Exception {
 		
 		mvc.perform(post("/api/core/users/{id}/password", UNVERIFIED_USER_ID)
 				.header(HttpHeaders.AUTHORIZATION, tokens.get(UNVERIFIED_ADMIN_ID))
@@ -106,7 +106,7 @@ public class ChangePasswordMvcTests extends AbstractMvcTests {
 	}
 	
 	@Test
-	public void testChangePasswordInvalidData() throws Exception {
+	void testChangePasswordInvalidData() throws Exception {
 		
 		// All fields null
 		mvc.perform(post("/api/core/users/{id}/password", UNVERIFIED_USER_ID)

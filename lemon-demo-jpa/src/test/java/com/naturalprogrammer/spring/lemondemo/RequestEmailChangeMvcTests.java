@@ -3,13 +3,14 @@ package com.naturalprogrammer.spring.lemondemo;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
 import com.naturalprogrammer.spring.lemondemo.entities.User;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
 import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.hasSize;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -17,7 +18,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class RequestEmailChangeMvcTests extends AbstractMvcTests {
+class RequestEmailChangeMvcTests extends AbstractMvcTests {
 	
 	private static final String NEW_EMAIL = "new.email@example.com";
 	
@@ -31,7 +32,7 @@ public class RequestEmailChangeMvcTests extends AbstractMvcTests {
 	}
 
 	@Test
-	public void testRequestEmailChange() throws Exception {
+	void testRequestEmailChange() throws Exception {
 		
 		mvc.perform(post("/api/core/users/{id}/email-change-request", UNVERIFIED_USER_ID)
 				.contentType(MediaType.APPLICATION_JSON)
@@ -42,15 +43,15 @@ public class RequestEmailChangeMvcTests extends AbstractMvcTests {
 		verify(mailSender).send(any());
 		
 		User updatedUser = userRepository.findById(UNVERIFIED_USER_ID).get();
-		Assert.assertEquals(NEW_EMAIL, updatedUser.getNewEmail());
-		Assert.assertEquals(UNVERIFIED_USER_EMAIL, updatedUser.getEmail());
+		assertEquals(NEW_EMAIL, updatedUser.getNewEmail());
+		assertEquals(UNVERIFIED_USER_EMAIL, updatedUser.getEmail());
 	}
 	
 	/**
      * A good admin should be able to request changing email of another user.
      */
 	@Test
-	public void testGoodAdminRequestEmailChange() throws Exception {
+	void testGoodAdminRequestEmailChange() throws Exception {
 		
 		mvc.perform(post("/api/core/users/{id}/email-change-request", UNVERIFIED_USER_ID)
 				.contentType(MediaType.APPLICATION_JSON)
@@ -59,14 +60,14 @@ public class RequestEmailChangeMvcTests extends AbstractMvcTests {
 				.andExpect(status().is(204));
 		
 		User updatedUser = userRepository.findById(UNVERIFIED_USER_ID).get();
-		Assert.assertEquals(NEW_EMAIL, updatedUser.getNewEmail());
+		assertEquals(NEW_EMAIL, updatedUser.getNewEmail());
 	}	
 	
 	/**
      * A request changing email of unknown user.
      */
 	@Test
-	public void testRequestEmailChangeUnknownUser() throws Exception {
+	void testRequestEmailChangeUnknownUser() throws Exception {
 		
 		mvc.perform(post("/api/core/users/99/email-change-request")
 				.contentType(MediaType.APPLICATION_JSON)
@@ -82,7 +83,7 @@ public class RequestEmailChangeMvcTests extends AbstractMvcTests {
 	 * the email id of another user
 	 */
 	@Test
-	public void testNonAdminRequestEmailChangeAnotherUser() throws Exception {
+	void testNonAdminRequestEmailChangeAnotherUser() throws Exception {
 		
 		mvc.perform(post("/api/core/users/{id}/email-change-request", ADMIN_ID)
 				.contentType(MediaType.APPLICATION_JSON)
@@ -93,7 +94,7 @@ public class RequestEmailChangeMvcTests extends AbstractMvcTests {
 		verify(mailSender, never()).send(any());
 
 		User updatedUser = userRepository.findById(UNVERIFIED_USER_ID).get();
-		Assert.assertNull(updatedUser.getNewEmail());
+		assertNull(updatedUser.getNewEmail());
 	}
 	
 	/**
@@ -101,7 +102,7 @@ public class RequestEmailChangeMvcTests extends AbstractMvcTests {
 	 * of another user
 	 */
 	@Test
-	public void testBadAdminRequestEmailChangeAnotherUser() throws Exception {
+	void testBadAdminRequestEmailChangeAnotherUser() throws Exception {
 		
 		mvc.perform(post("/api/core/users/{id}/email-change-request", ADMIN_ID)
 				.contentType(MediaType.APPLICATION_JSON)
@@ -114,11 +115,9 @@ public class RequestEmailChangeMvcTests extends AbstractMvcTests {
 
 	/**
      * Trying with invalid data.
-	 * @throws Exception 
-	 * @throws JsonProcessingException 
      */
 	@Test
-	public void tryingWithInvalidData() throws JsonProcessingException, Exception {
+	void tryingWithInvalidData() throws JsonProcessingException, Exception {
 		
     	// try with null newEmail and password
 		mvc.perform(post("/api/core/users/{id}/email-change-request", UNVERIFIED_USER_ID)

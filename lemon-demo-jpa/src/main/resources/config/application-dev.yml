@@ -31,7 +31,8 @@ logging:
     org.springframework: INFO
     org.springframework.security.oauth2.client: DEBUG
     com.naturalprogrammer: DEBUG
-  #file: D:\\tmp\\dev-log.txt
+#  file:
+#    name: D:\\tmp\\dev-log.txt
 
 lemon:
 

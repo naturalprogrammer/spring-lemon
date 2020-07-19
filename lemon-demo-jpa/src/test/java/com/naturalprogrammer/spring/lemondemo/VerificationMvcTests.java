@@ -2,9 +2,11 @@ package com.naturalprogrammer.spring.lemondemo;
 
 import com.naturalprogrammer.spring.lemon.commons.security.GreenTokenService;
 import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
+import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
 import com.naturalprogrammer.spring.lemondemo.entities.User;
-import org.junit.Before;
-import org.junit.Test;
+import org.aspectj.lang.annotation.Before;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 
@@ -13,14 +15,14 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-public class VerificationMvcTests extends AbstractMvcTests {
+class VerificationMvcTests extends AbstractMvcTests {
 	
 	private String verificationCode;
 	
 	@Autowired
 	private GreenTokenService greenTokenService;
 	
-	@Before
+	@BeforeEach
 	public void setUp() {
 		
 		verificationCode = greenTokenService.createToken(GreenTokenService.VERIFY_AUDIENCE,
@@ -29,7 +31,7 @@ public class VerificationMvcTests extends AbstractMvcTests {
 	}
 	
 	@Test
-	public void testEmailVerification() throws Exception {
+	void testEmailVerification() throws Exception {
 		
 		mvc.perform(post("/api/core/users/{userId}/verification", UNVERIFIED_USER_ID)
                 .param("code", verificationCode)
@@ -49,7 +51,7 @@ public class VerificationMvcTests extends AbstractMvcTests {
 	}
 	
 	@Test
-	public void testEmailVerificationNonExistingUser() throws Exception {
+	void testEmailVerificationNonExistingUser() throws Exception {
 		
 		mvc.perform(post("/api/core/users/99/verification")
                 .param("code", verificationCode)
@@ -58,7 +60,7 @@ public class VerificationMvcTests extends AbstractMvcTests {
 	}
 	
 	@Test
-	public void testEmailVerificationWrongToken() throws Exception {
+	void testEmailVerificationWrongToken() throws Exception {
 		
 		// null token
 		mvc.perform(post("/api/core/users/{userId}/verification", UNVERIFIED_USER_ID)
@@ -101,12 +103,11 @@ public class VerificationMvcTests extends AbstractMvcTests {
 	}
 	
 	@Test
-	public void testEmailVerificationAfterCredentialsUpdate() throws Exception {
+	void testEmailVerificationAfterCredentialsUpdate() throws Exception {
 		
 		// Credentials updated after the verification token is issued
-		Thread.sleep(1L);
-		User user = userRepository.findById(UNVERIFIED_USER_ID).get();
-		user.setCredentialsUpdatedMillis(System.currentTimeMillis());
+		User user = userRepository.findById(UNVERIFIED_USER_ID).orElseThrow(LexUtils.notFoundSupplier());
+		user.setCredentialsUpdatedMillis(System.currentTimeMillis() + 1);
 		userRepository.save(user);
 		
 		mvc.perform(post("/api/core/users/{userId}/verification", UNVERIFIED_USER_ID)

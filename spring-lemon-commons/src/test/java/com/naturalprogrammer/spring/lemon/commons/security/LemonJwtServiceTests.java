@@ -5,11 +5,13 @@ import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jwt.JWTClaimsSet;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.springframework.security.authentication.BadCredentialsException;
 
-public class LemonJwtServiceTests {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+class LemonJwtServiceTests {
 	
 	private static final Log log = LogFactory.getLog(LemonJwtServiceTests.class);	
 
@@ -17,10 +19,10 @@ public class LemonJwtServiceTests {
 	private static final String SECRET1 = "926D96C90030DD58429D2751AC1BDBBC";
 	private static final String SECRET2 = "538518AB685B514685DA8055C03DDA63";
 		 
-	private LemonJweService jweService1;
-	private LemonJweService jweService2;
-	private LemonJwsService jwsService1;
-	private LemonJwsService jwsService2;
+	private final LemonJweService jweService1;
+	private final LemonJweService jweService2;
+	private final LemonJwsService jwsService1;
+	private final LemonJwsService jwsService2;
 
 	public LemonJwtServiceTests() throws JOSEException {
 		
@@ -32,7 +34,7 @@ public class LemonJwtServiceTests {
 	}
 	
 	@Test
-	public void testParseToken() {
+	void testParseToken() {
 		
 		testParseToken(jweService1);
 		testParseToken(jwsService1);
@@ -48,22 +50,25 @@ public class LemonJwtServiceTests {
 		JWTClaimsSet claims = service.parseToken(token, "auth");
 		
 		log.info("Parsed token.");
-		Assert.assertEquals("subject", claims.getSubject());
-		Assert.assertEquals("abc@example.com", claims.getClaim("username"));
+		assertEquals("subject", claims.getSubject());
+		assertEquals("abc@example.com", claims.getClaim("username"));
 	}
 
-	@Test(expected = BadCredentialsException.class)
-	public void testParseJweTokenWrongAudience() {
-		
-		testParseTokenWrongAudience(jweService1);
+	@Test
+	void testParseJweTokenWrongAudience() {
+
+		Assertions.assertThrows(BadCredentialsException.class, () -> {
+			testParseTokenWrongAudience(jweService1);
+		});
 	}
 	
-	@Test(expected = BadCredentialsException.class)
-	public void testParseJwsTokenWrongAudience() {
-		
-		testParseTokenWrongAudience(jwsService1);		
+	@Test
+	void testParseJwsTokenWrongAudience() {
+
+		Assertions.assertThrows(BadCredentialsException.class, () -> {
+			testParseTokenWrongAudience(jwsService1);
+		});
 	}
-	
 
 	private void testParseTokenWrongAudience(LemonTokenService service) {
 		
@@ -71,16 +76,20 @@ public class LemonJwtServiceTests {
 		service.parseToken(token, "auth2");
 	}
 
-	@Test(expected = BadCredentialsException.class)
-	public void testParseJweTokenExpired() throws InterruptedException {
-		
-		testParseTokenExpired(jweService1);
+	@Test
+	void testParseJweTokenExpired() throws InterruptedException {
+
+		Assertions.assertThrows(BadCredentialsException.class, () -> {
+			testParseTokenExpired(jweService1);
+		});
 	}
 	
-	@Test(expected = BadCredentialsException.class)
-	public void testParseJwsTokenExpired() throws InterruptedException {
-		
-		testParseTokenExpired(jwsService1);
+	@Test
+	void testParseJwsTokenExpired() throws InterruptedException {
+
+		Assertions.assertThrows(BadCredentialsException.class, () -> {
+			testParseTokenExpired(jwsService1);
+		});
 	}
 
 	private void testParseTokenExpired(LemonTokenService service) throws InterruptedException {
@@ -90,16 +99,20 @@ public class LemonJwtServiceTests {
 		service.parseToken(token, "auth");
 	}
 
-	@Test(expected = BadCredentialsException.class)
-	public void testParseJweTokenWrongSecret() {
-		
-		testParseTokenWrongSecret(jweService1, jweService2);
+	@Test
+	void testParseJweTokenWrongSecret() {
+
+		Assertions.assertThrows(BadCredentialsException.class, () -> {
+			testParseTokenWrongSecret(jweService1, jweService2);
+		});
 	}
 
-	@Test(expected = BadCredentialsException.class)
-	public void testParseJwsTokenWrongSecret() {
-		
-		testParseTokenWrongSecret(jwsService1, jwsService2);
+	@Test
+	void testParseJwsTokenWrongSecret() {
+
+		Assertions.assertThrows(BadCredentialsException.class, () -> {
+			testParseTokenWrongSecret(jwsService1, jwsService2);
+		});
 	}
 
 	private void testParseTokenWrongSecret(LemonTokenService service1, LemonTokenService service2) {
@@ -108,23 +121,26 @@ public class LemonJwtServiceTests {
 		service2.parseToken(token, "auth");
 	}
 
-	@Test(expected = BadCredentialsException.class)
-	public void testParseJweTokenCutoffTime() throws InterruptedException {
+	@Test
+	void testParseJweTokenCutoffTime() throws InterruptedException {
 
-		testParseTokenCutoffTime(jweService1);
+		Assertions.assertThrows(BadCredentialsException.class, () -> {
+			testParseTokenCutoffTime(jweService1);
+		});
 	}
 
-	@Test(expected = BadCredentialsException.class)
-	public void testParseJwsTokenCutoffTime() throws InterruptedException {
+	@Test
+	void testParseJwsTokenCutoffTime() throws InterruptedException {
 
-		testParseTokenCutoffTime(jwsService1);
+		Assertions.assertThrows(BadCredentialsException.class, () -> {
+			testParseTokenCutoffTime(jwsService1);
+		});
 	}
 
 
 	private void testParseTokenCutoffTime(LemonTokenService service) throws InterruptedException {
 		
 		String token = service.createToken("auth", "subject", 5000L);
-		Thread.sleep(1L);				
-		service.parseToken(token, "auth", System.currentTimeMillis());
+		service.parseToken(token, "auth", System.currentTimeMillis() + 1);
 	}
 }

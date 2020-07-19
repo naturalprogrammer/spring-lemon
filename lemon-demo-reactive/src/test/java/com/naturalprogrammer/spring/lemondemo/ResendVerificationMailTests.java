@@ -1,7 +1,7 @@
 package com.naturalprogrammer.spring.lemondemo;
 
 import org.bson.types.ObjectId;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.web.reactive.server.WebTestClient.ResponseSpec;
@@ -12,10 +12,10 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
-public class ResendVerificationMailTests extends AbstractTests {
+class ResendVerificationMailTests extends AbstractTests {
 
 	@Test
-	public void testResendVerificationMail() {
+	void testResendVerificationMail() {
 		
 		resendVerificationMail(UNVERIFIED_USER_ID, UNVERIFIED_USER_ID)
 			.expectStatus().isNoContent();
@@ -25,7 +25,7 @@ public class ResendVerificationMailTests extends AbstractTests {
 
 
 	@Test
-	public void testAdminResendVerificationMailOtherUser() {
+	void testAdminResendVerificationMailOtherUser() {
 		
 		resendVerificationMail(UNVERIFIED_USER_ID, ADMIN_ID)
 			.expectStatus().isNoContent();
@@ -33,7 +33,7 @@ public class ResendVerificationMailTests extends AbstractTests {
 	
 	
 	@Test
-	public void testBadAdminResendVerificationMailOtherUser() {
+	void testBadAdminResendVerificationMailOtherUser() {
 		
 		resendVerificationMail(UNVERIFIED_USER_ID, UNVERIFIED_ADMIN_ID)
 			.expectStatus().isForbidden();
@@ -46,7 +46,7 @@ public class ResendVerificationMailTests extends AbstractTests {
 	
 	
 	@Test
-	public void testResendVerificationMailUnauthenticated() {
+	void testResendVerificationMailUnauthenticated() {
 		
 		CLIENT.post().uri(BASE_URI + "/users/{id}/resend-verification-mail", UNVERIFIED_USER_ID)
 			.exchange()
@@ -57,7 +57,7 @@ public class ResendVerificationMailTests extends AbstractTests {
 
 	
 	@Test
-	public void testResendVerificationMailAlreadyVerified() {
+	void testResendVerificationMailAlreadyVerified() {
 		
 		resendVerificationMail(USER_ID, USER_ID)
 			.expectStatus().isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY);
@@ -67,7 +67,7 @@ public class ResendVerificationMailTests extends AbstractTests {
 
 	
 	@Test
-	public void testResendVerificationMailOtherUser() {
+	void testResendVerificationMailOtherUser() {
 		
 		resendVerificationMail(UNVERIFIED_USER_ID, USER_ID)
 			.expectStatus().isForbidden();
@@ -77,7 +77,7 @@ public class ResendVerificationMailTests extends AbstractTests {
 
 	
 	@Test
-	public void testResendVerificationMailNonExistingUser() {
+	void testResendVerificationMailNonExistingUser() {
 		
 		resendVerificationMail(ObjectId.get(), ADMIN_ID)
 			.expectStatus().isNotFound();

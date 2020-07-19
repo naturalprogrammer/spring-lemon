@@ -6,7 +6,7 @@
 
 	<groupId>com.naturalprogrammer</groupId>
 	<artifactId>spring-lemon</artifactId>
-	<version>1.0.0.RC4</version>
+	<version>1.0.0.RC5</version>
 	<packaging>pom</packaging>
 
 	<name>spring-lemon</name>
@@ -44,6 +44,12 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.junit.vintage</groupId>
+					<artifactId>junit-vintage-engine</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		
 	</dependencies>

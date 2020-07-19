@@ -4,8 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.naturalprogrammer.spring.lemon.commons.domain.ResetPasswordForm;
 import com.naturalprogrammer.spring.lemon.commons.security.GreenTokenService;
 import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 
@@ -13,14 +13,14 @@ import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-public class ResetPasswordMvcTests extends AbstractMvcTests {
+class ResetPasswordMvcTests extends AbstractMvcTests {
 	
 	private String forgotPasswordCode;
 	
 	@Autowired
 	private GreenTokenService greenTokenService;
 	
-	@Before
+	@BeforeEach
 	public void setUp() {
 		
 		forgotPasswordCode = greenTokenService.createToken(
@@ -29,7 +29,7 @@ public class ResetPasswordMvcTests extends AbstractMvcTests {
 	}
 
 	@Test
-	public void testResetPassword() throws Exception {
+	void testResetPassword() throws Exception {
 		
 		final String NEW_PASSWORD = "newPassword!";
 		
@@ -53,7 +53,7 @@ public class ResetPasswordMvcTests extends AbstractMvcTests {
 	}
 	
 	@Test
-	public void testResetPasswordInvalidData() throws Exception {
+	void testResetPasswordInvalidData() throws Exception {
 		
 		// Wrong code
 		mvc.perform(post("/api/core/reset-password")

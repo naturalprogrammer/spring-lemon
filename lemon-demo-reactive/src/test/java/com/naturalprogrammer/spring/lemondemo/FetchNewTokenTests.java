@@ -1,21 +1,20 @@
 package com.naturalprogrammer.spring.lemondemo;
 
 import com.naturalprogrammer.spring.lemondemo.dto.TestToken;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.EntityExchangeResult;
 
 import static com.naturalprogrammer.spring.lemondemo.MyTestUtils.*;
 import static com.naturalprogrammer.spring.lemondemo.controllers.MyController.BASE_URI;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.web.reactive.function.BodyInserters.fromFormData;
 
-public class FetchNewTokenTests extends AbstractTests {
+class FetchNewTokenTests extends AbstractTests {
 
-	
 	@Test
-	public void testFetchNewToken() throws Exception {
+	void testFetchNewToken() throws Exception {
 		
 		CLIENT.post().uri(BASE_URI + "/fetch-new-auth-token")
 			.contentType(MediaType.APPLICATION_FORM_URLENCODED)
@@ -28,7 +27,7 @@ public class FetchNewTokenTests extends AbstractTests {
 
 	
 	@Test
-	public void testFetchNewTokenExpiration() throws Exception {
+	void testFetchNewTokenExpiration() throws Exception {
 		
 		CLIENT.post().uri(BASE_URI + "/fetch-new-auth-token")
 		.contentType(MediaType.APPLICATION_FORM_URLENCODED)
@@ -57,7 +56,7 @@ public class FetchNewTokenTests extends AbstractTests {
 	}
 	
 	@Test
-	public void testFetchNewTokenByAdminForAnotherUser() throws Exception {
+	void testFetchNewTokenByAdminForAnotherUser() throws Exception {
 		
 		CLIENT.post().uri(BASE_URI + "/fetch-new-auth-token")
 		.contentType(MediaType.APPLICATION_FORM_URLENCODED)
@@ -71,7 +70,7 @@ public class FetchNewTokenTests extends AbstractTests {
 	
 	
 	@Test
-	public void testFetchNewTokenByNonAdminForAnotherUser() throws Exception {
+	void testFetchNewTokenByNonAdminForAnotherUser() throws Exception {
 		
 		CLIENT.post().uri(BASE_URI + "/fetch-new-auth-token")
 		.contentType(MediaType.APPLICATION_FORM_URLENCODED)

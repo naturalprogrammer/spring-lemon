@@ -5,8 +5,7 @@ import com.naturalprogrammer.spring.lemondemo.domain.User;
 import com.naturalprogrammer.spring.lemondemo.dto.TestEmailForm;
 import com.naturalprogrammer.spring.lemondemo.dto.TestErrorResponse;
 import org.bson.types.ObjectId;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -15,11 +14,13 @@ import reactor.core.publisher.Mono;
 
 import static com.naturalprogrammer.spring.lemondemo.MyTestUtils.*;
 import static com.naturalprogrammer.spring.lemondemo.controllers.MyController.BASE_URI;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
-public class RequestEmailChangeTests extends AbstractTests {
+class RequestEmailChangeTests extends AbstractTests {
 
 	private static final String NEW_EMAIL = "new.email@example.com";
 	
@@ -34,7 +35,7 @@ public class RequestEmailChangeTests extends AbstractTests {
 
 	
 	@Test
-	public void testRequestEmailChange() {
+	void testRequestEmailChange() {
 		
 		CLIENT.post().uri(BASE_URI + "/users/{id}/email-change-request", UNVERIFIED_USER_ID)
 			.header(HttpHeaders.AUTHORIZATION, TOKENS.get(UNVERIFIED_USER_ID))
@@ -46,8 +47,8 @@ public class RequestEmailChangeTests extends AbstractTests {
 		verify(mailSender).send(any());
 		
 		User updatedUser = mongoTemplate.findById(UNVERIFIED_USER_ID, User.class).block();
-		Assert.assertEquals(NEW_EMAIL, updatedUser.getNewEmail());
-		Assert.assertEquals(UNVERIFIED_USER_EMAIL, updatedUser.getEmail());
+		assertEquals(NEW_EMAIL, updatedUser.getNewEmail());
+		assertEquals(UNVERIFIED_USER_EMAIL, updatedUser.getEmail());
 	}
 	
 	
@@ -55,7 +56,7 @@ public class RequestEmailChangeTests extends AbstractTests {
      * A good admin should be able to request changing email of another user.
      */
 	@Test
-	public void testGoodAdminRequestEmailChange() throws Exception {
+	void testGoodAdminRequestEmailChange() throws Exception {
 		
 		CLIENT.post().uri(BASE_URI + "/users/{id}/email-change-request", UNVERIFIED_USER_ID)
 			.header(HttpHeaders.AUTHORIZATION, TOKENS.get(ADMIN_ID))
@@ -65,7 +66,7 @@ public class RequestEmailChangeTests extends AbstractTests {
 			.expectStatus().isNoContent();
 
 		User updatedUser = mongoTemplate.findById(UNVERIFIED_USER_ID, User.class).block();
-		Assert.assertEquals(NEW_EMAIL, updatedUser.getNewEmail());
+		assertEquals(NEW_EMAIL, updatedUser.getNewEmail());
 	}	
 
 
@@ -73,7 +74,7 @@ public class RequestEmailChangeTests extends AbstractTests {
      * A request changing email of unknown user.
      */
 	@Test
-	public void testRequestEmailChangeUnknownUser() throws Exception {
+	void testRequestEmailChangeUnknownUser() throws Exception {
 		
 		CLIENT.post().uri(BASE_URI + "/users/{id}/email-change-request", ObjectId.get())
 			.header(HttpHeaders.AUTHORIZATION, TOKENS.get(ADMIN_ID))
@@ -91,7 +92,7 @@ public class RequestEmailChangeTests extends AbstractTests {
 	 * the email id of another user
 	 */
 	@Test
-	public void testNonAdminRequestEmailChangeAnotherUser() throws Exception {
+	void testNonAdminRequestEmailChangeAnotherUser() throws Exception {
 		
 		CLIENT.post().uri(BASE_URI + "/users/{id}/email-change-request", ADMIN_ID)
 			.header(HttpHeaders.AUTHORIZATION, TOKENS.get(USER_ID))
@@ -110,7 +111,7 @@ public class RequestEmailChangeTests extends AbstractTests {
 	 * of another user
 	 */
 	@Test
-	public void testBadAdminRequestEmailChangeAnotherUser() throws Exception {
+	void testBadAdminRequestEmailChangeAnotherUser() throws Exception {
 		
 		CLIENT.post().uri(BASE_URI + "/users/{id}/email-change-request", ADMIN_ID)
 			.header(HttpHeaders.AUTHORIZATION, TOKENS.get(UNVERIFIED_ADMIN_ID))
@@ -126,11 +127,9 @@ public class RequestEmailChangeTests extends AbstractTests {
 	
 	/**
      * Trying with invalid data.
-	 * @throws Exception 
-	 * @throws JsonProcessingException 
      */
 	@Test
-	public void testRequestEmailChangeWithInvalidData() {
+	void testRequestEmailChangeWithInvalidData() {
 		
 		// try with null newEmail and password
 		tryRequestingEmailChangeBodySpec(new TestEmailForm())
@@ -214,6 +213,6 @@ public class RequestEmailChangeTests extends AbstractTests {
 	
 	private void assertNotChanged() {
 		User updatedUser = mongoTemplate.findById(UNVERIFIED_USER_ID, User.class).block();
-		Assert.assertNull(updatedUser.getNewEmail());
+		assertNull(updatedUser.getNewEmail());
 	}
 }

@@ -1,6 +1,6 @@
 package com.naturalprogrammer.spring.lemondemo;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -9,10 +9,10 @@ import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class ForgotPasswordMvcTests extends AbstractMvcTests {
+class ForgotPasswordMvcTests extends AbstractMvcTests {
 	
 	@Test
-	public void testForgotPassword() throws Exception {
+	void testForgotPassword() throws Exception {
 		
 		mvc.perform(post("/api/core/forgot-password")
                 .param("email", ADMIN_EMAIL)
@@ -23,7 +23,7 @@ public class ForgotPasswordMvcTests extends AbstractMvcTests {
 	}
 	
 	@Test
-	public void testForgotPasswordInvalidEmail() throws Exception {
+	void testForgotPasswordInvalidEmail() throws Exception {
 		
 		// Unknown email
 		mvc.perform(post("/api/core/forgot-password")

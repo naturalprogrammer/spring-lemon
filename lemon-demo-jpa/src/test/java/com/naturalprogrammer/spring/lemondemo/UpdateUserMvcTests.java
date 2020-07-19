@@ -3,8 +3,7 @@ package com.naturalprogrammer.spring.lemondemo;
 import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
 import com.naturalprogrammer.spring.lemon.commons.util.UserUtils;
 import com.naturalprogrammer.spring.lemondemo.entities.User;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -15,11 +14,13 @@ import java.io.IOException;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.hasSize;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @Sql({"/test-data/initialize.sql", "/test-data/finalize.sql"})
-public class UpdateUserMvcTests extends AbstractMvcTests {
+class UpdateUserMvcTests extends AbstractMvcTests {
 	
 	private static final String UPDATED_NAME = "Edited name";
 	
@@ -53,10 +54,9 @@ public class UpdateUserMvcTests extends AbstractMvcTests {
 	 * but changes in roles should be skipped.
 	 * The name of security principal object should also
 	 * change in the process.
-	 * @throws Exception 
 	 */
 	@Test
-    public void testUpdateSelf() throws Exception {
+    void testUpdateSelf() throws Exception {
 		
 		mvc.perform(patch("/api/core/users/{id}", UNVERIFIED_USER_ID)
 				.contentType(MediaType.APPLICATION_JSON)
@@ -72,10 +72,10 @@ public class UpdateUserMvcTests extends AbstractMvcTests {
 		User user = userRepository.findById(UNVERIFIED_USER_ID).get();
 		
 		// Ensure that data changed properly
-		Assert.assertEquals(UNVERIFIED_USER_EMAIL, user.getEmail());
-		Assert.assertEquals(1, user.getRoles().size());
-		Assert.assertTrue(user.getRoles().contains(UserUtils.Role.UNVERIFIED));
-		Assert.assertEquals(2L, user.getVersion().longValue());
+		assertEquals(UNVERIFIED_USER_EMAIL, user.getEmail());
+		assertEquals(1, user.getRoles().size());
+		assertTrue(user.getRoles().contains(UserUtils.Role.UNVERIFIED));
+		assertEquals(2L, user.getVersion().longValue());
 		
 		// Version mismatch
 		mvc.perform(patch("/api/core/users/{id}", UNVERIFIED_USER_ID)
@@ -90,10 +90,9 @@ public class UpdateUserMvcTests extends AbstractMvcTests {
 	 * The name of security principal object should NOT change in the process,
 	 * and the verification code should get set/unset on addition/deletion of
 	 * the UNVERIFIED role. 
-	 * @throws Exception 
 	 */
 	@Test
-    public void testGoodAdminCanUpdateOther() throws Exception {
+    void testGoodAdminCanUpdateOther() throws Exception {
 		
 		mvc.perform(patch("/api/core/users/{id}", UNVERIFIED_USER_ID)
 				.contentType(MediaType.APPLICATION_JSON)
@@ -110,16 +109,16 @@ public class UpdateUserMvcTests extends AbstractMvcTests {
 		User user = userRepository.findById(UNVERIFIED_USER_ID).get();
     	
 		// Ensure that data changed properly
-		Assert.assertEquals(UNVERIFIED_USER_EMAIL, user.getEmail());
-		Assert.assertEquals(1, user.getRoles().size());
-		Assert.assertTrue(user.getRoles().contains(UserUtils.Role.ADMIN));
+		assertEquals(UNVERIFIED_USER_EMAIL, user.getEmail());
+		assertEquals(1, user.getRoles().size());
+		assertTrue(user.getRoles().contains(UserUtils.Role.ADMIN));
     }
 	
 	/**
 	 * Providing an unknown id should return 404.
 	 */
 	@Test
-    public void testUpdateUnknownId() throws Exception {
+    void testUpdateUnknownId() throws Exception {
     	
 		mvc.perform(patch("/api/core/users/{id}", 99)
 				.contentType(MediaType.APPLICATION_JSON)
@@ -130,10 +129,9 @@ public class UpdateUserMvcTests extends AbstractMvcTests {
 	
 	/**
 	 * A non-admin trying to update the name and roles of another user should throw exception
-	 * @throws Exception 
 	 */
 	@Test
-    public void testUpdateAnotherUser() throws Exception {
+    void testUpdateAnotherUser() throws Exception {
     	
 		mvc.perform(patch("/api/core/users/{id}", ADMIN_ID)
 				.contentType(MediaType.APPLICATION_JSON)
@@ -144,10 +142,9 @@ public class UpdateUserMvcTests extends AbstractMvcTests {
 
 	/**
 	 * A bad ADMIN trying to update the name and roles of another user should throw exception
-	 * @throws Exception 
 	 */
 	@Test
-    public void testBadAdminUpdateAnotherUser() throws Exception {
+    void testBadAdminUpdateAnotherUser() throws Exception {
 		
 		mvc.perform(patch("/api/core/users/{id}", UNVERIFIED_USER_ID)
 				.contentType(MediaType.APPLICATION_JSON)
@@ -164,10 +161,9 @@ public class UpdateUserMvcTests extends AbstractMvcTests {
 
 	/**
 	 * A good ADMIN should not be able to change his own roles
-	 * @throws Exception 
 	 */
 	@Test
-    public void goodAdminCanNotUpdateSelfRoles() throws Exception {
+    void goodAdminCanNotUpdateSelfRoles() throws Exception {
     	
 		mvc.perform(patch("/api/core/users/{id}", ADMIN_ID)
 				.contentType(MediaType.APPLICATION_JSON)
@@ -181,10 +177,9 @@ public class UpdateUserMvcTests extends AbstractMvcTests {
 	
 	/**
 	 * Invalid name
-	 * @throws Exception 
 	 */
 	@Test
-    public void testUpdateUserInvalidNewName() throws Exception {
+    void testUpdateUserInvalidNewName() throws Exception {
     	
 		// Null name
 		mvc.perform(patch("/api/core/users/{id}", UNVERIFIED_USER_ID)

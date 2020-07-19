@@ -2,7 +2,7 @@ package com.naturalprogrammer.spring.lemondemo;
 
 import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
 import com.naturalprogrammer.spring.lemondemo.entities.User;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
@@ -15,10 +15,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @Sql({"/test-data/initialize.sql", "/test-data/finalize.sql"})
-public class LoginMvcTests extends AbstractMvcTests {
+class LoginMvcTests extends AbstractMvcTests {
 	
 	@Test
-	public void testLogin() throws Exception {
+	void testLogin() throws Exception {
 		
 		mvc.perform(post("/api/core/login")
                 .param("username", ADMIN_EMAIL)
@@ -40,20 +40,21 @@ public class LoginMvcTests extends AbstractMvcTests {
 	}
 
 	@Test
-	public void testLoginTokenExpiry() throws Exception {
+	void testLoginTokenExpiry() throws Exception {
 		
-//		// Test that default token does not expire before 10 days		
-//		Thread.sleep(1001L);
-//		mvc.perform(get("/api/core/ping")
-//				.header(LemonSecurityConfig.TOKEN_REQUEST_HEADER_NAME, tokens.get(ADMIN_ID)))
-//				.andExpect(status().is(204));
+		// Test that default token works (does not expire before 10 days)
+		mvc.perform(get("/api/core/ping")
+				.header(HttpHeaders.AUTHORIZATION, tokens.get(ADMIN_ID)))
+				.andExpect(status().is(204));
 		
-		// Test that a 500ms token does not expire before 500ms
-		String token = login(ADMIN_EMAIL, ADMIN_PASSWORD, 500L);
-//		mvc.perform(get("/api/core/ping")
-//				.header(LemonSecurityConfig.TOKEN_REQUEST_HEADER_NAME, token))
-//				.andExpect(status().is(204));
-		// but, does expire after 500ms
+		// Test that a 5000ms token does not expire before 5000ms
+		String token = login(ADMIN_EMAIL, ADMIN_PASSWORD, 5000L);
+		mvc.perform(get("/api/core/ping")
+				.header(HttpHeaders.AUTHORIZATION, token))
+				.andExpect(status().is(204));
+
+		// Test that a 500ms token expires after 500ms
+		token = login(ADMIN_EMAIL, ADMIN_PASSWORD, 500L);
 		Thread.sleep(501L);
 		mvc.perform(get("/api/core/ping")
 				.header(HttpHeaders.AUTHORIZATION, token))
@@ -64,12 +65,11 @@ public class LoginMvcTests extends AbstractMvcTests {
 	 * Token won't work if the credentials of the user gets updated afterwards
 	 */
 	@Test
-	public void testObsoleteToken() throws Exception {
+	void testObsoleteToken() throws Exception {
 		
 		// credentials updated
-		// Thread.sleep(1001L);		
 		User user = userRepository.findById(ADMIN_ID).get();
-		user.setCredentialsUpdatedMillis(System.currentTimeMillis());
+		user.setCredentialsUpdatedMillis(System.currentTimeMillis() + 1);
 		userRepository.save(user);
 		
 		mvc.perform(get("/api/core/ping")
@@ -78,7 +78,7 @@ public class LoginMvcTests extends AbstractMvcTests {
 	}
 
 	@Test
-	public void testLoginWrongPassword() throws Exception {
+	void testLoginWrongPassword() throws Exception {
 		
 		mvc.perform(post("/api/core/login")
                 .param("username", ADMIN_EMAIL)
@@ -88,7 +88,7 @@ public class LoginMvcTests extends AbstractMvcTests {
 	}
 
 	@Test
-	public void testLoginBlankPassword() throws Exception {
+	void testLoginBlankPassword() throws Exception {
 		
 		mvc.perform(post("/api/core/login")
                 .param("username", ADMIN_EMAIL)
@@ -98,7 +98,7 @@ public class LoginMvcTests extends AbstractMvcTests {
 	}
 
 	@Test
-	public void testTokenLogin() throws Exception {
+	void testTokenLogin() throws Exception {
 		
 		mvc.perform(get("/api/core/context")
 				.header(HttpHeaders.AUTHORIZATION, tokens.get(ADMIN_ID)))
@@ -107,7 +107,7 @@ public class LoginMvcTests extends AbstractMvcTests {
 	}
 
 	@Test
-	public void testTokenLoginWrongToken() throws Exception {
+	void testTokenLoginWrongToken() throws Exception {
 		
 		mvc.perform(get("/api/core/context")
 				.header(HttpHeaders.AUTHORIZATION, "Bearer a-wrong-token"))
@@ -115,7 +115,7 @@ public class LoginMvcTests extends AbstractMvcTests {
 	}
 	
 	@Test
-	public void testLogout() throws Exception {
+	void testLogout() throws Exception {
 		
 		mvc.perform(post("/logout"))
                 .andExpect(status().is(404));

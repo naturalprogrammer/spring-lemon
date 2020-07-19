@@ -1,15 +1,15 @@
 package com.naturalprogrammer.spring.lemondemo;
 
 import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static com.naturalprogrammer.spring.lemondemo.MyTestUtils.*;
 import static com.naturalprogrammer.spring.lemondemo.controllers.MyController.BASE_URI;
 
-public class BasicTests extends AbstractTests {
+class BasicTests extends AbstractTests {
 
 	@Test
-	public void testPing() throws Exception {
+	void testPing() throws Exception {
 		
 		CLIENT.get()
 			.uri(BASE_URI + "/ping")
@@ -19,7 +19,7 @@ public class BasicTests extends AbstractTests {
 	}
 
 	@Test
-	public void testGetContextLoggedIn() throws Exception {
+	void testGetContextLoggedIn() throws Exception {
 		
 		testUtils.contextResponse(TOKENS.get(ADMIN_ID))
 				.expectHeader().exists(LecUtils.TOKEN_RESPONSE_HEADER_NAME)
@@ -31,7 +31,7 @@ public class BasicTests extends AbstractTests {
 	}
 	
 	@Test
-	public void testGetContextWithoutLoggedIn() throws Exception {
+	void testGetContextWithoutLoggedIn() throws Exception {
 		
 		CLIENT.get()
 		.uri(BASE_URI + "/context")

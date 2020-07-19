@@ -6,7 +6,7 @@ import com.naturalprogrammer.spring.lemondemo.dto.TestErrorResponse;
 import com.naturalprogrammer.spring.lemondemo.dto.TestLemonFieldError;
 import com.naturalprogrammer.spring.lemondemo.dto.TestUser;
 import com.naturalprogrammer.spring.lemondemo.dto.TestUserDto;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient.ResponseSpec;
@@ -18,17 +18,17 @@ import java.util.stream.Collectors;
 
 import static com.naturalprogrammer.spring.lemondemo.MyTestUtils.*;
 import static com.naturalprogrammer.spring.lemondemo.controllers.MyController.BASE_URI;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
 
-public class SignupTests extends AbstractTests {
+class SignupTests extends AbstractTests {
 
 	@Test
-	public void testSignup() throws Exception {
+	void testSignup() throws Exception {
 		
 		signup("user.foo@example.com", "user123", "User Foo")
 		.expectStatus().isCreated()
@@ -58,7 +58,7 @@ public class SignupTests extends AbstractTests {
 	}
 
 	@Test
-	public void testSignupWithInvalidData() throws Exception {
+	void testSignupWithInvalidData() throws Exception {
 		
 		signup("abc", "user1", null)
 			.expectStatus().isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY)
@@ -91,7 +91,7 @@ public class SignupTests extends AbstractTests {
 	}
 	
 	@Test
-	public void testSignupDuplicateEmail() throws Exception {
+	void testSignupDuplicateEmail() throws Exception {
 		
 		signup(ADMIN_EMAIL, "user123", "User Foo")
 			.expectStatus().isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY);

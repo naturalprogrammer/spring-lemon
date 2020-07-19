@@ -4,7 +4,7 @@ import com.naturalprogrammer.spring.lemon.commons.domain.ChangePasswordForm;
 import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
 import com.naturalprogrammer.spring.lemondemo.dto.TestErrorResponse;
 import org.bson.types.ObjectId;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -13,7 +13,7 @@ import reactor.core.publisher.Mono;
 import static com.naturalprogrammer.spring.lemondemo.MyTestUtils.*;
 import static com.naturalprogrammer.spring.lemondemo.controllers.MyController.BASE_URI;
 
-public class ChangePasswordTests extends AbstractTests {
+class ChangePasswordTests extends AbstractTests {
 
 	private static final String NEW_PASSWORD = "a-new-password";
 	
@@ -31,7 +31,7 @@ public class ChangePasswordTests extends AbstractTests {
 	 * A non-admin user should be able to change his password.
 	 */
 	@Test
-	public void testChangePassword() throws Exception {
+	void testChangePassword() throws Exception {
 		
 		CLIENT.post().uri(BASE_URI + "/users/{id}/password", UNVERIFIED_USER_ID)
 				.header(HttpHeaders.AUTHORIZATION, TOKENS.get(UNVERIFIED_USER_ID))
@@ -50,7 +50,7 @@ public class ChangePasswordTests extends AbstractTests {
 	 * An good admin user should be able to change the password of another user.
 	 */
 	@Test
-	public void testAdminChangePasswordAnotherUser() throws Exception {
+	void testAdminChangePasswordAnotherUser() throws Exception {
 		
 		CLIENT.post().uri(BASE_URI + "/users/{id}/password", UNVERIFIED_USER_ID)
 			.header(HttpHeaders.AUTHORIZATION, TOKENS.get(ADMIN_ID))
@@ -68,7 +68,7 @@ public class ChangePasswordTests extends AbstractTests {
 	 * Providing an unknown id should return 404.
 	 */
 	@Test
-	public void testChangePasswordUnknownId() throws Exception {
+	void testChangePasswordUnknownId() throws Exception {
 		
 		CLIENT.post().uri(BASE_URI + "/users/{id}/password", ObjectId.get())
 			.header(HttpHeaders.AUTHORIZATION, TOKENS.get(ADMIN_ID))
@@ -83,7 +83,7 @@ public class ChangePasswordTests extends AbstractTests {
 	 * A non-admin user should not be able to change others' password.
 	 */
 	@Test
-	public void testChangePasswordAnotherUser() throws Exception {
+	void testChangePasswordAnotherUser() throws Exception {
 		
 		CLIENT.post().uri(BASE_URI + "/users/{id}/password", UNVERIFIED_USER_ID)
 			.header(HttpHeaders.AUTHORIZATION, TOKENS.get(USER_ID))
@@ -102,7 +102,7 @@ public class ChangePasswordTests extends AbstractTests {
 	 * A  bad admin user should not be able to change others' password.
 	 */
 	@Test
-	public void testBadAdminChangePasswordAnotherUser() throws Exception {
+	void testBadAdminChangePasswordAnotherUser() throws Exception {
 		
 		CLIENT.post().uri(BASE_URI + "/users/{id}/password", UNVERIFIED_USER_ID)
 			.header(HttpHeaders.AUTHORIZATION, TOKENS.get(UNVERIFIED_ADMIN_ID))
@@ -118,7 +118,7 @@ public class ChangePasswordTests extends AbstractTests {
 
 	
 	@Test
-	public void testChangePasswordInvalidData() throws Exception {
+	void testChangePasswordInvalidData() throws Exception {
 		
 		//@formatter:off
 		CLIENT.post().uri(BASE_URI + "/users/{id}/password", UNVERIFIED_USER_ID)

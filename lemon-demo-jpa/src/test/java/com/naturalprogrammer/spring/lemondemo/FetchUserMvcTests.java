@@ -1,6 +1,6 @@
 package com.naturalprogrammer.spring.lemondemo;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
@@ -11,10 +11,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Sql({"/test-data/initialize.sql", "/test-data/finalize.sql"})
-public class FetchUserMvcTests extends AbstractMvcTests {
+class FetchUserMvcTests extends AbstractMvcTests {
 	
 	@Test
-	public void testFetchUserById() throws Exception {
+	void testFetchUserById() throws Exception {
 		
 		mvc.perform(get("/api/core/users/{id}", ADMIN_ID))
                 .andExpect(status().is(200))
@@ -26,7 +26,7 @@ public class FetchUserMvcTests extends AbstractMvcTests {
 	}
 
 	@Test
-	public void testFetchUserByIdLoggedIn() throws Exception {
+	void testFetchUserByIdLoggedIn() throws Exception {
 		
 		// Same user logged in
 		mvc.perform(get("/api/core/users/{id}", ADMIN_ID)
@@ -54,14 +54,14 @@ public class FetchUserMvcTests extends AbstractMvcTests {
 	}
 	
 	@Test
-	public void testFetchNonExistingUserById() throws Exception {
+	void testFetchNonExistingUserById() throws Exception {
 		
 		mvc.perform(get("/api/core/users/99"))
                 .andExpect(status().is(404));
 	}
 
 	@Test
-	public void testFetchUserByEmail() throws Exception {
+	void testFetchUserByEmail() throws Exception {
 		
 		mvc.perform(post("/api/core/users/fetch-by-email")
                 .param("email", ADMIN_EMAIL)
@@ -74,7 +74,7 @@ public class FetchUserMvcTests extends AbstractMvcTests {
 	}
 
 	@Test
-	public void testFetchUserByInvalidEmail() throws Exception {
+	void testFetchUserByInvalidEmail() throws Exception {
 		
 		// email does not exist
 		mvc.perform(post("/api/core/users/fetch-by-email")

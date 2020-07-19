@@ -3,18 +3,20 @@ package com.naturalprogrammer.spring.lemondemo;
 import com.naturalprogrammer.spring.lemon.commons.security.GreenTokenService;
 import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
 import com.naturalprogrammer.spring.lemondemo.entities.User;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.aspectj.lang.annotation.Before;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-public class ChangeEmailMvcTests extends AbstractMvcTests {
+class ChangeEmailMvcTests extends AbstractMvcTests {
 	
 	private static final String NEW_EMAIL = "new.email@example.com";
 
@@ -23,7 +25,7 @@ public class ChangeEmailMvcTests extends AbstractMvcTests {
 	@Autowired
 	private GreenTokenService greenTokenService;
 	
-	@Before
+	@BeforeEach
 	public void setUp() {
 		
 		User user = userRepository.findById(UNVERIFIED_USER_ID).get();
@@ -37,7 +39,7 @@ public class ChangeEmailMvcTests extends AbstractMvcTests {
 	}
 
 	@Test
-	public void testChangeEmail() throws Exception {
+	void testChangeEmail() throws Exception {
 		
 		mvc.perform(post("/api/core/users/{id}/email", UNVERIFIED_USER_ID)
                 .param("code", changeEmailCode)
@@ -48,8 +50,8 @@ public class ChangeEmailMvcTests extends AbstractMvcTests {
 				.andExpect(jsonPath("$.id").value(UNVERIFIED_USER_ID));
 		
 		User updatedUser = userRepository.findById(UNVERIFIED_USER_ID).get();
-		Assert.assertNull(updatedUser.getNewEmail());
-		Assert.assertEquals(NEW_EMAIL, updatedUser.getEmail());
+		assertNull(updatedUser.getNewEmail());
+		assertEquals(NEW_EMAIL, updatedUser.getEmail());
 		
 		// Shouldn't be able to login with old token
 		mvc.perform(post("/api/core/users/{id}/email", UNVERIFIED_USER_ID)
@@ -63,7 +65,7 @@ public class ChangeEmailMvcTests extends AbstractMvcTests {
      * Providing a wrong changeEmailCode shouldn't work.
      */
 	@Test
-	public void testChangeEmailWrongCode() throws Exception {
+	void testChangeEmailWrongCode() throws Exception {
 		
 		// Blank token
 		mvc.perform(post("/api/core/users/{id}/email", UNVERIFIED_USER_ID)
@@ -113,12 +115,11 @@ public class ChangeEmailMvcTests extends AbstractMvcTests {
      * Providing an obsolete changeEmailCode shouldn't work.
      */
 	@Test
-	public void testChangeEmailObsoleteCode() throws Exception {
+	void testChangeEmailObsoleteCode() throws Exception {
 
 		// credentials updated after the request for email change was made
-		Thread.sleep(1L);
 		User user = userRepository.findById(UNVERIFIED_USER_ID).get();
-		user.setCredentialsUpdatedMillis(System.currentTimeMillis());
+		user.setCredentialsUpdatedMillis(System.currentTimeMillis() + 1);
 		userRepository.save(user);
 		
 		// A new auth token is needed, because old one would be obsolete!
@@ -134,10 +135,9 @@ public class ChangeEmailMvcTests extends AbstractMvcTests {
 	
 	/**
      * Trying without having requested first.
-	 * @throws Exception 
      */
 	@Test
-	public void testChangeEmailWithoutAnyRequest() throws Exception {
+	void testChangeEmailWithoutAnyRequest() throws Exception {
 
 		mvc.perform(post("/api/core/users/{id}/email", USER_ID)
                 .param("code", changeEmailCode)
@@ -148,10 +148,9 @@ public class ChangeEmailMvcTests extends AbstractMvcTests {
 	
     /**
      * Trying after some user registers the newEmail, leaving it non unique.
-     * @throws Exception 
      */
 	@Test
-	public void testChangeEmailNonUniqueEmail() throws Exception {
+	void testChangeEmailNonUniqueEmail() throws Exception {
 		
 		// Some other user changed to the same email
 		User user = userRepository.findById(ADMIN_ID).get();

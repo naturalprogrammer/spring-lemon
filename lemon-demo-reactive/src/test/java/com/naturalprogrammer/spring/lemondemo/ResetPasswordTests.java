@@ -3,8 +3,8 @@ package com.naturalprogrammer.spring.lemondemo;
 import com.naturalprogrammer.spring.lemon.commons.security.GreenTokenService;
 import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
 import com.naturalprogrammer.spring.lemondemo.dto.TestResetPasswordForm;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -14,14 +14,14 @@ import reactor.core.publisher.Mono;
 import static com.naturalprogrammer.spring.lemondemo.MyTestUtils.*;
 import static com.naturalprogrammer.spring.lemondemo.controllers.MyController.BASE_URI;
 
-public class ResetPasswordTests extends AbstractTests {
+class ResetPasswordTests extends AbstractTests {
 
 	private String forgotPasswordCode;
 	
 	@Autowired
 	private GreenTokenService greenTokenService;
 	
-	@Before
+	@BeforeEach
 	public void setUp() {
 		
 		forgotPasswordCode = greenTokenService.createToken(
@@ -30,7 +30,7 @@ public class ResetPasswordTests extends AbstractTests {
 	}
 	
 	@Test
-	public void testResetPassword() throws Exception {
+	void testResetPassword() throws Exception {
 		
 		final String NEW_PASSWORD = "newPassword!";
 		
@@ -48,7 +48,7 @@ public class ResetPasswordTests extends AbstractTests {
 	}
 	
 	@Test
-	public void testResetPasswordInvalidData() throws Exception {
+	void testResetPasswordInvalidData() throws Exception {
 		
 		// Wrong code
 		resetPassword("wrong-code", "abc99!")

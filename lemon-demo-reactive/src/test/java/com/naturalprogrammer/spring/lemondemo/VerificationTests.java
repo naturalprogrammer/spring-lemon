@@ -4,25 +4,25 @@ import com.naturalprogrammer.spring.lemon.commons.security.GreenTokenService;
 import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
 import com.naturalprogrammer.spring.lemondemo.dto.TestUserDto;
 import org.bson.types.ObjectId;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.web.reactive.server.WebTestClient.ResponseSpec;
 
 import static com.naturalprogrammer.spring.lemondemo.MyTestUtils.*;
 import static com.naturalprogrammer.spring.lemondemo.controllers.MyController.BASE_URI;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.web.reactive.function.BodyInserters.fromFormData;
 
-public class VerificationTests extends AbstractTests {
+class VerificationTests extends AbstractTests {
 
 	private String verificationCode;
 	
 	@Autowired
 	private GreenTokenService greenTokenService;
 	
-	@Before
+	@BeforeEach
 	public void setUp() {
 		
 		verificationCode = greenTokenService.createToken(GreenTokenService.VERIFY_AUDIENCE,
@@ -31,7 +31,7 @@ public class VerificationTests extends AbstractTests {
 	}
 	
 	@Test
-	public void testEmailVerification() throws Exception {
+	void testEmailVerification() {
 		
 		emailVerification(UNVERIFIED_USER_ID, verificationCode)
 		.expectStatus().isOk()
@@ -40,6 +40,7 @@ public class VerificationTests extends AbstractTests {
 		.consumeWith(result -> {
 			
 			TestUserDto userDto = result.getResponseBody();
+			assert userDto != null;
 			
 			assertEquals(UNVERIFIED_USER_ID, userDto.getId());
 			assertEquals(0, userDto.getRoles().size());
@@ -53,14 +54,14 @@ public class VerificationTests extends AbstractTests {
 	}
 	
 	@Test
-	public void testEmailVerificationNonExistingUser() throws Exception {
+	void testEmailVerificationNonExistingUser() throws Exception {
 		
 		emailVerification(ObjectId.get(), verificationCode)
 		.expectStatus().isNotFound();
 	}
 
 	@Test
-	public void testEmailVerificationWrongToken() throws Exception {
+	void testEmailVerificationWrongToken() throws Exception {
 		
 		// null token
 		CLIENT.post().uri(BASE_URI + "/users/{id}/verification", UNVERIFIED_USER_ID)

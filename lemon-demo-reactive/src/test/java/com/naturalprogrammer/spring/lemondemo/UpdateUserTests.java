@@ -5,7 +5,7 @@ import com.naturalprogrammer.spring.lemon.commons.util.UserUtils;
 import com.naturalprogrammer.spring.lemondemo.domain.User;
 import com.naturalprogrammer.spring.lemondemo.dto.TestUserDto;
 import org.bson.types.ObjectId;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -16,10 +16,10 @@ import org.springframework.web.reactive.function.BodyInserters;
 
 import static com.naturalprogrammer.spring.lemondemo.MyTestUtils.*;
 import static com.naturalprogrammer.spring.lemondemo.controllers.MyController.BASE_URI;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class UpdateUserTests extends AbstractTests {
+class UpdateUserTests extends AbstractTests {
 
 	private static final String UPDATED_NAME = "Edited name";
 	
@@ -40,10 +40,9 @@ public class UpdateUserTests extends AbstractTests {
 	 * but changes in roles should be skipped.
 	 * The name of security principal object should also
 	 * change in the process.
-	 * @throws Exception 
 	 */
 	@Test
-    public void testUpdateSelf() throws Exception {
+    void testUpdateSelf() {
 		
 		updateUser(UNVERIFIED_USER_ID, UNVERIFIED_USER_ID, userPatch)
 		.expectStatus().isOk()
@@ -79,10 +78,9 @@ public class UpdateUserTests extends AbstractTests {
 	 * The name of security principal object should NOT change in the process,
 	 * and the verification code should get set/unset on addition/deletion of
 	 * the UNVERIFIED role. 
-	 * @throws Exception 
 	 */
 	@Test
-    public void testGoodAdminCanUpdateOther() throws Exception {
+    void testGoodAdminCanUpdateOther() {
 		
 		updateUser(UNVERIFIED_USER_ID, ADMIN_ID, userPatch)
 		.expectStatus().isOk()
@@ -111,7 +109,7 @@ public class UpdateUserTests extends AbstractTests {
 	 * Providing an unknown id should return 404.
 	 */
 	@Test
-    public void testUpdateUnknownId() throws Exception {
+    void testUpdateUnknownId() {
     	
 		updateUser(ObjectId.get(), ADMIN_ID, userPatch)
 		.expectStatus().isNotFound();
@@ -119,10 +117,9 @@ public class UpdateUserTests extends AbstractTests {
 	
 	/**
 	 * A non-admin trying to update the name and roles of another user should throw exception
-	 * @throws Exception 
 	 */
 	@Test
-    public void testUpdateAnotherUser() throws Exception {
+    void testUpdateAnotherUser() {
     	
 		updateUser(ADMIN_ID, UNVERIFIED_USER_ID, userPatch)
 		.expectStatus().isForbidden();
@@ -130,10 +127,9 @@ public class UpdateUserTests extends AbstractTests {
 
 	/**
 	 * A bad ADMIN trying to update the name and roles of another user should throw exception
-	 * @throws Exception 
 	 */
 	@Test
-    public void testBadAdminUpdateAnotherUser() throws Exception {
+    void testBadAdminUpdateAnotherUser() {
 		
 		updateUser(UNVERIFIED_USER_ID, UNVERIFIED_ADMIN_ID, userPatch)
 		.expectStatus().isForbidden();
@@ -144,10 +140,9 @@ public class UpdateUserTests extends AbstractTests {
 	
 	/**
 	 * A good ADMIN should not be able to change his own roles
-	 * @throws Exception 
 	 */
 	@Test
-    public void goodAdminCanNotUpdateSelfRoles() throws Exception {
+    void goodAdminCanNotUpdateSelfRoles() {
     	
 		updateUser(ADMIN_ID, ADMIN_ID, userPatchAdminRole)
 		.expectStatus().isOk()
@@ -169,10 +164,9 @@ public class UpdateUserTests extends AbstractTests {
 
 	/**
 	 * Invalid name
-	 * @throws Exception 
 	 */
 	@Test
-    public void testUpdateUserInvalidNewName() throws Exception {
+    void testUpdateUserInvalidNewName() {
     	
 		// Null name
 		updateUser(UNVERIFIED_USER_ID, ADMIN_ID, userPatchNullName)
@@ -190,6 +184,5 @@ public class UpdateUserTests extends AbstractTests {
 				.header(HttpHeaders.AUTHORIZATION, TOKENS.get(loggedInId))
 				.body(BodyInserters.fromResource(patch))
 			.exchange();
-
 	}
 }

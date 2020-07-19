@@ -3,6 +3,7 @@ package com.naturalprogrammer.spring.lemondemo;
 import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
 import com.naturalprogrammer.spring.lemondemo.domain.User;
 import com.naturalprogrammer.spring.lemondemo.dto.TestUserDto;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bson.types.ObjectId;
@@ -25,10 +26,9 @@ import static com.naturalprogrammer.spring.lemondemo.controllers.MyController.BA
 import static org.springframework.web.reactive.function.BodyInserters.fromFormData;
 
 @Component
+@Slf4j
 public class MyTestUtils {
 	
-	private static Log log = LogFactory.getLog(MyTestUtils.class);
-
 	public static final ObjectId ADMIN_ID = ObjectId.get();
 	public static final ObjectId UNVERIFIED_ADMIN_ID = ObjectId.get();
 	public static final ObjectId BLOCKED_ADMIN_ID = ObjectId.get();
@@ -88,17 +88,6 @@ public class MyTestUtils {
 				.expectStatus().isOk();
     }
 
-    //    @Override
-//	public void run(String... args) throws Exception {
-//    	
-//		TOKENS.put(ADMIN_ID, login(ADMIN_EMAIL, ADMIN_PASSWORD));
-//		TOKENS.put(UNVERIFIED_ADMIN_ID, login("unverifiedadmin@example.com", ADMIN_PASSWORD));
-//		TOKENS.put(BLOCKED_ADMIN_ID, login("blockedadmin@example.com", ADMIN_PASSWORD));
-//		TOKENS.put(USER_ID, login("user@example.com", USER_PASSWORD));
-//		TOKENS.put(UNVERIFIED_USER_ID, login(UNVERIFIED_USER_EMAIL, USER_PASSWORD));
-//		TOKENS.put(BLOCKED_USER_ID, login("blockeduser@example.com", USER_PASSWORD));
-//	}
-//
 	public void initDatabase() {
 
 		mongoTemplate.dropCollection("usr").block();
