@@ -2,8 +2,7 @@ package com.naturalprogrammer.spring.lemon.exceptions.util;
 
 import com.naturalprogrammer.spring.lemon.exceptions.ExceptionIdMaker;
 import com.naturalprogrammer.spring.lemon.exceptions.MultiErrorException;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
@@ -11,6 +10,8 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 import javax.annotation.PostConstruct;
 import javax.validation.ConstraintViolationException;
+import javax.validation.Validation;
+import javax.validation.Validator;
 import java.util.function.Supplier;
 
 /**
@@ -18,14 +19,23 @@ import java.util.function.Supplier;
  * 
  * @author Sanjay Patel
  */
+@Slf4j
 public class LexUtils {
-	
-	private static final Log log = LogFactory.getLog(LexUtils.class);
 
 	private static MessageSource messageSource;
 	private static LocalValidatorFactoryBean validator;
 	private static ExceptionIdMaker exceptionIdMaker;
-	
+
+	private static final Validator DEFAULT_VALIDATOR = Validation.buildDefaultValidatorFactory().getValidator();
+	public static final ExceptionIdMaker EXCEPTION_ID_MAKER = ex -> {
+
+		if (ex == null)
+			return null;
+
+		return ex.getClass().getSimpleName();
+	};
+
+
 	public static final MultiErrorException NOT_FOUND_EXCEPTION = new MultiErrorException();
 
 	/**
@@ -59,8 +69,8 @@ public class LexUtils {
 	 */
 	public static String getMessage(String messageKey, Object... args) {
 		
-		if (messageSource == null)
-			return "ApplicationContext unavailable, probably unit test going on";
+		if (messageSource == null) // ApplicationContext unavailable, probably unit test going on
+			return messageKey;
 		
 		// http://stackoverflow.com/questions/10792551/how-to-obtain-a-current-user-locale-from-spring-without-passing-it-as-a-paramete
 		return messageSource.getMessage(messageKey, args,
@@ -105,7 +115,7 @@ public class LexUtils {
 	 */
 	public static <T> void ensureFound(T entity) {
 		
-		LexUtils.validate(entity != null,
+		validate(entity != null,
 			"com.naturalprogrammer.spring.notFound")
 			.httpStatus(HttpStatus.NOT_FOUND).go();
 	}
@@ -123,14 +133,16 @@ public class LexUtils {
 	public static String getExceptionId(Throwable ex) {
 		
 		Throwable root = getRootException(ex);
+
+		if (exceptionIdMaker == null) // in unit tests
+			return EXCEPTION_ID_MAKER.make(ex);
+
 		return exceptionIdMaker.make(root);
 	}
 	
 	
 	private static Throwable getRootException(Throwable ex) {
 		
-		if (ex == null) return null;
-			
 		while(ex.getCause() != null)
 			ex = ex.getCause();
 		
@@ -138,7 +150,8 @@ public class LexUtils {
 	}
 
 	
-	public static LocalValidatorFactoryBean validator() {
-		return validator;
+	public static Validator validator() {
+		return validator == null ? // e.g. in unit tests
+				DEFAULT_VALIDATOR : validator;
 	}
 }

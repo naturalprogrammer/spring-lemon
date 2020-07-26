@@ -7,6 +7,7 @@ import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
 import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
 import com.nimbusds.jwt.JWTClaimsSet;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.http.HttpHeaders;
@@ -26,11 +27,10 @@ import java.io.IOException;
  * Filter for token authentication
  */
 @AllArgsConstructor
+@Slf4j
 public class LemonCommonsWebTokenAuthenticationFilter extends OncePerRequestFilter {
 	
-    private static final Log log = LogFactory.getLog(LemonCommonsWebTokenAuthenticationFilter.class);
-    
-    private BlueTokenService blueTokenService;
+    private final BlueTokenService blueTokenService;
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -54,7 +54,7 @@ public class LemonCommonsWebTokenAuthenticationFilter extends OncePerRequestFilt
 				    		    	
 		    } catch (Exception e) {
 		    	
-				log.debug("Token authentication failed - " + e.getMessage());
+				log.debug("Token authentication failed - {}", e.getMessage());
 				
 		    	response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
 						"Authentication Failed: " + e.getMessage());
@@ -83,9 +83,6 @@ public class LemonCommonsWebTokenAuthenticationFilter extends OncePerRequestFilt
 
 	/**
 	 * Default behaviour is to throw error. To be overridden in auth service.
-	 * 
-	 * @param username
-	 * @return
 	 */
 	protected UserDto fetchUserDto(JWTClaimsSet claims) {
 		throw new AuthenticationCredentialsNotFoundException(

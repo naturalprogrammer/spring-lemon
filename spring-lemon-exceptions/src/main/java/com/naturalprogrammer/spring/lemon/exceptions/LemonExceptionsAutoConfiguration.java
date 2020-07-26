@@ -2,6 +2,7 @@ package com.naturalprogrammer.spring.lemon.exceptions;
 
 import com.naturalprogrammer.spring.lemon.exceptions.handlers.AbstractExceptionHandler;
 import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
@@ -18,9 +19,8 @@ import java.util.List;
 @Configuration
 @AutoConfigureBefore({ValidationAutoConfiguration.class})
 @ComponentScan(basePackageClasses=AbstractExceptionHandler.class)
+@Slf4j
 public class LemonExceptionsAutoConfiguration {
-
-	private static final Log log = LogFactory.getLog(LemonExceptionsAutoConfiguration.class);
 
 	public LemonExceptionsAutoConfiguration() {
 		log.info("Created");
@@ -48,13 +48,7 @@ public class LemonExceptionsAutoConfiguration {
 	public ExceptionIdMaker exceptionIdMaker() {
 		
         log.info("Configuring ExceptionIdMaker");
-        return ex -> {
-        	
-        	if (ex == null)
-        		return null;
-        	
-        	return ex.getClass().getSimpleName();
-        };
+        return LexUtils.EXCEPTION_ID_MAKER;
 	}
 
 	
