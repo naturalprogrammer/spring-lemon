@@ -53,7 +53,7 @@
 		<dependency>
 			<groupId>com.github.fge</groupId>
 			<artifactId>json-patch</artifactId>
-			<version>RELEASE</version>
+			<version>1.9</version>
 		</dependency>
 
 		<!-- For generating Auto Completion of lemon.* in application.properties 

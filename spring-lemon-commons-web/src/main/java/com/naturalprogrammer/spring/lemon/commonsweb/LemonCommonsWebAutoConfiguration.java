@@ -3,9 +3,11 @@ package com.naturalprogrammer.spring.lemon.commonsweb;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.naturalprogrammer.spring.lemon.commons.LemonCommonsAutoConfiguration;
 import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
+import com.naturalprogrammer.spring.lemon.commons.exceptions.handlers.BadCredentialsExceptionHandler;
 import com.naturalprogrammer.spring.lemon.commonsweb.exceptions.DefaultExceptionHandlerControllerAdvice;
 import com.naturalprogrammer.spring.lemon.commonsweb.exceptions.LemonErrorAttributes;
 import com.naturalprogrammer.spring.lemon.commonsweb.exceptions.LemonErrorController;
+import com.naturalprogrammer.spring.lemon.commonsweb.exceptions.handlers.MissingPathVariableExceptionHandler;
 import com.naturalprogrammer.spring.lemon.commonsweb.security.LemonCorsConfigurationSource;
 import com.naturalprogrammer.spring.lemon.commonsweb.security.LemonWebAuditorAware;
 import com.naturalprogrammer.spring.lemon.commonsweb.security.LemonWebSecurityConfig;
@@ -26,6 +28,7 @@ import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
@@ -39,6 +42,7 @@ import java.util.List;
 @Configuration
 @EnableSpringDataWebSupport
 @EnableGlobalMethodSecurity(prePostEnabled = true)
+@ComponentScan(basePackageClasses= MissingPathVariableExceptionHandler.class)
 @AutoConfigureBefore({
 	WebMvcAutoConfiguration.class,
 	ErrorMvcAutoConfiguration.class,
