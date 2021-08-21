@@ -7,8 +7,33 @@
     <artifactId>spring-lemon-reactive</artifactId>
     <packaging>jar</packaging>
 
-    <name>spring-lemon-reactive</name>
+    <name>${project.groupId}:${project.artifactId}</name>
     <description>Helper reactive library for Spring Boot REST APIs</description>
+    <url>https://github.com/naturalprogrammer/spring-lemon</url>
+
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Sanjay Patel</name>
+            <email>skpatel20@gmail.com</email>
+            <organization>naturalprogrammer.com</organization>
+            <organizationUrl>https://www.naturalprogrammer.com</organizationUrl>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:git://github.com/naturalprogrammer/spring-lemon.git</connection>
+        <developerConnection>scm:git:git://github.com/naturalprogrammer/spring-lemon.git</developerConnection>
+        <url>https://github.com/naturalprogrammer/spring-lemon</url>
+        <tag>HEAD</tag>
+    </scm>
 
     <parent>
         <groupId>com.naturalprogrammer</groupId>

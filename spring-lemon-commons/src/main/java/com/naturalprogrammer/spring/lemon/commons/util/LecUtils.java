@@ -79,9 +79,6 @@ public class LecUtils {
 	
 	/**
 	 * Extracts the current-user from authentication object
-	 * 
-	 * @param auth
-	 * @return
 	 */
 	public static <ID extends Serializable> UserDto currentUser(SecurityContext context) {
 		
@@ -91,9 +88,6 @@ public class LecUtils {
 	
 	/**
 	 * Extracts the current-user from authentication object
-	 * 
-	 * @param auth
-	 * @return
 	 */
 	public static <ID extends Serializable> UserDto currentUser(Authentication auth) {
 		
@@ -109,9 +103,6 @@ public class LecUtils {
 
 	/**
 	 * Throws AccessDeniedException is not authorized
-	 * 
-	 * @param authorized
-	 * @param messageKey
 	 */
 	public static void ensureAuthority(boolean authorized, String messageKey) {
 		
@@ -123,8 +114,6 @@ public class LecUtils {
 	/**
 	 * Constructs a map of the key-value pairs,
 	 * passed as parameters
-	 * 
-	 * @param keyValPair
 	 */
 	@SuppressWarnings("unchecked")
 	public static <K,V> Map<K,V> mapOf(Object... keyValPair) {
@@ -144,9 +133,6 @@ public class LecUtils {
 
 	/**
 	 * Throws BadCredentialsException if not valid
-	 * 
-	 * @param valid
-	 * @param messageKey
 	 */
 	public static void ensureCredentials(boolean valid, String messageKey) {
 		
@@ -200,8 +186,6 @@ public class LecUtils {
 
 	/**
 	 * Gets the reference to an application-context bean
-	 *  
-	 * @param clazz	the type of the bean
 	 */
 	public static <T> T getBean(Class<T> clazz) {
 		return applicationContext.getBean(clazz);

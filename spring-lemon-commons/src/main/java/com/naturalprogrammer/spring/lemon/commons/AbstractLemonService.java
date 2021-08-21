@@ -50,8 +50,6 @@ public abstract class AbstractLemonService
     /**
      * This method is called after the application is ready.
      * Needs to be public - otherwise Spring screams.
-     * 
-     * @param event
      */
     @EventListener
     public void afterApplicationReady(ApplicationReadyEvent event) {
@@ -158,8 +156,6 @@ public abstract class AbstractLemonService
 	
 	/**
 	 * Mails the forgot password link.
-	 * 
-	 * @param user
 	 */
 	public void mailForgotPasswordLink(U user) {
 		

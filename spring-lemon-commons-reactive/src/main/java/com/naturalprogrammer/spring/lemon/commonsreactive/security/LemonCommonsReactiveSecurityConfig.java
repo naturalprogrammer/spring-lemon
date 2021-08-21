@@ -125,9 +125,6 @@ public class LemonCommonsReactiveSecurityConfig {
 	
 	/**
 	 * Default behaviour is to throw error. To be overridden in auth service.
-	 * 
-	 * @param username
-	 * @return
 	 */
 	protected Mono<UserDto> fetchUserDto(JWTClaimsSet claims) {
 		return Mono.error(new AuthenticationCredentialsNotFoundException(
