@@ -158,7 +158,10 @@ public class LexUtils {
 	
 	
 	private static Throwable getRootException(Throwable ex) {
-		
+
+		if (ex == null)
+			return null;
+
 		while(ex.getCause() != null)
 			ex = ex.getCause();
 		
