@@ -1,0 +1,14 @@
+version: '3'
+services:
+
+  database-test:
+    image: mongo:3.2.20
+    environment:
+      MONGO_INITDB_DATABASE: lemontest
+    ports:
+      - 27017:27017
+    volumes:
+      - mongo_data:/data/db
+
+volumes:
+  mongo_data:
