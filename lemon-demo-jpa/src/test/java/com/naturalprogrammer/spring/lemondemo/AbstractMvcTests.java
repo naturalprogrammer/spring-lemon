@@ -30,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 	"lemon.recaptcha.sitekey="
 })
 @AutoConfigureMockMvc
-@AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.HSQL)
+@AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.HSQLDB)
 @Sql({"/test-data/initialize.sql", "/test-data/finalize.sql"})
 public abstract class AbstractMvcTests {
 	
