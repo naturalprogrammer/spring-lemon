@@ -85,7 +85,10 @@ public class LemonCommonsWebAutoConfiguration {
     /**
 	 * Prefixes JSON responses for JSON vulnerability. Disabled by default.
 	 * To enable, add this to your application properties:
-	 *     lemon.enabled.json-prefix: true
+	 * lemon.enabled.json-prefix: true
+	 *
+	 * @param objectMapper Object Mapper (configured by Spring Boot)
+	 * @return Message converted
 	 */
 	@Bean
 	@ConditionalOnProperty(name="lemon.enabled.json-prefix")
@@ -100,9 +103,12 @@ public class LemonCommonsWebAutoConfiguration {
         
         return converter;
 	}
-	
+
 	/**
 	 * Configures DefaultExceptionHandlerControllerAdvice if missing
+	 * @param <T> exception
+	 * @param errorResponseComposer the configured errorResponseComposer
+	 * @return configured defaultExceptionHandlerControllerAdvice
 	 */	
 	@Bean
 	@ConditionalOnMissingBean(DefaultExceptionHandlerControllerAdvice.class)
@@ -114,9 +120,6 @@ public class LemonCommonsWebAutoConfiguration {
 		return new DefaultExceptionHandlerControllerAdvice<>(errorResponseComposer);
 	}
 	
-	/**
-	 * Configures an Error Attributes if missing
-	 */	
 	@Bean
 	@ConditionalOnMissingBean(ErrorAttributes.class)
 	public <T extends Throwable>
@@ -126,9 +129,6 @@ public class LemonCommonsWebAutoConfiguration {
 		return new LemonErrorAttributes<>(errorResponseComposer);
 	}
 	
-	/**
-	 * Configures an Error Controller if missing
-	 */	
 	@Bean
 	@ConditionalOnMissingBean(ErrorController.class)
 	public ErrorController errorController(ErrorAttributes errorAttributes,
@@ -139,9 +139,6 @@ public class LemonCommonsWebAutoConfiguration {
 		return new LemonErrorController(errorAttributes, serverProperties, errorViewResolvers);	
 	}	
 
-	/**
-	 * Configures LemonCorsConfig if missing and lemon.cors.allowed-origins is provided
-	 */
 	@Bean
 	@ConditionalOnProperty(name="lemon.cors.allowed-origins")
 	@ConditionalOnMissingBean(CorsConfigurationSource.class)
@@ -151,9 +148,6 @@ public class LemonCommonsWebAutoConfiguration {
 		return new LemonCorsConfigurationSource(properties);		
 	}
 
-	/**
-	 * Configures LemonSecurityConfig if missing
-	 */
 	@Bean
 	@ConditionalOnBean(LemonWebSecurityConfig.class)
 	public SecurityFilterChain lemonSecurityFilterChain(HttpSecurity http, LemonWebSecurityConfig securityConfig) throws Exception {
@@ -162,9 +156,6 @@ public class LemonCommonsWebAutoConfiguration {
 		return securityConfig.configure(http).build();
 	}
 	
-	/**
-	 * Configures an Auditor Aware if missing
-	 */	
 	@Bean
 	@ConditionalOnMissingBean(AuditorAware.class)
 	public <ID extends Serializable>
@@ -174,9 +165,6 @@ public class LemonCommonsWebAutoConfiguration {
 		return new LemonWebAuditorAware<>();
 	}
 
-	/**
-	 * Configures LemonUtils
-	 */
 	@Bean
 	public LecwUtils lecwUtils(ApplicationContext applicationContext,
 			ObjectMapper objectMapper) {

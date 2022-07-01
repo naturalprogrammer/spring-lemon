@@ -45,7 +45,7 @@ public class LemonWebSecurityConfig {
 		log.info("Created");
 	}
 
-	/**
+	/*
 	 * Security configuration, calling protected methods
 	 */
 	public HttpSecurity configure(HttpSecurity http) throws Exception {
@@ -61,45 +61,45 @@ public class LemonWebSecurityConfig {
 		return http;
 	}
 
-	
-	/**
+
+	/*
 	 * Configuring session creation policy
 	 */
 	protected void sessionCreationPolicy(HttpSecurity http) throws Exception {
-		
+
 		// No session
 		http.sessionManagement()
-			.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+				.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 	}
 
-		
-	/**
+
+	/*
 	 * Logout related configuration
 	 */
 	protected void logout(HttpSecurity http) throws Exception {
-		
+
 		http
-			.logout().disable(); // we are stateless; so /logout endpoint not needed			
+				.logout().disable(); // we are stateless; so /logout endpoint not needed
 	}
 
-	
-	/**
+
+	/*
 	 * Configures exception-handling
 	 */
 	protected void exceptionHandling(HttpSecurity http) throws Exception {
-		
+
 		http
-		.exceptionHandling()
-		
-			/***********************************************
-			 * To prevent redirection to the login page
-			 * when someone tries to access a restricted page
-			 **********************************************/
-			.authenticationEntryPoint(new Http403ForbiddenEntryPoint());
+				.exceptionHandling()
+
+				/***********************************************
+				 * To prevent redirection to the login page
+				 * when someone tries to access a restricted page
+				 **********************************************/
+				.authenticationEntryPoint(new Http403ForbiddenEntryPoint());
 	}
 
 
-	/**
+	/*
 	 * Configuring token authentication filter
 	 */
 	protected void tokenAuthentication(HttpSecurity http) {
@@ -113,37 +113,34 @@ public class LemonWebSecurityConfig {
 	 * Disables CSRF. We are stateless.
 	 */
 	protected void csrf(HttpSecurity http) throws Exception {
-		
+
 		http
-			.csrf().disable();
+				.csrf().disable();
 	}
 
-	
-	/**
+
+	/*
 	 * Configures CORS
 	 */
 	protected void cors(HttpSecurity http) throws Exception {
-		
+
 		http
-			.cors();
+				.cors();
 	}
 
-	
-	/**
+
+	/*
 	 * URL based authorization configuration. Override this if needed.
 	 */
 	protected void authorizeRequests(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
-			.mvcMatchers("/**").permitAll();
+				.mvcMatchers("/**").permitAll();
 	}
 
 
-	/**
+	/*
 	 * Override this to add more http configurations,
 	 * such as more authentication methods.
-	 *
-	 * @param http
-	 * @throws Exception
 	 */
 	protected void otherConfigurations(HttpSecurity http) {
 		// Override this method to provide other configurations

@@ -19,8 +19,6 @@ package com.naturalprogrammer.spring.lemon.commonsweb.exceptions;
 import com.naturalprogrammer.spring.lemon.exceptions.ErrorResponseComposer;
 import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.servlet.error.DefaultErrorAttributes;
 import org.springframework.web.context.request.WebRequest;
@@ -59,9 +57,6 @@ public class LemonErrorAttributes<T extends Throwable> extends DefaultErrorAttri
 		return errorAttributes;
 	}
 
-	/**
-     * Handles exceptions
-     */
 	@SuppressWarnings("unchecked")
 	protected void addLemonErrorDetails(
 			Map<String, Object> errorAttributes, WebRequest request) {

@@ -24,8 +24,6 @@ import com.naturalprogrammer.spring.lemon.exceptions.util.LexUtils;
 import com.nimbusds.jwt.JWTClaimsSet;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -97,7 +95,7 @@ public class LemonCommonsWebTokenAuthenticationFilter extends OncePerRequestFilt
         return new UsernamePasswordAuthenticationToken(principal, token, principal.getAuthorities());
 	}
 
-	/**
+	/*
 	 * Default behaviour is to throw error. To be overridden in auth service.
 	 */
 	protected UserDto fetchUserDto(JWTClaimsSet claims) {

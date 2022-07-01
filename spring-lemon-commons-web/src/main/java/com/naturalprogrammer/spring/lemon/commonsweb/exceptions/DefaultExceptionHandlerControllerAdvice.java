@@ -46,9 +46,6 @@ public class DefaultExceptionHandlerControllerAdvice<T extends Throwable> {
 	}
 
 
-	/**
-     * Handles exceptions
-     */
     @RequestMapping(produces = "application/json")
     @ExceptionHandler(Throwable.class)
     public ResponseEntity<?> handleException(T ex) throws T {
