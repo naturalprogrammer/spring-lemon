@@ -121,7 +121,7 @@ public class LecUtils {
 	    if(keyValPair.length % 2 != 0)
 	        throw new IllegalArgumentException("Keys and values must be in pairs");
 	
-	    Map<K,V> map = new HashMap<K,V>(keyValPair.length / 2);
+	    Map<K, V> map = new HashMap<>(keyValPair.length / 2);
 	
 	    for(int i = 0; i < keyValPair.length; i += 2){
 	        map.put((K) keyValPair[i], (V) keyValPair[i+1]);
@@ -140,29 +140,29 @@ public class LecUtils {
 			throw new BadCredentialsException(LexUtils.getMessage(messageKey));
 	}
 
-	
+
 	/**
 	 * Applies a JsonPatch to an object
 	 */
-    @SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked")
 	public static <T> T applyPatch(T originalObj, String patchString)
-			throws JsonProcessingException, IOException, JsonPatchException {
+			throws IOException, JsonPatchException {
 
-        // Parse the patch to JsonNode
-        JsonNode patchNode = objectMapper.readTree(patchString);
+		// Parse the patch to JsonNode
+		JsonNode patchNode = objectMapper.readTree(patchString);
 
-        // Create the patch
-        JsonPatch patch = JsonPatch.fromJson(patchNode);
+		// Create the patch
+		JsonPatch patch = JsonPatch.fromJson(patchNode);
 
-        // Convert the original object to JsonNode
-        JsonNode originalObjNode = objectMapper.valueToTree(originalObj);
+		// Convert the original object to JsonNode
+		JsonNode originalObjNode = objectMapper.valueToTree(originalObj);
 
-        // Apply the patch
-        TreeNode patchedObjNode = patch.apply(originalObjNode);
+		// Apply the patch
+		TreeNode patchedObjNode = patch.apply(originalObjNode);
 
-        // Convert the patched node to an updated obj
-        return objectMapper.treeToValue(patchedObjNode, (Class<T>) originalObj.getClass());
-    }
+		// Convert the patched node to an updated obj
+		return objectMapper.treeToValue(patchedObjNode, (Class<T>) originalObj.getClass());
+	}
 
 
 	/**
