@@ -21,7 +21,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -30,28 +29,27 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
  * Security configuration class. Extend it in the
  * application, and make a configuration class. Override
  * protected methods, if you need any customization.
- * 
+ *
  * @author Sanjay Patel
  */
-public class LemonWebSecurityConfig extends WebSecurityConfigurerAdapter {
-	
+public class LemonWebSecurityConfig {
+
 	private static final Log log = LogFactory.getLog(LemonWebSecurityConfig.class);
 
 	protected BlueTokenService blueTokenService;
-	
+
 	@Autowired
 	public void createLemonWebSecurityConfig(BlueTokenService blueTokenService) {
 
-		this.blueTokenService = blueTokenService;		
+		this.blueTokenService = blueTokenService;
 		log.info("Created");
 	}
 
 	/**
 	 * Security configuration, calling protected methods
 	 */
-	@Override
-	protected void configure(HttpSecurity http) throws Exception {
-		
+	public HttpSecurity configure(HttpSecurity http) throws Exception {
+
 		sessionCreationPolicy(http); // set session creation policy
 		logout(http); // logout related configuration
 		exceptionHandling(http); // exception handling
@@ -60,6 +58,7 @@ public class LemonWebSecurityConfig extends WebSecurityConfigurerAdapter {
 		cors(http); // CORS configuration
 		authorizeRequests(http); // authorize requests
 		otherConfigurations(http); // override this to add more configurations
+		return http;
 	}
 
 	
@@ -135,18 +134,18 @@ public class LemonWebSecurityConfig extends WebSecurityConfigurerAdapter {
 	 */
 	protected void authorizeRequests(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
-			.mvcMatchers("/**").permitAll();                  
+			.mvcMatchers("/**").permitAll();
 	}
-	
+
 
 	/**
 	 * Override this to add more http configurations,
 	 * such as more authentication methods.
-	 * 
+	 *
 	 * @param http
 	 * @throws Exception
 	 */
-	protected void otherConfigurations(HttpSecurity http)  throws Exception {
-
+	protected void otherConfigurations(HttpSecurity http) {
+		// Override this method to provide other configurations
 	}
 }

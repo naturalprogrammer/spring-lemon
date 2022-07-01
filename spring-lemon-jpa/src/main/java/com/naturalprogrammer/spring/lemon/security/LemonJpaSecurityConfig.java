@@ -67,12 +67,13 @@ public class LemonJpaSecurityConfig extends LemonWebSecurityConfig {
 	 * Security configuration, calling protected methods
 	 */
 	@Override
-	protected void configure(HttpSecurity http) throws Exception {
-		
+	public HttpSecurity configure(HttpSecurity http) throws Exception {
+
 		super.configure(http);
 		login(http); // authentication
 		exceptionHandling(http); // exception handling
 		oauth2Client(http);
+		return http;
 	}
 
 	
@@ -99,11 +100,11 @@ public class LemonJpaSecurityConfig extends LemonWebSecurityConfig {
         	.failureHandler(new SimpleUrlAuthenticationFailureHandler());
 	}
 
-	
+
 	/**
 	 * Override this to change login URL
-	 * 
-	 * @return
+	 *
+	 * @return String
 	 */
 	protected String loginPage() {
 		

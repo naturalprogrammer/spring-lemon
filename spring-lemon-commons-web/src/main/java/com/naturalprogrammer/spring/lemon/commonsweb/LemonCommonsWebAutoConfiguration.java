@@ -19,7 +19,6 @@ package com.naturalprogrammer.spring.lemon.commonsweb;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.naturalprogrammer.spring.lemon.commons.LemonCommonsAutoConfiguration;
 import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
-import com.naturalprogrammer.spring.lemon.commons.exceptions.handlers.BadCredentialsExceptionHandler;
 import com.naturalprogrammer.spring.lemon.commonsweb.exceptions.DefaultExceptionHandlerControllerAdvice;
 import com.naturalprogrammer.spring.lemon.commonsweb.exceptions.LemonErrorAttributes;
 import com.naturalprogrammer.spring.lemon.commonsweb.exceptions.LemonErrorController;
@@ -32,6 +31,7 @@ import com.naturalprogrammer.spring.lemon.exceptions.ErrorResponseComposer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
@@ -50,6 +50,8 @@ import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfigurationSource;
 
 import java.io.Serializable;
@@ -107,9 +109,9 @@ public class LemonCommonsWebAutoConfiguration {
 	public <T extends Throwable>
 	DefaultExceptionHandlerControllerAdvice<T> defaultExceptionHandlerControllerAdvice(
     		ErrorResponseComposer<T> errorResponseComposer) {
-		
-        log.info("Configuring DefaultExceptionHandlerControllerAdvice");       
-		return new DefaultExceptionHandlerControllerAdvice<T>(errorResponseComposer);
+
+		log.info("Configuring DefaultExceptionHandlerControllerAdvice");
+		return new DefaultExceptionHandlerControllerAdvice<>(errorResponseComposer);
 	}
 	
 	/**
@@ -120,8 +122,8 @@ public class LemonCommonsWebAutoConfiguration {
 	public <T extends Throwable>
 	ErrorAttributes errorAttributes(ErrorResponseComposer<T> errorResponseComposer) {
 		
-        log.info("Configuring LemonErrorAttributes");       
-		return new LemonErrorAttributes<T>(errorResponseComposer);
+        log.info("Configuring LemonErrorAttributes");
+		return new LemonErrorAttributes<>(errorResponseComposer);
 	}
 	
 	/**
@@ -148,16 +150,16 @@ public class LemonCommonsWebAutoConfiguration {
         log.info("Configuring LemonCorsConfigurationSource");       
 		return new LemonCorsConfigurationSource(properties);		
 	}
-	
+
 	/**
 	 * Configures LemonSecurityConfig if missing
 	 */
 	@Bean
-	@ConditionalOnMissingBean(LemonWebSecurityConfig.class)	
-	public LemonWebSecurityConfig lemonSecurityConfig() {
-		
-        log.info("Configuring LemonWebSecurityConfig");       
-		return new LemonWebSecurityConfig();
+	@ConditionalOnBean(LemonWebSecurityConfig.class)
+	public SecurityFilterChain lemonSecurityFilterChain(HttpSecurity http, LemonWebSecurityConfig securityConfig) throws Exception {
+
+		log.info("Configuring lemonSecurityFilterChain");
+		return securityConfig.configure(http).build();
 	}
 	
 	/**
@@ -167,9 +169,9 @@ public class LemonCommonsWebAutoConfiguration {
 	@ConditionalOnMissingBean(AuditorAware.class)
 	public <ID extends Serializable>
 	AuditorAware<ID> auditorAware() {
-		
-        log.info("Configuring LemonAuditorAware");       
-		return new LemonWebAuditorAware<ID>();
+
+		log.info("Configuring LemonAuditorAware");
+		return new LemonWebAuditorAware<>();
 	}
 
 	/**
