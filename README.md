@@ -1,6 +1,6 @@
 # Spring Lemon
 
-> This repository is not being maintained anymore. Follow the successor https://github.com/naturalprogrammer/np-spring-mvc-demo for latest patterns and best practices.
+> Note: for latest patterns and best practices, follow the successor https://github.com/naturalprogrammer/np-spring-mvc-demo
 
 When developing **real-world** Spring REST APIs and microservices, you face many challenges like
 
