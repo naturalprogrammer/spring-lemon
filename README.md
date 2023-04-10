@@ -1,6 +1,6 @@
 # Spring Lemon
 
-> Minimize your development cost with our intensive consulting/training — [click here](https://www.naturalprogrammer.com/) for details.
+> This repository is not being maintained anymore. Follow the successor https://github.com/naturalprogrammer/np-spring-mvc-demo for latest patterns and best practices.
 
 When developing **real-world** Spring REST APIs and microservices, you face many challenges like
 
